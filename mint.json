@@ -44,47 +44,92 @@
   ],
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", 
-        "quickstart", 
-          {
-            "group": "Nested Reference Pages",
-            "pages": ["nested-reference-page"]
-          }, 
+      "group": "Documentation",
+      "pages": [
+        "introduction", 
         "glossary"
       ]
     },
     {
-      "group": "Auth Flows",
+      "group": "Tutorial",
       "pages": [
-        "auth-flows/overview", 
-        "auth-flows/hosted-flow", 
-        "auth-flows/embedded-flow",
-        "auth-flows/seamless-flow"
+        "tutorial/getting-started", 
+        "tutorial/getting-api-key", 
+        "tutorial/applications",
+        "tutorial/generating-session-tokens",
+        "tutorial/setting-up-frontend",
+        "tutorial/trigger-event",
+        "tutorial/advanced-features"
       ]
     }, 
     {
-      "group": "Configure",
+      "group": "Concepts",
       "pages": [
-        "configure/app-setup", 
-        "configure/manage-customers", 
-        "configure/authenticate"
+        "concepts/linked-accounts", 
+        "concepts/authentication", 
+        "concepts/orchestration",
+        "concepts/user-config", 
+        "concepts/event-api",
+        "concepts/webhook",
+        "concepts/logs"
       ]
     },
     {
-      "group": "API Documentation",
-      "pages": ["api-reference/authentication"]
+      "group": "Documentation",
+      "pages": ["api-reference/overview"]
     },
     {
-      "group": "Basics",
+      "group": "API References",
       "pages": [
-        "guides/basics/linked-accounts", 
-        "guides/basics/rate-limiting",
-        "guides/basics/migrating-integrations"
+        {
+          "group": "Customer",
+          "pages": [
+            "api-reference/customer/upsert-a-linked-account",
+            "api-reference/customer/create-linked-account",
+            "api-reference/customer/migrate-token-for-a-linked-account"
+          ]
+        },
+        {
+          "group": "Integration Meta",
+          "pages": [
+            "api-reference/integration-meta/list-applications",
+            "api-reference/integration-meta/get-application",
+            "api-reference/integration-meta/get-total-executions-for-a-linked-account"
+          ]
+        },
+        {
+          "group": "Config",
+          "pages": [
+            "api-reference/config/update-config",
+            "api-reference/config/find-or-create-config",
+            "api-reference/config/get-config",
+            "api-reference/config/delete-config"
+          ]
+        },
+        {
+          "group": "Event",
+          "pages": [
+            "api-reference/event/trigger-an-event-from-your-application",
+            "api-reference/event/trigger-an-event-from-your-application--single-app"
+          ]
+        },
+        {
+          "group": "Session Token",
+          "pages": [
+            "api-reference/session-token/generate-token-for-linked-account"
+          ]
+        },
+        {
+          "group": "Cobalt Connect",
+          "pages": [
+            "api-reference/cobalt-connect/get-connect-url",
+            "api-reference/cobalt-connect/get-hosted-properties"
+          ]
+        }
       ]
     },
     {
-      "group": "Workflow",
+      "group": "Orchestration",
       "pages": [
         "guides/workflow/overview", 
         "guides/basics/triggers",
@@ -94,12 +139,29 @@
     {
       "group": "Connected Portal",
       "pages": [
-        "guides/connected-portal/overview", 
+        "guides/connected-portal/overview",
+        {
+          "group": "Integration Methods",
+          "pages": [
+            "guides/auth-flows/overview",
+            "guides/auth-flows/hosted-flow",
+            "guides/auth-flows/embedded-flow",
+            "guides/auth-flows/seamless-flow"
+          ]
+        },
         "guides/connected-portal/how-to-configure",
         "guides/connected-portal/mapping",
         "guides/connected-portal/dependent",
         "guides/connected-portal/select",
         "guides/connected-portal/primitive"
+      ]
+    },
+    {
+      "group": "Miscellaneous",
+      "pages": [ 
+        "guides/basics/migrating-integrations",
+        "guides/basics/rate-limiting",
+        "guides/basics/sending-data-from-cobalt"
       ]
     },
     {
@@ -110,54 +172,9 @@
       ]
     },
     {
-      "group": "Customer",
-      "pages": [
-        "api-reference/customer/upsert-a-linked-account",
-        "api-reference/customer/create-linked-account",
-        "api-reference/customer/migrate-token-for-a-linked-account"
-      ]
-    },
-    {
-      "group": "Integration Meta",
-      "pages": [
-        "api-reference/integration-meta/list-applications",
-        "api-reference/integration-meta/get-application",
-        "api-reference/integration-meta/get-total-executions-for-a-linked-account"
-      ]
-    },
-    {
-      "group": "Config",
-      "pages": [
-        "api-reference/config/update-config",
-        "api-reference/config/find-or-create-config",
-        "api-reference/config/get-config",
-        "api-reference/config/delete-config"
-      ]
-    },
-    {
-      "group": "Event",
-      "pages": [
-        "api-reference/event/trigger-an-event-from-your-application",
-        "api-reference/event/trigger-an-event-from-your-application--single-app"
-      ]
-    },
-    {
-      "group": "Session Token",
-      "pages": [
-        "api-reference/session-token/generate-token-for-linked-account"
-      ]
-    },
-    {
-      "group": "Cobalt Connect",
-      "pages": [
-        "api-reference/cobalt-connect/get-connect-url",
-        "api-reference/cobalt-connect/get-hosted-properties"
-      ]
-    },
-    {
       "group": "Cobalt SDKs",
       "pages": [
-            "Overview"
+            "sdks/overview"
         ]
     },
     {
