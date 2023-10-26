@@ -1,71 +1,25 @@
 ---
 title: Glossary
-description: "Welcome to the home of your new documentation & tool kit check"
+description: "This page describes common terms used in the Cobalt interface and documentation."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+**Linked account**: Your end-customer is called a linked account. You can check the list of added linked accounts on Cobalt's dashboard
 
-## Setting up
+**Linked account id**: Each linked account has its own unique id that needs to be passed in the backend SDK
 
-The first step to world-class documentation is setting up your editing environnments.
+**session_token**: Session token a temporary token that is used to initialize the frontend SDK. Session token is generated from getTokenForLinkedAccount() function of the backend SDK
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+**Events**: Events happen on your platform and you trigger the Cobalt's events API with a pre-defined payload. You can create and update the events on Cobalt's dashboard.
 
-## Make it yours
+**Actions**: Actions are your API end points on which Cobalt will send the data back. You can define the authorization method, list of parameters that your API will expect etc. on Cobalt's dashboard
 
-Update your docs to your brand and add valuable content for the best user conversion.
+**auth_credentials**: While creating a linked account using the createLinkedAccount() function, you can also pass auth_credentials of your end-customer. This will be later used while setting up 'Actions' and sending authorized requests on your end-points.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+**App**: An app represents a third-party data source that you can connect a customer to so that you can access the data in the respective application on behalf of the customer. 
+
+
+
+
+
+
+
