@@ -1,71 +1,21 @@
 ---
 title: Authentication
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt uses API keys to control access to the API.
 
-## Setting up
+You must keep the API key secret, so make sure it isn't available in publicly accessible areas, such as GitHub and client-side code. 
+Cobat recommends the API key is only inserted at release time, and the number of people at your organization with access to your API key is minimised.
 
-The first step to world-class documentation is setting up your editing environnments.
+Cobalt expects the API key to be included in all API requests to the server, Base64 encoded within an 'x-api-key' header.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+`x-api-key: YOUR_ENCODED_API_KEY `
+> Replace YOUR_ENCODED_API_KEY with your API key
 
-## Make it yours
+#### Finding your API Key
+To retrieve your API key from Cobalt's portal:
 
-Update your docs to your brand and add valuable content for the best user conversion.
++ In the navigation bar, Go to Settings > API Keys
++ Copy your Production or Test API key depending on your environment
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+

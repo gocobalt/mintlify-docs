@@ -5,11 +5,15 @@ description: 'This guide will help you launch your first integration while the f
 
 ## Step 1: Create an account
 
-To get started, sign up for a free account at [https://www.gocobalt.io/create-account](https://www.gocobalt.io/create-account). After creating an account, you will have access to your production and testing API keys to build and test how Cobalt works.
+To get started, sign up for a free account at [https://www.gocobalt.io/create-account](https://www.gocobalt.io/create-account). 
+After creating an account, you will have access to your production and testing API keys to build and test how Cobalt works.
+
+<img height="200" src="/images/hero-light.svg" alt="How to find the API Keys on Cobalt's dashboard"/>
 
 ## Step 2: Enable & Configure Apps
 
-To enable the apps that you want to use in Cobalt, go to the **Apps** page in the Cobalt dashboard. You will see a list of the available apps. Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
+To enable the apps that you want to use in Cobalt, go to the **Apps** page in the Cobalt dashboard. You will see a list of the available apps. 
+Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
 
 **Key-based** apps do not require any additional configuration.
 
@@ -18,22 +22,48 @@ To enable the apps that you want to use in Cobalt, go to the **Apps** page in th
 
 ## Step 3: Create a linked account
 
-**Linked Account** is a unique identifier that Cobalt uses to store all the end customer tokens for your integration. When you create a Linked Account, you must provide a **linked_account_id**. This ID can be anything you want, but it must be unique.
+**Linked Account** is a unique identifier that Cobalt uses to store all the end customer tokens for your integration. When you create a Linked Account, 
+you must provide a **linked_account_id**. This ID can be anything you want, but it must be unique.
 
-Most of the time, the **linked_account_id** is an ID from your internal data model that represents a user or account in your system. For example, if you have a user in your system with the ID account:12345, you could use that ID as the linked_account_id for your Cobalt Linked Account.
+Most of the time, the **linked_account_id** is an ID from your internal data model that represents a user or account in your system. For example, if you have 
+a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Cobalt Linked Account.
 
-Once you have created a Linked Account, you can use it to call the Cobalt APIs on behalf of your end customer. The Cobalt APIs will use the linked_account_id to associate the tokens with the correct end customer.
+Once you have created a Linked Account, you can use it to call the Cobalt APIs on behalf of your end customer. The Cobalt APIs will use the **linked_account_id**
+ to associate the tokens with the correct end customer.
 
->Creating a linked account should always happen server-side to prevent token leakage.
+<Tip>
+Creating a linked account should always happen server-side to prevent token leakage.
+</Tip>
 
 Use the API call below to create a linked account.
+
+```bash
+curl --location 'https://api.gocobalt.io/api/v2/public/linked-account' \
+--header 'X-API-Key: COBALT_API_KEY' \
+--header 'Content-Type: application/json' \
+--data '{
+    "linked_account_id": "Test2",
+    "name": "Test account 2"
+}'
+```
 
 ## Step 4: Generate 'session token' to be used by the client
 
 **Session tokens** are used to protect your Cobalt API key and make it easier to manage your end customers' tokens. When your client makes a request to the Cobalt APIs, it must include the session token in the request header. 
 The Cobalt APIs will then use the session token to authenticate the request and grant access to the requested resources. Use the below API call to create a `session-token`
 
->Token creation should always happen server-side.
+<Tip> 
+Token creation should always happen server-side.
+</Tip>
+
+```bash
+curl --location 'https://api.gocobalt.io/api/v2/public/session-token' \
+--header 'x-api-key: COBALT_API_KEY' \
+--header 'Content-Type: application/json' \
+--data '{
+    "linked_account_id":"12345678"
+}'
+```
 
 ## Step 5: Integrate 'Cobalt Connect'
 
@@ -50,30 +80,48 @@ There are 3 ways to integrate cobalt connect
 
 To get started, we'll use Hosted flow. Use the below API call to generate the hosted url.
 
+```bash
+curl --location 'https://api.gocobalt.io/api/v2/public/connect-url' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer {{LINKED_TOKEN}}' \
+--data '{
+    "color": "#000000",
+    "bgColor":"#00FF23",
+    "name":"Jon Snow"
+}'
+```
+
 
 Go to the "hosted url" received in the response. The hosted site will display all the integration that you enabled in step 2.
 
-On the integration's page click Authorize, you will be redirected to the connector and asked to authorize the application. After you complete this flow, you will be redirected back to Hosted site.
+On the integration's page click Authorize, you will be redirected to the connector and asked to authorize the application. After you complete this flow, 
+you will be redirected back to Hosted site.
 
 The app is now ready for use. All that's left now is to make your first API call
 
 >Depending on the app, your users might need to complete some configuration for an application. This will be indicated by you in the config. Your user can fill in the configuration and hit save.
 
+
 ## Step 6: Your first API call to Cobalt
 
 App Events are custom events that are sent programmatically from your application via the SDK or API. For example, you might send a "New Contact Created" App Event from your application to trigger a Workflow that creates a matching contact in your users' Salesforce CRM.
 
-**Create an event on Cobalt**
+#### Create an event on Cobalt
 
-To create an event, go to the Your App page on Cobalt dashboard. Under the event tab click on 'New Event'. Next, enter the name and event schema of your Event. The event schema that you enter here must represent a sample payload sent from your application to Cobalt.
+To create an event, go to the Your App page on Cobalt dashboard. Under the event tab click on 'New Event'. Next, enter the name and event schema of 
+your Event. The event schema that you enter here must represent a sample payload sent from your application to Cobalt.
 
->NOTE: The event schema must be a valid JSON object.
+<img height="200" src="/images/hero-light.svg" alt="Create a new event"/>
 
-**Send an event to Cobalt**
-App Events can be sent from your application to Cobalt using the event() function of the backend SDK. To trigger the event function, you must pass three parameters in the request:
+<Tip>
+  NOTE: The event schema must be a valid JSON object.
+</Tip>
+
+#### Send an event to Cobalt
+App Events can be sent from your application to Cobalt using the event() function of the backend SDK. To trigger the event function, you must pass 
+three parameters in the request:
 
 >Hurray! you have successfully integrated Cobalt on the server side. Now, let's look at the setup on client side.
-
 
 ## Go Deeper
 This was a simple overview to setup native integrations using Cobalt. Read on to see how Cobalt can drive your integration needs, no matter their complexity.
