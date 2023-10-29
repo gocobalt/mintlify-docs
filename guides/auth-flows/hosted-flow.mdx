@@ -1,71 +1,37 @@
 ---
 title: Hosted Flow
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication and configuration."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Behind the scenes, hosted flow implements the cobalt API endpoints and handles the following features for your customers:
 
-## Setting up
+- List all enabled application
+- Handle the Auth flow
+- Manage integration
+- Search for integrations
+- Integration configuration for your end user
 
-The first step to world-class documentation is setting up your editing environnments.
+To get started, follow the 2 steps:
+1. Generate Hosted Url
+2. Redirect to hosted connect
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+### Hosted URL
 
-## Make it yours
+To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a POST request to the Session Token API to create a valid 
+session for a user along with the hosted url. Your application can then redirects your user's browser to Connect hosted by Cobalt on 
+`https://connect.gocobalt.io`
 
-Update your docs to your brand and add valuable content for the best user conversion.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+### Redirect to Connect
+
+Once you have the hosted_url you can redirect the user to the hosted Cobalt Connect. Connect displays your enabled application. Your user can select the application they want to connect and are then prompted to log in to their account.
+
+You can modify the UI of Cobalt connect with the `hosted_properties`
+
+| Property | Description |
+|--------------|---------------------|
+| color_hex | Modify the theme color of Cobalt connect|
+| customer_name | Display name of your end customer |
+| logo | Display Logo of your end customer |
+
+

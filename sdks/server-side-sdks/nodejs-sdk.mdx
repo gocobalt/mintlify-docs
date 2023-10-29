@@ -1,71 +1,383 @@
 ---
 title: NodeJS SDK
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+#### Install
 
-## Setting up
+First install `@cobaltio/cobalt` via the terminal.
 
-The first step to world-class documentation is setting up your editing environnments.
+```JavaScript
+ npm i @cobaltio/cobalt
+```
+The Cobalt SDK for JavaScript bundles TypeScript definition files for use in TypeScript projects. We aim to keep these TypeScript definition files updated with each release for any public api.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+**Pre-requisites for Typescript**
 
-## Make it yours
++ Use TypeScript v2.x
++ If you are targeting at es5 or older ECMA standards, your tsconfig.json has to include 'es5' and 'es2015.promise' under compilerOptions.lib. See tsconfig.json for an example.
++ Includes the TypeScript definitions for node. You can use npm to install this by typing the following into a terminal window:
 
-Update your docs to your brand and add valuable content for the best user conversion.
+```bash
+npm install --save-dev @types/node
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### Initialise
+
+```Javascript
+const Cobalt = require('@cobaltio/cobalt');
+
+const Client = new Cobalt({
+    apiKey:"<Your Api Key>"
+});
+```
+
+#### .createLinkedAccount()
+
+The "Create Linked Account" fucntion allows you to create a new linked account for your customer within Cobalt's platform. Linked accounts represent your 
+end-users or customers, and they are essential for enabling connections with third-party applications.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|name| Optional | String | Name of the customer|
+|UDF| Optional | Object | User specific preliminary data|
+|your_app| Optional | Object | Auth specific data|
+
+```JavaScript
+try{
+    await Client.createLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User",
+        udf: {
+            "phone": "1234567890",
+            "address": "123, Queen Street"
+        },
+        your_app:{
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+Example response:
+
+```JSON
+{
+    "_id": "64cb7c433c6dddda0fb6bde1",
+    "associated_org": "63dba3b4d9c4be8f0f3f1e8f",
+    "account_id": "user@example.com",
+    "environment": "production",
+    "name": "User",
+    "udf": [
+        {
+            "key_name": "phone",
+            "key_value": "1234567890",
+            "_id": "64d5d69bfb78da0950f5e18f",
+            "updatedAt": "2023-08-03T06:35:07.574Z",
+            "createdAt": "2023-08-03T06:35:07.574Z"
+        },
+        {
+            "key_name": "address",
+            "key_value": "123, Queen Street",
+            "_id": "64d5d69bfb78da0950f5e190",
+            "updatedAt": "2023-08-03T06:35:07.574Z",
+            "createdAt": "2023-08-03T06:35:07.574Z"
+        },
+    ],
+    "createdAt": "2023-08-03T10:06:59.703Z",
+    "updatedAt": "2023-08-03T10:06:59.833Z"
+}
+```
+
+#### .upsertLinkedAccount()
+
+The "Upsert Linked Account" function allows you to create or update a linked account for your customer within Cobalt's platform. Linked accounts represent your end-users or customers, and they are essential for enabling connections with third-party applications. The API will either create a new linked account if it does not exist or update the existing linked account if it is already present.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|name| Optional | String | Name of the customer|
+|UDF| Optional | Object | User specific preliminary data|
+|your_app| Optional | Object | Auth specific data|
+
+```JavaScript
+try{
+    await Client.upsertLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User2",
+        udf: {
+            "phone": "1234567890",
+            "address": "121, Queen Street"
+        },
+        your_app: {
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+Example response:
+
+```JSON
+{
+    "_id": "64cb7c433c6dddda0fb6bde1",
+    "associated_org": "63dba3b4d9c4be8f0f3f1e8f",
+    "account_id": "user@example.com",
+    "environment": "production",
+    "name": "User2",
+    "udf": [
+        {
+            "key_name": "phone",
+            "key_value": "1234567890",
+            "_id": "64d5d69bfb78da0950f5e18f",
+            "updatedAt": "2023-08-03T06:35:07.574Z",
+            "createdAt": "2023-08-03T06:35:07.574Z"
+        },
+        {
+            "key_name": "address",
+            "key_value": "121, Queen Street",
+            "_id": "64d5d69bfb78da0950f5e190",
+            "updatedAt": "2023-08-03T06:35:07.574Z",
+            "createdAt": "2023-08-12T06:35:07.574Z"
+        },
+    ],
+    "createdAt": "2023-08-03T10:06:59.703Z",
+    "updatedAt": "2023-08-12T10:06:59.833Z"
+}
+```
+
+#### .getTokenForLinkedAccount()
+The "Session Token" API is used to generate a secure session token that provides authorized access to Cobalt's APIs for a specific linked account. The session token serves as a temporary authentication credential for accessing the Cobalt JS SDK. 
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+
+```JavaScript
+try{
+    const data = await Client.getTokenForLinkedAccount({
+        linked_account_id:"<Account Id of the user eg: example@someemail.com>"
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+Example response:
+
+```JSON
+{
+    "token": "eyJhbGciOiJIUzI1NiAiInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzDMg5LCJleHAiOjE2ODY5MDIyODl9.CepcAGqYIpE0Dhen_Sxgsl5cPHP8Agm_zcwa4y0QFDM"
+}
+```
+
+#### .getApplications()
+Returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+
+```JavaScript
+try{
+    const data = await Client.getApplications("<linked_account_id>", {
+        page:5,
+        limit:10
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+Example Response:
+```JSON
+[
+    {
+        "name": "Drive",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/google_drive/logo.png",
+        "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices.",
+        "auth_type": "oauth2",
+        "tags": [
+            "Office"
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices."
+        },
+        "slug": "google_drive"
+    },
+    {
+        "name": "Slack",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+        "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+        "auth_type": "oauth2",
+        "tags": [
+            "Communication"
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+        },
+        "connected": true,
+        "connected_accounts": [
+            {
+                "identifier": "Cobalt",
+                "connectedAt": "2023-05-31T07:45:59.841Z"
+            }
+        ],
+        "slug": "slack"
+    },
+    {
+        "name": "Copper",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/copper/logo.png",
+        "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace.",
+        "auth_type": "keybased",
+        "tags": [
+            "CRM"
+        ],
+        "auth_input_map": [
+            {
+                "name": "api_token",
+                "label": "API Key",
+                "placeholder": "Please enter the API key",
+                "required": true,
+                "type": "text"
+            },
+            {
+                "name": "email",
+                "label": "Email Address",
+                "placeholder": "Please enter the email of the token owner",
+                "required": true,
+                "type": "text"
+            }
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace."
+        },
+        "slug": "copper"
+    }
+]
+```
+
+#### .getApplicationBySlug()
+Returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+
+```JavaScript
+try{
+    const data = await Client.getApplicationBySlug("<linked_account_id>","<application slug eg: slack>")
+}catch(error){
+    //Catch any error
+}
+```
+Example response:
+
+```JSON
+{
+    "name": "Slack",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+    "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+    "auth_type": "oauth2",
+    "type": "slack",
+    "app_id": "6463683189cc3cc0379e8e70",
+    "tags": [
+        "Communication"
+    ],
+    "version": {
+        "_v": "1.0.0",
+        "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+    },
+    "connected": true,
+    "connected_accounts": [
+        {
+            "identifier": "NA",
+            "connectedAt": "2023-06-22T09:25:02.327Z"
+        }
+    ],
+    "slug": "slack"
+}
+```
+
+#### .config()
+Returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|slug| Mandatory | String | Application slug|
+|config_id| Optional | String | Unique id|
+|labels| Optional | Object | dynamic labels|
+
+```JavaScript
+try{
+    const data = await Client.config({
+        linked_account_id: "user@example.com",
+        slug: "slack",
+        config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+        labels: {}
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+Example response:
+
+```JSON
+{
+	"slug": "slack",
+	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
+	"fields": [
+		{
+			"required": false,
+			"id": "64da0b57c9ae95561bb0a24d",
+			"name": "Channel",
+			"field_type": "select",
+			"options": [
+				{
+					"name": "general",
+					"value": "C044U7Q074J"
+				}
+			],
+			"labels": []
+		}
+	],
+	"workflows": [
+		{
+			"id": "64d1fac58716dc5065127ffe",
+			"name": "Send message in a channel",
+			"description": "",
+			"enabled": false,
+			"fields": [
+				{
+					"required": false,
+					"id": "64da0b57c9ae95561bb0a24f",
+					"name": "Channel",
+					"field_type": "select",
+					"options": [
+						{
+							"name": "general",
+							"value": "C044U7Q074J"
+						}
+					],
+					"labels": []
+				}
+			]
+		}
+	],
+	"field_errors": []
+}
+```
+

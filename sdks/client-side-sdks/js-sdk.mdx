@@ -1,71 +1,273 @@
 ---
 title: Javascript SDK
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+#### Install
 
-## Setting up
+First, install `@cobaltio/cobalt-js`  and via the terminal.
 
-The first step to world-class documentation is setting up your editing environnments.
+```bash
+npm install --save  @cobaltio/cobalt-js
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+#### Initialise
+Import `Cobalt` and initialise it.
 
-## Make it yours
+```JavaScript
+import Config from "@cobaltio/cobalt-js";
 
-Update your docs to your brand and add valuable content for the best user conversion.
+const config = new Config({ token: "SESSION_TOKEN" });
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### .getApp()
+
+Returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns 
+all the enabled applications.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|[slug]| optional | String | The application slug |
+
+> Note: instance method of `Cobalt` Returns: `Promise.<Application>` - The application details.
+
+
+```JavaScript
+cobalt.getApp()  // to get a list of all apps
+cobalt.getApp("slack")  // to get details of a single app, e.g. slack
+```
+
+Example Response: 
+
+```JSON
+{
+	"name": "Slack",
+	"icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+	"description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+	"auth_type": "oauth2",
+	"type": "slack",
+	"app_id": "64c357c739ec788238ab5f95",
+	"tags": [
+		"Communication"
+	],
+	"version": {
+		"_v": "1.0.0",
+		"description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+	},
+	"slug": "slack"
+}
+```
+
+#### .connect()
+Returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|[slug]| Mandatory | String | The application slug |
+| Payload| Optional| Object | The key value pairs of auth data|
+
+> Note: instance method of `Cobalt` Returns: `Promise.<Application>` - The application details.
+
+```JavaScript
+cobalt.connect("slack") // opens a new tab for oauth apps
+cobalt.connect("twilio", {
+  number: 1234567890,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for key based apps
+```
+```response
+// returns `true` if connection was successful
+```
+
+#### .disconnect()
+Disconnect the specified application and remove any associated data from Cobalt.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|[slug]| Mandatory | String | The application slug |
+
+```JavaScript
+cobalt.disconnect("slack")
+```
+```
+// no response
+```
+
+#### .config()
+Returns the specified config, or creates one if it doesn't exist.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|payload| Mandatory | `configPayload` | Json payload for config |
+
+The `configPayload` object.
+
+|Name|Type|Description|
+|----|----|-----------|
+|slug|String|The application slug|
+|[config_id]|String|Unique id for the config|
+|labels|`Object<string, Array<labels>>`|The dynamic label mappings|
+
+```JavaScript
+cobalt.config({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
+Example response:
+
+```Json
+{
+	"slug": "slack",
+	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
+	"fields": [
+		{
+			"required": false,
+			"id": "64da0b57c9ae95561bb0a24d",
+			"name": "Channel",
+			"field_type": "select",
+			"options": [
+				{
+					"name": "general",
+					"value": "C044U7Q074J"
+				}
+			],
+			"labels": []
+		}
+	],
+	"workflows": [
+		{
+			"id": "64d1fac58716dc5065127ffe",
+			"name": "Send message in a channel",
+			"description": "",
+			"enabled": false,
+			"fields": [
+				{
+					"required": false,
+					"id": "64da0b57c9ae95561bb0a24f",
+					"name": "Channel",
+					"field_type": "select",
+					"options": [
+						{
+							"name": "general",
+							"value": "C044U7Q074J"
+						}
+					],
+					"labels": []
+				}
+			]
+		}
+	],
+	"field_errors": []
+}
+```
+
+#### .updateConfig()
+Update the specified config.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|payload| Mandatory | `updateConfigPayload` | Json payload for config |
+
+The `updateConfigPayload` configuration data for an application.
+
+| Name | Required | Type | Description |
+|-------|----------|------|-------------|
+|slug| Mandatory | String | The application slug. |
+|[config_id]| Optional | String | Unique ID for the config. |
+|fields| Optional | Object | A map of application fields and their values.|
+|workflows| Optional | `Array.<WorkflowPayload>` | Whether the workflow is enabled. |
+
+
+The `WorkflowPayload` data 
+
+| Name | Required | Type | Description |
+|-------|----------|------|-------------|
+|id| Mandatory | String | The ID of the workflow. |
+|enabled]| Mandatory | Boolean | Whether the workflow is enabled |
+|fields| Mandatory | `Object<string, (string or number or boolean)>`| A map of workflow fields and their values.|
+
+```JavaScript
+cobalt.updateConfig({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+
+    }
+  ]
+})
+```
+Example response:
+
+```JSON
+{
+	"slug": "slack",
+	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
+	"fields": [
+		{
+			"required": false,
+			"id": "64da0b57c9ae95561bb0a24d",
+			"name": "Channel",
+			"field_type": "select",
+			"options": [
+				{
+					"name": "general",
+					"value": "C044U7Q074J"
+				}
+			],
+			"labels": [],
+			value: "C044U7Q074J"
+		}
+	],
+	"workflows": [
+		{
+			"id": "64d1fac58716dc5065127ffe",
+			"name": "Send message in a channel",
+			"description": "",
+			"enabled": false,
+			"fields": [
+				{
+					"required": false,
+					"id": "64da0b57c9ae95561bb0a24f",
+					"name": "Channel",
+					"field_type": "select",
+					"options": [
+						{
+							"name": "general",
+							"value": "C044U7Q074J"
+						}
+					],
+					"labels": [],
+			        value: "C044U7Q074J"
+				}
+			]
+		}
+	],
+	"field_errors": []
+}
+```
+#### .deleteConfig() 
+Delete the specified config.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|slug| Mandatory | slug | The application slug. |
+|configId| optional | String | The unique ID of the config. |
+
+
+```JavaScript
+cobalt.deleteConfig("slack", "OPTIONAL_ID_FOR_THIS_CONFIG")
+```
+
+```
+// promise resolves if config is successfully deleted
+```

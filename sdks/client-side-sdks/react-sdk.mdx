@@ -1,71 +1,49 @@
 ---
 title: React SDK
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+#### Install
 
-## Setting up
+First, install `@cobaltio/react-cobalt-js` and `@cobaltio/cobalt-js`  and via the terminal.
 
-The first step to world-class documentation is setting up your editing environnments.
+```bash
+npm install --save @cobaltio/cobalt-js @cobaltio/cobalt-js
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+#### Initialise
 
-## Make it yours
+Import `Provider` & `Config`
 
-Update your docs to your brand and add valuable content for the best user conversion.
+```bash
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### Render Cobalt Connect
+Perform the on click action to render the react component of cobalt connect
+
+> * Config component needs to be wrapped inside the Provider component.
+> * Pass the Cobalt session token (that you generated using the Cobalt backend SDK) to the provider.
+
+```JavaScript
+<Provider sessionToken={ cobaltToken }>
+    {
+        // ideally you'd render the Config component inside a modal.
+        // the component only gets rendered when `slug` is passed.
+        <Config
+            id="SOME_UNIQUE_CONFIG_ID" // Optional
+            slug="APP_SLUG" // application type / slug
+            // dynamic labels payload (optional)
+            labels={{ /* PAYLOAD */ }}
+            // you can override the component's container style if you want
+            style={{
+                borderRadius: 8,
+                maxWidth: 450,
+            }}
+        />
+    }
+</Provider>
+```
+
+#### Example
+
+For an example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/blob/main/example) directory.

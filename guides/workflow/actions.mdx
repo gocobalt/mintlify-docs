@@ -1,71 +1,30 @@
 ---
 title: Actions
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Workflow action helps you to create complex workflows. There are 3 type of workflow actions
 
-## Setting up
++ Rule
++ Delay
++ Http Request
++ Loop
 
-The first step to world-class documentation is setting up your editing environnments.
+#### Rule
+You can add conditional logic to workflows using our rule node. Rule allow you to define rules to determine which of two paths your workflow should execute.
+To add a Rule to your workflow, drag and drop the rule node in the workflow canvas and configure the **rule** in the sidebar.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+#### Delay
+You can add delay to your workflow using our delay node. Delay allows you to pause the execution of next step till a certain time. To add a delay to your 
+workflow, drag and drop delay in the workflow canvas and configure the delay step in the sidebar.
 
-## Make it yours
+#### Http Request
+You can make requests to any HTTP API using Cobalt's Request step. This is useful for connecting workflows to your application's internal API, or with any 
+REST APIs in general. 
 
-Update your docs to your brand and add valuable content for the best user conversion.
+#### Configuring URL Request
+You can enter the request URL in the input under **"Request URL"**. You can also include parameters as part of the URL by typing double curly brackets `{{` to invoke the **variable menu**.
+The variable menu allows you to reference data from upstream steps in your request URL. 
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### Sending Data in Request
+You can easily send JSON in a request by choosing Raw in the dropdown to the right of Body. When creating the raw JSON body, you can type in static values or 
+reference variables from upstream steps by typing $ or #

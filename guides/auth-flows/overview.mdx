@@ -1,71 +1,34 @@
 ---
 title: Overview
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt Connect allows you to integrate your application with users' systems, enabling data retrieval and seamless interaction. Connect provides a secure and 
+elegant authorisation flow for your users to grant your application access to their systems. It allows your end-customers to configure specific settings for 
+each integration, enhancing flexibility and customization.
 
-## Setting up
+#### Configuration Examples
+Cobalt Connect allows end-customers to provide certain inputs for each integration. Here are a few examples of configuration options:
 
-The first step to world-class documentation is setting up your editing environnments.
+1. Slack: Select the channel where messages will be posted.
+2. Greenhouse/Lever: Choose the job to which candidates will be added.
+3. Hubspot/Pipedrive: Select the stage to which deals will be added.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+#### Authorization Flow
+The authorization flow in Cobalt Connect consists of three steps:
 
-## Make it yours
+1. Open Cobalt Connect: Your application launches Cobalt Connect, enabling users to initiate the authorization flow.
+2. Obtain Consent: Cobalt Connect prompts users to log in to their respective applications and grant your application the necessary permissions.
+3. Configure: Users can configure the data required for the connection, such as selecting specific integration settings.
 
-Update your docs to your brand and add valuable content for the best user conversion.
+### Integration Methods
+There are three ways to integrate Cobalt Connect into your application's UI:
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+1. Hosted Flow: This method involves redirecting users' browsers to Cobalt Connect hosted on [https://connect.gocobalt.io](https://connect.gocobalt.io). Read the detailed integration guide here.
+2. Assisted Flow: Utilize the Cobalt Connect frontend SDK to embed it seamlessly within your React application. Follow the instructions provided in the integration guide here.
+3. Seamless Flow: This flow allows you to white-label the in-app integrations overview and authentication experience. Implementing the assisted flow may require additional development time compared to the hosted and 
+assisted flows.
+
+
+
+
+

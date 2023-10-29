@@ -1,71 +1,83 @@
 ---
 title: Seamless Flow
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt provides a series of endpoints and SDK functions that allow you to build the journey for your customers to connect your platform with the third party applications.
 
-## Setting up
+## Building your own flow
 
-The first step to world-class documentation is setting up your editing environnments.
+#### 1. Create a Linked account on Cobalt when a user signs up for your app
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+Customers in Cobalt is often termed as Linked account. In order to enable your customer to connect to third party app, you first need to create a 
+**linked account** for them. We recommend you create a linked account at the same time as your customer signs up within your app.
 
-## Make it yours
+To create a Linked Account (customer) in Cobalt, you can use the following CURL command or follow the provided guide: 
 
-Update your docs to your brand and add valuable content for the best user conversion.
+Replace YOUR_API_KEY with your Cobalt API key and provide the necessary information for the new Linked Account, such as YOUR_CUSTOMER_ID, 
+Customer Name, customer@email.com, and any additional metadata in the JSON payload.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+By creating a Linked Account for your customer, you can easily track their connection status and manage their integration with third-party apps 
+seamlessly from the moment they sign up within your app.
+
+#### 2. Display a list of integrations for your users to select, including the integration name and logo
+Retrieve a list of all integrations available to connect and display them in your UI
+
+With the above call you can get all the details related to an appliction for a user i.e connection status, logo, app description etc.
+
+<Tip>
+We recommend using the assets provided by Cobalt as they meet the requirements of the supported integrations. For example QuickBooks 
+Online require the specific use of QuickBooks branded buttons, including specific hover states.
+</Tip>
+
+#### 3. Generate session token
+With session tokens, Cobalt enables secure and seamless user interactions with the Cobalt frontend SDK, ensuring that each request is authenticated and authorized properly during the user's session.
+
+<Tip>
+The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+</Tip>
+
+#### 4. Direct your user to authorize a connection with their selected platform
+Cobalt frontend SDK documentation: [https://github.com/gocobalt/cobalt-js#cobaltjs](https://github.com/gocobalt/cobalt-js#cobaltjs)
+
+The preferred way to install the Cobalt frontend SDK for javascript is to use the npm package manager. Simply type the following into a terminal window:
+
+```bash
+npm install @cobaltio/cobalt-js
+```
+
+Alternatively, you can also install the frontend SDK on the browser using the script tag:
+
+```html
+<!-- use a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0.1"></script>
+
+<!-- use a version range instead of a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0"></script>
+
+<!-- omit the version completely to use the latest one -->
+<!-- you should NOT use this in production -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+```
+
+Initializing the javascript SDK using session token from **step 3**:
+
+```Javascript
+const cobalt = new Cobalt({
+    // the token you generate for linked accounts using the cobalt backend SDK
+    token: "COBALT_SESSION_TOKEN",
+});
+```
+
+#### 5. Allow users to configure the connection
+
+Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the config api end to find an 
+exisiting config or creating a new config for the linked account. 
+
+//Create api doc for config api here
+
+#### 6. Save/Update the configuration
+
+#### 7. Manage Connections
+
+#### 8. Delete a connection

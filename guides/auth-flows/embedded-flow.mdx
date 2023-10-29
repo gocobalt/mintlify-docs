@@ -1,71 +1,51 @@
 ---
 title: Embedded Flow
-description: "Welcome to the home of your new documentation & tool kit"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt assisted flow is a frontend SDK that allows you to embed cobalt connect into your React application. You can easily let your users authorize and 
+manage integration configuration. It makes credential handling more secure and seamless.
 
-## Setting up
+To get started, follow the 3 steps:
+1. Generate session token
+2. Install frontend SDK
+3. Open Cobalt connect
 
-The first step to world-class documentation is setting up your editing environnments.
+#### Generate session token
+To use Assisted flow, you will need to first get the session token. This can be achieved by making a POST request to the Session Token API to create a 
+valid session for a user along with the hosted url, hereafter referred to as the Linked account ID.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
 
-## Make it yours
+#### Install frontend SDK
+To open Finch Connect with React, you will need to initialise the React SDK with the below call 
 
-Update your docs to your brand and add valuable content for the best user conversion.
+```bash
+npm install --save @cobaltio/react-cobalt-js
+```
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### Open Cobalt Connect
+```Javascript
+// import Provider & Config components
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+
+// Config component needs to be wrapped inside the Provider component.
+// And pass the Cobalt session token (that you generated using the Cobalt backend SDK) to the provider.
+<Provider sessionToken={ cobaltToken }>
+    {
+        // ideally you'd render the Config component inside a modal.
+        // the component only gets rendered when `slug` is passed.
+        <Config
+            id="SOME_UNIQUE_CONFIG_ID" // Optional
+            slug="APP_SLUG" // application type / slug
+            // dynamic fields payload (optional)
+            fields={{ /* PAYLOAD */ }}
+            // you can override the component's container style if you want
+            style={{
+                borderRadius: 8,
+                maxWidth: 450,
+            }}
+        />
+    }
+</Provider>
+```
+
+For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.

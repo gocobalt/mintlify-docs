@@ -1,71 +1,152 @@
 ---
 title: Handling Dynamic Mapping
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Dynamic mapping is useful to handle custom fields from an application"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+#### Step 1: Create dynamic dataslots on dashboard
+You can go to the configure portal to create a dynamic dataslots field type. See the example below
 
-## Setting up
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/share/676e2b3fa73741ddb8b43e16a9fbeb6c?sid=40fa59af-c927-44e7-a4b9-dcb1af4f5c46"
+  title="Create dynamic dataslots on dashboard"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
 
-The first step to world-class documentation is setting up your editing environnments.
+Here you can a sample object format being created:
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+```JavaScript
+{
+    map_fields_object: {
+        dynamic: {
+        // replace 'dynamic' with your object name set on the dashboard
+            fields: [{
+                name: string;
+                value: string;
+            }];
+        };
+    };
+};
+```
 
-## Make it yours
+#### Step 2: Pass the labels in .config() function
+For end customers, you can ask them to map your SaaS fields with the dynamic fields of the app as shown below:
 
-Update your docs to your brand and add valuable content for the best user conversion.
+<img height="200" src="/images/passlabel.png" alt="Pass label in configuration"/>
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+While calling the .config() function you need to pass the labels object in the third parameter as shown below. You can add any number of label 
+fields in the object in the given format.
+
+```JavaScript
+cobalt.config('mailerlite','configid',{
+    map_fields_object: {
+        dynamic: {
+            fields: [{
+                name: "My Name";
+                value: "my_name";
+            },
+            {
+                name: "Family Name";
+                value: "family_name";
+            }];
+        };
+    };
+};);
+```
+
+#### Step 3: Map the labels and dynamic options using .updateConfig()
+Once you have passed the labels in .config() you will get a response with labels and options added in the config, as shown below:
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": true,
+            "id": "645df2f8e77af6ed8d02f32f",
+            "name": "Map Mailerlite Fields",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "Direct Access Link",
+                    "value": "direct_access_link"
+                },
+                {
+                    "name": "Last Name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "First Name",
+                    "value": "first_name"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:mailerlite:1",
+            "labels": [
+                {
+                    name: "My Name";
+                    value: "my_name";
+                },
+                {
+                    name: "Family Name";
+                    value: "family_name";
+                }
+            ]
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```
+Once the user has mapped the labels and objects, you need to call the .updateConfig() function to
+
+```JavaScript
+cobalt.updateConfig('mailerlite','1234', {
+    "config_id": "1234",
+    "application_data_slots": {
+        "645df2f8e77af6ed8d02f32f": {
+            "my_name": "first_name",
+            "family_name": "last_name"
+            /*[response.application_data_slots[0].id] : {
+            [response.application_data_slots[0].labels[0].value]: response.application_data_slots[0].options[2].value
+            [response.application_data_slots[0].labels[1].value]: response.application_data_slots[0].options[1].value
+            */
+        }
+    },
+    "workflows": []
+});
+```
+
+#### Step 4: Send the dynamic fields from an event
+Now that you have mapped your labels with the dynamic object of an application, you can pass the value of your fields via an event. 
+The custom fields must be passed inside an object. See example below:
+
+```JavaScript
+{
+  "event": "send data to mailerlite",
+  "payload": {
+    "email": "john@loremipsum.com",
+    //you can rename the "custom_fields" object
+    "custom_fields": {
+      "my_name": "John",
+      "family_name": "doe"
+    }
+  }
+}
+```
+#### Step 5: Map the event object with config dataslot
+Awesome, you are almost at the end. Now the last thing is to map the event object with the dynamic dataslot created in the workflow. Look at the example below:
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/share/d64d2cce96f54be0afe41ec27888b63b?sid=b28e157b-a711-4bd8-b5c4-976828a76b0c"
+  title="Map the event object with config dataslot"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>

@@ -1,71 +1,42 @@
 ---
 title: Handling Multiple Configs
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Handling multiple configs is an advanced feature for users who want to store and run different configs for a single workflow."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+In the main article, we saw that config ids were set equal to linked account id for simplicity. However, in the case of handling multiple configs, 
+we need to set a unique id while calling the config() and updateConfig() functions.
 
-## Setting up
+#### Step 1: Setting a unique config id
+You can set a unique config while calling the .config() function as shown below. Make sure that config ids are stored on your end.
 
-The first step to world-class documentation is setting up your editing environnments.
+```JavaScript
+cobalt.config('pipedrive','configid-1');
+//creating a config using an id 'configid-1' 
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+cobalt.config('pipedrive','configid-2');
+//creating a config using another id 'configid-2' 
+```
+Similarly, while calling the updateConfig() function make sure that you also use the respective config id.
 
-## Make it yours
+#### Step 2: Using Config id while triggering events
+While triggering a new event from the backend SDK, you need to pass the respective config id to use the stored value inside the config.
 
-Update your docs to your brand and add valuable content for the best user conversion.
-
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+```JavaScript
+// Send the "New Contact Created" App Event
+try{
+    const data = await Client.event({
+        linked_account_id:"<Account Id of the user eg: example@someemail.com>",
+        event: "New Contact Created",
+        config_id: "configid-2", //event will trigger a workflow using configid-2
+        payload: {
+           "name": "Jeff Atwood",
+            "email": "jeff@stackoverflow.com",
+            "phone": "4151231234",
+            "company": "Stack Overflow",
+            "role": "Founder"
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
