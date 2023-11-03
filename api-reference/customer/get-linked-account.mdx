@@ -1,40 +1,14 @@
 ---
-title: 'Create linked account'
-api: post /api/v2/public/linked-account
+title: 'Get linked account'
+api: get /api/v2/public/linked-account/:linked_account_id
 ---
 
-This API allows you to create a new linked account for your customer within Cobalt's platform. Linked accounts represent your end-users or customers, 
-and they are essential for enabling connections with third-party applications.
+This api lets you fetch an existing linked account record
 
 ## Request description
-#### Body Parameters
-<ParamField body="linked_account_id" type="string" placeholder="dsadadsas" required>
+#### Path Parameters
+<ParamField path="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com
-</ParamField>
-
-<ParamField body="name" type="string">
-  User name. for Eg: Mark Wood
-</ParamField>
-
-<ParamField body="your_app" type="object">
-   An object containing the details of your application associated with you account
-    <Expandable title="properties">
-        <ResponseField name="app_id" type="string" required="true">
-           Application Id of your default app. You can get that [here](https://app.gocobalt.io/your-app)
-        </ResponseField>
-
-        <ResponseField name="auth_credentials" type="object">
-           Your customer api credentials for pushing data to your api end point
-           <Expandable title="example properties" defaultOpen="true">
-                <ResponseField name="api-key" type="string">
-                   Example credentials
-                </ResponseField>
-                <ResponseField name="base-url" type="string">
-                   Example credentials
-                </ResponseField>
-           </Expandable>
-        </ResponseField>
-    </Expandable>
 </ParamField>
 
 ## Response description
@@ -97,6 +71,21 @@ and they are essential for enabling connections with third-party applications.
     "updatedAt": "2023-08-03T10:06:59.833Z",
     "__v": 1
 }
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Linked account with id T1234567 already exists in the test environment",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>
+
+
+<ResponseExample>
+```bash 200
+ok
 ```
 ```JSON 400
 {

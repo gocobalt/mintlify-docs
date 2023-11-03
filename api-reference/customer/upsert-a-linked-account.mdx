@@ -1,3 +1,143 @@
 ---
-openapi: put /api/v2/public/linked-account
+title: 'Update linked account'
+api: put /api/v2/public/linked-account
 ---
+
+This api Updates a linked accounts's details by , Or creates a linked account if no account present if no account found for the provided .
+
+## Request description
+#### Body Parameters
+<ParamField body="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+<ParamField body="name" type="string">
+  User name. for Eg: Mark Wood
+</ParamField>
+
+<ParamField body="your_app" type="object">
+   An object containing the details of your application associated with you account
+    <Expandable title="properties">
+        <ResponseField name="app_id" type="string" required="true">
+           Application Id of your default app. You can get that [here](https://app.gocobalt.io/your-app)
+        </ResponseField>
+
+        <ResponseField name="auth_credentials" type="object">
+           Your customer api credentials for pushing data to your api end point
+           <Expandable title="example properties" defaultOpen="true">
+                <ResponseField name="api-key" type="string">
+                   Example credentials
+                </ResponseField>
+                <ResponseField name="base-url" type="string">
+                   Example credentials
+                </ResponseField>
+           </Expandable>
+        </ResponseField>
+    </Expandable>
+</ParamField>
+
+<ParamField body="udf" type="object">
+   An object containing user-defined fields (if any) associated with the linked account.
+    <Expandable title="example properties">
+        <ResponseField name="sample_key_1" type="string">
+            Example credentials
+        </ResponseField>
+        <ResponseField name="base-sample_key_2" type="string">
+            Example credentials
+        </ResponseField>
+    </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+    index id of the record created
+    </ResponseField>
+    <ResponseField name="associated_org" type="string">
+    Organization Id
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+    Linked account id
+    </ResponseField>
+    <ResponseField name="environment" type="string">
+    Environment in which the account was created
+    </ResponseField>
+    <ResponseField name="name" type="string">
+    Name of the linked account
+    </ResponseField>
+    <ResponseField name="udf" type="array">
+    Initial values passed while creating the linked account. User can pass any values of primitive datatypes.
+    </ResponseField>
+    <ResponseField name="createdAt" type="date">
+    Creation time
+    </ResponseField>
+    <ResponseField name="updatedAt" type="date">
+   `Last update time
+    </ResponseField>
+    <ResponseField name="__v" type="integer">
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "_id": "63cabcc596d0d10508a69bdf",
+    "associated_org": "63c93da0b46b7243785a1e17",
+    "account_id": "12345678",
+    "environment": "test",
+    "name": "Mark Wood",
+    "udf": [
+        {
+            "key_name": "some_key1",
+            "key_value": "Updated Value",
+            "_id": "64d5d69bfb78da0950f5e18f",
+            "updatedAt": "2023-08-11T06:35:07.574Z",
+            "createdAt": "2023-08-11T06:35:07.574Z"
+        },
+        {
+            "key_name": "some_key2",
+            "key_value": "some data 2",
+            "_id": "64d5d69bfb78da0950f5e190",
+            "updatedAt": "2023-08-11T06:35:07.574Z",
+            "createdAt": "2023-08-11T06:35:07.574Z"
+        },
+        {
+            "key_name": "some_key3",
+            "key_value": "some data 3",
+            "_id": "64d5d69bfb78da0950f5e191",
+            "updatedAt": "2023-08-11T06:35:07.574Z",
+            "createdAt": "2023-08-11T06:35:07.574Z"
+        }
+    ],
+    "createdAt": "2023-01-20T16:09:41.700Z",
+    "updatedAt": "2023-08-11T06:35:07.574Z",
+    "__v": 326
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Linked account with id T1234567 already exists in the test environment",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>

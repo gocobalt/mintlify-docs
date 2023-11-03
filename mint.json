@@ -54,8 +54,8 @@
     {
       "group": "Concepts",
       "pages": [
-        "concepts/linked-accounts", 
-        "concepts/authentication", 
+        "concepts/linked-accounts",
+        "concepts/auth-flows",
         "concepts/orchestration",
         "concepts/user-config",
         "concepts/integration",
@@ -65,17 +65,19 @@
     },
     {
       "group": "Documentation",
-      "pages": ["api-reference/overview"]
+      "pages": ["api-reference/overview", "api-reference/authentication"]
     },
     {
       "group": "API References",
       "pages": [
         {
-          "group": "Customer",
+          "group": "Linked Account",
           "pages": [
-            "api-reference/customer/upsert-a-linked-account",
+            "api-reference/customer/get-linked-account",
+            "api-reference/customer/list-linked-accounts",
             "api-reference/customer/create-linked-account",
-            "api-reference/customer/migrate-token-for-a-linked-account"
+            "api-reference/customer/upsert-a-linked-account",
+            "api-reference/customer/delete-linked-account"
           ]
         },
         {
@@ -195,6 +197,17 @@
     }
   ],
   "openapi": "api-reference/openapi.yaml",
+  "api": {
+    "baseUrl": "https://api.gocobalt.io",
+    "auth": {
+      "method": "key",
+      "name": "x-api-key",
+      "inputPrefix": "<Your Cobalt API key>"
+    },
+    "playground": {
+      "mode": "simple"
+    }
+  },
   "anchors": [
     {
       "name": "Postman",

@@ -1,0 +1,51 @@
+---
+title: 'Delete linked account'
+api: delete /api/v2/public/linked-account/:linked_account_id
+---
+
+This api lets you delete an existing linked account
+
+## Request description
+#### Path Parameters
+<ParamField path="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    ```bash
+    ok
+    ```
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```bash 200
+ok
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Linked account with id T1234567 already exists in the test environment",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>

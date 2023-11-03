@@ -1,0 +1,125 @@
+---
+title: 'List linked accounts'
+api: get /api/v2/public/linked-account
+---
+
+This api lets you fetch list of linked accounts
+
+## Request description
+
+#### Query Parameters
+<ParamField query="page" type="integer" default="1">
+  Page number eg: 5
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+ Records per page eg: 10
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="docs" type="array">
+            <Expandable title="example properties" defaultOpen="true">
+               <ResponseField name="associated_org" type="string">
+              Organization Id
+              </ResponseField>
+              <ResponseField name="account_id" type="string">
+              Linked account id
+              </ResponseField>
+              <ResponseField name="environment" type="string">
+              Environment in which the account was created
+              </ResponseField>
+              <ResponseField name="name" type="string">
+              Name of the linked account
+              </ResponseField>
+           </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">
+      Total number of existing linked accounts
+    </ResponseField>
+    <ResponseField name="limit" type="integer">
+      Records per page
+    </ResponseField>
+    <ResponseField name="page" type="integer">
+      Current Page
+    </ResponseField>
+    <ResponseField name="pagingCounter" type="integer">
+      Total number of existing linked accounts
+    </ResponseField>
+    <ResponseField name="hasPrevPage" type="boolean">
+      If the current Page has any previous page
+    </ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">
+      If the current Page has any next page
+    </ResponseField>
+    <ResponseField name="prevPage" type="integer">
+     Previous page number
+    </ResponseField>
+    <ResponseField name="nextPage" type="integer">
+      Next page number
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "docs": [
+      {
+          "associated_org": "63dba3b4d9c4be8f0f3f5e8f",
+          "account_id": "1234567893",
+          "environment": "test",
+          "name": "Charizard8",
+      }
+    ],
+    "totalDocs": 1,
+    "limit": 10,
+    "totalPages": 1,
+    "page": 1,
+    "pagingCounter": 1,
+    "hasPrevPage": false,
+    "hasNextPage": false,
+    "prevPage": null,
+    "nextPage": null
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Linked account with id T1234567 already exists in the test environment",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>
+
+
+<ResponseExample>
+```bash 200
+ok
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Linked account with id T1234567 already exists in the test environment",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>
