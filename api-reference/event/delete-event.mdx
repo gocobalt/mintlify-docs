@@ -1,23 +1,14 @@
 ---
-title: 'Delete Config'
-api: delete /api/v2/public/slug/:slug/config/:config_id
+title: 'Delete event'
+api: delete /api/v2/public/event/:event_id
 ---
 
-This API returns the specified config.
+This api deletes a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). 
 
 ## Request description
-#### Headers 
-<ParamField header="linked_account_id" type="string" required>
-  Unique customer identification id. For Eg: markwood@some_email.com
-</ParamField>
-
 #### Path Parameters
-<ParamField path="slug" type="string" required>
-  Application Slug. Eg: `docusign`
-</ParamField>
-
-<ParamField path="config_id" type="string">
- Id of the config to be fetched. If not provided, `linked_account_id` is considered by default.
+<ParamField path="event_id" type="string" required>
+  Event Id
 </ParamField>
 
 ## Response description
@@ -25,7 +16,7 @@ This API returns the specified config.
 <Tabs>
   <Tab title="200">
     <ResponseField name="message" type="string">
-        System generated message
+      System generated message
     </ResponseField>
   </Tab>
   <Tab title="500">
@@ -47,15 +38,15 @@ This API returns the specified config.
 <ResponseExample>
 ```JSON 200
 {
-    "message": "Installation Deleted Success"
+    "message": "event deleted successfully"
 }
 ```
 ```JSON 500
 {
     "status_code": 500,
     "error_type": "INTERNAL_SERVER_ERROR",
-    "message": "ApplicationInstallationDetail validation failed: linked_account_id: Path `linked_account_id` is required.",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
 }
 ```
 </ ResponseExample>

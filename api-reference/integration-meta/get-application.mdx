@@ -1,3 +1,148 @@
 ---
-openapi: get /api/v2/public/application/{slug}
+title: 'Get application'
+api: get /api/v2/public/application/:slug
 ---
+
+This API is used to fetch an enabled application for a linked account
+
+## Request description
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application slug. For Eg: `slack`
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="name" type="string">
+    Application name
+    </ResponseField>
+    <ResponseField name="icon" type="string">
+    Application icon
+    </ResponseField>
+    <ResponseField name="description" type="string">
+    Application description
+    </ResponseField>
+     <ResponseField name="auth_type" type="string">
+     Authentication type supported by the app
+    </ResponseField>
+    <ResponseField name="type" type="string">
+     Application type
+    </ResponseField>
+    <ResponseField name="app_id" type="string">
+     Application record id
+    </ResponseField>
+    <ResponseField name="tags" type="array">
+     Array of application tags.
+    </ResponseField>
+    <ResponseField name="version" type="object">
+    Version object
+     <Expandable title="properties">
+        <ResponseField name="_v" type="string">
+            Application version
+        </ResponseField>
+        <ResponseField name="description" type="string">
+            version description
+        </ResponseField>
+     </Expandable>
+    </ResponseField>
+    <ResponseField name="connected" type="boolean">
+     This field is present only if an app has been connected. This field provides information whether the app has been integrated by the linked account
+    </ResponseField>
+    <ResponseField name="connected_accounts" type="array">
+    This field provides description of the account connected. Present only if an app has been connected.
+     <Expandable title="properties">
+        <ResponseField name="identifier" type="string">
+            identifier of the account connected with the app
+        </ResponseField>
+        <ResponseField name="connectedAt" type="date">
+            Time of last connection
+        </ResponseField>
+     </Expandable>
+    </ResponseField>
+    <ResponseField name="auth_input_map" type="array">
+    This field is present only if `auth_type` is `keybased`. Provides the input field details to be shown to the linked account for app connection.
+     <Expandable title="properties">
+        <ResponseField name="name" type="string">
+            Field name
+        </ResponseField>
+        <ResponseField name="label" type="string">
+            Field label
+        </ResponseField>
+        <ResponseField name="placeholder" type="string">
+            Field placeholder
+        </ResponseField>
+        <ResponseField name="required" type="boolean">
+            If the field is a required field
+        </ResponseField>
+         <ResponseField name="type" type="string">
+            Type of the input field. Accepted values: `text`, `number`, `boolean`, `select`.
+        </ResponseField>
+        <ResponseField name="options" type="array">
+            Array of option strings if `type` is `select`
+        </ResponseField>
+     </Expandable>
+    </ResponseField>
+    <ResponseField name="slug" type="string">
+     Application slug
+    </ResponseField>
+  </Tab>
+  <Tab title="401">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "name": "Slack",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+    "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+    "auth_type": "oauth2",
+    "type": "slack",
+    "app_id": "6463683189cc3cc0379e8e70",
+    "tags": [
+        "Communication"
+    ],
+    "version": {
+        "_v": "1.0.0",
+        "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+    },
+    "connected": true,
+    "connected_accounts": [
+        {
+            "identifier": "NA",
+            "connectedAt": "2023-06-22T09:25:02.327Z"
+        }
+    ],
+    "slug": "slack"
+}
+```
+
+```JSON 401
+{
+    "status_code": 401,
+    "error_type": "UNAUTHORIZED",
+    "message": "Invalid Credentials",
+    "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
+</ ResponseExample>

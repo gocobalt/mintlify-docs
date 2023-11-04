@@ -1,3 +1,84 @@
 ---
-openapi: post /api/v2/public/event
+title: 'Trigger event'
+api: post /api/v2/public/event/trigger/:slug
 ---
+
+This Api triggers a cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). This would trigger
+all the workflows associated with the specified event. If `slug` is specified, only workflows of that particular app associated with the event would be triggered.
+
+## Request description
+#### Headers
+<ParamField header="linked_account_id" type="string" required>
+  Application slug. Eg: `pipedrive`
+</ParamField>
+
+<ParamField header="config_id" type="string">
+  If not provided, `linked_account_id` is considered by default.
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string">
+  Application slug. Eg: `pipedrive`
+</ParamField>
+
+#### Body Parameters
+<ParamField body="event" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Event payload with user data required for the workflow.
+  ```JSON Example payload
+    {
+      "first_name": "Mark",
+      "last_name": "wood",
+      "employee_id": 221,
+      "is_new": false,
+      "address":{
+        "house_no":"221",
+        "street": "lorem ipsum",
+        "pincode":560103
+      }
+    }
+  ```
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="message" type="string">
+      System generated message
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "message": "Webhook Fired Success"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+    "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+}
+```
+</ ResponseExample>

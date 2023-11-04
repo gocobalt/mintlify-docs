@@ -1,0 +1,113 @@
+---
+title: 'Update application auth'
+api: put /api/v2/public/application/:slug
+---
+
+This API is used to update a linked accounts's auth object (API keys, Access Tokens, etc;) of an application integration in Cobalt.
+
+## Request description
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application slug. For Eg: `slack`
+</ParamField>
+
+#### Body Parameters
+<ParamField body="auth_object" type="object" required>
+   An object containing the details of your application associated with you account
+    <Expandable title="Example properties">
+        <ResponseField name="bot_token" type="string">
+           Example property: Eg: for `slack` - Bot Token
+        </ResponseField>
+        <ResponseField name="workspace_token" type="string">
+          Example property: Eg: for `slack` - workspace_token
+        </ResponseField>
+    </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="success" type="boolean">
+    Success status
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Success message
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "success": true,
+    "message": "Integration - slack created"
+}
+```
+```JSON 200
+{
+    "success": true,
+    "message": "Integration - slack updated"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Application with app_id 646f1abea9861754b9929b76 doesn't have token_type - keybased",
+    "request_id": "90e83618-5743-4953-92cb-675220470272"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "No integration with slug aegis found for linked account 12345678 in test environment",
+    "request_id": "212047f0-df39-4ef2-abc1-7e66495643c4"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "access_token and/or refresh_token only permitted in auth_object for OAuth2 based applications",
+    "request_id": "ea455085-d124-4cea-aae1-6defe1cc3b30"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "access_token, refresh_token, api_domain only permitted in auth_object for OAuth based applications",
+    "request_id": "4c4a494b-250c-46c5-95d4-b8f1def56f01"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "auth_object values must be valid strings",
+    "request_id": "4f8362ce-b36a-4c14-9b85-7fe8b57dda87"
+}
+```
+</ ResponseExample>

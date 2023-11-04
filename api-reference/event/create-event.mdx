@@ -1,0 +1,95 @@
+---
+title: 'Create event'
+api: post /api/v2/public/event
+---
+
+This api creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). 
+
+## Request description
+#### Body Parameters
+<ParamField body="name" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="model" type="object">
+  Event model. This model's properties are accessed in the workflow as trigger variables.
+  ```JSON Example payload
+    {
+      "string_field": "string",
+      "number_field": 12,
+      "array_field": ["1","2"],
+      "boolean_field": false
+    }
+  ```
+  <Expandable title="example properties" defaultOpen="true">
+      <ResponseField name="string_field" type="string">
+          Example string
+      </ResponseField>
+      <ResponseField name="number_field" type="number">
+          Example number
+      </ResponseField>
+      <ResponseField name="array_field" type="array">
+          Example number
+      </ResponseField>
+      <ResponseField name="boolean_field" type="boolean">
+          Example number
+      </ResponseField>
+  </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="event_url" type="string">
+      Event URL for triggering the event
+    </ResponseField>
+    <ResponseField name="event_name" type="string">
+      Name of the event
+    </ResponseField>
+    <ResponseField name="event_model" type="object">
+      Event model for Trigger payload reference
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "_id": "64cb7c433c6dddda0fb6bde8",
+    "event_url": "https://api.gocobalt.io/api/v1/webhook/e51e979faa1edef92d87b1d4",
+    "event_name": "Create Deal",
+    "event_model":{
+      "customer_name": "text",
+      "amount": "number",
+      "emails":"array",
+      "is_new": "boolean"
+    }
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ ResponseExample>
