@@ -1,3 +1,71 @@
 ---
-openapi: post /api/v2/public/connect-url
+title: 'Generate Connect URL'
+api: post /api/v2/public/connect-url
 ---
+
+Returns the connection URL in format: `https://connect.gocobalt.io/{TOKEN}` 
+
+## Request description
+#### Headers
+<ParamField header="Authorization" type="string">
+Unlike other API's in this documentation. This api requires the session token as a bearer token. Please ommit the `x-api-key` from the header of this api.
+  ```bash Header for Generate Connect URL api
+  Authorization:  Bearer {SESSION TOKEN}
+  ```
+</ParamField>
+#### Body Parameters
+<ParamField body="color" type="string">
+  Text Colour Hex
+</ParamField>
+
+<ParamField body="bgColor" type="string">
+  Background Colour Hex
+</ParamField>
+
+<ParamField body="name" type="string">
+  Customer name
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="hosted_url" type="string">
+      Hosted Auth-Flow URL
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+    <ResponseField name="stack" type="string">
+    Error stack
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "hosted_url": "https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Authorization Token Missing",
+    "request_id": "c34e179c-783d-4464-af6a-7a353e301a46",
+    "stack": "Error: Authorization Token Missing\n    at getToken (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\dist\\providers\\JWT.js:38:11)\n    at tokenAuth (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\dist\\middlewares\\AuthV3.js:61:46)\n    at Layer.handle [as handle_request] (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\route.js:144:13)\n    at Route.dispatch (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\route.js:114:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:175:3)"
+}
+```
+</ ResponseExample>

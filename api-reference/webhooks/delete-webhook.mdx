@@ -1,0 +1,46 @@
+---
+title: 'Delete webhook'
+api: get /api/v2/public/webhook
+---
+
+This api deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhooks). 
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="message" type="string">
+     System generated message
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "message": "Webhook deleted successfully",
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ ResponseExample>

@@ -1,0 +1,59 @@
+---
+title: 'Subscribe to events'
+api: post /api/v2/public/webhook/subscribe
+---
+
+This api subscribes user to Cobalt [webhook](https://app.gocobalt.io/webhooks) events.
+
+## Request description
+#### Body Parameters
+<ParamField body="webhook_events" type="array" required>
+  Webhooks events to subscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="webhook_url" type="string">
+      Registered webhook url
+    </ResponseField>
+    <ResponseField name="webhook_events" type="array">
+      Subscribed events.
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "webhook_url": "https://mysite.com/cobalt/webhook",
+    "webhook_events": [
+        "connected-created",
+        "workflow-completed"
+    ]
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ ResponseExample>

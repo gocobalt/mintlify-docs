@@ -1,0 +1,89 @@
+---
+title: 'Get execution'
+api: get /api/v2/public/execution/:execution_id
+---
+
+This api fetches an execution's details. 
+
+## Request description
+#### Headers
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+#### Path Parameters
+<ParamField path="execution_id" type="string" required>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+    Execution Id
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+    Creation time
+    </ResponseField>
+    <ResponseField name="name" type="string">
+    Execution name
+    </ResponseField>
+     <ResponseField name="associated_application" type="string">
+     Associated application slug
+    </ResponseField>
+    <ResponseField name="status" type="string">
+     Execution status
+    </ResponseField>
+    <ResponseField name="associated_workflow" type="string">
+     Associated workflow name
+    </ResponseField>
+    <ResponseField name="environment" type="string">
+     Expected values: `test` or `production`
+    </ResponseField>
+    <ResponseField name="config_id" type="string">
+    </ResponseField>
+    <ResponseField name="associated_event_id" type="string">
+     Associated event id
+    </ResponseField>
+  </Tab>
+  <Tab title="401">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "_id": "65410cf6cdf931a12d7ab009",
+    "createdAt": "2023-10-31T14:19:34.788Z",
+    "name": "Retry for workflow 65200cfd01af0388e905ad92",
+    "associated_application": "slack",
+    "status": "ERRORED",
+    "associated_workflow": "Send message to channel",
+    "environment": "test",
+    "config_id": "12345",
+    "associated_event_id": "6523dfdeffed0fb7e2c3b90e"
+}
+```
+
+```JSON 401
+{
+    "status_code": 401,
+    "error_type": "UNAUTHORIZED",
+    "message": "Invalid Credentials",
+    "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
+</ ResponseExample>

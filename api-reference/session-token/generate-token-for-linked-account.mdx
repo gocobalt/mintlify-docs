@@ -1,3 +1,52 @@
 ---
-openapi: post /api/v2/public/session-token
+title: 'Generate'
+api: post /api/v2/public/session-token
 ---
+
+This API provided a session token to authenticate a linked account. 
+
+## Request description
+#### Body Parameters
+<ParamField body="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="token" type="string">
+      Session Token. Expires in 24 hrs.
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9.CepcAGqYIpE0Dhen_Sxgsl5cPHP8Agm_zcwa4y0QFDM"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "No linked account found for account id : wrong_linked_account_id in environment test",
+    "request_id": "0d6eab55-4b60-4eae-a6ca-58d7b6fda80d"
+}
+```
+</ ResponseExample>
