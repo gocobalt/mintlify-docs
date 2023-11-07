@@ -1,71 +1,73 @@
 ---
-title: Overview
-description: "Welcome to the home of your new documentation & tool kit"
+title: Webhooks
+description: "Automatically notify your app any time certain changes are made."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
 
-## Setting up
+## What are webhooks?
 
-The first step to world-class documentation is setting up your editing environnments.
+A webhook is a method to provide external applications with real-time information about data changes in a platform.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+A webhook delivers data to the application at the moment that there is a change, resulting in data being pushed. Unlike REST APIs where the application polls the API at regular intervals in order to get the changed data. This makes webhooks much more efficient and friendly.
 
-## Make it yours
+## Event Types
+Currently Cobalt 5 webhook event types:
 
-Update your docs to your brand and add valuable content for the best user conversion.
+<Accordion title="Connection Created">
+ A connection is created
+ ```javascript
+ const hello = "world";
+ ```
+</Accordion>
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+<Accordion title="Connection Deleted">
+   A connection is deleted
+ ```javascript
+ const hello = "world";
+ ```
+</Accordion>
+
+<Accordion title="Connection Expired">
+   A connection is removed or does not exist
+ ```javascript
+ const hello = "world";
+ ```
+</Accordion>
+
+<Accordion title="Workflow Completed">
+   Workflow has been successfully executed
+ ```javascript
+ const hello = "world";
+ ```
+</Accordion>
+
+<Accordion title="Workflow Errored">
+   Workflow execution stopped because of an error
+ ```javascript
+ const hello = "world";
+ ```
+</Accordion>
+
+## How to subscribe to webhook events?
+There are 2 ways to subscribe to Cobalt events:
+
+- via the Cobalt's platform
+- via the Webhook subscription API
+
+### Via Cobalt's platform
+Goto Dashboard > Webhooks section
+
+//image
+
+To create a Webhook subscription, enter the delivery URL of the webhook endpoint from your system, and select the desired events you want to receive webhook events for.
+
+<Info>Webhooks should use HTTPS and expect to receive POST requests</Info>
+
+After you pressed “Save”, you are subscribed to the Webhook events.
+
+### Via the Webhook subscription 
+You can manage the webhook subscription using our webhooks API. Visit the [API reference](/api-reference/webhooks/create-webhook) 
+
+
+## Receive events
+On receiving an event, you should respond with an `HTTP 200 OK` to signal to Cobalt that the event was successfully delivered. Otherwise, Cobalt will consider the event delivery a failure and retry up to 3 times, with exponential backoff.
