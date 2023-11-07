@@ -16,14 +16,30 @@ Currently Cobalt 5 webhook event types:
 <Accordion title="Connection Created">
  A connection is created
  ```javascript
- const hello = "world";
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Created",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:03:27 GMT"
+}
  ```
 </Accordion>
 
 <Accordion title="Connection Deleted">
    A connection is deleted
  ```javascript
- const hello = "world";
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Deleted",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:04:27 GMT"
+}
  ```
 </Accordion>
 
@@ -37,14 +53,26 @@ Currently Cobalt 5 webhook event types:
 <Accordion title="Workflow Completed">
    Workflow has been successfully executed
  ```javascript
- const hello = "world";
+ {
+  "linked_account_id": "12345",
+  "instance_id": "6549f43fdf0b0ee699f8f140",
+  "workflow_id": "649e5e2acb9b43bd140c5247",
+  "workflow_name": "httpnodes",
+  "status": "COMPLETED"
+}
  ```
 </Accordion>
 
 <Accordion title="Workflow Errored">
    Workflow execution stopped because of an error
  ```javascript
- const hello = "world";
+ {
+  "linked_account_id": "12345",
+  "instance_id": "6549f02edf0b0ee699f8ea9a",
+  "workflow_id": "64b78291a97fca203872aaad",
+  "workflow_name": "http nodes",
+  "status": "ERRORED"
+}
  ```
 </Accordion>
 
