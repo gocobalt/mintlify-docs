@@ -1,71 +1,23 @@
 ---
 title: Logs
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Detailed insights of an orchestration"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt provides complete transparency of what goes under the hood with its logs feature. User has access to logs specific to a particular event, 
+a worflow or a subscribed webhook data been pushed towards the user.
 
-## Setting up
+### Event Logs
+These logs provides details regrading an event that was fired by a user or any application. It provides details such as associated worflows, Date & time
+when this event was fired, accociated application, associated linked accounts, Cobalt environment and the event payload data.
 
-The first step to world-class documentation is setting up your editing environnments.
+### Worflow Logs
+Worflow logs provides detailed insight of its execution in a sequentials manner, right from when it was triggered to when the execution ended and everthing in between.
+A worflow is comprised of various nodes, and a worflow logs gives provides description about their successful or errored execution and details regarding it.
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+Cobalt has an auto retry mechanism for any worflow execution. This means, each worflow is executed at least 2 times incase it faces any error. If these errors are network
+or authentication related, and are resolved while being retried, they are successfully executed. If not, Cobalt provides a manual `retry` option. This gives user
+the power the flexibility to fix the related issue and execute the worflow from the platform itself.
 
-## Make it yours
-
-Update your docs to your brand and add valuable content for the best user conversion.
-
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+### Webhook Logs
+Cobalt lets users to subscribe to webhook events allowing them to receive notifications and associated data when such an event occurs in Cobalt. Webhook logs
+gives the insights regarding these webhook calls being made to the user.

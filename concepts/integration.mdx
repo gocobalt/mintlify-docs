@@ -1,71 +1,36 @@
 ---
-title: Integration
-description: "Welcome to the home of your new documentation & tool kit"
+title: Integrations
+description: "Application platforms that you can connect with Cobalt."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt offers 100+ applications that can be connected with cobalt for your customers to use accross various segments such as `Accounting`, `ATS`, `HRIS`, `CRM`, `Sales`, `Marketing` and many more.
+Integrating with these platforms are pretty quick and seamless too using our [Auth flow](/concepts/auth-flows) mechanisms.
 
-## Setting up
+### Creating and launching an Integrations
+The end customers can have access to apps enabled by the user. You just need to select from any of the available applications in the app [section](https://app.gocobalt.io/apps)
+of the platform and enable it.
 
-The first step to world-class documentation is setting up your editing environnments.
+However, for your end customer to connect with this plaform, provide authorization for their data to be accessed and for you to access their platform apis, you need
+to follow the below steps:
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+1. Select the application and go to the settings section
+2. Provide the required details under the `Configure Credentials` section of the application. For Oauth based applications Cobalt offers options to use its credentials for playing around.
+Although, for going live, you would need to create a developer account for the applications, and aquire the required field data mentioned under the `Configure Credentials` section.
+For example, `Client Id`, `Client secret` etc.
 
-## Make it yours
+<Tip>
+For API key auth based applications, no configuration is required on the Cobalt dashboard. You just need to enable the application. Your customer would
+provide the details in the auth flow portal.
+</Tip>
 
-Update your docs to your brand and add valuable content for the best user conversion.
+3. Copy the Callback URL and paste in the developer account, where it asks to provide one (Redirect URL/ Callback URL).
+4. Make sure all the scopes mentioned under `Permissions and scopes` has been selected in the scopes panel in the developer account as well.
+5. In the connect portal section configure any settings for you users if required.
+6. Enable the app.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+You're good to go! Your customer can now access the the application auth flow portal.
+
+Once the customer connects with the application by providing the api credentials or logging in to the application from the auth flow portal, they can see the defined
+settings and associated published workflows.
+
+When your end customer successfully connects with an integration, it is reflected under the integrations section of the Linked account page.
