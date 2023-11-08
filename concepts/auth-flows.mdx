@@ -1,71 +1,45 @@
 ---
 title: Auth Flows
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Cobalt's auth flows provides a secure and seamless environment for your users to grant authorization to their data."
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+When creating application integrations and orchestrations, accessing customer's data becomes imminent. With Cobalt's auth flows this process not only becomes
+quick and frictionless but heavily customizable too. Cobalt allows your end-customers to configure specific settings for each integration, enhancing 
+flexibility and customization.
 
-## Setting up
+### Auth flow integration options
+Cobalt provides 3 different ways for Auth flow integrations
 
-The first step to world-class documentation is setting up your editing environnments.
-
-<CardGroup cols={2}>
+<CardGroup cols={1}>
+  <CardGroup cols={2}>
+    <Card
+        title="Hosted flow"
+        icon="pen-to-square"
+        href="/guides/auth-flows/hosted-flow"
+    >
+    Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.
+    </Card>
+    <Card
+      title="Embedded Flow"
+      icon="pen-to-square"
+      href="/guides/auth-flows/embedded-flow"
+    >
+    Utilize the React SDK and embed it seamlessly within your React application.
+    </Card>
+  </CardGroup>
   <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
+    title="Seamless Flow"
     icon="image"
-    href="https://mintlify.com/docs/development"
+    href="/guides/auth-flows/seamless-flow"
   >
-    Preview your changes before you push to make sure they're perfect
+    Take full control. Utilize our detailed rest apis and NodeJs SDK methods to implement and customize the authenticatication experience.
   </Card>
 </CardGroup>
 
-## Make it yours
+### Authorization journey
+Cobalt lets you take the authorization for customer's data in 3 simple steps:
+1. Open the auth flow portal for the customer using any of the above mentioned integration options.
+2. Customer provides consent and logs in to the respective app.
+3. Customer configures the data required for the connection, such as selecting specific integration settings. 
 
-Update your docs to your brand and add valuable content for the best user conversion.
-
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+And done! Customer has now successfully connected the application(s) and can now make use of the published orchestrations.

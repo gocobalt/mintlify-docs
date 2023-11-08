@@ -1,71 +1,37 @@
 ---
 title: Orchestration
-description: "Welcome to the home of your new documentation & tool kit"
+description: "Build and configure workflows and bring your usecases to life"
 ---
 
-<img
-  className="block dark:hidden"
-  src="/images/hero-light.svg"
-  alt="Hero Light"
-/>
-<img
-  className="hidden dark:block"
-  src="/images/hero-dark.svg"
-  alt="Hero Dark"
-/>
+Cobalt lets you orchestrate the way you want to handle your use-cases by letting you create and customize workflows, define the prerequisite data that you 
+wish to access from the customer for those workflows, set visibility and accesibility and a lot more. 
 
-## Setting up
+### Workflow
+Workflows in Cobalt are robust, and retry-enabled tasks, capable of initiation either by an application event or a user defined event. 
+These workflows serve as a powerful tool for constructing the logic underpinning your integration usecases within Cobalt. With Workflows, developers can easily
+implement common integration use cases such as pushing data from their application to users' apps, receiving real-time updates through webhooks, and enabling 
+non-technical teams to configure integrations without coding.
 
-The first step to world-class documentation is setting up your editing environnments.
+Once you have created  [auth flow](/concepts/auth-flows) for your customer and have access to their data, you can setup a workflow using Cobalt's [workflow builder](/guides/workflow).
 
-<CardGroup cols={2}>
-  <Card
-    title="Edit Your Docs"
-    icon="pen-to-square"
-    href="https://mintlify.com/docs/quickstart"
-  >
-    Get your docs set up locally for easy development
-  </Card>
-  <Card
-    title="Preview Changes"
-    icon="image"
-    href="https://mintlify.com/docs/development"
-  >
-    Preview your changes before you push to make sure they're perfect
-  </Card>
-</CardGroup>
+#### Workflow Builder
+Cobalt's workflow builder provides a visual representation of your orchestration. The building blocks of a workflow are called `nodes`. Every workflow starts
+with a `start node` which takes in atleast one `trigger` which defines the initiation of the worflow. A Workflow execution starts with the start node and is 
+followed by `action nodes` which are the visual representation of the logic being implented under the hood. The actions can be connected to the trigger or other 
+actions depending upon the choice/sequence of execution. The workflow builder provides various tools and simplified application api methods for creating robust orchestrations
+without requiring in-depth knowledge of each API provider.
 
-## Make it yours
+#### Triggers
+Triggers are the starting point of any workflow. A trigger defines when a worflow is executed. Cobalt supports application events and user defined events both 
+for triggering a workflow. A user can created a [custom event]() or select from the list of application events as trigger(s) in the start node. User defined events need
+to be fired by the user as and when required to trigger the worflow, whereas, application events are fired by the respective applications when an event occurs.
 
-Update your docs to your brand and add valuable content for the best user conversion.
+#### Actions
+Apart from the third-paty application api actions, Cobalt provides tools such as `Custom code`, `Rule`, `Delay` and more to complement the use-case a user wants to achieve.
+A workflow has atlease one action to be functional. These actions are connected with the start node or with each other depending upon how one wants them to be executed.
+Cobalt supports sequential as well as parallel executions of actions.
 
-<CardGroup cols={2}>
-  <Card
-    title="Customize Style"
-    icon="palette"
-    href="https://mintlify.com/docs/settings/global"
-  >
-    Customize your docs to your company's colors and brands
-  </Card>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="https://mintlify.com/docs/api-playground/openapi"
-  >
-    Automatically generate endpoints from an OpenAPI spec
-  </Card>
-  <Card
-    title="Add Components"
-    icon="screwdriver-wrench"
-    href="https://mintlify.com/docs/components/accordion"
-  >
-    Build interactive features and designs to guide your users
-  </Card>
-  <Card
-    title="Get Inspiration"
-    icon="stars"
-    href="https://mintlify.com/showcase"
-  >
-    Check out our showcase of our favorite documentation
-  </Card>
-</CardGroup>
+#### Configurations
+Cobalt lets users to configure the data accesibility in a worflow and the workflow itself as per their requirement. The user can set visibility of worflows for their customer.
+Since Cobalt also grants the end customers to view and enable/disable a workflow in the auth-flow portal, this feature comes in handy if the user do not wish to show
+these workflows.

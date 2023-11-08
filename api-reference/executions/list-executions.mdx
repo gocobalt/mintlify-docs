@@ -18,30 +18,52 @@ This api fetches an execution's details.
     <ResponseField name="docs" type="array">
       <Expandable title="properties" defaultOpen="true">
         <ResponseField name="_id" type="string">
-        Execution Id
+          Execution Id
         </ResponseField>
         <ResponseField name="createdAt" type="string">
-        Creation time
+          Creation time
         </ResponseField>
         <ResponseField name="name" type="string">
-        Execution name
+          Execution name
         </ResponseField>
-        <ResponseField name="associated_application" type="string">
-        Associated application slug
+        <ResponseField name="associated_application" type="object">
+          Associated application object
+          <Expandable title="properties" defaultOpen="true">
+            <ResponseField name="icon" type="string">
+              Application icon
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Application Name
+            </ResponseField>
+            <ResponseField name="_id_" type="string">
+              Application Id
+            </ResponseField>
+          </Expandable>
         </ResponseField>
         <ResponseField name="status" type="string">
-        Execution status
+          Execution status
         </ResponseField>
-        <ResponseField name="associated_workflow" type="string">
-        Associated workflow name
+        <ResponseField name="associated_workflow" type="object">
+          Associated workflow object
+          <Expandable title="properties" defaultOpen="true">
+            <ResponseField name="icon" type="string">
+              Workflow icon
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Workflow Name
+            </ResponseField>
+            <ResponseField name="_id_" type="string">
+              Workflow Id
+            </ResponseField>
+          </Expandable>
         </ResponseField>
         <ResponseField name="environment" type="string">
-        Expected values: `test` or `production`
+          Expected values: `test` or `production`
         </ResponseField>
         <ResponseField name="config_id" type="string">
         </ResponseField>
         <ResponseField name="associated_event_id" type="string">
-        Associated event id
+          Associated event id
         </ResponseField>
       </Expandable>
     </ResponseField>
