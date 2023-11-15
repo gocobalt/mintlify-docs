@@ -1,0 +1,26 @@
+---
+title: App Configuration
+---
+
+Cobalt allows custom configurations for any application. You can control various functionalities the user can or cannot access. You can add additional settings
+for your users which they can see once they have connected the app during the auth flow. You can see and configure individual workflows those have been published
+and choose to show them to the users or not.
+
+#### Adding application settings for your customers
+Many a times it becomes imminent to take an input from the customer for any of your application's orchestration to work. For example, lets say you have created
+workflows to send messages on a slack channel for your end customer and you want your users to write the message dynamically from you app's auth flow portal and choose a channel
+from their workspace. This can be achieved by adding two fields one each for message and channel as settings in Cobalt's app configuration portal.
+
+Follow the below steps:
+
++ Go to `Apps` under the `Settings` side menu
++ Select the application that you want to configure
++ Click on the `Configure` option and you can see the preview of your app settings as seen by your user on the left and Configure Portal on the right
++ Under the settings section, click on `Add new setting` option
++ Provide the input field name that your user would see as the `title`
++ Select type. The `type` of the field can be any of the native types such as `text`, `number`, `select` etc, or dynamic lists of items of that particular application supported by Cobalt
+such as list of pipelines, of list of channels to choose from, as mentioned in the above example scenario.
++ Select dependent field if any. For example, if you want your user to enter some value in their google worksheet by selecting if from a list, they first need to select the respective Spreadsheet.
+Here the Spreadsheet field becomes a dependent field for the Workseet field. Click on `Dependency` and select from any of previously created fields on which your current field is dependent.
+
+
