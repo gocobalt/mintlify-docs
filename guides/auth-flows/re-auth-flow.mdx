@@ -22,14 +22,15 @@ for `reauth-required` for the customer and they would need to re-authenticate fo
 When any of the above mentioned scenarios occur, Cobalt sets a flag `reauth-required` for the application integration of the customer. You could find this
 in the application response object. See below - 
 
-```bash List enabled applications
+```bash cURL
   curl --request GET \
   --url https://api.gocobalt.io/api/v2/public/application \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <x-api-key>'
 ```
+below is a sample response with an application with expired authentication.
 
-```JSON Sample app with "reauth-required" flag
+```JSON Response
  [
     {
         "name": "Slack",
@@ -57,8 +58,11 @@ in the application response object. See below -
 ]
 ```
 This re-authentication flow is handled by the Hosted flow and the Embeded flow where the user would be asked to re-connect if the application authentication has been expired.
-Else, if you have been using the Seamless flow for customizing the code on the client side, just check for the `reauth_required` field in the application list response,
-and use the `.config` method to connect to the application again.
+
+<img height="200" src="/images/expired-app.png" alt="Application with expired authentication"/>
+
+If you have been using the Seamless flow for customizing the code on the client side, just check for the `reauth_required` field in the application list response,
+and use the `.connect()` method to connect to the application again.
 
 ```Javascript Re-authentication
 cobalt.connect("slack") // opens a new tab for re-authentication
@@ -70,6 +74,7 @@ cobalt.connect("twilio", {
 ```
 Checkout the [auth methods](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) for more details.
 
+<img height="200" src="/images/reconnect.png" alt="Reconnect app with expired auth"/>
 
 ### Getting notified using webhook.
 Cobalt supports webhook subscription for an event when an application auth gets expired for a linked account. You would need to subscribe for the event `Connection Expired`.
@@ -86,4 +91,6 @@ Cobalt would then notify you whenever an app connection expires and provide deta
  "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
 }
 ```
+<img height="200" src="/images/connection-expired-webhook.png" alt="Webhook subscription for connection expired"/>
+
 Checkout [Cobalt webhooks](https://docs.gocobalt.io/guides/platform/webhook) for more details.
