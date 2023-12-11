@@ -2,6 +2,39 @@
 title: Overview
 ---
 
-<Tip>
-### Coming Soon!
-</Tip>
+Developer settings page provides you basic organisation specific details such as `API Key` which is required for Cobalt's api authentication, and `Default app id`.
+This section of Cobalt's platform is dedicated to setup the default application settings which would be useful in other Cobalt's core functionalities, such as triggering an event, or
+calling a custom action.
+
+You can easily create common `Events` to trigger workflows or define a custom `Action` api setup to fire when required.
+
+### Setting up default authentication
+If your API are API key based, you can easily set the API keys for each linked account while creating them. Everytime the associated action is fired, the credentials will be set in the headers by default.
+Use this [API reference](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) for a detailed understanding.
+
+However if your api authentication is a bit more complex, such as getting a token using other credentials and using it for the authorization, Cobalt grants this provision as well. To do so first save the required
+data specific to the auth mechanism as `UDF` parameters, for example: `Base URL`, `Region`, `API Key`, `API Secret` etc;
+
+#### Authentication
+Here, you can configure the API call to be made to fetch an access token each time before an action defined by you is to be executed. The below example describes
+setting up an api call using the `base_url`,  `access_key` and `secret` as linked account variables. These values needs to be first set as `UDF` parameters while the
+linked account is being created. Check out this [API reference](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) for details.
+
+<img height="200" src="/images/developer-setting-auth.png" alt="Setting up api authentication for default app"/>
+
+Here, the user is making a POST request to its server path `/auth` with `api-key` `api-secret` & `Content-Type` as header parameters. We expect as token object in return.
+
+#### Injection details
+we get the token response from the above api call in the following fashion:
+```JSON
+{
+  "id": "cfa64467-87be-4ef6-9cac-78477d77457c",
+  "token":"<access token generated using credentials>",
+  "label": "Access Token"
+}
+```
+Upon receiving the token object in response, we need to define where to set it while making an api call to the server. This can be achieved in this section. In the below
+example we are setting the token as a header parameter for any forthcoming api calls to the server via the default application's actions.
+
+<img height="200" src="/images/injection.png" alt="Setting up auth header for a default action"/>
+
