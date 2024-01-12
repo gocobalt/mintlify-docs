@@ -1,15 +1,20 @@
 ---
 title: Hosted Flow
-description: "Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication and configuration."
 ---
-
-Behind the scenes, hosted flow implements the cobalt API endpoints and handles the following features for your customers:
+Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication and configuration. Behind the scenes, 
+hosted flow implements the cobalt API endpoints and handles the following features for your customers:
 
 - List all enabled application
 - Handle the Auth flow
 - Manage integration
 - Search for integrations
 - Integration configuration for your end user
+
+
+<Warning>
+Dynamic field mapping feature is currently not supported in the hosted auth flow.
+</Warning>
+
 
 To get started, follow the 2 steps:
 1. Generate Hosted Url
@@ -18,8 +23,8 @@ To get started, follow the 2 steps:
 ### Hosted URL
 
 To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a POST request to the Session Token API to create a valid 
-session for a user along with the hosted url. Your application can then redirects your user's browser to Connect hosted by Cobalt on 
-`https://connect.gocobalt.io`
+session for a user along with the hosted url. Check out the [REST API documentation](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. The generated URL can be then used to redirect the user to the
+hosted UI (https://connect.gocobalt.io), or can be embedded within your UI.
 
 
 ### Redirect to Connect

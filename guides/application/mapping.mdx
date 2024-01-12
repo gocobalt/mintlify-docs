@@ -1,29 +1,102 @@
 ---
 title: Mapping
 ---
+Data mapping comes as a crucial feature when you want your users to map their application platform's fields to your fields in order to make sure the correct data is being
+synced from the platform and vice versa.
 
-A Map-type dataslot is a type of User Setting that allows your users to define a mapping between an object in your application (an "Application Object") 
+<img height="200" src="/images/mapping.png" alt="Mapping fields"/>
+
+Such can be mappings can be either static or dynamic depending upon your use case. In either case, you'd have to create a Map-type dataslot setting in your application or workflow
+configuration settings in Cobalt. A Map-type dataslot is a type of User Setting that allows your users to define a mapping between an object in your application (an "Application Object") 
 and an object in their connected integration account (an "Integration Object").
 
-#### Step 1: Adding to the User Portal
-Map dataslot settings can be added by visiting the "configure" option inside an application on your dashboard.
+#### Static mapping 
+Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields. User can create the
+required labels in the configuration pages specific to a workflow or the application itself in the cobalt dashboard.
 
-<img height="200" src="/images/access_mailerlite_config.png" alt="Accessing config dataslot"/>
+<img height="200" src="/images/static-mapping.png" alt="Static Mapping of fields"/>.
 
-An example of a map-type dataslot. For eg. List of fields in Mailerlite can be mapped with user inputs.
+On setting the static map-type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated
+static value. This `value` is mapped to the application platform fields. 
 
-<iframe
-  width="560"
-  height="315"
-  src="https://www.loom.com/share/ae692acab0f549e1bbabc0233ddcaaf7?sid=79592d21-f5d9-4ff5-971f-bd1b5398d5fe"
-  title="List of fields in Mailerlite"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-></iframe>
+```JavaScript
+"fields": [
+    {
+      "required": false,
+      "id": "65a0ee61b542ff4a62fe68b9",
+      "name": "Map Deal Fields",
+      "field_type": "map",
+      "options": [
+        {
+          "name": "HubSpot Campaign",
+          "value": "hs_campaign"
+        },
+        {
+          "name": "Closed Won Date (Internal)",
+          "value": "hs_closed_won_date"
+        },
+        {
+          "name": "Global Term Line Item Discount Percentage",
+          "value": "hs_line_item_global_term_hs_discount_percentage"
+        },
+      ...
+      ],
+      "labels": [
+        {
+          "name": "Name",
+          "value": "65a0ef4db542ff4a62fe6a0c"
+        },
+        {
+          "name": "Amount",
+          "value": "65a0ef4db542ff4a62fe6a0d"
+        },
+        {
+          "name": "Request ID",
+          "value": "65a0ef4db542ff4a62fe6a0e"
+        }
+      ],
+      "multiple": false,
+      "hidden": false
+    }
+]
+```
 
-#### Step 2: Getting map-type config from frontend SDK
+Next time when you'd like to update the value of the mapped field with some data, send the data against
+the system generated `value`.
+
+
+#### Dynamic mapping
+Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Cobalt provides a feature To
+map your labels dynamically while creating your config. To do so, instead of creating the labels in the configuration pages specific to a workflow or the application,
+simply toggle the `Dynamic` option of the data slot and provide the `Labels Object Name`.
+
+<img height="200" src="/images/dynamic-mapping.png" alt="Dynamic Mapping of fields"/>.
+
+Now while creating the config using `.config()` method, pass on the required dynamic labels under the created `Labels Object Name`. Check out this [documentation](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#config) for more details.
+
+```JavaScript
+cobalt.config({
+  slug: "hubspot",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {
+    "Contact Fields":[
+        {
+            "name": "First Name",
+            "value": "first_name"
+        },
+        {
+            "name": "Registration id",
+            "value": "r_t353553gq12"
+        }
+    ]
+  }
+})
+```
+<Info>
+Note here that unlike static mapping, the label value here is not system generated but defined by the user.
+</Info>
+
+#### Getting map-type config from frontend SDK
 Use the config() function to get the config of a particular app.
 
 `cobalt.config('mailerlite','configid');`
@@ -97,7 +170,7 @@ Let's look at a sample response of map-type dataslot.
 }
 ```
 
-#### Step 3: Updating value of map-type config
+#### Updating value of map-type config
 
 Use the updateConfig() function to save the selected value. In this case an object with respective labels and their values will be needed to pass.
 
@@ -189,16 +262,3 @@ It will return the same response as config() functions with updates in the chang
     "config_id": "1234"
 }
 ```
-
-Summary of setting a map-type config dataslot using config() and updateConfig() functions
-
-<iframe
-  width="560"
-  height="315"
-  src="https://www.loom.com/share/6849ab1c50454241b251757cc21c456a?sid=f442d488-cd37-4f79-b48a-4bf3f4b6356e"
-  title="Summary of setting a map-type config dataslot using config() and updateConfig() functions"
-  frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen
-  style={{ width: '100%', borderRadius: '0.5rem' }}
-></iframe>

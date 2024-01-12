@@ -32,9 +32,9 @@ Online require the specific use of QuickBooks branded buttons, including specifi
 #### 3. Generate session token
 With session tokens, Cobalt enables secure and seamless user interactions with the Cobalt frontend SDK, ensuring that each request is authenticated and authorized properly during the user's session.
 
-<Tip>
+<Warning>
 The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
-</Tip>
+</Warning>
 
 #### 4. Direct your user to authorize a connection with their selected platform
 Cobalt frontend SDK documentation: [https://github.com/gocobalt/cobalt-js#cobaltjs](https://github.com/gocobalt/cobalt-js#cobaltjs)
@@ -69,15 +69,59 @@ const cobalt = new Cobalt({
 });
 ```
 
-#### 5. Allow users to configure the connection
+#### 5. Manage Connections
+Cobalt provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
+lets your customers to connect to an application platform, authorizing you to access the platform apis and data on their behalf.
 
-Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the config api end to find an 
+```Javascript
+cobalt.connect("slack") // opens a new tab for oauth apps
+cobalt.connect("twilio", {
+  number: <"Registered number">,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for key based apps
+```
+Once authenticated, you would be able to manage the config associated with the customer(Linked account).
+
+The [`.disconnect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#disconnect) method similarly, lets the user to disconnect from the application platform, revoking
+the authorization and deleting any and all configurations of the Linked account saved for that particular application.
+
+```Javascript
+cobalt.disconnect("slack")
+```
+
+#### 6. Allow users to configure the connection
+
+Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the [`.config()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) method to find an 
 exisiting config or creating a new config for the linked account. 
 
-//Create api doc for config api here
+``` Javascript
+cobalt.config({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
 
-#### 6. Save/Update the configuration
+#### 7. Save/Update the configuration
+The `.config()` method provides you with all the published workflows and settings input for the user required to execute the orchestration. The user can now enable the workflows,
+enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig) method.
 
-#### 7. Manage Connections
+```Javascript
+cobalt.updateConfig({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
 
-#### 8. Delete a connection
+    }
+  ]
+})
+```
