@@ -1,0 +1,204 @@
+---
+title: Mapping
+---
+
+A Map-type dataslot is a type of User Setting that allows your users to define a mapping between an object in your application (an "Application Object") 
+and an object in their connected integration account (an "Integration Object").
+
+#### Step 1: Adding to the User Portal
+Map dataslot settings can be added by visiting the "configure" option inside an application on your dashboard.
+
+<img height="200" src="/images/access_mailerlite_config.png" alt="Accessing config dataslot"/>
+
+An example of a map-type dataslot. For eg. List of fields in Mailerlite can be mapped with user inputs.
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/share/ae692acab0f549e1bbabc0233ddcaaf7?sid=79592d21-f5d9-4ff5-971f-bd1b5398d5fe"
+  title="List of fields in Mailerlite"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
+#### Step 2: Getting map-type config from frontend SDK
+Use the config() function to get the config of a particular app.
+
+`cobalt.config('mailerlite','configid');`
+
+Let's look at a sample response of map-type dataslot.
+
+>As you can see, the previously empty 'labels' array now has the options configured above on the platform - 'Name' and 'Email'.
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": true,
+            "id": "645df2f8e77af6ed8d02f32f",
+            "name": "Map Mailerlite Fields",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "Secondary_Email",
+                    "value": "secondary_email"
+                },
+                {
+                    "name": "State",
+                    "value": "state"
+                },
+                {
+                    "name": "Zip",
+                    "value": "z_i_p"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:mailerlite:1",
+            "labels": [
+                {
+                    "name": "Name",
+                    "value": "645df30fe77af6ed8d02f338"
+                },
+                {
+                    "name": "Email",
+                    "value": "645df30fe77af6ed8d02f339"
+                }
+            ]
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```
+
+#### Step 3: Updating value of map-type config
+
+Use the updateConfig() function to save the selected value. In this case an object with respective labels and their values will be needed to pass.
+
+```JavaScript
+cobalt.updateConfig('pipedrive','1234',{
+    "config_id": "1234",
+    "application_data_slots": {
+        "645df2f8e77af6ed8d02f32f": {
+            "645df30fe77af6ed8d02f339": "secondary_email",
+            "645df30fe77af6ed8d02f338": "name"
+            }
+        /*[response.application_data_slots[0].id] : {
+            [response.application_data_slots[0].labels[0].value]: response.application_data_slots[0].options[4].value
+            [response.application_data_slots[0].labels[1].value]: response.application_data_slots[0].options[6].value
+          } 
+        */
+    },
+    "workflows": []
+});
+```
+
+It will return the same response as config() functions with updates in the changed value. You will notice that the value is now added in the object.
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": true,
+            "id": "645df2f8e77af6ed8d02f32f",
+            "name": "Map Mailerlite Fields",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "Secondary_Email",
+                    "value": "secondary_email"
+                },
+                {
+                    "name": "State",
+                    "value": "state"
+                },
+                {
+                    "name": "Zip",
+                    "value": "z_i_p"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:mailerlite:1",
+            "labels": [
+                {
+                    "name": "Name",
+                    "value": "645df30fe77af6ed8d02f338"
+                },
+                {
+                    "name": "Email",
+                    "value": "645df30fe77af6ed8d02f339"
+                }
+            ],
+            "value": {
+                "645df30fe77af6ed8d02f339": "secondary_email",
+                "645df30fe77af6ed8d02f338": "name"
+            }
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```
+
+Summary of setting a map-type config dataslot using config() and updateConfig() functions
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/share/6849ab1c50454241b251757cc21c456a?sid=f442d488-cd37-4f79-b48a-4bf3f4b6356e"
+  title="Summary of setting a map-type config dataslot using config() and updateConfig() functions"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>

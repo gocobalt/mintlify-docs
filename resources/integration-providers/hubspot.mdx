@@ -1,31 +1,123 @@
 ---
-title: Hubspot
+title: Setup
 description: Connect to your users’ Hubspot CRM to create, access, and update records in their Hubspot account.
 ---
 
-App settings page lets you configure the authhentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+To setup your Hubspot app in Cobalt for OAuth, you will need the following credentials from your [Hubspot developer account](https://app.hubspot.com/login?hubs_signup-url=developers.hubspot.com/&hubs_signup-cta=cta--small):
+- Client Id
+- Client Secret
+- Scopes
+
+If you do not already have a developer account, you would need to create one [here](https://app.hubspot.com/signup/developers).
+
+#### Acquiring Hubspot client credentials
+
+1. Login to your Hubspot (developer account dashboard)[https://developers.hubspot.com/].
+2. Select `Manage Apps`, and choose from the applications that you'd like your end customers to install.
+3. Go to `Basic info` > `Auth` > `Auth settings` > `App Credentials` and acquire the `Client Id` and `Client Secret`.
+
+#### Adding Redirect URL in the Hubspot developer app
+While creating an installable app on a platform, the platform asks the developer to provide a redirect URL which it would be calling to send across the authorization code once a 
+user installs the application. 
+
+Select Hubspot from `Apps` and copy the Callback URL provided in the app settings page. Under `Auth` > `Auth Settings` > `Redirect URLs`, paste the copied URL.
+
+<img height="200" src="/images/hubspot-dev-app-setting.png" alt="Setting up hubspot developer app"/>
+
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
 <img height="200" src="/images/app_setting.png" alt="Setting up application client credentials"/>
 
-#### Configuring credentials
-
 Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
-select `Use your own credentials` and provide the required data and save. It is required that you have already created an application inside the respective platform first.
-Go to the application and acquire the credentials required in Cobalt's app setting page.
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
 
-#### Scopes
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
 
-Cobalt lets you configure what permissions to ask from your users while they install your application. For some applications Cobalt sets mandatory scopes which cannot be
-removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any custom scopes supported by the respective platform.
+Once the scopes has been added to the application in Cobalt, go to your Hubspot (developer account dashboard)[https://developers.hubspot.com/] and update the scopes as added on Cobalt.
+
+Go to  `Manage Apps` > `Basic info` > `Auth` > `Auth settings` > `Scopes`, and add the scopes as added in Cobalt.
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
 identical to the ones selected in the platform.
 </Warning>
 
-#### Callback URL
+#### Hubspot single webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Hubspot, you'd need to subscribe to Hubspot's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
 
-While creating an installable app on a platform, the platform asks the developer to provide a redirect URL which it would be calling to send across the authorization code once a 
-user installs the application. Copy the Callback URL provided on the app settings page and paste it where the platform asks for the redirect url.
+To setup Hubspot webhook subscription,
 
+1. Select Hubspot from the application list, and select `Settings`.
+2. Copy the `Single Webhook Url`
+3. Go to `Manage Apps` > `Features` > `Webhooks` in your Hubspot (developer account dashboard)[https://developers.hubspot.com/]
+4. Paste the `Single Webhook Url` inside the "Target URL" section
+
+<Info>
+ Existing `Target URL` cannot be updated when any of the subscriptions are active. Make sure to disable all subscriptions prior to updating the URL.
+</Info>
+
+5. Click on `Create Subscription` and add revelant events when you'd want to be notified.
+
+<img height="200" src="/images/hubspot-target-url.png" alt="Setting up hubspot target URL"/>
+
+6. Click on the newly created subscription and `Activate` it to take effect.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using hubspot actions and triggers. Following are the set of Hubspot actions and triggers
+supported by Cobalt.
+
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Make http api calls to any Hubspost documented REST APIs.
+     2. [Create Contact](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a contact in Hubspot
+     3. [Update Contact](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Updates a contact in Hubspot
+     4. [Delete Contact](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Deletes a contact in Hubspot
+     5. [Create Company](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a company in Hubspot
+     6. [Update Company](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Updates a company in Hubspot
+     7. [Delete Company](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Deletes a company in Hubspot
+     8. [Create Deal](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a deal in Hubspot
+     9. [Update Deal](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Updates a deal in Hubspot
+     10. [Delete Deal](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Deletes a deal in Hubspot
+     11. [Create Task](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a task in Hubspot
+     12. [Create Note](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a note in Hubspot
+     13. [Log Email](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a log email activity in Hubspot
+     14. [List Contacts](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all contacts in Hubspot CRM
+     15. [Get Contact By Id](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets a contact by Hubspot contact id
+     16. [List Deals](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - List all deals in Hubspot CRM
+     17. [Get Deal By Id](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets a deal by Hubspot deal id
+     18. [List Companies](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all companies in Hubspot CRM
+     19. [Get Company By Id](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets a company by id
+     20. [List Tasks](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all tasks
+     21. [Get Task By Id](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets a task by task id
+     22. [List Notes](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all notes
+     23. [List Emails](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all email activities
+     24. [Search Contact](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Searches a hubspot contact object by query
+     25. [Search Company](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Searches a hubspot company object by query
+     26. [Search Deal](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Searches a hubspot deal object by query
+     27. [List Audit Logs](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all audit logs
+     28. [List Teams](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Lists all teams
+     29. [Get Daily Usage](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets user's daily usage
+     30. [List Owners](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) -  Lists all owners of the Hubspot account
+     31. [Get User By Id](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Gets a user by id
+     32. [Create Custom Contact Property](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Creates a custom property in hubspot
+  </Tab>
+  <Tab title="Triggers">
+    1. [Contact Created/Properties Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a contact is created or a contact property is updated on Hubspot
+    2. [Contact Deleted](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a contact is deleted on Hubspot
+    3. [Contact Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a contact is updated on Hubspot
+    4. [Deal Created/Properties Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a deal is created or a contact property is updated on Hubspot
+    2. [Deal Deleted](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a deal is deleted on Hubspot
+    3. [Deal Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a deal is updated on Hubspot
+    1. [Company Created/Properties Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a company is created or a contact property is updated on Hubspot
+    2. [Company Deleted](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a company is deleted on Hubspot
+    3. [Company Updated](https://docs.gocobalt.io/resources/integration-providers/hubspot#actions-and-triggers) - Triggers when a company is updated on Hubspot
+  </Tab>
+</Tabs>
