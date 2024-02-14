@@ -6,18 +6,94 @@ description: Connect to your users’ Salesforce CRM to create, access, and upda
 To setup your Salesforce app in Cobalt for OAuth, you will need the following credentials from your [Salesforce developer account](https://developer.salesforce.com):
 - Consumer Key
 - Consumer Secret
+- Scopes
 
-If you haven't already created an app in Salesforce, you'd need to create one.
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Manager user data via APIs(api)
+2. Perform requests at any time (refresh_token, offline_access)
+
+* **App Settings**
+1. Require Secret for Refresh Token Flow
+2. Enable Authorization Code and Credentials Flow
+3. Enable Token Exchange Flow
+4. Require Secret for Token Exchange Flow
+5. Issue JSON Web Token (JWT)-based access tokens for named users
+
+<Info>If you haven't already created an app in Salesforce, you'd need to create one.</Info>
 
 ### Creating an app in Salesforce
 
 To create a Salesforce app and aquire the above mentioned credentials, please follow the steps mentioned below:
 
 1. Log in to your Salesforce dashboard with your developer account credentials.
-2. Once you are in, find the `Setup` button - Gear icon on the top right of the dashboard.
-3. Click on the Setup button and select `Apps` > `App Manager` options from the side menu bar under `Platform Tools` section.
-4. Select `New Connected App` in the setup page.
+2. Click on the `Gear` icon in the top right and select `Open Advanced Setup` button.
+<img height="200" src="/images/Salesforce/Salesforce_navigation.png" alt="Navigation for App setup"/>
+3. Select `Apps` > `App Manager` options from the left side menu under `Platform Tools` section.
+4. Select `New Connected App` button in the setup page.
 5. Enter the basic details of your application
-6. Enable OAuth settings
-7. Enter the Callback URL as provided in your Salesforce settings page in Cobalt. Go to your [apps catalog](https://app.gocobalt.io/apps) > Salesforce > Settings > Use your credentials.
-8. Select the mandatory scopes as provided in your Cobalt salesforce settings page, and mo
+6.  Under **API (Enable OAuth Settings)**, mark the `Enable OAuth Settings` checkbox.
+7. Enter the Callback URL as provided in your Salesforce settings page in Cobalt. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Salesforce` > `Settings` > `Use your credentials` > `Callback Url`.
+8. Select the **mandatory scopes** as provided in your Cobalt Salesforce settings page.
+9. Enable the required **App Settings**, click on the `Save` button and click `Continue`.
+<img height="200" src="/images/Salesforce/Salesforce_config.png" alt="Setting up Salesforce Developer app"/>
+10. Click on the `Manage Consumer Details` button under the API (Enable OAuth Settings) section, verify your identity and copy the **Consumer Key** and **Consumer Secret**.
+<img height="200" src="/images/Salesforce/Salesforce_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Salesforce/Salesforce_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Salesforce/Salesforce_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Salesforce developer account dashboard](https://developer.salesforce.com) and update the scopes as added on Cobalt.
+
+Navigate to  `Apps` > `App Manager` > Select the OAuth App created for Cobalt > Click on the dropdown menu > Select  `Edit` > `Selected OAuth Scopes` > Add the scopes as added in Cobalt and click on `Save`.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Salesforce actions and triggers. Following are the set of Salesforce actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Make HTTP api calls to any Salesforce documented REST APIs.
+     2. [Create Account](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Creates an account in Salesforce.
+     3. [Update Account](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Updates an account in Salesforce.
+     4. [Delete Account](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Delete an account in Salesforce.
+     5. [Create Contact](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Creates a contact in Salesforce.
+     6. [Update Contact](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Update a contact in Salesforce.
+     7. [Delete Contact](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Delete a contact in Salesforce.
+     8. [Create Lead](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Create a lead in Salesforce.
+     9. [Update Lead](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Update lead in Salesforce.
+     10. [Delete Lead](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Delete lead in Salesforce.
+     11. [Create Opportunity](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Create an opportunity in Salesforce.
+     12. [Update Opportunity](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Update an opportunity in Salesforce.
+     13. [Delete Opportunity](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Delete an opportunity in Salesforce.
+     14. [Attach Note](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Attach a Note to a contact.
+     15. [Get Custom Fields Via Query](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Get Custom Fields Via Query in Salesforce.
+     16. [Create Custom Fields](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Create Custom Fields.
+     17. [Get Contacts Of a particular List](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Get Contacts Of a particular List.
+     18. [Create Custom Object](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Create a Custom Object.
+  </Tab>
+  <Tab title="Triggers">
+    1. [Account Created](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Triggers when an account is created on Salesforce.
+    2. [Contact Created](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Triggers when a contact is created on Salesforce.
+    3. [Lead Created](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Triggers when a lead is created on Salesforce.
+    4. [Opportunity Created](https://docs.gocobalt.io/resources/integration-providers/salesforce#actions-and-triggers) - Triggers when an opportunity is created on Salesforce.
+  </Tab>
+</Tabs>
