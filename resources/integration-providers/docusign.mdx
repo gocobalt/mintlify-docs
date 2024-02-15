@@ -1,8 +1,81 @@
 ---
 title: Setup
-description: Connect to your Docusign app for OAuth.
+description: Connect to your DocuSign app for OAuth.
 ---
+To setup your DocuSign app in Cobalt for OAuth, you will need the following credentials from your [DocuSign Developer account](https://developers.docusign.com/):
+- Client ID
+- Client Secret
+- Scopes
 
-<Info>
- Coming Soon!
-</Info>
+### Pre-requisites
+
+1. DocuSign Developer account. You can create one [here](https://go.docusign.com/o/sandbox/?postActivateUrl=https://developers.docusign.com/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Openid
+2. Extended
+3. Signature
+
+<Info>If you haven't already created an app in DocuSign, you'd need to create one.</Info>
+
+### Creating an app in DocuSign
+
+To create a DocuSign app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [DocuSign Developer account](https://developers.docusign.com/).
+2. Click on the `Profile` icon in the top right corner and select `My Apps & Keys` button.
+<img height="200" src="/images/Docusign/Docusign_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Add App and Integration Key` button.
+4. Enter the unique App Name for your application and click on the `Create App` button.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in Cobalt > Search for `DocuSign` > `Settings` > `Use your credentials` > `Callback Url`.
+6. Scroll down in the App to `Additional settings` section > click on `+ Add URL` > paste the Callback URL copied from **Cobalt**.
+
+<img height="200" src="/images/Docusign/Docusign_config.png" alt="Setting up DocuSign Developer app"/>
+7. Scroll to the `Authentication` section > Mark `Yes` under **User Application** > Click on `+ Add Secret Key` button > Copy it > Click on `Save` button at the bottom of the page. This is the **Client Secret**.
+8. Copy the string under `Integration Key` above `Authentication` section. This is the **Client ID**.
+<img height="200" src="/images/DocuSign/DocuSign_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Docusign/Docusign_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client Secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section.
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Docusign/Docusign_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using DocuSign actions and triggers. Following are the set of DocuSign actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Make HTTP api calls to any Docusign documented REST APIs.
+     2. [Create and send envelope from template](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Create and send and envelope from a DocuSign template.
+
+
+  </Tab>
+  <Tab title="Triggers">
+         1. [Envelope Created](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Triggers when an Envelope is created on DocuSign.
+         2. [Envelope Sent](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Triggers when an Envelope is sent on DocuSign.
+         3. [Envelope Delivered](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Triggers when an Envelope is delivered on DocuSign.
+         4. [Envelope Completed](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Triggers when an Envelope is completed on DocuSign.
+         5. [Envelope Declined](https://docs.gocobalt.io/resources/integration-providers/docusign#actions-and-triggers) - Triggers when an Envelope is declined on DocuSign.
+  </Tab>
+</Tabs>
