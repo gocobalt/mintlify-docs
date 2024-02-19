@@ -35,8 +35,13 @@ To create a Salesforce app and aquire the above mentioned credentials, please fo
 5. Enter the basic details of your application
 6.  Under **API (Enable OAuth Settings)**, mark the `Enable OAuth Settings` checkbox.
 7. Enter the Callback URL as provided in your Salesforce settings page in Cobalt. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Salesforce` > `Settings` > `Use your credentials` > `Callback Url`.
-8. Select the **mandatory scopes** as provided in your Cobalt Salesforce settings page.
-9. Enable the required **App Settings**, click on the `Save` button and click `Continue`.
+8. Select the required scopes, atleast the scopes selected in your Cobalt Salesforce settings page.
+9. Enable the following **App Settings**, click on the `Save` button and click `Continue`.
+    - Require Secret for Refresh Token flow
+    - Enable Authorization Code and Credentials Flow
+    - Enable Token Exchange Flow
+    - Require Secret for Token Exchange Flow
+    - Issue JSON Web Token (JWT)-based access tokens for named users
 <img height="200" src="/images/Salesforce/Salesforce_config.png" alt="Setting up Salesforce Developer app"/>
 10. Click on the `Manage Consumer Details` button under the API (Enable OAuth Settings) section, verify your identity and copy the **Consumer Key** and **Consumer Secret**.
 <img height="200" src="/images/Salesforce/Salesforce_credentials.png" alt="Getting Credentials"/>
