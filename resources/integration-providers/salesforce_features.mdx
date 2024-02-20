@@ -1,0 +1,61 @@
+---
+title: Building a Salesforce integration
+description: This tutorial will give an example of how to create a Salesforce integration that syncs contacts from your app to your Linked account's Salesforce account.
+---
+
+## Pre-requisites
+1. Salesforce App is enabled in Cobalt.
+2. Salesforce OAuth app credentials added to Cobalt. Refer [here](https://docs.gocobalt.io/resources/integration-providers/salesforce#creating-an-app-in-salesforce).
+3. Trigger created in Cobalt. Refer [here](https://docs.gocobalt.io/guides/workflow/triggers).
+4. Linked Account available. Refer [here](https://docs.gocobalt.io/guides/platform/linked-account).
+
+## Building a Workflow
+
+#### 1. Create Workflow in app
+* Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Salesforce` > `Workflows` > `Add Workflow` > Choose `Manually` > Give it a name and click on `Add Workflow`.
+<img height="200" src="/images/Salesforce/Salesforce_workflow.png" alt="Navigation for Workflow setup"/>
+
+#### 2. Adding the Trigger
+To add a trigger for a Workflow in Cobalt, you need to select details about the Trigger like the Type and which trigger to be implemented.
+
+To add a Trigger, follow these steps:
+* Click on the **Start node** to add a trigger.
+* In the right side, select the **Type** and the **Trigger** and click on the `Add Trigger` button.
+<img height="200" src="/images/Salesforce/Salesforce_start.png" alt="Start Node Trigger"/>
+
+#### 3. Adding the Salesforce Action
+
+* From `Actions`, add a Salesforce node to the workflow.
+<img height="200" src="/images/Salesforce/Salesforce_action.png" alt="Salesforce Node"/>
+* Click on the node and select an Action from the `Choose an Action` dropdown menu and click on `Save`.
+<Warning>
+Before clicking on `Save`, make sure that you have entered data for all the mandatory fields whichever required.
+</Warning>
+* Connect the two nodes by clicking on `+` button on the `Start` node and dragging the arrow to the **Salesforce** node.
+
+#### 4. Publising the Workflow
+* To publish the workflow, click on the `Publish` button in the top, **Select Environments** of the Workflow and click on `Publish`.
+<img height="200" src="/images/Salesforce/Salesforce_publish.png" alt="Publish Workflow"/>
+
+## Enabling the Workflow
+To enable a workflow, end user or a Linked Account needs to Toggle On the Workflow after connecting with the application.
+
+* Navigate to the Linked Account in which the Workflow needs to be enabled by getting its' **Hosted URL**.
+<img height="200" src="/images/Salesforce/Salesforce_linked.png" alt="Navigate to Linked Account"/>
+* Select **Salesforce** from `Manage your Integrations` list.
+* Click on the `Connect` button, review the permissions and allow them for a successful connection.
+* After a successful connection, you can see the `Configure` section in the Salesforce Application page.
+* Enable the Workflow **Create Contact** by turning the **toggle On** and click on `Save`.
+<img height="200" src="/images/Salesforce/Salesforce_enable.png" alt="Enable Workflow in Linked Account"/>
+
+## Fire an App Event 
+
+Lastly, we'll fire an App Event whenever a contact is created in your app by using the Workflow.
+
+* Navigate to `Try API` in **Cobalt**.
+* Choose the **Linked Account** created to test the workflow, select the **Event** and Salesforce as the **Application**.
+* Click on the `Fire Event` button in the top right.
+<img height="200" src="/images/Salesforce/Salesforce_fire.png" alt="Fire an App Event"/>
+* You can check the status of the event by navigating to `Logs` > `Events` in **Cobalt**.
+
+Congratulations! We have successfully built a Salesforce integration that syncs new contacts from your app to the Linked Account's Salesforce.
