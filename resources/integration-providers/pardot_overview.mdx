@@ -1,0 +1,59 @@
+---
+title: Overview
+description: Overview of the Pardot integration in Cobalt.
+---
+
+## Basic Overview
+<CardGroup cols={2}>
+  <Card title="Slug">
+    Pardot
+  </Card>
+  <Card title="Authentication Method">
+    OAuth 2.0
+  </Card>
+  <Card title="Website">
+    https://pi.pardot.com/
+  </Card>
+  <Card title="Developer Portal">
+    https://developer.salesforce.com/
+  </Card>
+  <Card title="API Reference">
+    [Click here](https://developer.salesforce.com/docs/marketing/pardot/guide/overview.html)
+  </Card>
+  <Card title="Supported Resources">
+    Bi-directional, Webhook Events, Syncs
+  </Card>
+</CardGroup>
+
+
+
+## Required Settings
+
+* **Credentials required**
+    - Consumer Key
+    - Consumer Secret
+    - Scopes
+
+<Info>Learn how to create an OAuth app in Pardot [here](https://docs.gocobalt.io/resources/integration-providers/pardot).</Info>
+
+* **Mandatory Scopes** 
+1. Manager Pardot services(pardot_api)
+2. Perform requests at any time (refresh_token, offline_access)
+3. Full access(full)
+
+* **App Settings**
+1. Require Secret for Refresh Token Flow
+2. Enable Authorization Code and Credentials Flow
+3. Enable Token Exchange Flow
+4. Require Secret for Token Exchange Flow
+5. Issue JSON Web Token (JWT)-based access tokens for named users
+
+## Configurable Resources
+<CardGroup cols={2}>
+  <Card title="Prospect">
+    Cobalt allows you to work with actions and triggers related to Prospects.
+  </Card>
+  <Card title="External Activity">
+    Cobalt allows you to work with actions related to External Activities.
+  </Card>
+</CardGroup>
