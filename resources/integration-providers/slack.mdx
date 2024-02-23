@@ -2,22 +2,15 @@
 title: Setup
 description: Connect your Slack app for OAuth.
 ---
-To setup your Slack app in Cobalt for OAuth, you will need the following credentials from your [Slack App Dashboard](https://api.slack.com/apps):
-- Client ID
-- Client Secret
-- Scopes
+### Pre-requisites
 
-### Required Settings
+1. Slack Developer Account.
+2. Required Settings for the App. You can find it in [Overview](https://docs.gocobalt.io/resources/integration-providers/slack_overview#required-settings).
 
-* **Mandatory Scopes** 
-1. users:read(BOT)
-2. users:read(USER)
-
-<Info>If you haven't already created an app in Slack, you'd need to create one.</Info>
 
 ### Creating an app in Slack
 
-To create a Slack app and aquire the above mentioned credentials, please follow the steps mentioned below:
+To create a Slack app and aquire the app credentials, please follow the steps mentioned below:
 
 1. Log in to your [Slack App Dashboard](https://api.slack.com/apps).
 2. Click on the `Create New App` button in the upper right side and select `From scratch` option.
@@ -70,22 +63,3 @@ a single webhook URL to manage such event triggers for all your customers.
 5. Click on `Save Changes` at the bottom of the Slack App dashboard.
 
 <img height="200" src="/images/Slack/Slack_webhook.png" alt="Setting up Slack Events URL"/>
-
-#### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using Slack actions and triggers. Following are the set of Slack actions and triggers
-supported by Cobalt.
-
-<Tabs>
-  <Tab title="Actions">
-     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Make HTTP API calls to any Slack documented REST APIs.
-     2. [Post message to a channel as bot](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Post message to a channel as bot in Slack.
-     3. [Post message to a user as bot](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Post message to a user as bot in Slack.
-     4. [Post Message As a User](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Post message as a user in Slack.
-     5. [Update User Message](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Update message sent as a user in Slack.
-     6. [Update Bot Message](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Update message sent as a bot in Slack.
-
-  </Tab>
-  <Tab title="Triggers">
-    1. [Interaction Created](https://docs.gocobalt.io/resources/integration-providers/slack#actions-and-triggers) - Triggers when an interaction is created on Slack.
-  </Tab>
-</Tabs>
