@@ -1,0 +1,64 @@
+---
+title: Setup
+description: Connect to your Asana app for OAuth.
+---
+To setup your Asana app in Cobalt for OAuth, you will need the following credentials from your [Asana Developer Console](https://app.asana.com/0/developer-console):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Asana Developer Console. You can create one [here](https://asana.com/create-account).
+
+<Info>If you haven't already created an app in Asana, you'd need to create one.</Info>
+
+### Creating an app in Asana
+
+To create a Asana app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Asana Developer Console](https://app.asana.com/0/developer-console).
+2. Under `My apps`, click on the `Create new app` button.
+<img height="200" src="/images/Asana/asana_navigation.png" alt="Navigation for App setup"/>
+
+3. Enter the `App name` for your application, select description for app and click on `Create app`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Asana` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the OAuth app, navigate to `OAuth` under **Configure** in the side menu > Click on `+ Add redirect URL` > Paste the Callback Url > Click on `Add`.
+6. Click on `Manage distribution` in the side menu and choose a distribution method based on your requirements.
+<img height="200" src="/images/Asana/asana_config.png" alt="Setting up Asana Developer app"/>
+
+<Info> 
+Learn more about app distribution [here](https://developers.asana.com/docs/share-your-app).
+</Info>
+
+7. Navigate to `Basic information` and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Asana/asana_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Asana/asana_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Asana actions and triggers. Following are the set of Asana actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Make HTTP API calls to any Asana documented REST APIs.
+     2. [Create Task](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Create a task in Asana.
+     3. [Update Task](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Update a task in Asana.
+     4. [Delete Task](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Delete a task in Asana.
+     5. [Create Project](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Create a project in Asana.
+     6. [Create Section](https://docs.gocobalt.io/resources/integration-providers/asana#actions-and-triggers) - Create a section in a project in Asana.
+
+
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

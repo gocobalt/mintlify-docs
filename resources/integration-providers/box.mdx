@@ -1,0 +1,79 @@
+---
+title: Setup
+description: Connect to your Box app for OAuth
+---
+To setup your Box app in Cobalt for OAuth, you will need the following credentials from your [Box Developer account](https://developer.box.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Box Developer account.
+
+<Info>If you haven't already created an app in Box, you'd need to create one.</Info>
+
+### Creating an app in Box
+
+To create a Box app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Box Developer account](https://developer.box.com/).
+2. Click on the `My Apps` in the top nav bar.
+<img height="200" src="/images/Box/box_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create New App` button in the right and choose `Custom App`.
+4. Enter the App Name for your application, select **Integration** in `Purpose`, select **Workflow** as `Categories`, `Enter system name` as **Cobalt** and click on `Next`.
+5. Select `Authentication Method` as **User Authentication(OAuth 2.0)** and click on `Create App`.
+6. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Box` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+7. Navigate to `Configuration` tab in the OAuth app > Scroll down to `OAuth 2.0 Redirect URI` section > Paste the Callback Url > Click on `Save Changes`.
+<img height="200" src="/images/Box/box_config.png" alt="Setting up Box Developer app"/>
+
+8. Scroll to the **OAuth 2.0 Credentials** section and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Box/box_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Box/box_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Box/box_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Box Developer account](https://developer.box.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Scroll down to `Application Scopes` under `Configuration` tab > Add the scopes as added in Cobalt > Click on `Save Changes`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Box actions and triggers. Following are the set of Box actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Make HTTP API calls to any Box documented REST APIs.
+     2. [Create Folder](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Create a new folder in Box.
+     3. [Get All Items In A Folder](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Get all items in a folder in Box.
+     4. [Delete File](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Delete a file in Box.
+     5. [Get Shared Link For A File](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Get shared link for a file in Box.
+     6. [Add Shared Link To A File](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Add shared link to a file in Box.
+
+
+  </Tab>
+  <Tab title="Triggers">
+         1. [Folder is updated](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Triggers when a file is uploaded or a folder is created on Box.
+         2. [Folder is downloaded](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Triggers when a folder is downloaded on Box.
+         3. [Shared link is created](https://docs.gocobalt.io/resources/integration-providers/box#actions-and-triggers) - Triggers when a shared link is created on Box.
+  </Tab>
+</Tabs>
