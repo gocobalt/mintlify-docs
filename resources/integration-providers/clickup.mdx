@@ -1,0 +1,53 @@
+---
+title: Setup
+description: Connect to your ClickUp app for OAuth.
+---
+To setup your ClickUp app in Cobalt for OAuth, you will need the following credentials from your [ClickUp account](https://app.clickup.com/login):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. ClickUp account. You can create one [here](https://app.clickup.com/signup).
+
+<Info>If you haven't already created an app in ClickUp, you'd need to create one.</Info>
+
+### Creating an app in ClickUp
+
+To create a ClickUp app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [ClickUp account](https://app.clickup.com/login).
+2. Click on the `Profile` icon in the top right, select `Settings` button and navigate to `ClickUp API` in the side menu.
+<img height="200" src="/images/Clickup/clickup_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Clickup` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Click on `+ Create an App` button in the right in `ClickUp API` settings.
+5. Enter the `App Name`, paste the **Callback Url** and click on the `Create App` button.
+6. Copy the **Client ID** and **Client Secret** displayed.
+<img height="200" src="/images/Clickup/clickup_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Clickup/clickup_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using ClickUp actions and triggers. Following are the set of ClickUp actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/clickup#actions-and-triggers) - Make HTTP API calls to any ClickUp documented REST APIs.
+     2. [Create Task](https://docs.gocobalt.io/resources/integration-providers/clickup#actions-and-triggers) - Create a task in ClickUp.
+     3. [Update Task](https://docs.gocobalt.io/resources/integration-providers/clickup#actions-and-triggers) - Update a task in ClickUp.
+     4. [Delete Task](https://docs.gocobalt.io/resources/integration-providers/clickup#actions-and-triggers) - Delete a task in ClickUp.
+
+
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+    </Tab>
+</Tabs>
