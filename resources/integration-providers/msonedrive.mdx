@@ -1,10 +1,11 @@
 ---
 title: Setup
-description: Connect to your Microsoft 356 app for OAuth.
+description: Connect to your Microsoft OneDrive app for OAuth.
 ---
-To setup your Microsoft 365 app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+To setup your Microsoft OneDrive app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
 - Client ID
 - Client Secret
+- App ID
 - Scopes
 
 ### Pre-requisites
@@ -14,26 +15,17 @@ To setup your Microsoft 365 app in Cobalt for OAuth, you will need the following
 ### Required Settings
 
 * **Mandatory Scopes** 
-1. User.Read
+1. openid
 2. offline_access
-3. User.ReadBasic.All
-4. User.ReadWrite
-5. Directory.Read.All
-6. Directory.ReadWrite.All
-7. User.Read.All
-8. User.ReadWrite.All
-9. Group.Read.All
-10. Group.ReadWrite.All
-11. Mail.Read
-12. Mail.ReadWrite
-13. Calendars.Read
-14. Calendars.ReadWrite
+3. Files.Read
+4. Files.ReadWrite
+5. Files.ReadWrite.AppFolder
 
 <Info>If you haven't already created an app in Microsoft Azure, you'd need to create one.</Info>
 
 ### Creating an app in Microsoft Azure
 
-To create a Microsoft 365 app and aquire the above mentioned credentials, please follow the steps mentioned below:
+To create a Microsoft OneDrive app and aquire the above mentioned credentials, please follow the steps mentioned below:
 
 1. Log in to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/).
 2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
@@ -50,7 +42,7 @@ Select your Application > Select **Authentication** in side menu > Under **Platf
 </Info>
 7. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
 8. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scopes** > click on the `Add Permissions` button.
-<img height="200" src="/images/Ms365/ms365_config.png" alt="Setting up Microsoft 365 Developer app"/>
+<img height="200" src="/images/ms365/ms365_config.png" alt="Setting up Dynamics 365 Developer app"/>
 
 9. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
 10.  Copy the displayed **Client Secret** under the `Value` column.
@@ -86,13 +78,14 @@ identical to the ones selected in the platform.
 </Warning>
 
 #### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using Microsoft 365 actions and triggers. Following are the set of Microsoft 365 actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using OneDrive actions and triggers. Following are the set of OneDrive actions and triggers
 supported by Cobalt.
 
 <Tabs>
   <Tab title="Actions">
-     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/ms365#actions-and-triggers) - Make HTTP API calls to any Microsoft 365 documented REST APIs.
-     2. [Get users with PlanName](https://docs.gocobalt.io/resources/integration-providers/ms365#actions-and-triggers) - Get users with PlanName in Microsoft 365.
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/msonedrive#actions-and-triggers) - Make HTTP API calls to any Microsoft OneDrive documented REST APIs.
+     2. [Upload a file using url](https://docs.gocobalt.io/resources/integration-providers/msonedrive#actions-and-triggers) - Enter file name and hosted url to upload a file to your Microsoft OneDrive.
+     3. [Upload using relative path to root or folderId](https://docs.gocobalt.io/resources/integration-providers/msonedrive#actions-and-triggers) - Upload file using relative path in your Microsoft OneDrive.
 
 
   </Tab>
