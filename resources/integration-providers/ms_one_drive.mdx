@@ -32,30 +32,31 @@ To create a Microsoft OneDrive app and aquire the above mentioned credentials, p
 <img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
 3. Navigate to `Overview` in the side menu > Click on `+Add` > Select `App Registration`.
 4. Enter the App **Name** for your application and select `Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)` under **Supported Account Types**.
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Ms365` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Microsoft One Drive` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. Under the **Redirect URI** section, select **Platform** as `Web`, paste the **Callback Url** as the URL and click `Register`. 
-<img height="200" src="/images/Ms365/ms365_register.png" alt="App Registration"/>
+<img height="200" src="/images/Msonedrive/onedrive_register.png" alt="App Registration"/>
 <Info>
 If you already have an app created, then follows these steps to add Redirect URL: 
 
-Select your Application > Select **Authentication** in side menu > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click **Save** button at the top.
+Select your Application > Select **Authentication** in side menu > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
 </Info>
 7. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
 8. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scopes** > click on the `Add Permissions` button.
-<img height="200" src="/images/ms365/ms365_config.png" alt="Setting up Dynamics 365 Developer app"/>
+<Info>**Offline_access** and **openid** scope will be present under **Delegated permissions** in **Microsoft Graph**</Info>
+<img height="200" src="/images/Msonedrive/onedrive_config.png" alt="Setting up OneDrive Developer app"/>
 
 9. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
 10.  Copy the displayed **Client Secret** under the `Value` column.
-<img height="200" src="/images/Ms365/ms365_credentials.png" alt="Getting Client Secret"/>
+<img height="200" src="/images/Msonedrive/onedrive_credentials.png" alt="Getting Client Secret"/>
 
-11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID`.
-<img height="200" src="/images/Ms365/ms365_id.png" alt="Getting Client ID"/>
+11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID` and the **App ID**.
+<img height="200" src="/images/Msonedrive/onedrive_id.png" alt="Getting Client ID"/>
 
 #### Configuring credentials in Cobalt
-App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
-<img height="200" src="/images/Ms365/ms365_cobalt.png" alt="Setting up application client credentials"/>
+<img height="200" src="/images/Msonedrive/onedrive_cobalt.png" alt="Setting up application client credentials"/>
 
 Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
 select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
@@ -66,7 +67,7 @@ section.
 
 For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
 custom scopes supported by the respective platform.
-<img height="200" src="/images/Ms365/ms365_scopes.png" alt="OAuth Scopes"/>
+<img height="200" src="/images/Msonedrive/onedrive_scopes.png" alt="OAuth Scopes"/>
 
 Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
 

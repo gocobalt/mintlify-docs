@@ -1,0 +1,83 @@
+---
+title: Setup
+description: Connect to your Microsoft Dynamics CRM app for OAuth.
+---
+To setup your Microsoft Dynamics CRM app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Microsoft Azure Account. You can create one [here](https://azure.microsoft.com/en-gb/).
+
+<Info>If you haven't already created an app in Microsoft Azure, you'd need to create one.</Info>
+
+### Creating an app in Microsoft Azure
+
+To create a Microsoft Dynamics CRM app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/).
+2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
+<img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
+3. Navigate to `Overview` in the side menu > Click on `+Add` > Select `App Registration`.
+4. Enter the App **Name** for your application and select `Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)` under **Supported Account Types**.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Ms Dynamics CRM` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Under the **Redirect URI** section, select **Platform** as `Web`, paste the **Callback Url** as the URL and click `Register`. 
+<img height="200" src="/images/Msdynamicscrm/msdynamics_register.png" alt="App Registration"/>
+<Info>
+If you already have an app created, then follows these steps to add Redirect URL: 
+
+Select your Application > Select **Authentication** in side menu > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
+</Info>
+7. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
+8. Choose the `Dynamics CRM` card under **Microsoft APIs** > Choose `Application permissions` > Select the **scopes** that you require > click on the `Add Permissions` button.
+<img height="200" src="/images/Msdynamicscrm/msdynamics_config.png" alt="Setting up Microsoft Dynamics CRM Developer app"/>
+
+9. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
+10.  Copy the displayed **Client Secret** under the `Value` column.
+<img height="200" src="/images/Msdynamicscrm/msdynamics_credentials.png" alt="Getting Client Secret"/>
+
+11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID`.
+<img height="200" src="/images/Msdynamicscrm/msdynamics_id.png" alt="Getting Client ID"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Msdynamicscrm/msdynamics_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Microsoft Dynamics CRM actions and triggers. Following are the set of Microsoft Dynamics CRM actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Make HTTP API calls to any Microsoft Dynamics CRM documented REST APIs.
+     2. [Get Leads](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Get all leads in Microsoft Dynamics CRM.
+     3. [Get Contacts](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Get all contacts in Microsoft Dynamics CRM.
+     4. [Get Opportunities](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Get all opportunities in Microsoft Dynamics CRM.
+     5. [Get Accounts](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Get all accounts in Microsoft Dynamics CRM.
+     6. [Create Lead](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Create Lead in Microsoft Dynamics CRM.
+     7. [Create Contact](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Create Contact in Microsoft Dynamics CRM.
+     8. [Create Account](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Create Account in Microsoft Dynamics CRM.
+     9. [Create Opportunity](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Create Opportunity in Microsoft Dynamics CRM.
+     10. [Update Contact](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Update Contact in Microsoft Dynamics CRM.
+     11. [Update Lead](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Update Lead in Microsoft Dynamics CRM.
+     12. [Update Account](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Update Account in Microsoft Dynamics CRM.
+     13. [Update Opportunity](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Update Opportunity in Microsoft Dynamics CRM.
+     14. [Delete Contact](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Delete Contact in Microsoft Dynamics CRM.
+     15. [Delete Account](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Delete Account in Microsoft Dynamics CRM.
+     16. [Delete Opportunity](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Delete Opportunity in Microsoft Dynamics CRM.
+     17. [Delete Lead](https://docs.gocobalt.io/resources/integration-providers/ms_dynamics_crm#actions-and-triggers) - Delete Lead in Microsoft Dynamics CRM.
+
+
+
+  </Tab>
+  <Tab title="Triggers">
+         There are no triggers in this application.
+  </Tab>
+</Tabs>
