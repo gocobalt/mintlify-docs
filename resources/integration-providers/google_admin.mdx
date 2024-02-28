@@ -1,8 +1,8 @@
 ---
 title: Setup
-description: Connect to your Google Drive app for OAuth.
+description: Connect to your Google Admin app for OAuth.
 ---
-To setup your Google Drive app in Cobalt for OAuth, you will need the following credentials from your [Google Cloud Console dashboard](https://console.cloud.google.com/projectselector2/home/dashboard?supportedpurview=project):
+To setup your Google Admin app in Cobalt for OAuth, you will need the following credentials from your [Google Cloud Console dashboard](https://console.cloud.google.com/projectselector2/home/dashboard?supportedpurview=project):
 - Client ID
 - Client Secret
 - Scopes
@@ -15,15 +15,13 @@ To setup your Google Drive app in Cobalt for OAuth, you will need the following 
 
 * **Mandatory Scopes** 
 1. https://www.googleapis.com/auth/userinfo.email
-2. https://www.googleapis.com/auth/drive
-3. https://www.googleapis.com/auth/drive.file
-4. https://www.googleapis.com/auth/drive.readonly
+2. https://www.googleapis.com/auth/admin.reports.audit.readonly
 
 <Info>If you haven't already created a project in Google Cloud Console, you'd need to create one.</Info>
 
-### Creating an app in Google Drive
+### Creating an app in Google Admin 
 
-To create a Google Drive app and aquire the above mentioned credentials, please follow the steps mentioned below:
+To create a Google Admin app and aquire the above mentioned credentials, please follow the steps mentioned below:
 
 1. Log in to your [Google Cloud Console dashboard](https://console.cloud.google.com/projectselector2/home/dashboard?supportedpurview=project).
 2. Click on the `Create Project` button in the top right.
@@ -33,8 +31,8 @@ To create a Google Drive app and aquire the above mentioned credentials, please 
 <Warning>
 Ensure that the correct app is selected by checking the name of the app in the dropdown in the top navigation bar.
 </Warning>
-<img height="200" src="/images/Googledrive/drive_config.png" alt="Setting up Google Drive app"/>
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Drive` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+<img height="200" src="/images/Googleadmin/admin_config.png" alt="Setting up Google Admin app"/>
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Google Admin` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. Click on `+ Create Credentials` button in the top in the Cloud Console app and select `OAuth client ID`.
 <Info>
 **Note**: You will need to configure Google's [consent screen](https://console.cloud.google.com/apis/credentials/consent) for access to Client ID and Client Secret if not done previously.
@@ -43,15 +41,15 @@ Ensure that the correct app is selected by checking the name of the app in the d
 8. Navigate to `OAuth consent screen` in the left menu under `APIs and services` > Click on the `Edit App` button > Scroll down > Click `Save and Continue` in the **OAuth consent screen** section > Click `Add or Remove Scopes` button in the **Scopes** section.
 9. Enter the **mandatory scopes** under `Manually add scopes` > Click on `Add To Table` > Click on `Update` > Click on `Save and Continue` at the bottom of the page.
 
-<img height="200" src="/images/Googledrive/drive_setscopes.png" alt="Scopes Selection in Google Drive App"/>
+<img height="200" src="/images/Googleadmin/admin_setscopes.png" alt="Scopes Selection in Google Admin App"/>
 10. Navigate to `Credentials` in the left menu under `APIs and services` and select the Web Client under `OAuth 2.0 Client IDs`. Copy the **Client ID** and **Client Secret** under `Additional information` section.
-<img height="200" src="/images/Googledrive/drive_credentials.png" alt="Getting Credentials"/>
+<img height="200" src="/images/Googleadmin/admin_credentials.png" alt="Getting Credentials"/>
 
 #### Configuring credentials in Cobalt
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
-<img height="200" src="/images/Googledrive/drive_scopes.png" alt="Setting up application client credentials"/>
+<img height="200" src="/images/Googleadmin/admin_cobalt.png" alt="Setting up application client credentials"/>
 
 Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
 select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
@@ -62,11 +60,11 @@ section.
 
 For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
 custom scopes supported by the respective platform.
-<img height="200" src="/images/Googledrive/drive_scopes.png" alt="OAuth Scopes"/>
+<img height="200" src="/images/Googleadmin/admin_scopes.png" alt="OAuth Scopes"/>
 
 Once the scopes has been added to the project in Cobalt, go to your [Google Cloud Console dashboard](https://console.cloud.google.com/projectselector2/home/dashboard?supportedpurview=project) and update the scopes as added on Cobalt.
 
-Navigate to  `Cloud Console dashboard` > Select the **Project** created for Cobalt > Follow the steps 8 and 9 mentioned [above](https://docs.gocobalt.io/resources/integration-providers/google_drive#creating-an-app-in-google-drive) for adding scopes. 
+Navigate to  `Cloud Console dashboard` > Select the **Project** created for Cobalt > Follow the steps 8 and 9 mentioned [above](https://docs.gocobalt.io/resources/integration-providers/google_admin#creating-an-app-in-google-admin) for adding scopes. 
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -74,14 +72,13 @@ identical to the ones selected in the platform.
 </Warning>
 
 #### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using Google Drive actions and triggers. Following are the set of Google Drive actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Google Admin actions and triggers. Following are the set of Google Admin actions and triggers
 supported by Cobalt.
 
 <Tabs>
   <Tab title="Actions">
-     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/google_drive#actions-and-triggers) - Make HTTP API calls to any Google Drive documented REST APIs.
-     2. [Create A New Folder In Drive](https://docs.gocobalt.io/resources/integration-providers/google_drive#actions-and-triggers) - Create A New Folder in Google Drive.
-     3. [Upload File By URL](https://docs.gocobalt.io/resources/integration-providers/google_drive#actions-and-triggers) - Upload File By URL in Google Drive.
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/google_admin#actions-and-triggers) - Make HTTP API calls to any Google Admin documented REST APIs.
+     2. [Get User Activities For A Particular Application](https://docs.gocobalt.io/resources/integration-providers/google_admin#actions-and-triggers) - Get User Activities For A Particular Application in Google Admin.
 
   </Tab>
   <Tab title="Triggers">
