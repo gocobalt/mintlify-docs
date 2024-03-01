@@ -2,6 +2,71 @@
 title: Setup
 description: Connect to your Notion app for OAuth.
 ---
+To setup your Notion app in Cobalt for OAuth, you will need the following credentials from your [Notion Integrations Page](https://www.notion.so/my-integrations):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Notion account. You can create one [here](https://www.notion.so/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Read user information including email address
+2. Insert comments
+
+<Info>If you haven't already created an app in Notion, you'd need to create one.</Info>
+
+### Creating an app in Notion
+
+To create a Notion app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Notion Integrations Page](https://www.notion.so/my-integrations).
+2. Click on `+ New integration` button in the left.
+<img height="200" src="/images/Notion/notion_navigation.png" alt="Navigating for App setup"/>
+3. Select a **workspace**, give the app a **Name** and click on the `Submit` button.
+4. Navigate to `Capabilities` in the left menu, select the **mandatory scopes** and click on `Save changes`.
 <Info>
-Coming Soon!
+**Scopes** or **Permissions** for Notion app can be configured only through the `Capabilities` section of the app in Notion Integrations Page.
 </Info>
+<img height="200" src="/images/Notion/notion_config.png" alt="Setting up Notion Integration app"/>
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Notion` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+<Note>
+To get the Client ID and Client Secret in Notion, the app needs to made public.
+</Note>
+
+6. Navigate to `Distribution` and **Enable** to make the integration public. Fill the required information about organization and paste the Callback Url under `Redirect URIs` in **OAuth Domains and URIs** section. Click on `Submit`.
+8. Navigate to `Secrets` and copy the **OAuth client ID** and **OAuth client secret**.
+<img height="200" src="/images/Notion/notion_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Notion/notion_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Notion actions and triggers. Following are the set of Notion actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Make HTTP API calls to any Notion documented REST APIs.
+     2. [Create Database](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Create a database in Notion.
+     3. [Update Database](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Update a database in Notion.
+     4. [Retrieve Database](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Retrieve a database in Notion.
+     5. [Create Page](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Create a page in Notion.
+     6. [Create Comment](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Create a comment in Notion.
+     7. [Search](https://docs.gocobalt.io/resources/integration-providers/notion#actions-and-triggers) - Find Page (by title) in Notion.
+
+
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
