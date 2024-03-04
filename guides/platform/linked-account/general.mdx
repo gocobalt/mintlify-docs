@@ -2,14 +2,40 @@
 title: Overview
 ---
 
-Users or customers, also known as linked accounts in Cobalt, can be done through either the Cobalt Dashboard or API.
+Linked Accounts refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform. These end-users play a crucial role in the ecosystem, as they are the ultimate beneficiaries of the seamless automation and streamlined workflows facilitated by Cobalt-powered integrations.
 
-### via Dashboard
-In the Cobalt Dashboard, navigate to the Linked Account tab, where you have two options to add linked accounts. You can use the "Create Linked Account" form, 
-providing the Linked Account ID and name. Alternatively, you can use the bulk CSV import option for adding multiple linked accounts at once.
+## Creating Linked Accounts
+Linked Accounts can be created either through the Cobalt Dashboard or via the API.
 
-### via API
-To create a linked account via API, you can use the "Create Linked Account" API endpoint.
+### Via Dashboard
+In the Cobalt Dashboard, navigate to the Linked Account section and click on `+ Add Account` button in the right corner, where they have two options for adding linked accounts:
 
-Once the linked account is created, you will have access to detailed information about your customer, including the number of authenticated apps they have 
-and the active workflows. The Cobalt Dashboard also allows you to remove connections directly, giving you more control over your users' experience.
+**Create Linked Account Form**: 
+
+Users can utilize the intuitive **Create Linked Account** form, where they provide essential details such as the **Linked Account ID**, **Name** and optionally add an **UDF parameter** if required. This method is ideal for adding individual linked accounts manually.
+<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
+<img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
+
+**Bulk CSV Import**: 
+
+Alternatively, users can opt for the bulk CSV import option, enabling them to add multiple linked accounts in one go. Simply click on `Multiple` in the **Create Linked Account** form and upload the CSV File. The sample format of the CSV can be checked by clicking on `Download Sample CSV`. This streamlined approach is particularly useful for clients managing large volumes of linked accounts efficiently.
+<img height="200" src="/images/Guides/Linked-account/linked-bulk.png" alt="Create multiple Linked Accounts using CSV"/>
+
+### Via API
+For users seeking programmatic control and automation, Cobalt offers the flexibility to create linked accounts via the API. By utilizing the [**Create Linked Account**](https://docs.gocobalt.io/api-reference/customer/create-linked-account) API endpoint, users can integrate linked account creation into their existing workflows and systems.
+
+## Managing Linked Accounts
+Once created, linked accounts provide users with access to detailed information about their end-users or customers, empowering them to monitor and optimize the end-user experience effectively. Users can gain insights into various metrics, including the number of authenticated apps utilized by each linked account and the active workflows associated with them.
+<img height="200" src="/images/Guides/Linked-account/linked-manage.png" alt="Information about a Linked Account"/>
+
+<Note>
+To learn more about the metrics that can be viewed for a Linked Account, read our guide on [Features in a Linked Account](https://docs.gocobalt.io/guides/platform/linked-account/features).
+</Note>
+
+## Deleting Linked Account
+The Cobalt Dashboard equips users with the capability to delete connections or Linked Accounts directly, providing them with enhanced control over their end-users' experience. This functionality ensures that users can manage and maintain their linked accounts efficiently, addressing any changes or updates as needed.
+
+To individually remove a connected Integration of the Linked Account, just click on the `Bin` icon in the respective row.
+
+To delete a Linked Account, simply click on the `Delete Account` button in the bottom left of the Linked Account page and confirm that you want to delete it.
+<img height="200" src="/images/Guides/Linked-account/linked-manage.png" alt="Delete a Linked Account"/>
