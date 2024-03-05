@@ -7,35 +7,53 @@ Linked Accounts refers to the end-users or customers of our users who utilize th
 ## Creating Linked Accounts
 Linked Accounts can be created either through the Cobalt Dashboard or via the API.
 
-### Via Dashboard
-In the Cobalt Dashboard, navigate to the Linked Account section and click on `+ Add Account` button in the right corner, where they have two options for adding linked accounts:
+<Tip>You can learn about Linked Account creation [here](https://docs.gocobalt.io/guides/platform/linked-account/manage-linked-account).</Tip>
 
-**Create Linked Account Form**: 
+Linked Accounts in Cobalt provide users with a comprehensive set of features and functionalities to monitor, manage, and optimize their integrations. Let's delve into the key features available within a Linked Account:
 
-Users can utilize the intuitive **Create Linked Account** form, where they provide essential details such as the **Linked Account ID**, **Name** and optionally add an **UDF parameter** if required. This method is ideal for adding individual linked accounts manually.
-<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
-<img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
+## Overview
+The Overview tab serves as the central hub for accessing essential information and managing configurations within a Linked Account. Users can view information such as total **Connections**, **Executions** count, and **API calls** count, providing insights into the usage and activity of the Linked Account.
 
-**Bulk CSV Import**: 
+<img height="200" src="/images/Guides/Linked-account/features-overview.png" alt="Linked Account Overview"/>
 
-Alternatively, users can opt for the bulk CSV import option, enabling them to add multiple linked accounts in one go. Simply click on `Multiple` in the **Create Linked Account** form and upload the CSV File. The sample format of the CSV can be checked by clicking on `Download Sample CSV`. This streamlined approach is particularly useful for clients managing large volumes of linked accounts efficiently.
-<img height="200" src="/images/Guides/Linked-account/linked-bulk.png" alt="Create multiple Linked Accounts using CSV"/>
+### Get Hosted URL
+Users can generate the URL for the Linked Account's UI by clicking on the `Get Hosted URL` button, facilitating easy access and navigation. 
 
-### Via API
-For users seeking programmatic control and automation, Cobalt offers the flexibility to create linked accounts via the API. By utilizing the [**Create Linked Account**](https://docs.gocobalt.io/api-reference/customer/create-linked-account) API endpoint, users can integrate linked account creation into their existing workflows and systems.
+### Integrations in the Linked Account
+The Overview tab also allows users to view a list of connected integrations of the Linked Account, manage their configurations, check **Status** of the integration and **Delete** connections by clicking on the `Bin` icon if necessary. 
 
-## Managing Linked Accounts
-Once created, linked accounts provide users with access to detailed information about their end-users or customers, empowering them to monitor and optimize the end-user experience effectively. Users can gain insights into various metrics, including the number of authenticated apps utilized by each linked account and the active workflows associated with them.
-<img height="200" src="/images/Guides/Linked-account/linked-manage.png" alt="Information about a Linked Account"/>
+### Account information
+Basic information about the Linked Account, including **Account ID**, **Name**, **Linked date** (the date when the Linked Account was created) and the **UDF Parameter** (if any) of the account. 
+User can also add or update UDF Parameters by clicking on the `Update UDF` button.
 
-<Note>
-To learn more about the metrics that can be viewed for a Linked Account, read our guide on [Features in a Linked Account](https://docs.gocobalt.io/guides/platform/linked-account/features).
-</Note>
+<Tip>
+Learn more about UDF Parameters in our [UDF guide](https://docs.gocobalt.io/guides/platform/linked-account/udf).
+</Tip>
 
-## Deleting Linked Account
-The Cobalt Dashboard equips users with the capability to delete connections or Linked Accounts directly, providing them with enhanced control over their end-users' experience. This functionality ensures that users can manage and maintain their linked accounts efficiently, addressing any changes or updates as needed.
+### Config Management
+For each integration, users can edit the fields and workflows of the configuration, ensuring flexibility and customization.
+<Tip>
+Learn more about this in our [Config Management guide](https://docs.gocobalt.io/guides/platform/linked-account/config-management).
+</Tip>
 
-To individually remove a connected Integration of the Linked Account, just click on the `Bin` icon in the respective row.
+## Workflows
+The Workflows tab provides users with insights into the workflows executed by the Linked Account. Users can view details such as the **Workflow name**, associated **Application/integration**, **Last Run date** and the Workflow **Created date**, enabling them to track workflow activity effectively.
+<img height="200" src="/images/Guides/Linked-account/features-workflows.png" alt="Linked Account Workflows"/>
 
-To delete a Linked Account, simply click on the `Delete Account` button in the bottom left of the Linked Account page and confirm that you want to delete it.
-<img height="200" src="/images/Guides/Linked-account/linked-manage.png" alt="Delete a Linked Account"/>
+## Executions
+In the Executions tab, users can monitor the execution status of events and the workflows in which the execution occured. Users can view details of executed events, including the **Event name**, **Workflow name**, **Status** (Success or Errored), and **Date of Execution**, facilitating performance monitoring and troubleshooting.
+<img height="200" src="/images/Guides/Linked-account/features-executions.png" alt="Linked Account Executions"/>
+
+## Events
+The Events tab offers users visibility into triggered or executed events. Users can access information about events triggered within applications, along with the associated **Application name**, **Event date** and **Status**, providing insights into event-driven workflows.
+<img height="200" src="/images/Guides/Linked-account/features-events.png" alt="Linked Account Events"/>
+
+## Webhooks
+In the Webhooks tab, users can manage and monitor webhook activity. Users can view information about triggered webhooks, including **Event triggered name**, **Date of trigger** and **Execution Status**. This feature enables users to track webhook activity and ensure efficient integration with external systems.
+<Tip>
+To learn more about how to setup Webhooks in Cobalt, refer to our [Webhook guide](https://docs.gocobalt.io/guides/platform/webhook).
+</Tip>
+
+<img height="200" src="/images/Guides/Linked-account/features-webhooks.png" alt="Linked Account Webhooks"/>
+
+By leveraging the features available within Linked Accounts, users can effectively monitor, manage, and optimize their integrations.
