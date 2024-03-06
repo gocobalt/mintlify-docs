@@ -2,7 +2,38 @@
 title: Event Logs
 ---
 
+Event logs in Cobalt provide users with comprehensive insights into the triggers and activity associated with their integrations, enabling effective monitoring, analysis, and troubleshooting.
+With advanced filtering options and detailed event information, users can gain valuable insights into event occurrences, track event status, and diagnose integration issues.
 
-<Tip>
-### Coming Soon!
-</Tip>
+To access the Event Logs, navigate to the `Logs` section in Cobalt and select the `Events` tab.
+<img height="200" src="/images/Guides/Platform/event-logs.png" alt="Event Logs Cobalt"/>
+
+## Key Functionalities
+**Event Logs** is able to provide various details about the event that was triggered, like the basic information about **event**, associated **Linked Account** or even filter out the Event logs based on various criterias. 
+
+<Info> 
+To learn more about Event in Cobalt, refer to our guide [here](https://docs.gocobalt.io/guides/developer-settings/events).
+</Info>
+Some of the key functionalities of Event logs are described in details below:
+
+### Advanced Filtering Options
+Event logs offer advanced filtering options, allowing users to refine their search based on criteria such as **Event Name**, **Linked Account ID**, **Status (Success or Errored)**, and **Date**. This flexibility enables users to quickly locate and analyze specific event occurrences, enhancing monitoring and analysis capabilities.
+<img height="200" src="/images/Guides/Platform/event-logs-filter.png" alt="Filter Logs in Cobalt"/>
+
+### Detailed Event Information
+To view information in detail about an Event log, just click on it and a new page with the details will be launched.
+
+Each log entry provides detailed information about the event occurrence, including its **Status**, **Event** name with its **ID**, associated **Application**, **Environment** is Test or Production, Event **Received date**, and Event **Created date**. 
+
+The Details of an Event Log page has primarily 3 sub-sections:
+1. **Workflows**: In this section, the user can see the Workflows in which the event got executed along with the ID of the Workflow. An event can get multiple workflows triggered if required and the Logs can help the user identify which were the triggered workflows.
+<Note>This section will not be visible if there was no Workflow that was associated with the event.</Note>
+2. **URL**: This is the **Event URL** that received the event, typically associated with a webhook endpoint. Users can review this information to trace the source of the event and analyze its impact on integration workflows.
+3. **Payload**: The Payload section presents the payload data associated with the event, providing users with insights into the information transmitted during the integration process.
+
+
+<img height="200" src="/images/Guides/Platform/event-logs-details.png" alt="Details of an Event in Cobalt"/>
+
+
+With comprehensive logging capabilities and intuitive navigation features, users can efficiently track event occurrences, diagnose integration problems, and ensure the reliability and performance of their integrations.
+
