@@ -1,6 +1,58 @@
 ---
 title: Delay Node
 ---
-<Info>
-Coming Soon!
-</Info>
+The Delay node in Cobalt allows users to introduce delays in workflow execution for a specific time period. By adding a Delay node to the workflow, users can control the timing of subsequent actions, enabling precise orchestration of workflows.
+
+## Delay Node Actions
+The Delay node offers two types of actions:
+
+### Wait for
+
+Specifies that the workflow should wait for the specified duration before proceeding.
+
+### Wait till 
+
+Specifies that the workflow should wait until the specified time period is reached before proceeding. Wait Till has 2 additional Input fields, `Before or After Base Date` and the `Base Date` field.
+
+## Steps to Use Delay Node
+To incorporate a Delay node into a workflow, follow these steps:
+
+### Create Workflow 
+
+Begin by navigating to the respective app and creating a new workflow. Add an event and publish the workflow to activate it.
+
+<Tip>Learn more about Workflows [here](https://docs.gocobalt.io/guides/workflow/overview).</Tip>
+
+### Add Delay Node 
+
+Within the workflow, add a Delay node along with start and app nodes to define the workflow flow. Connect the nodes in sequence: **start node > delay node > app node (add action)**.
+
+### Configure Delay Action 
+
+In the Delay node, select the action type as either **Wait for** or **Wait till** depending on the desired behavior. Specify the duration of the delay by entering the desired values for **Days**, **Hours**, **Minutes**, and **Seconds**. By default, the values will be set as 0 for all the input fields.
+<Note>
+Currently Cobalt supports only integral values for the Input fields in Delay Node.
+</Note>
+<img height="200" src="/images/Guides/Workflow/delay-node.png" alt="Delay Node in Cobalt"/>
+
+### Define Node Rule Condition 
+
+Optionally, add **Node Rule Conditions** to the Delay node to specify conditions under which the delay will be applied. Configure the conditions using the same approach as a Rule node, specifying **variables**, **operators**, and **values**.
+
+These conditions can be configured to match any conditions or match all conditions, depending on the workflow requirements.
+<Tip>
+Learn more about Rule Node [here](https://docs.gocobalt.io/guides/workflow/rule).
+</Tip>
+<img height="200" src="/images/Guides/Workflow/delay_condition.png" alt="Delay Node conditions in Cobalt"/>
+
+
+## Workflow Execution with Delay Node
+During workflow execution, the Delay node introduces a pause in execution for the specified time period before proceeding to the next action.
+
+If the rule condition specified for the Delay node is met, the workflow will execute as per the defined delay duration.
+
+If the rule condition is not met, the Delay node will be skipped, and the workflow will proceed without delay.
+
+
+
+By leveraging the Delay node in Cobalt, users can introduce precise timing controls into their workflows, enabling efficient orchestration and execution of automated processes.
