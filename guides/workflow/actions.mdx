@@ -14,30 +14,52 @@ These actions do not make any api calls themselves but help as utility tools for
 
 #### Rule
 You can add conditional logic to workflows using our rule node. Rule node allows you to define rules to determine which of two paths your workflow should execute.
+<Tip>
+To learn more about the Rule Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/rule).
+</Tip>
 
 #### Delay
 You can add delay to your workflow using our delay node. Delay allows you to pause the execution of next step till a certain time. 
+<Tip>
+To learn more about the Delay Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/delay).
+</Tip>
 
 #### Custom Code
 This action takes takes in parameters and use them to manipulate the data using custom code in any preferred language. Response from this node can be accessed by
 entering a `#` and then selecting the Custom Code node that has been added to the workflow, followed by `function_return_value.result.<property name>}}`. Or `{{node.<node number>.response:function_return_value.result.<property name>}}` 
+<Tip>
+To learn more about the Custom Code Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/custom-code).
+</Tip>
 
 #### Group
 This action is used to loop over an entity or a flow for a fixed number of iterations or over an array input.
+<Tip>
+To learn more about the Group Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/group).
+</Tip>
 
-#### Datastore
+#### DataStore
 Datastore node helps you create variables at runtime and add values to them. These variables can be then accessed across the workflow like any other variables by entering `$`.
+<Tip>
+To learn more about the DataStore Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/datastore).
+</Tip>
 
 #### Response
 Cobalt offers its users to subscibe to its [Webhooks](https://docs.gocobalt.io/guides/webhook/overview) and notify them when any of the subscribed events gets fired.
 Response node lets you notify you about those events and define the data that needs to be sent to you along with the notification.
+<Tip>
+To learn more about the Response Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/response).
+</Tip>
 
 #### Transform
-This node lets you transform complex JSON to easy accesible format.
+This node lets you transform complex JSON into an easily accessible format.
+<Tip>
+To learn more about the Transform Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/transform).
+</Tip>
 
 ## Cobalt's custom actions
-You can create [custom actions](https://docs.gocobalt.io/guides/developer-settings/actions) of your organization for your customers to use in the developer settings.
+You can create [custom actions](https://docs.gocobalt.io/guides/developer-settings/actions) or **API Proxies** of your organization for your customers to use in the developer settings.
 Those actions can be accessed using this node.
+<img height="200" src="/images/api_proxy.png" alt="API Proxies in Cobalt"/>
 
 ## Third party application actions
 Cobalt supports 100+ third party applications on its platform. Users can connect to these applications through Cobalt to make use of their APIs. When you select an application
