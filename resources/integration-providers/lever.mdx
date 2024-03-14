@@ -3,6 +3,59 @@ title: Setup
 description: Connect to your Lever app for OAuth.
 ---
 
+To setup your Lever app in Cobalt for OAuth, you will need the following sandbox credentials from your [Lever sandbox developer account](https://hire.sandbox.lever.co/settings/integrations?tab=oauth):
+- Client ID
+- Client Secret
+- Scopes
+
 <Info>
- Coming Soon!
+Note that, Lever follows a process to provide its partners credentials through their [Partnership Interest Form](https://www.lever.co/partnershipinterest/) submission. A Lever sandbox is required to register for an OAuth app to get access to a `Client Id` & `Client Secret`.
+For more details on becoming a partner on Lever, follow this [link](https://partnerexperience.lever.co/hc/en-us/articles/5136514106253-Getting-Started).
 </Info>
+
+Once you have access to a Lever Sandbox, [register for an OAuth app](https://hello.lever.co/api/mailings/click/PMRHK4TMEI5CE2DUORYHGORPF5UGS4TFFZZWC3TEMJXXQLTMMV3GK4ROMNXS643FOR2GS3THOMXWS3TUMVTXEYLUNFXW44Z7ORQWEPLPMF2XI2BCFQRHMZLSONUW63RCHIRDIIRMEJUWIIR2EIYTEMBSGUZTIIRMEJXXEZZCHIRGKMBRGU4TGMJUFUZDMZRZFU2DCOLCFVRDCOBQFUZDMYJWMMZWEYZRMVRGKIRMEJZWSZZCHIRHS5SGGQ3WC2DBNZLFCX2ROVCTCWTFMNEVSZ3KKZLUCSCTJVMC2WKLJRHU2T3XJFDGUURYHURH2===) 
+to retrieve your credentials. To request any changes to the app (e.g. scopes, callbacks) you can contact Leveer's Partner Support team by [opening a ticket](https://hello.lever.co/api/mailings/click/PMRHK4TMEI5CE2DUORYHGORPF5YGC4TUNZSXEZLYOBSXE2LFNZRWKLTMMV3GK4ROMNXS62DDF5SW4LLVOMXXEZLROVSXG5DTF5XGK5ZCFQRHMZLSONUW63RCHIRDIIRMEJUWIIR2EIYTEMBSGUZTIIRMEJXXEZZCHIRGKMBRGU4TGMJUFUZDMZRZFU2DCOLCFVRDCOBQFUZDMYJWMMZWEYZRMVRGKIRMEJZWSZZCHIRE42CDFUZXKRKCNZKGIYSUL4ZTGR22HBMXKUBSJ5UG4NCFPBKDS4JXFVSGUYJWGNSTQ4RUHURH2===). 
+
+To create a Lever sandbox account please provide the following details:
+
+1. Integration name (Name of your Company/Product)
+2. Product description
+3. Callback URI - https://api.gocobalt.io/api/v1/lever/callback
+4. A square logo of your product or company
+5. Scopes. Lever recommends its users to review Lever's [use cases](https://hire.sandbox.lever.co/developer/usecases) to understand what scopes to request for,
+prior to registering for a Sandbox App. It's helpful to select a broad set of scopes for testing the integration as revisions to the scope configuration on Lever will require reaching out to Lever's Partner Experience team by [opening a ticket](https://partnerexperience.lever.co/hc/en-us/requests/new) or 
+emailing a member of their Partner Experience team.
+
+Below are the list of scopes that you should request to be included.
+
+`offline_access`, `applications:read:admin`, `archive_reasons:read:admin`, `contact:write:admin`, `feedback:write:admin`, `files:write:admin`, `forms:write:admin`,
+`interviews:write:admin`, `notes:write:admin`, `offers:read:admin`, `opportunities:write:admin`, `panels:write:admin`, `postings:write:admin`, `referrals:read:admin`,
+`requisition_fields:write:admin`, `requisitions:write:admin`, `resumes:read:admin`, `sources:read:admin`, `stages:read:admin`, `tags:read:admin`, `uploads:write:admin`,
+`users:write:admin`, `webhooks:write:admin`
+
+
+#### Configuring Lever credentials in Cobalt
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Lever/lever-cobalt.png" alt="Setting up Lever application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Requesting permissions from your customers
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+Make sure that you only select among the scopes that were earlier requested to be added to your sandbox account. Click on save changes after selecting the scopes.
+
+That's it, your users can now connect with your Lever applications through their [auth flow](https://docs.gocobalt.io/concepts/auth-flows) setups. They would be requested permissions as per the scopes selected
+by you on the Cobalt app settings page.
+
+<img height="200" src="/images/Lever/lever-permission.png" alt="Permission consent screen Lever"/>
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+among the ones requested for Lever sandbox account.
+</Warning>
