@@ -15,6 +15,8 @@ After creating an account, you will have access to your production and testing A
 To enable the apps that you want to use in Cobalt, go to the **Apps** page in the Cobalt dashboard. You will see a list of the available apps. 
 Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
 
+<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
+
 **Key-based** apps do not require any additional configuration.
 
 **OAuth** apps by default use Cobalt credentials. This makes it easy to get started and connect integrations right away. However, once you're ready to ship your integrations with Cobalt, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Cobalt when they connect integrations.
@@ -73,9 +75,9 @@ Cobalt hold the credentials for a given apps (for example Salesforce) on your be
 
 There are 3 ways to integrate cobalt connect
 
-+ Hosted flow: In this method you can effortlessly redirect your users'  to Cobalt Connect, which is securely hosted by Cobalt. You can follow this guide here to get started.
-+ Assisted flow: It is a good option if you want your client team to be responsible for the integration of Cobalt Connect into your app. You can use the Cobalt Connect JavaScript SDK or the Cobalt Connect React SDK to build your own custom UI for Cobalt Connect. Both SDKs make it easy to let your users authorize and manage integrations with just a few lines of code.
-+ Seamless flow: If you want your backend team to handle the integration, you can use the Connect API directly to create your own integration experience inside your app.
++ [Hosted flow](https://docs.gocobalt.io/guides/auth-flows/hosted-flow): In this method you can effortlessly redirect your users'  to Cobalt Connect, which is securely hosted by Cobalt. You can follow this guide here to get started.
++ [Assisted flow](https://docs.gocobalt.io/guides/auth-flows/embedded-flow): It is a good option if you want your client team to be responsible for the integration of Cobalt Connect into your app. You can use the Cobalt Connect JavaScript SDK or the Cobalt Connect React SDK to build your own custom UI for Cobalt Connect. Both SDKs make it easy to let your users authorize and manage integrations with just a few lines of code.
++ [Seamless flow](https://docs.gocobalt.io/guides/auth-flows/seamless-flow): If you want your backend team to handle the integration, you can use the Connect API directly to create your own integration experience inside your app.
 
 
 To get started, we'll use Hosted flow. Use the below API call to generate the hosted url.
@@ -121,7 +123,7 @@ your Event. The event schema that you enter here must represent a sample payload
 App Events can be sent from your application to Cobalt using the event() function of the backend SDK. To trigger the event function, you must pass 
 three parameters in the request:
 
->Hurray! you have successfully integrated Cobalt on the server side. Now, let's look at the setup on client side.
+<Check>Hurray! you have successfully integrated Cobalt on the server side. Now, let's look at the setup on client side.</Check>
 
 ## Go Deeper
 This was a simple overview to setup native integrations using Cobalt. Read on to see how Cobalt can drive your integration needs, no matter their complexity.

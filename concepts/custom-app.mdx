@@ -42,10 +42,15 @@ an `access_token` and a `refresh_token` to authenticate an api on behalf of the 
 To set up an Oauth2 based Authorization mechanism,
 
 Step 1: Enter Client Credentials
+
 Step 2: Copy the `Redirect URL` and make sure your application redirects the Authorization Code to this URL.
+
 Step 3: Mention the scopes if any and make sure they are enabled by your application too.
+
 Step 4: Provide the installation URL, to which the user would be redirected to enter their login credentials.
+
 Step 5: Provide the Token URL to which Cobalt would make an api call upon receiving the `Authorization Code` to fetch the access token, and a sample response.
+
 
 > Note: Cobalt only supports `Bearer` tokens for Oauth2 auth mechanism. This token is set for the `Authorization` field in the headers of the api calls made by the app.
 > ```Bash
