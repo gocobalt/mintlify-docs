@@ -21,8 +21,11 @@ This field accepts a JSON object, where the Array needs to be given and can be s
 The format of the **Input** can be in the format:
 ```javascript
 {
-  "input": "{Array_name}" 
-  //"input" key can be replaced by any other word like data, result etc.
+  "input": "{Array_name}" // When you have the Array
+  "input": "{{Node_name: data}}" // When you want to fetch response of a previous node.
+  // The Node_name is selected by using Nodes in Variables
+
+  // "input" and "data" key can be replaced by any other word like result etc.
 }
 ```
 
