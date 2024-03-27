@@ -1,6 +1,37 @@
 ---
 title: Manage App connection
+description: Cobalt provides the flexibility for you to manage your customers’ application connections.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+
+If you are building a Custom UI for your users using the Cobalt SDKs and now want to build the functionality for your users to connect or disconnect with the applications that you have displayed, you can do so by using the SDKs.
+
+## Using Cobalt SDKs
+
+### .connect() method
+
+The **.connect()** method in the [JS SDK](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) by Cobalt lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
+``` JavaScript Method
+cobalt.connect("slack") // opens a new tab for OAuth apps
+cobalt.connect("twilio", {
+  number: 1234567890,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for Key based apps
+```
+
+The .connect() method requires the `application slug` for which the connection needs to be made and if the app is Key-based, then it requires a Payload containing the auth data.
+
+The method will return `true` if the connection was successful.
+
+### .disconnect() method
+
+The **.disconnect()** method disconnects the specified application and remove any associated data from Cobalt.
+``` JavaScript Method
+cobalt.disconnect("slack")
+```
+The .disconnect() method requires the application slug for which the disconnection needs to be done.
+
+## Checkpoint + Next Step
+
+<Check>
+You have now successfully implemented the Application Connect and Disconnect functionality for your end-users. Next we will learn how you can [Manage the Config of end-user](https://docs.gocobalt.io/implementation/integrate/end-user-config).
+</Check>

@@ -1,6 +1,175 @@
 ---
 title: Display Apps on the Client-side
+description: To diplay the apps to your end-users in the frontend, you can develop your own custom UI or redirect your users to Cobalt Connect, which is securely hosted by Cobalt.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+
+Cobalt connect lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf (linked account in Cobalt).
+
+## Enable & Configure Apps
+
+To enable the apps that you want to use in Cobalt, go to the Apps page in the Cobalt dashboard. You will see a list of the available apps. Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
+<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
+
+**Key-based** apps do not require any additional configuration.
+
+**OAuth** apps by default use Cobalt credentials. This makes it easy to get started and connect integrations right away. However, once you’re ready to ship your integrations with Cobalt, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Cobalt when they connect integrations.
+
+<Note>
+You can find the App Setup instructions for some of the popular integrations that we support [here](https://docs.gocobalt.io/resources/integration-providers/overview).
+</Note>
+
+You can now either create a Custom UI for displaying the applications or use the Hosted Flow provided by Cobalt.
+
+## Building Custom UI
+If you want to build a custom UI for your integrations, you can do so by using the Cobalt APIs or the Cobalt Connect SDK available in JavaScript and React. 
+
+### Cobalt API for UI
+
+If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications).
+
+1. **Request**: This API will list all the apps that were enabled above. Make a GET request to the `/application` endpoint with the `linked_account_id` of the user.
+``` JavaScript cURL
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/application \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>'
+```
+
+2. **Handle Response** : The `/application` endpoint will respond with an array containing the List of Applications that were enabled for the end-user. You can find information about the applications like name, slug, icon URL, the app was connected by user or not etc which can be used to build the Custom UI of your app.
+``` JavaScript 200 Response
+[
+    {
+        "name": "Drive",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/google_drive/logo.png",
+        "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices.",
+        "auth_type": "oauth2",
+        "tags": [
+            "Office"
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices."
+        },
+        "slug": "google_drive"
+    },
+    {
+        "name": "Docusign",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/docusign/logo.png",
+        "description": "Docusign is an electronic signature technology and digital transaction management service for facilitating electronic exchanges of signed documents.",
+        "auth_type": "oauth2",
+        "tags": [],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Docusign is an electronic signature technology and digital transaction management service for facilitating electronic exchanges of signed documents."
+        },
+        "connected": true,
+        "connected_accounts": [
+            {
+                "identifier": "1975dc48-d708-4370-b3c8-861af0df644d",
+                "connectedAt": "2023-05-22T07:52:31.270Z"
+            }
+        ],
+        "slug": "docusign"
+    },
+    {
+        "name": "Copper",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/copper/logo.png",
+        "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace.",
+        "auth_type": "keybased",
+        "tags": [
+            "CRM"
+        ],
+        "auth_input_map": [
+            {
+                "name": "api_token",
+                "label": "API Key",
+                "placeholder": "Please enter the API key",
+                "required": true,
+                "type": "text"
+            },
+            {
+                "name": "email",
+                "label": "Email Address",
+                "placeholder": "Please enter the email of the token owner",
+                "required": true,
+                "type": "text"
+            }
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace."
+        },
+        "slug": "copper"
+    }
+]
+```
+
+You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/integration-meta/get-application).
+
+### Cobalt SDK for UI
+
+If you prefer to develop using the SDKs provided by Cobalt, then the **.getApp()** method will get you the list of applications enabled in Cobalt. It returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+
+1. **Method Call**: Call the .getapp() method provided in the SDK and pass the slug of the application for which information needs to be fetched. If no slug is provided, you will get a list of apps.
+``` JavaScript JS SDK
+cobalt.getApp()  // to get a list of all apps
+cobalt.getApp("slack")  // to get details of a single app, e.g. slack
+```
+
+2. **Response** : The instance method of Cobalt Returns: `Promise.<Application>` - The application details. 
+``` JavaScript Response
+{
+	"name": "Slack",
+	"icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+	"description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+	"auth_type": "oauth2",
+	"type": "slack",
+	"app_id": "64c357c739ec788238ab5f95",
+	"tags": [
+		"Communication"
+	],
+	"version": {
+		"_v": "1.0.0",
+		"description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+	},
+	"slug": "slack"
+}
+```
+<Note>
+Learn more about the Assisted and Seamless flow of Cobalt Connect [here](https://docs.gocobalt.io/guides/auth-flows/embedded-flow).
+</Note>
+
+<Check>
+Your Custom UI to display apps using the Cobalt API or SDK is built.
+</Check>
+
+## Hosted Flow UI
+This is a no-code solution provided by Cobalt so you don't need to build your own UI. In this, you can effortlessly redirect your users’ to Cobalt Connect.
+
+To get started with this, you first need to [generate a Hosted/Connect URL](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) using API for your end-user by using the Session Token generated for them [here](https://docs.gocobalt.io/implementation/integrate/get-access-token).
+``` JavaScript Request
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer <Session-token>' \
+  --data '{
+  "color": "<string>",
+  "bgColor": "<string>",
+  "name": "<string>"
+}'
+```
+In the Response of the request, you get the Hosted URL which can be used to redirect the user to the hosted UI or can be embedded within your UI.
+``` JavaScript Response
+{
+    "hosted_url": "https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2lMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjdladdovGL8"
+}
+```
+<img height="200" src="/images/Guides/Account-management/am-brand-linked.png" alt="Hosted Flow UI"/>
+<Note>
+To learn more about the Hosted Flow, refer to our guide [here](https://docs.gocobalt.io/guides/auth-flows/hosted-flow).
+</Note>
+
+## Checkpoint + Next Step
+<Check>
+You have now successfully built a UI for your end users which displays all the integrations enabled for them. Next step is to [Manage Connections](https://docs.gocobalt.io/implementation/integrate/manage-connection) for your customers.
+</Check>
