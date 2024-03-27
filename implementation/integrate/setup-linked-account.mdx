@@ -1,6 +1,67 @@
 ---
-title: Setup Linked Accounts
+title: Set Up Linked Accounts
 ---
-<Tip>
-Coming Soon!
-</Tip>
+**Linked Accounts** refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform. When you create a Linked Account, you must provide a `linked_account_id`. This ID can be anything you want, but it must be unique.
+
+Most of the time, the linked_account_id is an ID from your internal data model that represents a user or account in your system. For example, if you have a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Cobalt Linked Account.
+
+Auth tokens and User configurations will be stored against the Linked account id of each user.
+
+<Info> 
+To learn more about Linked Accounts, you can refer to the Linked Accounts Guide [here](https://docs.gocobalt.io/guides/platform/linked-account/general).
+</Info>
+
+You can create Linked Accounts programatically by using Cobalt APIs and SDK methods.
+
+### Using Cobalt API
+Use the [Create Linked Account API](https://docs.gocobalt.io/api-reference/customer/create-linked-account) call below to create a linked account.
+```bash cURL
+curl --location 'https://api.gocobalt.io/api/v2/public/linked-account' \
+--header 'X-API-Key: COBALT_API_KEY' \
+--header 'Content-Type: application/json' \
+--data '{
+    "linked_account_id": "<string>",
+    "name": "<string>",
+    "your_app": {}
+}'
+```
+### Using Cobalt SDK
+
+You can also use the **createLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create Linked Account.
+
+```JavaScript NodeJS SDK
+try{
+    await Client.createLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User",
+        udf: {
+            "phone": "1234567890",
+            "address": "123, Queen Street"
+        },
+        your_app:{
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|name| Optional | String | Name of the customer|
+|UDF| Optional | Object | User specific preliminary data|
+|your_app| Optional | Object | Auth specific data|
+
+You can check the Linked Accounts present in your account by using the [List Linked Accounts API](https://docs.gocobalt.io/api-reference/customer/list-linked-accounts) Or through the **Cobalt Dashboard** by navigating to `Linked Accounts` in the side menu.
+<img height="200" src="/images/implementation/la.png" alt="Linked Accounts on Dashboard"/>
+
+### Checkpoint + Next Step 
+
+<Check>
+After completing this step, you have successfully created Linked Accounts of your end-users. This will now allow your clients to make a request to the Cobalt APIs successfully by using their **Session Tokens** which we will create in the [next step](https://docs.gocobalt.io/implementation/integrate/get-access-token).
+</Check>
