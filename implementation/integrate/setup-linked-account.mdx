@@ -11,10 +11,11 @@ Auth tokens and User configurations will be stored against the Linked account id
 To learn more about Linked Accounts, you can refer to the Linked Accounts Guide [here](https://docs.gocobalt.io/guides/platform/linked-account/general).
 </Info>
 
-You can create Linked Accounts programatically by using Cobalt APIs and SDK methods.
+You can create Linked Accounts programatically by using Cobalt APIs or SDK methods.
 
-### Using Cobalt API
-Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) call below to create or update a linked account.
+### Using Cobalt API or SDK
+Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) call below or the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create or update a linked account.
+<CodeGroup>
 ```bash cURL
 curl --request PUT \
   --url https://api.gocobalt.io/api/v2/public/linked-account \
@@ -27,6 +28,27 @@ curl --request PUT \
   "udf": {}
 }'
 ```
+```JavaScript NodeJS SDK
+try{
+    await Client.upsertLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User2",
+        udf: {
+            "phone": "1234567890",
+            "address": "121, Queen Street"
+        },
+        your_app: {
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+</CodeGroup>
 | Param | Required | Type | Description |
 |-------|----------|------|-------------|
 |linked_account_id| Mandatory | String | Unique customer identifier|
@@ -40,7 +62,7 @@ your_app is an optional param which contains details of your application associa
 It can have the auth_credentials of the user for pushing/writing data to your API endpoint.
 </Info>
 
-The API will respond with a JSON Object containing data about the Linked Account created/updated if successful.
+The API request or Method call will respond with a JSON Object containing data about the Linked Account created/updated if successful.
 ``` bash Response
 {
     "_id": "63cabcc596d0d10508a69bdf",
@@ -76,38 +98,6 @@ The API will respond with a JSON Object containing data about the Linked Account
     "__v": 326
 }
 ```
-
-### Using Cobalt SDK
-
-You can also use the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create or update Linked Account.
-
-```JavaScript NodeJS SDK
-try{
-    await Client.upsertLinkedAccount({
-        linked_account_id: "user@example.com",
-        name: "User2",
-        udf: {
-            "phone": "1234567890",
-            "address": "121, Queen Street"
-        },
-        your_app: {
-            app_id: "64da0b57c9ae95561bb0a2ea",
-            auth_credentials:{
-                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
-            }
-        }
-    })
-}catch(error){
-    //Catch any error
-}
-```
-
-| Param | Required | Type | Description |
-|-------|----------|------|-------------|
-|linked_account_id| Mandatory | String | Unique customer identifier|
-|name| Optional | String | Name of the customer|
-|UDF| Optional | Object | User specific preliminary data|
-|your_app| Optional | Object | Auth specific data|
 
 You can check the Linked Accounts present in your account by using the [List Linked Accounts API](https://docs.gocobalt.io/api-reference/customer/list-linked-accounts) Or through the **Cobalt Dashboard** by navigating to `Linked Accounts` in the side menu.
 <img height="200" src="/images/implementation/la.png" alt="Linked Accounts on Dashboard"/>
