@@ -1,23 +1,21 @@
 ---
-title: Get Access Token
+title: Get Session Token
 description: In this guide, you'll create Session Token which makes it easier to manage you end customer's tokens.
 ---
 Now that you have successfully created Linked Accounts for your end-users, it's time to create Session Tokens for your clients. The token creation should always happen server side.
 
-**Session tokens** are used to protect your Cobalt API key and make it easier to manage your end customers’ tokens. The session token serves as a temporary authentication credential for accessing the Cobalt JS SDK.
-
-When your client makes a request to the Cobalt APIs, it must include the session token in the request header. The Cobalt APIs will then use the session token to authenticate the request and grant access to the requested resources.
+**Session tokens** are used to protect your Cobalt API key and make it easier to manage your end customers’ tokens. When your client makes a request to the Cobalt APIs, it must include the session token in the request header. The Cobalt APIs will then use the session token to authenticate the request and grant access to the requested resources.
 
 To generate Session Token for a Linked Account, you can use the Cobalt API or Cobalt's Client Side SDK.
 
-### Cobalt API for Session Token
+### Cobalt API/SDK for Session Token
 
-1. **Request** : In your server side code, make a POST Request to the `/session-token` endpoint. The request should include the `linked-account_id` of the user for which the Session token is to be generated.
+1. **Request** : In your server side code, make a POST Request to the `/session-token` endpoint or call the [**.getTokenForLinkedAccount()**](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#gettokenforlinkedaccount) method of the **NodeJS SDK**. The request should include the `linked-account_id` of the user for which the Session token is to be generated.
 <Warning>
 The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
 </Warning>
 
-
+<CodeGroup>
 ```JavaScript cURL
     curl --request POST \
   --url https://api.gocobalt.io/api/v2/public/session-token \
@@ -28,7 +26,17 @@ The session token gets expired in 24 hours. Please make sure you generate a new 
 }'
 ```
 
-2. **Handle the response**: Cobalt's `/session-token` endpoint will respond with a JSON Object containing the `token` if request was successful. Parse the JSON response body and extract the `token`.
+```JavaScript SDK
+try{
+    const data = await Client.getTokenForLinkedAccount({
+        linked_account_id:"<Account Id of the user eg: example@someemail.com>"
+    })
+}catch(error){
+    //Catch any error
+}
+```
+</CodeGroup>
+2. **Handle the response**: Cobalt will respond with a JSON Object containing the `token` if request was successful. Parse the JSON response body and extract the `token`.
 ``` JavaScript Response
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0Ij"
@@ -38,28 +46,6 @@ The session token gets expired in 24 hours. Please make sure you generate a new 
 3. **Store the Session token**: It is critical to store Session tokens securely, as they grant access to sensitive user data. Implement a secure storage solution to store Session tokens and do not log or expose tokens to your frontend application.
 
 4. **Handle Errors**: If the `/session-token` endpoint returns a 500 error, your server-side code should handle it gracefully. The error is returned due to providing an incorrect linked_account_id while making the request.
-
-### Cobalt SDK for Session Token
-
-To generate a Session Token by using the NodeJS SDK, you can use the [**.getTokenForLinkedAccount()**](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#gettokenforlinkedaccount) method.
-
-1. **Request**: To call the method, use the implementation shown below and also provide a linked_account_id while making the request.
-``` JavaScript NodeJS SDK
-try{
-    const data = await Client.getTokenForLinkedAccount({
-        linked_account_id:"<Account Id of the user eg: example@someemail.com>"
-    })
-}catch(error){
-    //Catch any error
-}
-```
-
-2. **Handle the response**: Cobalt's SDK will respond with a JSON Object containing the `token` if request was successful. Parse the JSON response body and extract the `token`.
-``` JavaScript Response
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0Ij"
-}
-```
 
 ### Checkpoint + Next Step
 
