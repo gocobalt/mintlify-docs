@@ -6,20 +6,31 @@ Now, since the user has successfully connected with the enabled application, he 
 ## Create Config
 You can create config for the Linked Account through the Cobalt Connect SDKs or using the APIs.
 
-### Using the SDKs
+You can use the **.config()** method or the [Create Config API](https://docs.gocobalt.io/api-reference/config/find-or-create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
 
-You can use the **.config()** method which returns the specified config or creates one if it doesn't exist for the Linked Account.
-
-You can call the method in the following way:
-``` JavaScript Method
+1. **Request** - `Application Slug` and `linked_account_id` are mandatory fields for the request. You can request in the following way:
+<CodeGroup>
+``` JavaScript .config()
 cobalt.config({
   slug: "slack",
   config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
   labels: {}, // optional dynamic labels
 })
 ```
-
-The method will return a JSON Object as response containing the information about config of the application for the Linked Account and provides you with all the published workflows and settings input for the user required to execute the orchestration.
+``` JavaScript cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "slug": "<string>",
+  "config_id": "<string>",
+  "labels": {}
+}'
+```
+</CodeGroup>
+2. **Response** - The method will return a JSON Object as response containing the information about config of the application for the Linked Account and provides you with all the published workflows and settings input for the user required to execute the orchestration.
 ``` JavaScript Response
 {
 	"slug": "slack",
@@ -65,31 +76,13 @@ The method will return a JSON Object as response containing the information abou
 	"field_errors": []
 }
 ```
-### Using the API
-
-You can create Config for a Linked Account by using the [Create Config API](https://docs.gocobalt.io/api-reference/config/find-or-create-config) by Cobalt.
-
-- **Request** : The POST request of `/config` endpoint returns the specified config, or creates one if it doesn’t exist. `Application Slug` and `linked_account_id` are mandatory fields for the request.
-``` JavaScript cURL
-curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/config \
-  --header 'Content-Type: application/json' \
-  --header 'linked_account_id: <linked_account_id>' \
-  --header 'x-api-key: <api-key>' \
-  --data '{
-  "slug": "<string>",
-  "config_id": "<string>",
-  "labels": {}
-}'
-```
 
 ## Update Config
 
 The user can now enable the workflows, enter data for the settings and map fields. These updates to the config can be made using the SDK or the APIs.
 
-### Using SDKs
-You can use the **.updateconfig()** method which updates the specified config of a Linked Account. You can also enable or disable the Workflows of a user by updating the config.
-
+1. **Request** - You can use the **.updateconfig()** method or the [Update Config API](https://docs.gocobalt.io/api-reference/config/update-config) which updates the specified config of a Linked Account. You can also enable or disable the Workflows of a user by updating the config.
+<CodeGroup>
 ``` JavaScript Method
 cobalt.updateConfig({
   slug: "slack",
@@ -109,13 +102,6 @@ cobalt.updateConfig({
   ]
 })
 ```
-<Info>You can learn in detail about this method in our JS SDK Doc [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig).</Info>
-
-### Using the API
-
-You can update Config for a Linked Account by using the [Update Config API](https://docs.gocobalt.io/api-reference/config/update-config) by Cobalt.
-
-- **Request** : The PUT request of `/config` endpoint updates a confid for a specified application and config ID.
 ``` JavaScript cURL
 curl --request PUT \
   --url https://api.gocobalt.io/api/v2/public/config \
@@ -139,7 +125,81 @@ curl --request PUT \
   ]
 }'
 ```
-In response, you get the updated config information for the application.
+</CodeGroup>
+<Info>You can learn in detail about the method in our JS SDK Doc [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig).</Info>
+
+2. **Response** - In response, you get the updated config information for the application.
+``` JavaScript Response
+{
+    "slug": "mailerlite",
+    "config_id": "config_4",
+    "fields": [
+        {
+            "required": false,
+            "id": "646473c7e7b74deee820458f",
+            "name": "MailerLite Field Mapping",
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "State",
+                    "value": "state"
+                },
+                {
+                    "name": "Zip",
+                    "value": "z_i_p"
+                }
+            ],
+            "labels": [
+                {
+                    "name": "Customer Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Customer Last Name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Customer's Company",
+                    "value": "company"
+                }
+            ]
+        }
+    ],
+    "workflows": [
+        {
+            "id": "649d230c2ce6b9b07b163e61",
+            "name": "Add a Subscriber to Mailerlite",
+            "description": "",
+            "enabled": false,
+            "fields": []
+        }
+    ]
+}
+```
 
 ## Checkpoint + Next Step
 
