@@ -1,6 +1,107 @@
 ---
-title: Handle Workflow Failures
+title: Workflow Access Controls
+description:  In this, you will get to know how you can control access of the users to the workflows.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+In Cobalt, you can manage which users can access a workflow created by you. One of the primary tools for implementing access control is through **User-Defined Function (UDF)** parameters. UDF parameters empower users to filter configurations for Linked Accounts, thereby granting access to specific workflows only to authorized users or entities.
+
+<Info>
+Learn in detail about the UDF Parameter in our guide [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).
+</Info>
+
+## Creating UDF Parameters
+
+In the Config Portal of a Workflow, users can set up Access conditions to control who can interact with the workflow.
+<Note>
+Please ensure that UDF Parameters on which the access will be controlled, have been created and set for the Linked Accounts. 
+</Note>
+
+You can add UDF Parameters to the Linked Accounts either programmatically or by the UI of Cobalt. Using either the [Upsert Linked Account](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) API or [**.upsertLinkedAccount()**](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#upsertlinkedaccount) method of the NodeJS SDK, you can add UDF parameter.
+<Info>
+Learn how to create UDF Parameter through the dashboard [here](https://docs.gocobalt.io/guides/platform/linked-account/udf#creating-udf-parameters).
+</Info>
+
+<CodeGroup>
+```bash cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "<string>",
+  "name": "<string>",
+  "your_app": {},
+  "udf": {
+    "Role" : "Member",
+    "Title" : "Sr. Developer"
+  }
+}'
+```
+```JavaScript NodeJS SDK
+try{
+    await Client.upsertLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User2",
+        udf: {
+            "Role" : "Member",
+            "Title" : "Sr. Developer"
+        },
+        your_app: {
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+</CodeGroup>
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|name| Optional | String | Name of the customer|
+|UDF| Optional | Object | User specific preliminary data|
+|your_app| Optional | Object | Auth specific data|
+
+The request upserts a Linked Account with the UDF Parameters as requested and gives the following Response
+```JavaScript Response
+{
+    "_id": "65d5ba54d31e3880a27ebefd",
+    "associated_org": "65c9ef72f4b95fce32e8ccf8",
+    "account_id": "<Linked_account_id>",
+    "environment": "test",
+    "name": "John Doe",
+    "udf": [
+        {
+            "key_name": "Role",
+            "key_value": "Member",
+            "_id": "660bd08b01d2ef85025d707c",
+            "updatedAt": "2024-04-02T09:31:55.647Z",
+            "createdAt": "2024-04-02T09:31:55.647Z"
+        },
+        {
+            "key_name": "Title",
+            "key_value": "Sr. Developer",
+            "_id": "660bd08b01d2ef85025d707d",
+            "updatedAt": "2024-04-02T09:31:55.647Z",
+            "createdAt": "2024-04-02T09:31:55.647Z"
+        }
+    ],
+    "createdAt": "2024-02-21T08:54:44.607Z",
+    "updatedAt": "2024-04-02T09:31:55.647Z",
+    "__v": 34
+}
+```
+## Configuring Access Controls
+
+To configure the Access Controls, go to the Workflow in Cobalt for which you want to do so.
+
+- Click on the `Config Portal` button in the top right of the workflow.
+<img height="200" src="/images/implementation/udf-config-navi.png" alt="Navigate to Config Portal in a Workflow"/> 
+- Here you have the option to define **Access** conditions such as `Match all conditions` or `Match any condition`. Users can then specify the name of the UDF parameter and its corresponding value that should be allowed to access the Workflow.
+
+<img height="200" src="/images/Guides/Linked-account/udf-config.png" alt="Config Portal in a Workflow"/> 
+This workflow will now be visible only to the Linked Accounts which satsify the Access Control conditions.
+
+
