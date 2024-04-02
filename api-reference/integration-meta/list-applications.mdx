@@ -87,6 +87,9 @@ This API is used to list all enabled applications for a linked account
     <ResponseField name="slug" type="string">
      Application slug
     </ResponseField>
+    <ResponseField name="reauth_required" type="boolean">
+     This field tells if a re-auth is required from the user for the application
+    </ResponseField>
   </Tab>
   <Tab title="401">
     <ResponseField name="status_code" type="integer">
@@ -120,7 +123,8 @@ This API is used to list all enabled applications for a linked account
             "_v": "1.0.0",
             "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices."
         },
-        "slug": "google_drive"
+        "slug": "google_drive",
+        "reauth_required": false
     },
     {
         "name": "Docusign",
@@ -139,7 +143,8 @@ This API is used to list all enabled applications for a linked account
                 "connectedAt": "2023-05-22T07:52:31.270Z"
             }
         ],
-        "slug": "docusign"
+        "slug": "docusign",
+        "reauth_required": false
     },
     {
         "name": "Copper",
@@ -169,7 +174,8 @@ This API is used to list all enabled applications for a linked account
             "_v": "1.0.0",
             "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace."
         },
-        "slug": "copper"
+        "slug": "copper",
+        "reauth_required": false
     }
 ]
 ```
