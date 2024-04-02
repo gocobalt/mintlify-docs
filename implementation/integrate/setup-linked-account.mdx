@@ -24,8 +24,17 @@ curl --request PUT \
   --data '{
   "linked_account_id": "<string>",
   "name": "<string>",
-  "your_app": {},
-  "udf": {}
+  "your_app": {
+    "app_id": "64da0b57c9ae95561bb0a2ea",
+    "auth_credentials":
+        {
+            "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+        }
+  },
+  "udf": {
+    "phone": "1234567890",
+    "address": "121, Queen Street"
+  }
 }'
 ```
 ```JavaScript NodeJS SDK
@@ -56,10 +65,14 @@ try{
 |UDF| Optional | Object | User specific preliminary data|
 |your_app| Optional | Object | Auth specific data|
 
+**your_app Object**
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|app_id| Mandatory | String | Application Id of your default app|
+|auth_credentials| Optional | Object | Your customer api credentials for pushing data to your api end point|
+
 <Info>
 your_app is an optional param which contains details of your application associated with your account. 
-
-It can have the auth_credentials of the user for pushing/writing data to your API endpoint.
 </Info>
 
 The API request or Method call will respond with a JSON Object containing data about the Linked Account created/updated if successful.
@@ -72,23 +85,16 @@ The API request or Method call will respond with a JSON Object containing data a
     "name": "Mark Wood",
     "udf": [
         {
-            "key_name": "some_key1",
-            "key_value": "Updated Value",
+            "key_name": "phone",
+            "key_value": "1234567890",
             "_id": "64d5d69bfb78da0950f5e18f",
             "updatedAt": "2023-08-11T06:35:07.574Z",
             "createdAt": "2023-08-11T06:35:07.574Z"
         },
         {
-            "key_name": "some_key2",
-            "key_value": "some data 2",
+            "key_name": "address",
+            "key_value": "121, Queen Street",
             "_id": "64d5d69bfb78da0950f5e190",
-            "updatedAt": "2023-08-11T06:35:07.574Z",
-            "createdAt": "2023-08-11T06:35:07.574Z"
-        },
-        {
-            "key_name": "some_key3",
-            "key_value": "some data 3",
-            "_id": "64d5d69bfb78da0950f5e191",
             "updatedAt": "2023-08-11T06:35:07.574Z",
             "createdAt": "2023-08-11T06:35:07.574Z"
         }
