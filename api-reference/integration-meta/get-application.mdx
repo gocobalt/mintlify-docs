@@ -92,6 +92,9 @@ This API is used to fetch an enabled application for a linked account
     <ResponseField name="slug" type="string">
      Application slug
     </ResponseField>
+    <ResponseField name="reauth_required" type="boolean">
+     This field tells if a re-auth is required from the user for the application
+    </ResponseField>
   </Tab>
   <Tab title="401">
     <ResponseField name="status_code" type="integer">
@@ -133,7 +136,8 @@ This API is used to fetch an enabled application for a linked account
             "connectedAt": "2023-06-22T09:25:02.327Z"
         }
     ],
-    "slug": "slack"
+    "slug": "slack",
+    "reauth_required": false
 }
 ```
 
