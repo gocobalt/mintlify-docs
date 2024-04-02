@@ -1,6 +1,70 @@
 ---
 title: Handle Workflow Failures
+description: In this guide, we'll explore how users can effectively handle workflow failures within the Cobalt platform.
 ---
+Workflow failures can occur due to various reasons, ranging from configuration errors to external dependencies. Before investigating possible reasons for workflow failure, users must ensure the following prerequisites are met for the workflow to execute successfully:
+
+1. **Published Workflow**: The workflow must be published to be executed.
+
+2. **Enabled Status**: The workflow should be enabled either automatically or manually by the end-users.
+
+3. **Access Control**: Ensure that the workflow is accessible to the end-users through proper access control configurations.
+
+4. **Triggering Event**: The correct event must be triggered for the workflow to execute.
+
+## Handling Workflow Failures
+
+When a workflow fails to execute, users can follow these steps to diagnose and address the issue:
+
+### Check Execution Logs 
+
+Navigate to the `Logs` section in the Cobalt dashboard and review the `Execution` logs for the workflow. Look for error messages or exceptions that might indicate the cause of the failure.
+<img height="200" src="/images/implementation/workflow-logs.png" alt="Workflow Logs Cobalt"/>
+You can also Retry and rerun either the entire workflow or the errored node if you think if you have solved the error.
+<Info>
+Retry can be performed only one time each for the workflow and the node.
+</Info>
+<img height="200" src="/images/Guides/Platform/workflow-logs-retry.png" alt="Retry an errored Workflow in Cobalt"/>
+
+- **Retry Nodes**: If the failure is isolated to a specific node within the workflow, users can retry that particular node to attempt execution again. This can be done directly from the execution logs interface.
+
+- **Retry Entire Workflow:** In cases where retrying individual nodes does not resolve the issue, users have the option to retry the entire workflow execution. 
+
+### Subscribe to Cobalt Webhooks
+
+Users can subscribe to Cobalt Webhooks to receive real-time notifications about errored workflows. This will allow users to proactively address issues as they occur.
+
 <Tip>
-Coming Soon!
+To learn more about the Cobalt Webhooks, you can refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
 </Tip>
+
+Cobalt Webhook Subscription can be done either through the dashboard or the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+
+1. **Subscription via Dashboard**: Navigate to the `Webhooks` section in the Cobalt dashboard, enter the `Webhook URL`, choose the Webhook Payload as either `Default` or `Slack` and select the `Workflow Errored` event for which the notifications will be sent.
+<img height="200" src="/images/implementation/webhook-subscribe.png" alt="Subscribe to Webhooks in Cobalt"/>
+
+2. **Subscription via API**: Users can subscribe to Cobalt Webhooks using the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+ - **Request** - Make a POST request to the `/webhook/subscribe` endpoint with the webhook event as `workflow-errored`.
+ ``` JavaScript cURL
+ curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/webhook/subscribe \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "webhook_events": [
+    "workflow-errored"
+  ]
+}'
+```
+ - **Response** - The request will respond with a JSON object containing the Webhook URL and the Event which was subscribed.
+``` JavaScript 200
+{
+    "webhook_url": "https://mysite.com/cobalt/webhook",
+    "webhook_events": [
+        "workflow-errored"
+    ]
+}
+```
+You will now receive a notification on your registered URL whenever a Workflow errors.
+
+
