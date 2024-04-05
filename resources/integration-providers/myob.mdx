@@ -1,0 +1,64 @@
+---
+title: Setup
+description: Connect to your MyOB app for OAuth.
+---
+To setup your MyOB app in Cobalt for OAuth, you will need the following credentials from your [MyOB Developer account](https://my.myob.com.au/Pages/Default.aspx):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. MyOB Developer account. You can request access [here](https://apisupport.myob.com/hc/en-us/requests/new).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. CompanyFile
+
+<Info>If you haven't already created an app in MyOB, you'd need to create one.</Info>
+
+### Creating an app in MyOB
+
+To create a MyOB app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [MyOB Developer account](https://my.myob.com.au/Pages/Default.aspx).
+2. Click on the `Developer` option in the top nav bar.
+<img height="200" src="/images/myob/myob_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Register App` button in the right.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `My OB` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Enter the `App Name` for your application and paste the Callback Url under `Redirect Uri` and click on `Register App` button.
+6. In the `Developer Dashboard`, copy the **Client ID** under `Key` and **Client Secret** under the `Secret` field.
+<img height="200" src="/images/myob/myob_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/myob/myob_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using MyOB actions. Following are the set of MyOB actions
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Make HTTP API calls to any MyOB documented REST APIs.
+     2. [Create Item](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Create an item in MyOB.
+     3. [Update Item](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Update an item in MyOB.
+     4. [Delete Item](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Delete an item in MyOB.
+     5. [Create Account](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Create an account in MyOB.
+     6. [Update Account](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Update an account in MyOB.
+     7. [Delete Account](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Delete an account in MyOB.
+     8. [Get Accounts](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Get all accounts in MyOB.
+     9. [Get Invoices](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Get all invoices in MyOB.
+     10. [Get Bills](https://docs.gocobalt.io/resources/integration-providers/myob#actions-and-triggers) - Get all bills in MyOB.
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
