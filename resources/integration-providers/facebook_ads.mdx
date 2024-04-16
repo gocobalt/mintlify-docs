@@ -1,0 +1,86 @@
+---
+title: Setup
+description: Connect to your Facebook Ads app for OAuth.
+---
+
+To setup your Facebook Ads app in Cobalt for OAuth, you will need the following credentials from your [Facebook Developer App Settings](https://developers.facebook.com/apps/):
+- Client ID
+- Client Secret 
+- Scopes
+
+### Pre-requisites
+
+1. Facebook Developer Portal. You can create one [here](https://www.facebook.com/r.php?next=https%3A%2F%2Fdevelopers.facebook.com%2Fapps%2F&locale=en_GB&display=page).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Ads_management
+2. email
+
+<Info>If you haven't already created an app in Facebook, you'd need to create one.</Info>
+
+### Creating an app in Facebook
+
+To create a Facebook Ads app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Facebook Developer Portal](https://developers.facebook.com/apps/).
+2. Select the `Apps` tab in the top nav bar and click on the `Create App` button.
+<img height="200" src="/images/fb_ads/fb_navigation.png" alt="Navigation for App setup"/>
+3. Select `Other` for **use-case** > Click `Next` > Select `Business` as **App-type** and click on `Next`.
+<Warning> App Type cannot be changed after the app has been created.</Warning>
+4. Enter the **App Name** for your application and click on `Create App`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Facebook Ads` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Click on `Add Product` in the left menu > Click on `Set Up` under **Facebook Login for Business** > Paste the Callback Url under **Valid OAuth Redirect URIs** and click on `Save changes`.
+<img height="200" src="/images/fb_ads/fb_config.png" alt="Setting up Facebook Ads Developer app"/>
+
+7. Go to `Basic` under the **App Settings** section in the left menu and copy the **App ID**(Client ID) and **App Secret**(Client Secret).
+<img height="200" src="/images/fb_ads/fb_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/fb_ads/fb_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### App Review for Facebook Ads
+
+If the app will only be used by app users who have a role on the app itself, **App Review** is not required but if the app will be used by anyone without a [**Role on the app**](https://developers.facebook.com/docs/development#roles) or a [**role in a Business**](https://www.facebook.com/business/help/442345745885606?id=180505742745347) that has claimed the app, it must first undergo App Review by Meta.
+
+<Tip>
+Follow the detailed steps for an App Review submission given in the guide [here](https://developers.facebook.com/docs/resp-plat-initiatives/app-review/submission-guide).
+</Tip>
+
+Once approved, you can change the **Mode** of the app to `Live` by using the Toggle given in top Nav bar of the OAuth app.
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Facebook Ads actions and triggers. Following are the set of Facebook Ads actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+     1. [HTTP Request](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Make HTTP API calls to any Facebook Ads documented REST APIs.
+     2. [Create Ad Creative](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Create an Ad Creative in Facebook Ads.
+     3. [Update Ad Creative](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Update an Ad Creative in Facebook Ads.
+     4. [Create Ad](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Create an lead in Facebook Ads.
+     5. [Get Ad](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get an Ad in Facebook Ads.
+     6. [Get all Ad Sets](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get all Ad Sets in Facebook Ads.
+     7. [Create Ad Set](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Create an Ad Set in Facebook Ads.
+     8. [Get Ad Set](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get an Ad Set in Facebook Ads.
+     9. [Update Ad Set](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Update an Ad Set in Facebook Ads.
+     10. [Get All Campaigns](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get all Campaigns in Facebook Ads.
+     11. [Create Campaign](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Create a Campaign in Facebook Ads.
+     12. [Update Campaign](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Update a Campaign in Facebook Ads.
+     13. [Get Leadgen forms](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get all Leadgen forms in Facebook Ads.
+     14. [Create Leadgen form](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Create a Leadgen form in Facebook Ads.
+     15. [Get Profile](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Get a profile in Facebook Ads.
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. [Leadgen Updated](https://docs.gocobalt.io/resources/integration-providers/facebook_ads#actions-and-triggers) - Triggers when a leadgen form is updated on Facebook Ads.
+  </Tab>
+</Tabs>
