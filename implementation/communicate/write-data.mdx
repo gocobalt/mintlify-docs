@@ -26,10 +26,10 @@ It is expected that you pass on the data as the Sample Payload while you are tri
 
 You can trigger an event that was created in Cobalt by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application).
 
-1. **Request** : Make a POST request to the `/event/trigger/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.
+1. **Request** : Make a POST request to the `/event/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.
 ``` JavaScript Request
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/event/trigger/:slug \
+  --url https://api.gocobalt.io/api/v2/public/event/:slug \
   --header 'Content-Type: application/json' \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>' \
@@ -60,7 +60,7 @@ curl --request POST \
 }
 ```
 
-3. **Handle Errors** : If the `/event/trigger/:slug` endpoint returns a 400 error, your server-side code should handle it gracefully. The error is returned if you provided the wrong name of the event.
+3. **Handle Errors** : If the `/event/:slug` endpoint returns a 400 error, your server-side code should handle it gracefully. The error is returned if you provided the wrong name of the event.
 ```JavaScript 400
 {
     "status_code": 400,
