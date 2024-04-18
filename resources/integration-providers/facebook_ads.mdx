@@ -17,6 +17,10 @@ To setup your Facebook Ads app in Cobalt for OAuth, you will need the following 
 * **Mandatory Scopes** 
 1. Ads_management
 2. email
+3. pages_show_list
+4. pages_manage_ads
+5. pages_manage_metadata
+6. leads_retrieval
 
 <Info>If you haven't already created an app in Facebook, you'd need to create one.</Info>
 
@@ -46,6 +50,29 @@ they would first need to install your application. This page lets you set up you
 Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
 select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
 
+#### Facebook Ads Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Facebook Ads, you'd need to subscribe to Facebook Ads' Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Facebook Ads webhook subscription:**
+
+1. Select **Facebook Ads** from the application list in **Cobalt**, and select `Settings`.
+2. Copy the `Single Webhook Url`.
+3. Go to OAuth app of Facebook Ads > Click on `Add Product` in the left menu > Click on `Set Up` under **Webhooks**. 
+4. Select **Page** object from drop-down and click `Subscribe to this object`. Paste the **Single Webhook URL** under `Callback URL` and the **Verify token** as `cobalt_verify_token`. Click on `Verify and save`.
+<Note>
+Ensure that the verify token entered is `cobalt_verify_token`. No other value will be able to verify the Webhook.
+</Note>
+<img height="200" src="/images/fb_ads/fb_webhook.png" alt="Setting up Facebook Ads Webhook URL"/>
+
+**Test the Webhooks**
+
+<Info>
+Webhooks can be only tested while the App Mode is `Live`.
+</Info>
+
+- Toggle on the **App Mode** from `Development` to `Live`. You can test the Lead Ads Webhook at the Facebook Ads testing tool [here](https://developers.facebook.com/tools/lead-ads-testing/).
+
 #### App Review for Facebook Ads
 
 If the app will only be used by app users who have a role on the app itself, **App Review** is not required but if the app will be used by anyone without a [**Role on the app**](https://developers.facebook.com/docs/development#roles) or a [**role in a Business**](https://www.facebook.com/business/help/442345745885606?id=180505742745347) that has claimed the app, it must first undergo App Review by Meta.
@@ -55,6 +82,7 @@ Follow the detailed steps for an App Review submission given in the guide [here]
 </Tip>
 
 Once approved, you can change the **Mode** of the app to `Live` by using the Toggle given in top Nav bar of the OAuth app.
+
 
 
 #### Actions and triggers
