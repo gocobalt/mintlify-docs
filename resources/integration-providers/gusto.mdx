@@ -1,0 +1,69 @@
+---
+title: Setup
+description: Connect to your Gusto app for OAuth.
+---
+To setup your Gusto app in Cobalt for OAuth, you will need the following credentials from your [Gusto Developer account](https://dev.gusto.com/dashboard):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Gusto Developer account. You can create one [here](https://dev.gusto.com/dashboard).
+
+<Info>If you haven't already created an app in Gusto, you'd need to create one.</Info>
+
+### Creating an app in Gusto
+
+To create a Gusto app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Gusto Developer account](https://dev.gusto.com/dashboard).
+2. Click on the `Applications` icon in the side menu.
+<img height="200" src="/images/gusto/gusto_navigation.png" alt="Navigation for App setup"/>
+
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Gusto` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Click on `+ Create application` button in the right, enter the **App Name**, paste the Callback Url under **Redirect URI**, select a **Category** and click on `Create`.
+5. Go to the App **Details** tab > Scroll down > Copy the **Client ID** and **Secret**.
+<img height="200" src="/images/gusto/gusto_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/gusto/gusto_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+<Tip>
+To get access to your Production Credentials for Gusto App, you need to submit app for review to Gusto. Learn more about the Review and it's requirements [here](https://docs.gusto.com/app-integrations/docs/introduction#review).
+</Tip>
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Gusto actions and triggers. Following are the set of Gusto actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Employee">
+     1. **List Employees** - Get all employees in Gusto.
+     2. **Create Employee** - Create an employee in Gusto.
+    </Accordion>
+     <Accordion title="Payroll">
+     3. **List Payrolls** - Get all payrolls in Gusto.
+     4. **Prepare a Payroll for Update** - Prepare a payroll for update in Gusto.
+     5. **Get Payroll by ID** - Get a payroll by ID in Gusto.
+     6. **Update Payroll By Id** - Update a payroll by id in Gusto.
+    </Accordion>
+     <Accordion title="Others">
+     7. **HTTP Request** - Make HTTP API calls to any Gusto documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         There are no triggers in this application.
+    </Tab>
+</Tabs>
