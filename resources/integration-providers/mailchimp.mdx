@@ -1,0 +1,64 @@
+---
+title: Setup
+description: Connect to your Mailchimp app for OAuth
+---
+To setup your Mailchimp app in Cobalt for OAuth, you will need the following credentials from your [Mailchimp account](https://login.mailchimp.com/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Mailchimp Developer account. You can create one [here](https://login.mailchimp.com/signup/).
+
+<Info>If you haven't already created an app in Mailchimp, you'd need to create one.</Info>
+
+### Creating an app in Mailchimp
+
+To create a Mailchimp app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Mailchimp account](https://login.mailchimp.com/).
+2. Click on the `Profile` icon in the top right > select `Account and billing` > Select `Extras` > Click on `Registered Apps`.
+<img height="200" src="/images/Mailchimp/mailchimp_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Register an App` button.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Mailchimp` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the App, enter `App name`, `App description` and `Company/organization` > Provide `App website` > paste the Callback Url under `Redirect URL` > Click on `Create`.
+8. Copy the **Client ID** and **Client Secret** displayed on the screen after App creation.
+<img height="200" src="/images/Mailchimp/mailchimp_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Mailchimp/mailchimp_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Mailchimp actions and triggers. Following are the set of Mailchimp actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="List">
+     1. **Create A List** - Create a new listin Mailchimp.
+     2. **Add Member To List** - Add member to list in Mailchimp.
+     </Accordion>
+    <Accordion title="Members">
+     3. **Update A Member** - Update a list member in Mailchimp.
+     4. **Add Member Note** - Add a new note for a subscriber in Mailchimp.
+      </Accordion>
+    <Accordion title="Others">
+     5. **HTTP Request** - Make HTTP API calls to any Mailchimpdocumented REST APIs.
+     6. **Add Or Remove Member Tags** - Add or remove tags from a list member in Mailchimp.
+    </Accordion>
+
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         There are no triggers in this application.
+  </Tab>
+</Tabs>
