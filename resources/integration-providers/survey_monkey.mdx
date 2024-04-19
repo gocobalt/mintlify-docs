@@ -1,0 +1,69 @@
+---
+title: Setup
+description: Connect to your Survey Monkey app for OAuth.
+---
+To setup your Survey Monkey app in Cobalt for OAuth, you will need the following credentials from your [Survey Monkey Developer account](https://developer.surveymonkey.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Survey Monkey Developer account. You can create one [here](https://www.surveymonkey.com/sign-up).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. surveys_read
+2. users_read
+
+<Info>If you haven't already created an app in Survey Monkey, you'd need to create one.</Info>
+
+### Creating an app in Survey Monkey
+
+To create a Survey Monkey app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Survey Monkey Developer account](https://developer.surveymonkey.com/).
+2. Click on the `My Apps` option in the top nav bar.
+<img height="200" src="/images/Surveymonkey/survey_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Add a New App` button in the right.
+4. Enter the `App Nickname` and `App Creator` email > Select an `App Type` as **Public** or **Private** depending on your requirements and click `Create App`.
+<Info>
+Public App needs to be submitted for review before Survey Monkey users outside your organization can use it. Learn more about App Type [here](https://developer.surveymonkey.com/faq/).
+</Info>
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Survey Monkey` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Go to `Settings` in the OAuth app, paste the Callback Url under `OAuth Redirect URL` and click on `Submit Changes`.
+7. Scroll down to the **Scopes** section, select and mark the **mandatory scopes** provided in your Cobalt Survey Monkey settings page as **Required** and click on the `Update Scopes` button.
+<img height="200" src="/images/Surveymonkey/survey_config.png" alt="Setting up Survey Monkey Developer app"/>
+
+8. Scroll to the **Credentials** section and copy the **Client ID** and **Secret**.
+<img height="200" src="/images/Surveymonkey/survey_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Surveymonkey/survey_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Surveymonkey/survey_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Survey Monkey Developer account](https://developer.surveymonkey.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Scopes` under **Settings** > Add the scopes as added in Cobalt > Click on `Update Scopes`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Survey Monkey actions and triggers. An action with any API of Survey Monkey can be created by using the **HTTP Request** Action.
