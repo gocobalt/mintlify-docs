@@ -8,21 +8,31 @@ To setup your Lever app in Cobalt for OAuth, you will need the following sandbox
 - Client Secret
 - Scopes
 
-<Info>
-Note that, Lever follows a process to provide its partners credentials through their [Partnership Interest Form](https://www.lever.co/partnershipinterest/) submission. A Lever sandbox is required to register for an OAuth app to get access to a `Client Id` & `Client Secret`.
+### Required Settings
+
+* **Mandatory Scopes** 
+1. offline_access
+2. webhooks:write:admin
+
+<Info>If you haven't already created an app in Lever, you'd need to create one.</Info>
+
+### Creating an app in Lever
+
+<Note>
+Lever follows a process to provide its partners credentials through their [Partnership Interest Form](https://www.lever.co/partnershipinterest/) submission. A Lever sandbox is required to register for an OAuth app to get access to a `Client Id` & `Client Secret`.
 For more details on becoming a partner on Lever, follow this [link](https://partnerexperience.lever.co/hc/en-us/articles/5136514106253-Getting-Started).
-</Info>
+</Note>
 
 Once you have access to a Lever Sandbox, [register for an OAuth app](https://hello.lever.co/api/mailings/click/PMRHK4TMEI5CE2DUORYHGORPF5UGS4TFFZZWC3TEMJXXQLTMMV3GK4ROMNXS643FOR2GS3THOMXWS3TUMVTXEYLUNFXW44Z7ORQWEPLPMF2XI2BCFQRHMZLSONUW63RCHIRDIIRMEJUWIIR2EIYTEMBSGUZTIIRMEJXXEZZCHIRGKMBRGU4TGMJUFUZDMZRZFU2DCOLCFVRDCOBQFUZDMYJWMMZWEYZRMVRGKIRMEJZWSZZCHIRHS5SGGQ3WC2DBNZLFCX2ROVCTCWTFMNEVSZ3KKZLUCSCTJVMC2WKLJRHU2T3XJFDGUURYHURH2===) 
 to retrieve your credentials. To request any changes to the app (e.g. scopes, callbacks) you can contact Lever's Partner Support team by [opening a ticket](https://hello.lever.co/api/mailings/click/PMRHK4TMEI5CE2DUORYHGORPF5YGC4TUNZSXEZLYOBSXE2LFNZRWKLTMMV3GK4ROMNXS62DDF5SW4LLVOMXXEZLROVSXG5DTF5XGK5ZCFQRHMZLSONUW63RCHIRDIIRMEJUWIIR2EIYTEMBSGUZTIIRMEJXXEZZCHIRGKMBRGU4TGMJUFUZDMZRZFU2DCOLCFVRDCOBQFUZDMYJWMMZWEYZRMVRGKIRMEJZWSZZCHIRE42CDFUZXKRKCNZKGIYSUL4ZTGR22HBMXKUBSJ5UG4NCFPBKDS4JXFVSGUYJWGNSTQ4RUHURH2===). 
 
 To create a Lever sandbox account please provide the following details:
 
-1. Integration name (Name of your Company/Product)
-2. Product description
-3. Callback URI - https://api.gocobalt.io/api/v1/lever/callback
-4. A square logo of your product or company
-5. Scopes. Lever recommends its users to review Lever's [use cases](https://hire.sandbox.lever.co/developer/usecases) to understand what scopes to request for,
+1. **Integration name** - Name of your Company/Product
+2. **Product description**
+3. **Callback URI** - https://api.gocobalt.io/api/v1/lever/callback
+4. **Logo** - A square logo of your product or company
+5. **Scopes** - Lever recommends its users to review Lever's [use cases](https://hire.sandbox.lever.co/developer/usecases) to understand what scopes to request for,
 prior to registering for a Sandbox App. It's helpful to select a broad set of scopes for testing the integration as revisions to the scope configuration on Lever will require reaching out to Lever's Partner Experience team by [opening a ticket](https://partnerexperience.lever.co/hc/en-us/requests/new) or 
 emailing a member of their Partner Experience team.
 
@@ -36,7 +46,7 @@ Below are the list of scopes that you should request to be included.
 
 #### Configuring Lever credentials in Cobalt
 
-App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
 <img height="200" src="/images/Lever/lever-cobalt.png" alt="Setting up Lever application client credentials"/>
@@ -59,3 +69,35 @@ by you on the Cobalt app settings page.
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
 among the ones requested for Lever sandbox account.
 </Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Lever actions and triggers. Following are the set of Lever actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Candidate">
+     1. **Create A Candidate (Opportunities)** - Create a candidate in Lever.
+     2. **Get All Candidates (Opportunities)** - Get Opportunities/Candidates in Lever.
+     </Accordion>
+     <Accordion title="Posting">
+     3. **Create A Job (Postings)** - Create a Job Posting in Lever.
+     4. **Get All Jobs (Postings)** - Get Job Postings in Lever.
+      </Accordion>
+     <Accordion title="Others">
+     5. **HTTP Request** - Make HTTP API calls to any Lever documented REST APIs.
+     6. **Create Notes** - Create a Note in Lever.
+     7. **Get All Stages** - Get Stages in Lever.
+     8. **Get All Users** - Get Users in Lever.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Candidate's Stage Changed** - Triggers when a candidate's stage is changed on Lever.
+         2. **Candidate Hired** - Triggers when a candidate is hired on Lever.
+         3. **Candidate Application Created** - Triggers when a candidate's application is created on Lever.
+         4. **Interview Created** - Triggers when an interview is created on Lever.
+  </Tab>
+</Tabs>

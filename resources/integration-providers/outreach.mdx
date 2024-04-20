@@ -2,6 +2,104 @@
 title: Setup
 description: Connect to your Outreach app for OAuth.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+To setup your Outreach app in Cobalt for OAuth, you will need the following credentials from your [Outreach Developer account](https://developers.outreach.io/apps/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Outreach Developer account.
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. users.read
+
+<Info>If you haven't already created an app in Outreach, you'd need to create one.</Info>
+
+### Creating an app in Outreach
+
+To create a Outreach app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Outreach Developer account](https://developers.outreach.io/apps/).
+2. Click on the `Create App` button in the right.
+<img height="200" src="/images/Outreach/outreach_navigation.png" alt="Navigation for App setup"/>
+3. Enter the `App Name` and `App identifier` > Agree to the terms and click `Create`.
+4. Go to `Feature Selection` in the side menu, select `Outreach API (OAuth)` under **Data connectors** and click `Add feature`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Outreach` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Under `Callback URL`, click on `+ Add new URL` and paste it.
+6. Select the **mandatory scopes** in the **API Scopes** section, as provided in your Cobalt Outreach settings page and click on the `Save` button.
+<img height="200" src="/images/Outreach/outreach_config.png" alt="Setting up Outreach Developer app"/>
+
+7. Scroll to the top in **API Access(OAuth)** section and copy the **OAuth Application ID** and **Application Secret** from either Development or Production depending on requirements.
+<img height="200" src="/images/Outreach/outreach_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Outreach/outreach_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Outreach/outreach_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Outreach Developer account](https://developers.outreach.io/apps/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `API Access(OAuth)` under **App features** > Add the scopes under `API Scopes` as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Outreach actions and triggers. Following are the set of Outreach actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Accounts">
+     1. **Create Account** - Create a new account in Outreach.
+     2. **List Accounts** - Get a list of accounts in Outreach.
+     </Accordion>
+     <Accordion title="Opportunity">
+     3. **Create Opportunity** - Create a new opportunity in Outreach.
+     4. **List Opportunities** - Get a list of opportunities in Outreach.
+     5. **Delete Opportunity** - Delete an opportunity in Outreach.
+     </Accordion>
+     <Accordion title="Prospects">
+     6. **Create Prospect** - Create a new prospect in Outreach.
+     7. **Get Prospect By Id** - Get a prospect by ID in Outreach.
+     8. **Update Prospect** - Update a prospect in Outreach.
+     </Accordion>
+     <Accordion title="Stages">
+     9. **List Stages** - Get a list of stages in Outreach.
+    </Accordion>
+     <Accordion title="Users">
+     10. **List Users** - Get a list of users in Outreach.
+     11. **Create User** - Create a new user in Outreach.
+      </Accordion>
+     <Accordion title="Others">
+     12. **HTTP Request** - Make HTTP API calls to any Outreach documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Account created** - Triggers when an account is created on Outreach.
+         2. **Account updated** - Triggers when an account is updated on Outreach.
+         3. **Opportunity created** - Triggers when an opportunity is created on Outreach.
+         4. **Opportunity updated** - Triggers when an opportunity is updated on Outreach.
+         5. **Prospect created** - Triggers when a prospect is created on Outreach.
+         6. **Prospect Updated** - Triggers when a prospect is updated on Outreach.
+  </Tab>
+</Tabs>
