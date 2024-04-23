@@ -1,0 +1,65 @@
+---
+title: Setup
+description: Connect to your Dropbox app for OAuth.
+---
+To setup your Dropbox app in Cobalt for OAuth, you will need the following credentials from your [Dropbox Developer Account](https://www.dropbox.com/developers/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Dropbox Developer account. You can create one [here](https://www.dropbox.com/register).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. account_info.read
+2. sharing.read
+
+<Info>If you haven't already created an app in Dropbox, you'd need to create one.</Info>
+
+### Creating an app in Dropbox
+
+To create a Dropbox app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Dropbox Developer Account](https://www.dropbox.com/developers/).
+2. Click on the `App Console` icon in the top bar and click `Create App` button.
+<img height="200" src="/images/Dropbox/dropbox_navigation.png" alt="Navigation for App setup"/>
+3. Choose `API` as **Scoped access**, `Type of Access` as **Full Dropbox**, provide an unique app `Name` and click `Create App`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Dropbox` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the app, under `Settings` go to **OAuth 2** section, paste the Callback Url and click `Add`.
+6. Select the **mandatory scopes** under **Permissions** tab, as provided in your Cobalt Dropbox settings page and click on the `Submit` button.
+<img height="200" src="/images/Dropbox/dropbox_config.png" alt="Setting up Dropbox Developer app"/> 
+
+7. Click on `Details` and copy the `App key`**(Client ID)** and `App secret`**(Client Secret)** from the **Settings** section.
+<img height="200" src="/images/Dropbox/dropbox_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Dropbox/dropbox_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Dropbox/dropbox_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Dropbox Developer Account](https://www.dropbox.com/developers/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Permissions` > Add the scopes as added in Cobalt > Click on `Submit`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Dropbox actions and triggers. An action with any API of Dropbox can be created by using the **HTTP Request** Action.

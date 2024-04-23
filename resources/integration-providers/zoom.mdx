@@ -1,0 +1,63 @@
+---
+title: Setup
+description: Connect to your Zoom app for OAuth.
+---
+To setup your Zoom app in Cobalt for OAuth, you will need the following credentials from your [Zoom Developer account](https://marketplace.zoom.us/user/build):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Zoom Developer account. You can create one [here](https://zoom.us/signup#/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. user:read
+
+<Info>If you haven't already created an app in Zoom, you'd need to create one.</Info>
+
+### Creating an app in Zoom
+
+To create a Zoom app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Zoom Developer account](https://marketplace.zoom.us/user/build).
+2. Click on `Develop` in the top right and select `Build App` button.
+<img height="200" src="/images/Zoom/zoom_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zoom` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. In the App, go to `Basic Information` in the side menu, scroll down and paste the Callback Url under `OAuth Redirect URL` field. 
+5. Select the **mandatory scopes** in the **Scopes** section by clicking on `+ Add Scopes`, as provided in your Cobalt Zoom settings page and click on the `Done`.
+<img height="200" src="/images/Zoom/zoom_config.png" alt="Setting up Zoom Developer app"/>
+
+6. Go to the **Basic Information** section and copy the **Client ID** and **Client Secret** from the **App Credentials** section.
+<img height="200" src="/images/Zoom/zoom_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Zoom/Zoom_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Zoom/zoom_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Zoom Developer account](https://marketplace.zoom.us/user/build) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Scopes` under App Settings > Add the scopes as added in Cobalt by clicking `+ Add Scopes` > Click on `Done`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Zoom actions and triggers. An action with any API of Zoom can be created by using the **HTTP Request** Action.

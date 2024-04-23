@@ -1,0 +1,88 @@
+---
+title: Setup
+description: Connect to your Zendesk Sell app for OAuth.
+---
+To setup your Zendesk Sell app in Cobalt for OAuth, you will need the following credentials from your [Zendesk Sell Developer Console](https://developer.zendesk.com/documentation/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Zendesk Sell Developer account. You can create one [here](https://www.zendesk.com/register/?source=zendesk_sell#step-1).
+
+<Info>If you haven't already created an app in Zendesk Sell, you'd need to create one.</Info>
+
+### Creating an app in Zendesk Sell
+
+To create a Zendesk Sell app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Zendesk Sell Developer Console](https://developer.zendesk.com/documentation/).
+2. Click on the `Settings` icon in the side menu and select `OAuth` under `Integrations` section.
+<img height="200" src="/images/Zendesk/zendesk_navigation.png" alt="Navigation for App setup"/>
+3. Go to `Developer Apps` tab and click `+ Add Developer App` button.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zendesk CRM` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the app, Add Application `Name`, `Description` and `Website` and paste the Callback Url under `Redirect URL` field. Click on `Save`. 
+
+6. Click on `Details` and copy the **Client ID** and **Client Secret** from the **Credentials** section.
+<img height="200" src="/images/Zendesk/zendesk_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Zendesk/zendesk_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Zendesk/zendesk_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Zendesk Sell actions and triggers. Following are the set of Zendesk Sell actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Lead">
+     1. **Create Lead** - Create a lead in Zendesk Sell.
+     2. **Update Lead** - Update a lead in Zendesk Sell.
+     3. **Delete Lead** - Delete a lead in Zendesk Sell.
+    </Accordion>
+     <Accordion title="Contact">
+     4. **Create Contact** - Create a new contact in Zendesk Sell.
+     5. **Update Contact** - Update a contact in Zendesk Sell.
+     6. **Delete Contact** - Delete a contact in PZendesk Sell.
+     </Accordion>
+     <Accordion title="Deal">
+     7. **Create Deal** - Create a new deal in Zendesk Sell.
+     8. **Update Deal** - Update a deal in Zendesk Sell.
+     9. **Delete Deal** - Delete a deal in Zendesk Sell.
+      </Accordion>
+     <Accordion title="Organization">
+     10. **Create Organization** - Create an organization in Zendesk Sell.
+     11. **Update Organization** - Update an organization in Zendesk Sell.
+     12. **Delete Organization** - Delete an Organization in Zendesk Sell.
+      </Accordion>
+     <Accordion title="Others">
+     13. **HTTP Request** - Make HTTP API calls to any Zendesk Sell documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
