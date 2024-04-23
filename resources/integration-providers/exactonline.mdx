@@ -2,6 +2,87 @@
 title: Setup
 description: Connect to your Exact Online app for OAuth.
 ---
+To setup your Exact Online app in Cobalt for OAuth, you will need the following credentials from your [Exact Online Developer account](https://apps.exactonline.com/us/en-US/V2):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Exact Online Developer account. You can create one [here](https://start.exactonline.com/docs/HRMSubTrialNew.aspx?bcaction=0&type=10&language=EN&UseSimpleWizard=1&PackageSetCode=APPCENTER).
+
+<Info>If you haven't already created an app in Exact Online, you'd need to create one.</Info>
+
+### Creating an app in Exact Online
+
+To create a Exact Online app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Exact Online Developer account](https://apps.exactonline.com/us/en-US/V2).
+2. Click on `Manage my apps` in the top right corner.
+<img height="200" src="/images/Exact/exact_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Register a Production App` or `Testing App` depending on your requirements.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Exact Online` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Enter the `App Name`, paste the Callback Url under `Redirect URI` and click `Register`.
+6. Go to the **Develop your App** section and copy the **Client ID** and **Client Secret** from **Authorisation details**.
+<img height="200" src="/images/Exact/exact_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Exact/exact_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### App Review for Exact Online
+
+If you want external customers to use your app, then the OAuth app must be submitted for Review.
+
+To submit your app for a review, go to **Manage my apps** > Your Registered app > **Submit for review**.
+
 <Tip>
-Coming Soon!
+Learn more about the Exact Online App Review process [here](https://support.exactonline.com/community/s/knowledge-base#All-All-DNO-Elearning-appcenter-eol-appcenter-dev-purpscope).
 </Tip>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Exact Online actions and triggers. Following are the set of Exact Online actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="GL Accounts">
+     1. **Create GL Account** - Create an account in Exact Online.
+     2. **Update GL Account** - Update an account in Exact Online.
+     3. **Delete GL Account** - Delete an account in Exact Online.
+     4. **Get all GL Accounts** - Get all accounts in Exact Online.
+     </Accordion>
+     <Accordion title="Sales Invoices">
+     5. **Create Sales Invoice** - Create an invoice in Exact Online.
+     6. **Delete SalesInvoice** - Delete an invoice in Exact Online.
+     7. **Update Sales Invoice** - Update an invoice in Exact Online.
+     8. **Get Sales Invoices** - Update all sales invoices in Exact Online.
+      </Accordion>
+     <Accordion title="Item">
+     9. **Get Items** - Get all items in Exact Online.
+     10. **Delete Item** - Delete an item in Exact Online.
+     11. **Create Item** - Create an item in Exact Online.
+    </Accordion>
+     <Accordion title="Payments">
+     12. **Get all Payments** - Get all payments in Exact Online.
+    </Accordion>
+     <Accordion title="Departments">
+     13. **Get Departments** - Get all departments in Exact Online.
+      </Accordion>
+     <Accordion title="Others">
+     14. **HTTP Request** - Make HTTP API calls to any Exact Online documented REST APIs.
+     15. **Get Profile** -  Get the current user in Exact Online.
+    </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Invoice Created** - Triggers when an invoice is created on Exact Online.
+         2. **Item Created** - Triggers when an item is created on Exact Online.
+  </Tab>
+</Tabs>

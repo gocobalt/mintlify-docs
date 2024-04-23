@@ -1,0 +1,101 @@
+---
+title: Setup
+description: Connect to your Zoho Books app for OAuth.
+---
+To setup your Zoho Books app in Cobalt for OAuth, you will need the following credentials from your [Zoho Developer Console](https://api-console.zoho.com/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Zoho Developer Console. You can create one [here](https://accounts.zoho.com/register).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. ZohoBooks.settings.READ
+
+<Info>If you haven't already created an app in Zoho Books, you'd need to create one.</Info>
+
+### Creating an app in Zoho Books
+
+To create a Zoho Books app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Zoho Developer Console](https://api-console.zoho.com/).
+2. Click on the `+ Add Client` button in the right and select `Server-based Applications` button.
+<img height="200" src="/images/Zohocrm/Zohocrm_navigation.png" alt="Navigation for App setup"/>
+3. Enter the **Client Name** for your application and add a **Homepage URL**.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zohobooks` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Paste the Callback URL under `Authorized Redirect URIs` and click on the `Create` button.
+
+<img height="200" src="/images/Zohobooks/Zohobooks_config.png" alt="Setting up Zoho Books Developer app"/>
+6. Navigate to the `Client Secret` tab in the app and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Zohocrm/Zohocrm_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Zohobooks/Zohobooks_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Zohobooks/Zohobooks_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Zoho Books actions and triggers. Following are the set of Zoho Books actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Bank Account">
+     1. **Create Bank Account** - Create a bank account in Zoho Books.
+     2. **Update Bank Account** - Update a bank account in Zoho Books.
+     3. **List Bank Accounts** - List bank account in Zoho Books.
+     4. **Delete Bank Account** - Delete a bank account in Zoho Books.
+    </Accordion>
+    <Accordion title="Bill">
+     5. **Create Bill** - Create a bill in Zoho Books.
+     6. **Update Bill** - Update a bill in Zoho Books.
+     7. **Delete Bill** - Delete a bill in Zoho Books.
+      </Accordion>
+    <Accordion title="Contact">
+     8. **Create Contact** - Create a contact in Zoho Books.
+     9. **Update Contact** - Update a contact in Zoho Books.
+     10. **Delete Contact** - Delete a contact in Zoho Books.
+       </Accordion>
+    <Accordion title="Invoice">
+     11. **Create Invoice** - Create an invoice in Zoho Books.
+     12. **Update Invoice** - Update an invoice in Zoho Books.
+     13. **Get Invoice** - Get an invoice in Zoho Books.
+     14. **Delete Invoice** - Delete an invoice in Zoho Books.
+      </Accordion>
+    <Accordion title="Item">
+     15. **Create Item** - Create an item in Zoho Books.
+     16. **Update Item** - Update an item in Zoho Books.
+     17. **Delete Item** - Delete an item in Zoho Books.
+      </Accordion>
+    <Accordion title="Others">
+     18. **HTTP Request** - Make HTTP API calls to any Zoho Books documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
