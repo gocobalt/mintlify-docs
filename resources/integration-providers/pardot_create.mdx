@@ -1,0 +1,46 @@
+---
+title: Pardot Business Unit Setup
+description: In this you will get to know the step by step process to configure your Salesforce Pardot Org.
+---
+
+## Steps
+Follow the steps given below to create your Pardot account.
+
+### 1. Sign Up for Pardot Org
+Sign up on below link https://developer.salesforce.com/promotions/orgs/pardot-de. Once you fill the signup form, you will receive an email and you can set your password.
+
+### 2. Install Package
+- Install the package by going to the following link : http://www2.pardot.com/notes/pardot-appexchange-package-download-and-release-notes/ .
+- Click on `Production Environments` > Login with your Pardot credentials > Select `Install for All Users` > Click on `Install`.
+
+### 3. Setup Pardot Business Unit
+- Go to `Setup` > Search for `Account Engagement` > Business Unit Setup > Give the Business Unit name and assign an Admin > Click on `Save`.
+<img height="200" src="/images/Pardot/pardotb_setup.png" alt="Pardot Business Unit Setup"/>
+
+### 4. Enable Pardot Lightning App in Marketing Setup
+- Click on the **Gear** icon in the top nav bar and select `Marketing Setup`.
+- In Marketing Setup, go to `Setup Assistant` > `Beyond the Basics` > Toggle on the **Turn on Account Engagement Lightning App** permission.
+<img height="200" src="/images/Pardot/pardotb_on.png" alt="Toggle on the App"/>
+
+### 5. Assign Permission set
+- We can assign Permission Sets to our user like CRM, Sales etc. For now, we are assigning Sales Cloud User Permission set.
+- Go to `Setup` > `User` > `Permission Set` > Select **Sales Cloud User**.
+<img height="200" src="/images/Pardot/pardotb_assign.png" alt="Assign Permission Set to the user"/>
+- Click on `Manage Assignments` > Click on `Add Assignment` > Select a User > Click on `Next` > Assign the user with a role.
+
+### 6. Pardot managed connected App settings
+- Now go back to Setup by clicking on the **Gear** icon in the top nav bar.
+- Search for `Manage Connected Apps` > Click on `Edit` in **b2bma_canvas** and make sure it's configured as shown below.
+<img height="200" src="/images/Pardot/pardotb_manage.png" alt="Pardot managed connected App settings in b2bma_canvas"/>
+
+### 7. Access your Pardot App
+The Pardot App Setup is now complete and you can access it by login with Salesforce to the link below:
+
+https://pi.demo.pardot.com/
+
+<Info>
+You can learn about how to setup the OAuth app for Pardot [here](https://docs.gocobalt.io/resources/integration-providers/salesforce_pardot).
+</Info>
+
+
+Congratulations!! You have now successfully setup a Pardot Business Unit in your Salesforce account.
