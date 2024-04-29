@@ -1,0 +1,80 @@
+---
+title: Setup
+description: Access to your users' Airtable records through OAuth.
+---
+To setup your Airtable app in Cobalt for OAuth, you will need the following credentials from your [Airtable Developer account](https://airtable.com/create/oauth):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Airtable Developer account. You can create one [here](https://airtable.com/signup).
+
+
+<Info>If you haven't already created an app in Airtable, you'd need to create one.</Info>
+
+### Creating an app in Airtable
+
+To create a Airtable app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Airtable Developer account](https://airtable.com/create/oauth).
+2. Go to `OAuth integrations` in the side menu and click on `+ Register new OAuth integration ` button in the right.
+<img height="200" src="/images/Airtable/airtable_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Airtable` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. In the app, enter the `App Name`, paste the Callback Url under `OAuth redirect URL` and click `Register integration`.
+5. Select the required permissions in the **Scopes** section, as provided in your Cobalt Airtable settings page and click on the `Save changes` button.
+<img height="200" src="/images/Airtable/airtable_config.png" alt="Setting up Airtable Developer app"/>
+
+8. Scroll to the **Developer details** section and copy the **Client ID** and get the **Client Secret** by clicking on the `Generate Client secret` button.
+<Info>Copy the Client Secret displayed as it will be shown only once.</Info>
+<img height="200" src="/images/Airtable/airtable_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Airtable/airtable_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Airtable/airtable_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Airtable Developer account](https://airtable.com/create/oauth) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Go to `Scopes` section  > Add the scopes as added in Cobalt > Click on `Save changes`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Airtable actions and triggers. Following are the set of Airtable actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Record">
+     1. **Create Record** - Create a record in Airtable.
+     2. **Update Record** - Update a record in Airtablee.
+     3. **Delete Record** - Delete a record in Airtable.
+     </Accordion>
+     <Accordion title="Others">
+     4. **HTTP Request** - Make HTTP API calls to any Airtable documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
