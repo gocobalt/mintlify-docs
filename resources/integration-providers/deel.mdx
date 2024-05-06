@@ -2,6 +2,78 @@
 title: Setup
 description: Connect to your Deel app for OAuth.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+To setup your Deel app in Cobalt for OAuth, you will need the following credentials from your [Deel Developer Center](https://app.deel.com/developer-center/apps):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Deel Developer account. You can create one [here](https://app.deel.com/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Users:read
+
+<Info>If you haven't already created an app in Deel, you'd need to create one.</Info>
+
+### Creating an app in Deel
+
+To create a Deel app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Deel Developer Center](https://app.deel.com/developer-center/apps).
+2. Go to `App Store` in the side menu > Click on `Developer Center` in the top right > Go to `Apps` tab.
+<img height="200" src="/images/Deel/deel_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create New App` button.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Deel` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the app, choose `App Type` as **Organization**, enter the `App Name` and `Description`, paste the Callback Url under `Redirect URL`, provide an `App Icon` and click `Create`.
+
+6. Copy the `Key`**(Client ID)** and `Secret`**(Client Secret)** displayed on the screen.
+<Info> Copy the Client ID and Secret as it will not be visible again.</Info>
+<img height="200" src="/images/Deel/deel_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Deel/deel_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Deel actions and triggers. Following are the set of Deel actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Adjustments">
+     1. **Create Invoice adjustment** - Create an invoice adjustment in Deel.
+     2. **Update Invoice adjustment** - Update an invoice adjustment in Deel.
+     3. **Get Adjustment by ID** - Get an adjustment by ID in Deel.
+     </Accordion>
+     <Accordion title="Timesheets">
+     4. **Create timesheet** - Create a timesheet in Deel.
+     5. **Update timesheet** - Update a timesheet in Deel.
+     6. **Review a timesheet** - Review a timesheet in Deel.
+      </Accordion>
+
+     <Accordion title="Others">
+     7. **HTTP Request** - Make HTTP API calls to any Deel documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Contract Created** - Triggers when a contract is created on Deel.
+         2. **Contract Status Updated** - Triggers when a contract status is updated on Deel.
+         3. **Contract Terminated** - Triggers when a contract is terminated on Deel.
+         4. **Invoice Adjustment Created** - Triggers when an invoice adjustment is created on Deel.
+         5. **Timesheet Created** - Triggers when a timesheet is created on Deel.
+         6. **Timesheet Reviewed** - Triggers when a timesheet is reviewed on Deel.
+         7. **Time-off reviewed** - Triggers when a time-off is reviewed on Deel.
+         8. **Time-off Updated** - Triggers when a time-off is updated on Deel.
+  </Tab>
+</Tabs>

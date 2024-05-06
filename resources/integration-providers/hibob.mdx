@@ -1,0 +1,81 @@
+---
+title: Connect
+description: Connect with the Linked Account's HiBob account.
+---
+<Note>
+HiBob is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+## Required Credentials of a Linked Account
+
+To successfully connect with the **HiBob** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Service ID
+2. Service Token
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+## Getting Credentials of HiBob 
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Hibob/hibob_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [HiBob account](https://app.hibob.com/login/).
+2. Go to `Settings` in the side menu and click on `Integrations`.
+<img height="200" src="/images/Hibob/hibob_navigation.png" alt="Navigation in HiBob"/>
+
+3. Click on `Connect` or `Manage` in the **Service Users** card and create a new Service User.
+4. Enter a `Service User Name` and a `Display Name` > Click on `Next` > Copy the `Service ID` and `Service Token` displayed.
+<Info>
+Copy the Service Token as it will not be shown again.
+</Info>
+<img height="200" src="/images/Hibob/hibob_credentials.png" alt="Getting Credentials"/>
+
+## Permissions for Service User
+
+By default, Service Users in HiBob are created with no access permissions/scopes and need to be added in a permission group with the relevant permissions. You need to create a specific permissions group for Service Users and add the service user to that group.
+
+#### Create Permission group
+
+1. Go to `Settings` > `Account` > `Permission Groups` in your HiBob account.
+2. Click on `+ Add Permission Group` > Provide a **Group Name** > Select `Select people by condition` in **Group members** > Click `Select People`.
+3. Delete the default Conditions given > Click on `Add Specific Employees` > `Service Users` > Select the Service Users > Click on `Apply` > Click `Create`.
+<img height="200" src="/images/Hibob/hibob_group.png" alt="Creating Permission Group"/>
+
+#### Permissions in the Group
+1. In the Group, under **Features** tab, go to `API Access` and enable **Manage REST API Token** > Click on `Save` > Click on `Apply`.
+2. Also add other permissions which are required based on your Actions requirements.
+<img height="200" src="/images/Hibob/hibob_scopes.png" alt="Permissions of the group"/>
+The Linked Account or end-user now have all the credentials required to connect with HiBob.
+
+
+
+## Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using HiBob actions and triggers. Following are the set of HiBob actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Employee">
+     1. **Create Employee** - Create a new user in HiBob.
+     2. **Get Employee** - Get user by id in HiBob.
+     3. **Update Employee** - Update user by id in HiBob.
+     4. **Delete Employee** - Delete user by id in HiBob.
+    </Accordion>
+    <Accordion title="Others">
+     5. **HTTP Request** - Make HTTP API calls to any HiBob documented REST APIs.
+     6. **Revoke Employee Access** - Revoke access for an employee in HiBob.
+     7. **Complete Task** - Mark a task as complete in HiBob.
+     8. **Upload Document To Employee Shared Folder** - Upload a document to the employee's shared folder in HiBob.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
