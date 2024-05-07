@@ -2,6 +2,83 @@
 title: Setup
 description: Connect to your Salesforce Financial Services Cloud app for OAuth.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+To setup your Salesforce Financial Services Cloud app in Cobalt for OAuth, you will need the following credentials from your Salesforce Financial Services Cloud account:
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Salesforce Financial Services Cloud account. You can create one [here](https://www.salesforce.com/form/signup/financial-services-cloud-trial/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. api 
+2. refresh token
+
+* **App Settings**
+1. Require Secret for Refresh Token Flow
+2. Enable Authorization Code and Credentials Flow
+3. Enable Token Exchange Flow
+4. Require Secret for Token Exchange Flow
+5. Issue JSON Web Token (JWT)-based access tokens for named users
+
+<Info>If you haven't already created an app in Salesforce Financial Services Cloud, you'd need to create one.</Info>
+
+### Creating an app in Salesforce Financial Services Cloud
+
+To create a Salesforce Financial Services Cloud app and aquire the app credentials, please follow the steps mentioned below:
+
+1. Log in to your Salesforce Financial Services Cloud dashboard with your developer account credentials.
+2. Click on the `Gear` icon in the top right and select `Setup` button.
+<img height="200" src="/images/Salesforce_fsc/fsc_navigate.png" alt="Navigation for App setup"/>
+3. Select `Apps` > `App Manager` options from the left side menu under `Platform Tools` section.
+4. Select `New Connected App` button in the setup page.
+5. Enter the basic details of your application
+6. Under **API (Enable OAuth Settings)**, mark the `Enable OAuth Settings` checkbox.
+7. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Salesforce Finance` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Paste this under the `Callback URL` field of the app.
+8. Select the required scopes, including the **mandatory scopes** mentioned above .
+9. Enable the required **App Settings** mentioned above, click on the `Save` button and click `Continue`.
+<img height="200" src="/images/Salesforce_fsc/fsc_config.png" alt="Setting up Finance Cloud Developer app"/>
+10. Click on the `Manage Consumer Details` button under the API (Enable OAuth Settings) section, verify your identity and copy the **Consumer Key** and **Consumer Secret**.
+<img height="200" src="/images/Salesforce_fsc/fsc_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Salesforce_fsc/fsc_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Salesforce Financial Services Cloud actions and triggers. Following are the set of Salesforce Financial Services Cloud actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Account">
+     1. **Create Account** - Create an account in Salesforce Financial Services Cloud.
+     </Accordion>
+     <Accordion title="Goal">
+     2. **Create Goal** - Create a goal in Salesforce Financial Services Cloud.
+     3. **Update Goal** - Update a goal in Salesforce Financial Services Cloud.
+     4. **Search Goal** - Search a goal in Salesforce Financial Services Cloud.
+     </Accordion>
+     <Accordion title="Record Alert">
+     5. **Create Record Alert Person** - Create record alert for Person account in Salesforce Financial Services Cloud.
+     6. **Create Record Alert Financial** - Create record alert for Financial account in Salesforce Financial Services Cloud.
+     </Accordion>
+     <Accordion title="Others">
+     7. **HTTP Request** - Make HTTP API calls to any Salesforce Financial Services Cloud documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
