@@ -1,0 +1,108 @@
+---
+title: Setup
+description: Connect to your Monday App for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Monday. In this guide, we will look at the OAuth App setup process.
+
+To setup your Monday app in Cobalt for OAuth, you will need the following credentials from your Monday Developer account:
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Monday Developer account. You can create one [here](https://auth.monday.com/users/sign_up_new?developer=true).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. me:read
+2. webhooks:write
+
+<Info>If you haven't already created an app in Monday, you'd need to create one.</Info>
+
+### Creating an app in Monday
+
+To create a Monday app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Monday Developer account](https://auth.monday.com/auth/login_monday?).
+2. Click on the `Profile` icon in the top right and select `Developers` button.
+<img height="200" src="/images/Monday/monday_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create app` button under `My Apps`.
+4. Enter the `Name` for your application under **Basic Information** and click `Save App`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Monday` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Go to `OAuth` in the app in the side menu > Go to the `Redirect URLs` tab > Paste the Callback Url > Click on `Save Scopes`.
+7. Select the **mandatory scopes** in the `Scopes` tab under **OAuth**, as provided in your Cobalt Monday settings page and click on the `Save Scopes` button.
+<img height="200" src="/images/Monday/monday_config.png" alt="Setting up Monday Developer app"/>
+
+8. Go to the **Basic Information** section and copy the **Client ID** and **Client Secret** from the App Credentials section.
+<img height="200" src="/images/Monday/monday_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Monday/monday_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Monday/monday_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Monday Developer account](https://auth.monday.com/auth/login_monday?) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Scopes` tab under **OAuth** > Add the scopes as added in Cobalt > Click on `Save Scopes`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Monday actions and triggers. Following are the set of Monday actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Board">
+     1. **Create Board** - Create a board in Monday.
+     2. **Update Board** - Update a board in Monday.
+     3. **Delete Board** - Delete a board in Monday.
+     </Accordion>
+     <Accordion title="Group">
+     4. **Create Group** - Create a group in Monday.
+     5. **Update Group** - Update a group in Monday.
+     6. **Delete Group** - Delete a group in Monday.
+      </Accordion>
+     <Accordion title="Item">
+     7. **Create Item** - Create an item in Monday.
+     8. **Update Item** - Update an item in Monday.
+     9. **Delete Item** - Delete an item in Monday.
+     </Accordion>
+     <Accordion title="Sub-item">
+     10. **Create Subitem** - Create a subitem in Monday.
+     11. **Update Subitem** - Update a subitem in Monday.
+     12. **Delete Subitem** - Delete Subitem in Monday.
+      </Accordion>
+     <Accordion title="Others">
+     13. **HTTP Request** - Make HTTP API calls to any Monday documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Item Created** - Triggers when an item is createdd on Monday.
+         2. **Subitem Created** - Triggers when a subitem is created on Monday.
+         3. **Column Value Updated** - Triggers when a column value is updated on Monday.
+         4. **Status Column Value Updated** - Triggers when a status column value is updated on Monday.
+         5. **Subitem Column Value Updated** - Triggers when a subitem column value is updated on Monday.
+         6. **Specific Column Value Updated** - Triggers when a specific column value is updated on Monday.
+  </Tab>
+</Tabs>
