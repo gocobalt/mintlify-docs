@@ -1,0 +1,49 @@
+---
+title: Setup
+description: Connect to your Teamwork app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Teamwork. In this guide, we will look at the OAuth App setup process.
+
+To setup your Teamwork app in Cobalt for OAuth, you will need the following credentials from your [Teamwork Developer account](https://apidocs.teamwork.com/guides/teamwork/developer-portal#how-do-i-access-the-developer-portal):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Teamwork Developer account. You can create one [here](https://www.teamwork.com/signup/).
+
+<Info>If you haven't already created an app in Teamwork, you'd need to create one.</Info>
+
+### Creating an app in Teamwork
+
+To create a Teamwork app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Teamwork Developer account.
+2. Click on `Create an app` button in the top right corner.
+<img height="200" src="/images/Teamwork/teamwork_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Teamwork` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Enter the `Name` for your application > Choose `Product` as **Teamwork** > Paste the Callback Url under `Redirect URIs` and click on `Create App` button.
+5. Click on the app created, go to the **Credentials** tab and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Teamwork/teamwork_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Teamwork/teamwork_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Publishing Teamwork App
+When the app is created in the Teamwork Developer Portal, it's status is shown as **In development**. This means your app is currently in development mode and it can only be used by the Teamwork account it was created under.
+
+Once you are ready to publish your app and make it available to all Teamwork users, please contact integrations@teamwork.com.
+
+<Tip>
+Learn more about the pre-requisites to complete for the app publishing process [here](https://apidocs.teamwork.com/guides/teamwork/app-verification).
+</Tip>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Teamwork actions and triggers. An action with any API of Teamwork can be created by using the **HTTP Request** Action.
