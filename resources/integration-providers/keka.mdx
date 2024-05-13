@@ -3,7 +3,7 @@ title: Connect
 description: Connect with the Linked Account's Keka account.
 ---
 <Note>
-Keka is an **Key** based integration and does not require the setup of an app.
+Keka is a **Key** based integration and does not require the setup of an app.
 </Note>
 
 ### Required Credentials of a Linked Account
@@ -12,7 +12,8 @@ To successfully connect with the **Keka HR** integration, a Linked Account or an
 
 1. Client ID
 2. Client Secret
-3. API Key
+3. API Token
+4. API Domain
 
 <Info>
 To understand how a Linked Account can get the above mentioned credentials, refer below.
@@ -23,13 +24,29 @@ To understand how a Linked Account can get the above mentioned credentials, refe
 To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
 <img height="200" src="/images/keka/keka_config.png" alt="Connect a Linked Account"/>
 
-1. Log in to your Keka account.
+1. Log in to your Keka account and copy the Domain of your Keka account. This is the `API Domain`.
 2. Click on the `Gear` icon in the top nav bar and select `Integration and Automation` button.
 <img height="200" src="/images/keka/keka_navigation.png" alt="Navigation for API Key"/>
 3. Go to `API Access` tab  and click on `Create New Key` button.
-4. Enter the `Name` > Copy the **API Key** > Select the **scopes** required and click on `Save`.
+4. Enter the `Name` > Copy the **API Key** (API Token) > Select the **scopes** required and click on `Save`.
 5. Copy the **Client ID** and **Client Secret** from the API Key section.
 <img height="200" src="/images/keka/keka_credentials.png" alt="Getting Credentials"/>
+
+#### Keka Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Keka HR, you'd need to subscribe to Keka's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Keka webhook subscription:**
+
+1. Select **Keka** from the application list in **Cobalt**, and select `Settings`.
+2. Copy the `Single Webhook Url`
+3. Go to `Communications` in your Keka Account Settings.
+4. Select the Event Category which you want to subscribe to > Select the `Event` > Click on `Add Action` > `Webhook` > Give the Webhook a `Name` > Paste the `Single Webhook Url` inside the "Webhook Endpoint" field.
+
+
+5. Click on `Test` and click on `Create`.
+
+<img height="200" src="/images/keka/keka_webhook.png" alt="Setting up Keka Webhook URL"/>
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Keka actions and triggers. Following are the set of Keka actions and triggers
@@ -66,6 +83,6 @@ supported by Cobalt.
   </Tab>
   
   <Tab title="Triggers">
-        There are no triggers in this application.
+      1. **Employee Added** - Triggers when an employee is added on Keka.
   </Tab>
 </Tabs>
