@@ -18,6 +18,15 @@ To setup your Zoom app in Cobalt for OAuth, you will need the following credenti
 
 <Info>If you haven't already created an app in Zoom, you'd need to create one.</Info>
 
+### Configuring Callback URL for Zoom App
+
+To use your Zoom app in Production, it needs to go through a review process. This process requires you to provide a callback URL with your domain name and not Cobalt's.
+
+To create Callback URL with your domain:
+- Create a **Proxy API** as Callback URL to Zoom.
+- Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zoom` > `Settings` > `Use your credentials` > `Callback Url`.
+- Pass the API Requests received on the **Proxy API** to Cobalt's `Callback URL` from your server.
+
 ### Creating an app in Zoom
 
 To create a Zoom app and aquire the above mentioned credentials, please follow the steps mentioned below:
@@ -25,12 +34,11 @@ To create a Zoom app and aquire the above mentioned credentials, please follow t
 1. Log in to your [Zoom Developer account](https://marketplace.zoom.us/user/build).
 2. Click on `Develop` in the top right and select `Build App` button.
 <img height="200" src="/images/Zoom/zoom_navigation.png" alt="Navigation for App setup"/>
-3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zoom` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
-4. In the App, go to `Basic Information` in the side menu, scroll down and paste the Callback Url under `OAuth Redirect URL` field. 
-5. Select the **mandatory scopes** in the **Scopes** section by clicking on `+ Add Scopes`, as provided in your Cobalt Zoom settings page and click on the `Done`.
+3. In the App, go to `Basic Information` in the side menu, scroll down and paste the Callback Url created by you under `OAuth Redirect URL` field. 
+4. Select the **mandatory scopes** in the **Scopes** section by clicking on `+ Add Scopes`, as provided in your Cobalt Zoom settings page and click on the `Done`.
 <img height="200" src="/images/Zoom/zoom_config.png" alt="Setting up Zoom Developer app"/>
 
-6. Go to the **Basic Information** section and copy the **Client ID** and **Client Secret** from the **App Credentials** section.
+5. Go to the **Basic Information** section and copy the **Client ID** and **Client Secret** from the **App Credentials** section.
 <img height="200" src="/images/Zoom/zoom_credentials.png" alt="Getting Credentials"/>
 
 #### Configuring credentials in Cobalt
