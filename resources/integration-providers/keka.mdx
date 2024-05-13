@@ -1,7 +1,71 @@
 ---
-title: Setup
-description: Connect to your Keka HR app for OAuth.
+title: Connect
+description: Connect with the Linked Account's Keka account.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+<Note>
+Keka is an **Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Keka HR** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Client ID
+2. Client Secret
+3. API Key
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+### Getting Credentials of Keka
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/keka/keka_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your Keka account.
+2. Click on the `Gear` icon in the top nav bar and select `Integration and Automation` button.
+<img height="200" src="/images/keka/keka_navigation.png" alt="Navigation for API Key"/>
+3. Go to `API Access` tab  and click on `Create New Key` button.
+4. Enter the `Name` > Copy the **API Key** > Select the **scopes** required and click on `Save`.
+5. Copy the **Client ID** and **Client Secret** from the API Key section.
+<img height="200" src="/images/keka/keka_credentials.png" alt="Getting Credentials"/>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Keka actions and triggers. Following are the set of Keka actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Candidates">
+     1. **Get Candidates** - Get all candidates in Keka.
+     2. **Create Candidate** - Create a new candidate in Keka.
+     3. **Update Candidate** - Update a candidate in Keka.
+     </Accordion>
+     <Accordion title="Employees">
+     4. **Get All Employees** - Get all employees in Keka.
+     5. **Create Employee** - Create an employee in Keka.
+     6. **Get Employee** - Get an employee in Keka.
+     7. **Update Employee** - Update an employee in Keka.
+      </Accordion>
+     <Accordion title="Jobs">
+     8. **Get Jobs** - Get all jobs in Keka.
+      </Accordion>
+     <Accordion title="Projects">
+     9. **Get Projects** - Get all projects in Keka.
+     10. **Create Project** - Create a new project in Keka.
+      </Accordion>
+     <Accordion title="Time Entries">
+     11. **Get Time Entries** - Get all time entries in Keka.
+    </Accordion>
+     <Accordion title="Others">
+     12. **HTTP Request** - Make HTTP API calls to any Keka documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
