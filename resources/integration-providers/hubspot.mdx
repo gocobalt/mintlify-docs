@@ -3,22 +3,14 @@ title: Setup
 description: Connect to your users’ Hubspot CRM to create, access, and update records in their Hubspot account.
 ---
 
-To setup your Hubspot app in Cobalt for OAuth, you will need the following credentials from your [Hubspot developer account](https://app.hubspot.com/login?hubs_signup-url=developers.hubspot.com/&hubs_signup-cta=cta--small):
-- Client Id
-- Client Secret
-- Scopes
+### Pre-requisites
 
-### Required Settings
-
-* **Mandatory Scopes** 
-1. oauth
-2. crm.objects.owners.read
-
-<Info>If you do not already have a developer account, you would need to create one [here](https://app.hubspot.com/signup/developers).</Info>
+1. HubSpot Developer Account.
+2. Required Settings for the App. You can find it in [Overview](https://docs.gocobalt.io/resources/integration-providers/hubspot_overview#required-settings).
 
 #### Acquiring Hubspot client credentials
 
-1. Login to your Hubspot (developer account dashboard)[https://developers.hubspot.com/].
+1. Login to your [Hubspot Developer account dashboard](https://developers.hubspot.com/).
 2. Select `Manage Apps`, and choose from the applications that you'd like your end customers to install.
 3. Go to `Basic info` > `Auth` > `Auth settings` > `App Credentials` and acquire the `Client Id` and `Client Secret`.
 
@@ -78,72 +70,3 @@ a single webhook URL to manage such event triggers for all your customers.
 
 6. Click on the newly created subscription and `Activate` it to take effect.
 
-#### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using hubspot actions and triggers. Following are the set of Hubspot actions and triggers
-supported by Cobalt.
-
-
-<Tabs>
-  <Tab title="Actions">
-  <AccordionGroup>
-     <Accordion title="Contact">
-     1. **Create Contact** - Creates a contact in Hubspot
-     2. **Update Contact** - Updates a contact in Hubspot
-     3. **Delete Contact** - Deletes a contact in Hubspot
-     4. **List Contacts** - Lists all contacts in Hubspot CRM
-     5. **Get Contact By Id** - Gets a contact by Hubspot contact id
-     6. **Search Contact** - Searches a hubspot contact object by query.
-     7. **Create Custom Contact Property** - Creates a custom property in hubspot
-     </Accordion>
-     <Accordion title="Company">
-     8. **Create Company**- Creates a company in Hubspot
-     9. **Update Company** - Updates a company in Hubspot
-     10. **Delete Company** - Deletes a company in Hubspot
-     11. **List Companies** - Lists all companies in Hubspot CRM
-     12. **Get Company By Id** - Gets a company by id
-     13. **Search Company** - Searches a hubspot company object by query
-     </Accordion>
-    <Accordion title="Deal">
-     14. **Create Deal** - Creates a deal in Hubspot
-     15. **Update Deal** - Updates a deal in Hubspot
-     16.**Delete Deal** - Deletes a deal in Hubspot
-     17. **List Deals** - List all deals in Hubspot CRM
-     18. **Search Deal** - Searches a hubspot deal object by query
-     19. **Get Deal By Id** - Gets a deal by Hubspot deal id
-    </Accordion>
-    <Accordion title="Task">
-     20. **Create Task** - Creates a task in Hubspot
-     21. **List Tasks** - Lists all tasks
-     22. **Get Task By Id** - Gets a task by task id
-     </Accordion>
-     <Accordion title="Note">
-     23. **Create Note** - Creates a note in Hubspot
-     24. **List Notes** - Lists all notes
-     </Accordion>
-     <Accordion title="Email">
-     25. **Log Email** - Creates a log email activity in Hubspot
-     26. **List Emails** - Lists all email activities
-    </Accordion>
-    <Accordion title="Others">
-     27. **HTTP Request** - Make HTTP API calls to any Hubspost documented REST APIs.
-     28. **List Audit Logs** - Lists all audit logs
-     29. **List Teams** - Lists all teams
-     30. **Get Daily Usage** - Gets user's daily usage
-     31. **List Owners** -  Lists all owners of the Hubspot account
-     32. **Get User By Id** - Gets a user by id
-    </Accordion>
-    </AccordionGroup>
-  </Tab>
-
-  <Tab title="Triggers">
-    1. **Contact Created/Properties Updated** - Triggers when a contact is created or a contact property is updated on Hubspot
-    2. **Contact Deleted** - Triggers when a contact is deleted on Hubspot
-    3. **Contact Updated** - Triggers when a contact is updated on Hubspot
-    4. **Deal Created/Properties Updated** - Triggers when a deal is created or a contact property is updated on Hubspot
-    5. **Deal Deleted** - Triggers when a deal is deleted on Hubspot
-    6. **Deal Updated** - Triggers when a deal is updated on Hubspot
-    7. **Company Created/Properties Updated** - Triggers when a company is created or a contact property is updated on Hubspot
-    8. **Company Deleted** - Triggers when a company is deleted on Hubspot
-    9. **Company Updated** - Triggers when a company is updated on Hubspot
-  </Tab>
-</Tabs>

@@ -2,6 +2,103 @@
 title: Setup
 description: Connect to your Clover app for OAuth
 ---
-<Tip>
-Coming Soon!
-</Tip>
+To setup your Clover app in Cobalt for OAuth, you will need the following credentials from your [Clover Developer account](https://www.clover.com/fusionauth/oauth2/authorize?client_id=8c4b9ac9-c55b-4ee1-b978-30ea9edbf552&response_type=code&redirect_uri=https%3A%2F%2Fwww.clover.com%2Fglobaldeveloperexperience%2Fcallbacks%2Fredirect-login&scope=openid%20offline_access):
+- Client ID
+- Client Secret
+
+## Pre-requisites
+
+1. Clover Developer account. You can create one [here](https://www.clover.com/fusionauth/oauth2/register?client_id=8c4b9ac9-c55b-4ee1-b978-30ea9edbf552&response_type=code&redirect_uri=https%3A%2F%2Fwww.clover.com%2Fglobaldeveloperexperience%2Fcallbacks%2Fredirect-register&scope=openid%20offline_access).
+
+<Info>If you haven't already created an app in Clover, you'd need to create one.</Info>
+
+## Creating an app in Clover
+
+To create a Clover app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Clover Developer account](https://www.clover.com/fusionauth/oauth2/authorize?client_id=8c4b9ac9-c55b-4ee1-b978-30ea9edbf552&response_type=code&redirect_uri=https%3A%2F%2Fwww.clover.com%2Fglobaldeveloperexperience%2Fcallbacks%2Fredirect-login&scope=openid%20offline_access).
+2. Click on the `Profile` icon in the top right and select `Developer Hub` button.
+<img height="200" src="/images/Clover/clover_navigation.png" alt="Navigation for App setup"/>
+3. Click on `+ Create an App` button in the top right and choose `Create Private App`.
+4. Enter the unique App Name for your application.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Clover` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Paste the Callback URL and click on the `Save` button.
+6. Select the **mandatory scopes** in the **OAuth and access scopes** section, as provided in your Cobalt Pipedrive settings page and click on the `Save` button.
+<img height="200" src="/images/Clover/clover_config.png" alt="Setting up Clover Developer app"/>
+
+8. Scroll down in the **OAuth and access scopes** section and copy the **Client ID** and **Client Secret** from the Client ID section.
+<img height="200" src="/images/Clover/clover_credentials.png" alt="Getting Credentials"/>
+
+## Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Clover/clover_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+## Publishing Clover App
+
+Clover requires a Production level account and a Production OAuth app for use in real-time use. This requires an approval from the Clover team for the account and app.
+
+#### 1. Submit your Production Developer account for approval
+
+Clover must verify and approve your production developer account before starting the process to approve your app.
+
+- Log in to the production Developer Dashboard. The Developer Dashboard appears.
+
+- From the left navigation menu, click `Developer Settings` > `Info`. The Developer Info page appears.
+- Click the edit icon in each section, enter developer information, and click `Save`.
+- Click the **Developer Agreement link** to review the Clover App Market Developer Terms.
+- Click `Verify Your Account`. You agree to the Clover App Market Developer Terms by submitting your details.
+
+<Info>
+Learn more about the Production Developer Account approval process [here](https://docs.clover.com/docs/developer-account-approval).
+</Info>
+
+#### 2. Submit your production developer account for approval
+
+To integrate your point of sale (POS) with a production Clover device, you need to create a Clover app that merchants can install. 
+
+<Info>
+Learn more about the App Approval process [here](https://docs.clover.com/docs/developer-app-approval-archive).
+</Info>
+
+## Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Clover actions and triggers. Following are the set of Clover actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Customers">
+     1. **List Customers** - List all customers in Clover.
+     2. **Create Customer** - Create a customer in Clover.
+     3. **Update Customer** - Update a customer in Clover.
+     4. **Delete Customer** - Delete a customer in Clover.
+     </Accordion>
+     <Accordion title="Merchants">
+     5. **Get Merchant By Id** - Get a merchant by ID in Clover.
+     6. **Update Merchant** - Updates a merchant by ID in Clover.
+     7. **Get Tenders for Merchant** - Gets all merchant tenders in Clover.
+      </Accordion>
+     <Accordion title="Orders">
+     8. **List Orders** - Gets a list of orders in Clover.
+     9. **Update Order** - Update an order in Clover.
+     10. **Get Order By Id** - Get a single order in Clover.
+      </Accordion>
+     <Accordion title="Payments">
+     11. **List Payments Of Order** - List payments of an order in Clover.
+     12. **Update Payment** - Update payment in Clover.
+     13. **Get A Payment** - Get a single payment in Clover.
+      </Accordion>
+     <Accordion title="Others">
+     14. **HTTP Request** - Make HTTP API calls to any Clover documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
