@@ -2,23 +2,10 @@
 title: Setup
 description: Connect to your Google Sheets app for OAuth.
 ---
-To setup your Google Sheets app in Cobalt for OAuth, you will need the following credentials from your [Google Cloud Console dashboard](https://console.cloud.google.com/projectselector2/home/dashboard?supportedpurview=project):
-- Client ID
-- Client Secret
-- Scopes
-
 ### Pre-requisites
 
-1. Google Cloud Console account. You can create one [here](https://cloud.google.com/cloud-console/).
-
-### Required Settings
-
-* **Mandatory Scopes** 
-1. https://www.googleapis.com/auth/userinfo.email
-2. https://www.googleapis.com/auth/spreadsheets
-3. https://www.googleapis.com/auth/drive.readonly
-
-<Info>If you haven't already created a project in Google Cloud Console, you'd need to create one.</Info>
+1. Google Cloud Developer Console.
+2. Required Settings for the App. You can find it in [Overview](https://docs.gocobalt.io/resources/integration-providers/sheets_overview#required-settings).
 
 ### Creating an app in Google Sheets
 
@@ -43,7 +30,9 @@ Ensure that the correct app is selected by checking the name of the app in the d
 9. Enter the **mandatory scopes** under `Manually add scopes` > Click on `Add To Table` > Click on `Update` > Click on `Save and Continue` at the bottom of the page.
 
 <img height="200" src="/images/Sheets/sheets_setscopes.png" alt="Scopes Selection in Google Sheets App"/>
-10. Navigate to `Credentials` in the left menu under `APIs and services` and select the Web Client under `OAuth 2.0 Client IDs`. Copy the **Client ID** and **Client Secret** under `Additional information` section.
+10. Go to `Enabled APIs and services` in the left menu under **APIs and services** > Click on `+ Enable APIs and Services` > Search for `Google Sheets API` and `Google Drive API` > Click on `Enable` for both.
+<img height="200" src="/images/Sheets/sheets_api.png" alt="Enable API"/>
+11. Navigate to `Credentials` in the left menu under `APIs and services` and select the Web Client under `OAuth 2.0 Client IDs`. Copy the **Client ID** and **Client Secret** under `Additional information` section.
 <img height="200" src="/images/Googledrive/drive_credentials.png" alt="Getting Credentials"/>
 
 #### Configuring credentials in Cobalt
@@ -72,27 +61,16 @@ If you are facing scopes missing or invalid scope error. Make sure you are not p
 identical to the ones selected in the platform.
 </Warning>
 
-#### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using Google Sheets actions and triggers. Following are the set of Google Sheets actions and triggers
-supported by Cobalt.
+#### App Review for Google Sheets
 
-<Tabs>
-  <Tab title="Actions">
-  <AccordionGroup>
-<Accordion title="Spreadsheet">
-     1. **Create A Spreadsheet** - Create A New Spreadsheet In Google Sheets.
-    </Accordion>
-    <Accordion title="Worksheet">
-     2. **Create a Worksheet** - Create A New worksheet in Google Sheets.
-     </Accordion>
-     <Accordion title="Others">
-     3. **HTTP Request** - Make HTTP API calls to any Google Sheets documented REST APIs.
-     4. **Add a new row** - Add a new row in Google Sheets.
-    </Accordion>
-</AccordionGroup>
-  </Tab>
+Projects configured with a publishing status of `In production` are available to any user with a Google Account. Projects configured with a publishing status of In production should complete the verification process, including defining scopes actively requested by your project's OAuth clients, if it meets one or more of the OAuth verification criteria.
 
-  <Tab title="Triggers">
-         There are no triggers in this application.
-  </Tab>
-</Tabs>
+### To submit app for review
+- In the Project, go to `OAuth consent screen` in the left menu under **APIs and services** > Choose the App type as `External` and click on `Publish App` button.
+- Click on `Prepare for Verification` and provide the required information.
+- You will be required to submit justification for the scopes requested and a demo video on YouTube which shows the scopes being used.
+<img height="200" src="/images/Googleadmin/google_review.png" alt="App Review"/>
+
+<Tip>
+Learn more about publishing apps in Google Cloud Console [here](https://support.google.com/cloud/answer/10311615?).
+</Tip>

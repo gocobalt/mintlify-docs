@@ -40,9 +40,11 @@ Ensure that the correct app is selected by checking the name of the app in the d
 7. Select `Web application` from the **Application type** dropdown > scroll to `Authorized redirect URIs` section > Click `+ Add URI` button > Paste the Callback Url > Click `Create` button in the bottom.
 8. Navigate to `OAuth consent screen` in the left menu under `APIs and services` > Click on the `Edit App` button > Scroll down > Click `Save and Continue` in the **OAuth consent screen** section > Click `Add or Remove Scopes` button in the **Scopes** section.
 9. Enter the **mandatory scopes** under `Manually add scopes` > Click on `Add To Table` > Click on `Update` > Click on `Save and Continue` at the bottom of the page.
-
 <img height="200" src="/images/Googleadmin/admin_setscopes.png" alt="Scopes Selection in Google Admin App"/>
-10. Navigate to `Credentials` in the left menu under `APIs and services` and select the Web Client under `OAuth 2.0 Client IDs`. Copy the **Client ID** and **Client Secret** under `Additional information` section.
+
+10. Go to `Enabled APIs and services` in the left menu under **APIs and services** > Click on `+ Enable APIs and Services` > Search for `Admin SDK API` > Click on `Enable`.
+<img height="200" src="/images/Googleadmin/admin_api.png" alt="Enable API"/>
+11. Navigate to `Credentials` in the left menu under `APIs and services` and select the Web Client under `OAuth 2.0 Client IDs`. Copy the **Client ID** and **Client Secret** under `Additional information` section.
 <img height="200" src="/images/Googleadmin/admin_credentials.png" alt="Getting Credentials"/>
 
 #### Configuring credentials in Cobalt
@@ -71,6 +73,21 @@ If you are facing scopes missing or invalid scope error. Make sure you are not p
 identical to the ones selected in the platform.
 </Warning>
 
+#### App Review for Google Admin
+
+Projects configured with a publishing status of `In production` are available to any user with a Google Account. Projects configured with a publishing status of In production should complete the verification process, including defining scopes actively requested by your project's OAuth clients, if it meets one or more of the OAuth verification criteria.
+
+### To submit app for review
+- In the Project, go to `OAuth consent screen` in the left menu under **APIs and services** > Choose the App type as `External` and click on `Publish App` button.
+- Click on `Prepare for Verification` and provide the required information.
+- You will be required to submit justification for the scopes requested and a demo video on YouTube which shows the scopes being used.
+
+<img height="200" src="/images/Googleadmin/google_review.png" alt="App Review"/>
+
+<Tip>
+Learn more about publishing apps in Google Cloud Console [here](https://support.google.com/cloud/answer/10311615?).
+</Tip>
+
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Google Admin actions and triggers. Following are the set of Google Admin actions and triggers
 supported by Cobalt.
@@ -81,8 +98,12 @@ supported by Cobalt.
   <Accordion title="User Activity">
      1. **Get User Activities For A Particular Application** - Get User Activities For A Particular Application in Google Admin.
      </Accordion>
+     <Accordion title="User">
+     2. **Create User** - Create a new user in Google Admin.
+     3. **Delete User** - Delete a user by ID in Google Admin.
+     </Accordion>
      <Accordion title="Others">
-     2. **HTTP Request** - Make HTTP API calls to any Google Admin documented REST APIs.
+     4. **HTTP Request** - Make HTTP API calls to any Google Admin documented REST APIs.
     </Accordion>
 </AccordionGroup>
   </Tab>
