@@ -2,6 +2,104 @@
 title: Setup
 description: Connect to your Attio app for OAuth.
 ---
+To setup your Attio app in Cobalt for OAuth, you will need the following credentials from your [Attio Developer Settings](https://app.attio.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Attio account. You can create one [here](https://app.attio.com/welcome/sign-in).
+
+<Info>If you haven't already created an app in Attio, you'd need to create one.</Info>
+
+### Creating an app in Attio
+
+To create a Attio app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Attio Account](https://app.attio.com/).
+2. Click on the `Company` name in the top left corner and select `Workspace Settings` option.
+<img height="200" src="/images/Attio/attio_navigation.png" alt="Navigation for App setup"/>
+3. Go to `Developers` under `Workspace` in the side menu and click on `Create a new integration` button.
+4. Enter the `Integration Name` for your application and click on `Create`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Attio` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Go to `OAuth` in the App > Toggle on `OAuth Enabled` option > Click on `+ add new Redirect URI` > Paste the Callback URL and click on `Add Redirect URI`.
+
+7. Copy the **Client ID** and **Client Secret** from the `OAuth` section.
+<img height="200" src="/images/Attio/attio_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Attio/attio_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Attio/attio_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Attio Developer Settings](https://app.attio.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Scopes` section > Add the scopes as added in Cobalt. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### App Review for Attio
+
+The integration is currently private and only usable by your workspace. To distribute your integration for use in other workspaces, you need to request a review from Attio team.
+
+- Go to `Publication` section in the OAuth app and click on `Request publication`.
+
 <Tip>
-Coming Soon!
+Before requesting the publication of your app, make sure to add all the information like App name, description, scopes and logo of the app.
 </Tip>
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Attio actions and triggers. Following are the set of Attio actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Person">
+     1. **List Person** - Lists person records, with the option to filter and sort results in Attio.
+     2. **Create Person** - Creates a new person record in Attio.
+     3. **Update Person** - Update a person record in Attio.
+     4. **Delete Person** - Delete a person record in Attio.
+     </Accordion>
+     <Accordion title="Deals">
+     5. **Create Deal** - Create a deal record in Attio.
+     6. **Update Deal** - Update a deal record in Attio.
+     7. **Delete Deal** - Delete a deal record in Attio.
+     8. **Get Deal** - Get a deal record in Attio.
+      </Accordion>
+     <Accordion title="Company">
+     9. **Update Company** - Update a company record in Attio.
+     10. **Create Company** - Create a company record in Attio.
+     11. **List Company** - List company records, with the option to filter and sort results in Attio.
+      </Accordion>
+     <Accordion title="Notes">
+     12. **Create Note** - Create a note in Attio.
+     13. **Get Note** - Get a note in Attio.
+      </Accordion>
+     <Accordion title="Others">
+     14. **HTTP Request** - Make HTTP API calls to any Attio documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
