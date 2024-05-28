@@ -2,7 +2,7 @@
 
 Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including. This is a sample change. Creating a dummy PR
 
-- Guide Pages
+- Guide pages
 - Navigation
 - Customizations
 - API Reference pages
