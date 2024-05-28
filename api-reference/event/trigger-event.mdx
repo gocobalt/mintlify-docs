@@ -1,21 +1,18 @@
 ---
-title: 'Trigger event'
-api: post /api/v2/public/event/trigger
+title: 'Trigger event for a single app'
+api: post /api/v2/public/event/:slug
 ---
-
-This Api triggers a cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). This would trigger
-all the workflows associated with the specified event.
-
+This Api triggers a webhook event for a specific application. You first need to create the event on your Cobalt dashboard
 ## Request description
 #### Headers
 <ParamField header="linked_account_id" type="string" required>
   Application slug. Eg: `pipedrive`
 </ParamField>
 
-<ParamField header="config_id" type="string">
-  If not provided, `linked_account_id` is considered by default.
+#### Path Parameters
+<ParamField path="slug" type="string">
+  Application slug. Eg: `pipedrive`
 </ParamField>
-
 
 #### Body Parameters
 <ParamField body="event" type="string" required>
@@ -78,3 +75,4 @@ all the workflows associated with the specified event.
 }
 ```
 </ ResponseExample>
+

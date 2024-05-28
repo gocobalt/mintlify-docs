@@ -1,19 +1,14 @@
 ---
-title: 'Update application auth'
-api: put /api/v2/public/application/:slug
+title: 'Migrate Token for a Linked Account'
+api: put /api/v2/public/migrate-token
 ---
 
-This API is used to update a linked accounts's auth object (API keys, Access Tokens, etc;) of an application integration in Cobalt.
+This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an application to an integration in Cobalt.
 
 ## Request description
 #### Headers 
 <ParamField header="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com
-</ParamField>
-
-#### Path Parameters
-<ParamField path="slug" type="string" required>
-  Application slug. For Eg: `slack`
 </ParamField>
 
 #### Body Parameters
@@ -27,6 +22,10 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
           Example property: Eg: for `slack` - workspace_token
         </ResponseField>
     </Expandable>
+</ParamField>
+
+<ParamField path="slug" type="string" required>
+  Application slug. For Eg: `slack`
 </ParamField>
 
 ## Response description

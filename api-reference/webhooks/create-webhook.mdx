@@ -1,9 +1,9 @@
 ---
-title: 'Create Webhook'
+title: 'Create/Update Webhook'
 api: post /api/v2/public/webhook
 ---
 
-This api registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
+This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 ## Request description
 #### Body Parameters
@@ -13,6 +13,15 @@ This api registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 <ParamField body="webhook_events" type="array">
   Webhooks events to subscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+</ParamField>
+
+#### Query Parameters
+<ParamField query="page" type="integer" default="1">
+  Page number eg: 5
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+ Records per page eg: 10
 </ParamField>
 
 ## Response description
