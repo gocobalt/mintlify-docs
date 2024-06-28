@@ -2,6 +2,110 @@
 title: Setup
 description: Connect to your Salesloft app for OAuth.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Salesloft. In this guide, we will look at the OAuth App setup process.
+
+To setup your Salesloft app in Cobalt for OAuth, you will need the following credentials from your [Salesloft Developer account](https://developers.salesloft.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Salesloft Developer account.
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. 
+
+<Info>If you haven't already created an app in Salesloft, you'd need to create one.</Info>
+
+### Creating an app in Salesloft
+
+To create a Salesloft app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Salesloft Developer account](https://developers.salesloft.com/).
+2. Click on the `Manage Apps` button in the top nav bar.
+<img height="200" src="/images/Salesloft/salesloft_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create New` button in **OAuth Applications**.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Salesloft` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Give the app `Name` > Paste the Callback Url copied under `Redirect URL` field > Select `Application Type` as **Public application** > Select the required **Scopes** and click on `Save`. 
+<Note>
+Appl type is selected as Public Application to ensure people outside your organization can authenticate with it as well.
+</Note>
+
+6. Copy the `Application ID` **(Client ID)** and `Secret`**(Client Secret)** displayed on the screen.
+<img height="200" src="/images/Salesloft/salesloft_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Salesloft/salesloft_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Salesloft/salesloft_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Salesloft Developer account](https://developers.salesloft.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt and click on `Edit` for it > Add the scopes under `Scopes` as added in Cobalt > Click on `Submit`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Getting Production Credentials of App
+
+Once you've built your app using OAuth Authenication, you must submit it to be reviewed for allowlisting so that it can be used by other Salesloft instances.
+
+<Info>
+To more about the Salesloft App Publishing process, refer [here](https://developers.salesloft.com/docs/platform/salesloft-app-directory/submission-checklist/).
+</Info>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Salesloft actions and triggers. Following are the set of Salesloft actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Accounts">
+     1. **Create Account** - Create a new account in Salesloft.
+     2. **List Accounts** - Get a list of accounts in Salesloft.
+     3. **Update Account** - Update an account in Salesloft.
+     4. **Delete Account** - Delete an account in Salesloft.
+     </Accordion>
+     <Accordion title="Calls">
+     5. **Create Calls** - Create a new call in Salesloft.
+     6. **List Calls** - List all calls in Salesloft.
+     </Accordion>
+     <Accordion title="Notes">
+     7. **Create Note** - Create a note in Salesloft.
+     8. **Update Note** - Update a note in Salesloft.
+     9. **Get Note by ID** - Get a note by ID in Salesloft.
+     </Accordion>
+     <Accordion title="Tasks">
+     10. **Create Tasks** - Create a new task in Salesloft.
+     11. **List Tasks** - List all tasks in Salesloft.
+     12. **Get Task by ID** - Get a task by ID in Salesloft.
+    </Accordion>
+     <Accordion title="Others">
+     13. **HTTP Request** - Make HTTP API calls to any Salesloft documented REST APIs.
+     14. **Create Custom Fields** - Create new custom fields in Salesloft.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
