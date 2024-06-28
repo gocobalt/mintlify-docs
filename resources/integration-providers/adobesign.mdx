@@ -1,0 +1,105 @@
+---
+title: Setup
+description: Connect to your Adobe Sign app for OAuth.
+---
+To setup your Adobe Sign app in Cobalt for OAuth, you will need the following credentials from your [Adobe Sign account](https://secure.na3.adobesign.com/account):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Adobe Developer account. You can create one [here](https://developers.pipedrive.com/#signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. user_read
+2. user_write
+3. user_login
+
+<Info>If you haven't already created an app in Adobe Sign, you'd need to create one.</Info>
+
+### Creating an app in Adobe Sign
+
+To create a Adobe Sign app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Adobe Sign account](https://secure.na3.adobesign.com/account).
+2. Click on the `Account` option in the top nav bar, select `Acrobat Sign API` in the side menu and choose `API Applications`.
+<img height="200" src="/images/Adobesign/adobesign_navigation.png" alt="Navigation for App setup"/>
+3. Click on `+` button in the top right > provide a **Name** and **Display Name** for your app > Choose `Partner` as **Domain** and click on `Save`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Adobe Sign` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Select the app created, click on `Configure OAuth for application` and paste the Callback Url under `Redirect URI` field.
+6. Select the **mandatory scopes** in the **Enabled scopes** section, as provided in your Cobalt Adobe Sign settings page and click on the `Save` button.
+<img height="200" src="/images/Adobesign/adobesign_config.png" alt="Setting up Adobe Sign Developer app"/>
+
+7. Click on `View/Edit` option for the app and copy the `Application ID`**(Client ID)** and `Client Secrets Value`**(Client Secret)**.
+<img height="200" src="/images/Adobesign/adobesign_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Adobesign/adobesign_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Adobesign/adobesign_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Adobe Sign account](https://secure.na3.adobesign.com/account) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Configure OAuth for Application` > Add the scopes as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Getting OAuth App Partner Certified
+
+In Adobe, Partner applications will not have full access to other accounts until they have been Certified. To get your app certified, you need to complete few steps with the Adobe Team.
+
+<Info>
+To get app certified and fill the required details, refer [here](https://www.adobe.com/go/esign-dev-cert).
+</Info>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Adobe Sign actions and triggers. Following are the set of Adobe Sign actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Agreements">
+     1. **List Agreements** - Retrieves agreements for the user in Adobe Sign.
+     2. **Create Agreement** - Creates an agreement in Adobe Sign.
+     3. **Update Agreement** - Updates an agreement in Adobe Sign.
+     4. **Search Agreement** - Searches, filters, and sorts agreements for the user in Adobe Sign.
+     5. **Get an agreement by ID** - Gets a specific agreement by ID in Adobe Sign.
+     </Accordion>
+     <Accordion title="Users">
+     6. **List Users** - Retrieves all the users in an account in Adobe Sign.
+     7. **Create User** - Creates a new user in Adobe Sign.
+     8. **Update User** - Updates a user in Adobe Sign.
+      </Accordion>
+     <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any Adobe Sign documented REST APIs.
+     10. **List Events for a User** - Retrieves all events for user in Adobe Sign.
+     11. **Send Agreement for Sign** - Send an agreement out for signature to multiple recipients in Adobe Sign.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Agreement Created** - Triggers when an agreement is created on Adobe Sign.
+         2. **Agreement Participant Completed** - Triggers when an agreement participant completes their part on Adobe Sign.
+         3. **Agreement Workflow Completed** - Triggers when an agreement workflow is completed on Adobe Sign.
+  </Tab>
+</Tabs>
