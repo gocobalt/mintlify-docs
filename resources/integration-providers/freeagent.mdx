@@ -1,0 +1,89 @@
+---
+title: Setup
+description: Connect to your FreeAgent app for OAuth.
+---
+To setup your FreeAgent app in Cobalt for OAuth, you will need the following credentials from your [FreeAgent Developer account](https://dev.freeagent.com/apps):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. FreeAgent Developer account. You can create one [here](https://dev.freeagent.com/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. 
+
+<Info>If you haven't already created an app in FreeAgent, you'd need to create one.</Info>
+
+### Creating an app in FreeAgent
+
+To create a FreeAgent app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [FreeAgent Developer account](https://dev.freeagent.com/apps).
+2. Click on the `My Apps` icon in the top nav bar and select `Create New App` button.
+<img height="200" src="/images/Freeagent/freeagent_navigation.png" alt="Navigation for App setup"/>
+3. Enter the App `Name` and `Description` for your application.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `FreeAgent` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Paste the Callback URL under `OAuth Redirect URIs` during app creation and click on the `Create App` button.
+
+6. Copy the `OAuth identifier`**(Client ID)** and `Secret`**(Client Secret)** from the **OAuth secrets** section.
+<Note>
+Ensure that the Secret is copied as it will be displayed only once.
+</Note>
+<img height="200" src="/images/Freeagent/freeagent_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Freeagent/freeagent_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using FreeAgent actions and triggers. Following are the set of FreeAgent actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Accounts">
+     1. **List Bank Accounts** - List all bank accounts in FreeAgent.
+     2. **Create Bank Account** - Create a new bank account in FreeAgent.
+     3. **Update Account** - Update an account in FreeAgent.
+     4. **Delete Account** - Delete an account in FreeAgent.
+     </Accordion>
+     <Accordion title="Bills">
+     5. **Create Bill** - Create a new bill in FreeAgent.
+     6. **List Bills** - List all bills in FreeAgent.
+     7. **Update Bill** - Update a bill in FreeAgent.
+     8. **Delete Bill** - Delete a bill in FreeAgent.
+      </Accordion>
+     <Accordion title="Invoice">
+     9. ** List Invoice** - List all invoices in FreeAgent.
+     10. **Create Invoice** - Create an invoice in FreeAgent.
+     11. **Update Invoice** - Update an invoice in FreeAgent.
+      </Accordion>
+     <Accordion title="Transaction">
+     12. **List Transactions** - List all transactions in FreeAgent.
+      </Accordion>
+         <Accordion title="Balance Sheet">
+     13. **Get Balance Sheet** - Get a balance sheet in FreeAgent.
+      </Accordion>
+         <Accordion title="Company">
+     14. **Get a Company** - Get a company in FreeAgent.
+      </Accordion>
+     <Accordion title="Others">
+     15. **HTTP Request** - Make HTTP API calls to any FreeAgent documented REST APIs.
+     16. **List Projects** - List all projects in FreeAgent.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
