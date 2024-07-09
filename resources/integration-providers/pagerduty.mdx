@@ -1,0 +1,108 @@
+---
+title: Setup
+description: Connect to your PagerDuty app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for PagerDuty. In this guide, we will look at the OAuth App setup process.
+
+To setup your PagerDuty app in Cobalt for OAuth, you will need the following credentials from your [PagerDuty account](https://identity.pagerduty.com/global/authn/authentication/PagerDutyGlobalLogin/enter_email):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. PagerDuty Developer account. You can create one [here](https://developer.pagerduty.com/sign-up/).
+
+<Info>If you haven't already created an app in PagerDuty, you'd need to create one.</Info>
+
+### Creating an app in PagerDuty
+
+To create a PagerDuty app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your PagerDuty account.
+2. Click on the `Integrations` option in the top nav bar and select `App Registration` button.
+<img height="200" src="/images/Pagerduty/pager_navigation.png" alt="Navigation for App setup"/>
+3. Click on `+ New App` button in the top right > Enter the `Name` and `Description` for your application and choose `OAuth 2.0` as **Functionality** > Click on `Next`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `PagerDuty` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Click on `+ Add Redirect URL` and paste the Callback Url. Select Scopes as required and click on `Register App`.
+<img height="200" src="/images/Pagerduty/pager_config.png" alt="Setting up PagerDuty Developer app"/>
+
+6. Copy the **Client ID** and **Client Secret** displayed on the screen.
+<Note>
+Ensure that the Client ID and Secret were copied as they will be shown only once.
+</Note>
+<img height="200" src="/images/Pagerduty/pager_credentials.png" alt="Getting Credentials"/>
+
+
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Pagerduty/pager_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Pagerduty/pager_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your PagerDuty account and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Edit` in the left side > Click on `Manage` under **OAuth 2.0** > Add the scopes as added in Cobalt > Click on `Confirm Changes`. 
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Making PagerDuty App Public
+
+In PagerDuty, a **Public App** allows the app to be used by anyone.
+
+To make your app public, select `App Type` as **Public** and fill the **Distribution Form** provided to you.
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using PagerDuty actions and triggers. Following are the set of PagerDuty actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Incidents">
+     1. **List Incidents** - List incidents in PagerDuty.
+     2. **Create Incident** - Create an incident in PagerDuty.
+     3. **Get Incident** - Get an incident in PagerDuty.
+     4. **Update Incident** - Update an incident in PagerDuty.
+     </Accordion>
+     <Accordion title="Services">
+     5. **List Services** - List services in PagerDuty.
+     6. **Create Service** - Create a service in PagerDuty.
+     7. **Delete Service** - Delete a service in PagerDuty.
+     8. **Update Service** - Update a service in PagerDuty.
+      </Accordion>
+     <Accordion title="Tags">
+     9. **List Tags** - List all of your account's tags in PagerDuty.
+     10. **Create Tags** - Create a Tag in PagerDuty.
+      </Accordion>
+
+     <Accordion title="Others">
+     11. **HTTP Request** - Make HTTP API calls to any PagerDuty documented REST APIs.
+     12. **List Audit Records** - List audit records in PagerDuty.
+     13. **List Users** - List users in PagerDuty.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Incident Resolved** - Triggers when an incident has been resolved on PagerDuty.
+         2. **Incident Delegated** - Triggers when an incident has been reassigned to another escalation policy on PagerDuty.
+         3. **Service Created** - Triggers when a service is created on PagerDuty.
+
+  </Tab>
+</Tabs>
