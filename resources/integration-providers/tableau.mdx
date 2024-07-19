@@ -1,0 +1,69 @@
+---
+title: Connect
+description: Connect with the Linked Account's Tableau account.
+---
+<Note>
+Tableau is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Tableau** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Base URL
+2. Access Token
+3. Token Name
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Tableau
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Tableau/tableau_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Tableau account](https://identity.idp.tableau.com/login) and copy the `Base URL` of your account before `/#` in the URL.
+2. Click on the `Settings` icon in the side menu > Go to `General` tab > Scroll down and check that `Enable personal access tokens` is checked.
+<img height="200" src="/images/Tableau/tableau_navigation.png" alt="Navigation in Tableau"/>
+
+3. Click on **Profile Icon** in the top right corner and select `My Account Settings`.
+4. Under `Settings` tab > Scroll to **Personal Access Tokens** section > Provide a `Token Name` and click on `Create Token`.
+5. Copy the `Token Name` and Token `Secret` displayed which is the Access Token.
+<img height="200" src="/images/Tableau/tableau_credentials.png" alt="Getting Access Token"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Tableau.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Tableau actions and triggers. Following are the set of Tableau actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Refresh Tasks">
+     1. **List Extract Refresh Tasks in Site** - Returns a list of extract refresh tasks for the site in Tableau.
+     2. **Run Extract Refresh Task** - Runs the specified extract refresh task in Tableau.
+    </Accordion>
+    <Accordion title="Sites">
+     3. **List Sites** - Returns a list of the sites in Tableau.
+     4. **Create Site** -Creates a site on Tableau Server.
+     </Accordion>
+    <Accordion title="View">
+     5. **Download View Crosstab in Excel** - Downloads view crosstab in Excel in Tableau.
+     6. **Search View** - Returns all the views for the specified site in Tableau.
+    </Accordion>
+    <Accordion title="Workbook">
+     7. **Search Workbook** - Returns the workbooks on a site in Tableau.
+    </Accordion>
+    <Accordion title="Others">
+     8. **HTTP Request** - Make HTTP API calls to any Tableau documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
