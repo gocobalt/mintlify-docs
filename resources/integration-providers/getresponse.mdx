@@ -4,6 +4,79 @@ description: Connect to your GetResponse app for OAuth.
 ---
 Cobalt offers both **Key Based** and **OAuth 2.0** integration for GetResponse. In this guide, we will look at the OAuth App setup process.
 
-<Tip>
-Coming Soon!
-</Tip>
+To setup your GetResponse app in Cobalt for OAuth, you will need the following credentials from your [GetResponse account](https://app.getresponse.com/dashboard):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. GetResponse account. You can create one [here](https://www.getresponse.com/start-free?lang=en).
+
+<Info>If you haven't already created an app in GetResponse, you'd need to create one.</Info>
+
+### Creating an app in GetResponse
+
+To create a GetResponse app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [GetResponse account](https://app.getresponse.com/dashboard).
+2. Click on the `Tools` icon in the top left > Select `Integrations and API` button and select `Custom apps` tab.
+<img height="200" src="/images/Getresponse/getresponse_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `GetResponse` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Click on `Add new app` button in GetResponse platform > Provide `Application name` and `Description` > Paste the Callback Url under `Redirect URL` and click on `Add`.
+
+5. Click on the App created and copy the **Client ID** and **Client Secret Key** displayed.
+<img height="200" src="/images/Getresponse/getresponse_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Getresponse/getresponse_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### GetResponse Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in GetResponse, you'd need to subscribe to GetResponse's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup GetResponse webhook subscription:**
+
+1. Select **GetResponse** from the application list in **Cobalt** > select `Settings` and copy the `Single Webhook Url` .
+2. Navigate to `Tools` > `Webhooks` in GetResponse platform and click on `Create Webhook`.
+3. Provide a `Webhook name` > Paste the **Single Webhook Url** inside the `Webhook URL` field > select the relevant events in `Which event to notify you of?` > Change `Status` toggle to **Active** and click on `Create webhook`.
+
+<img height="200" src="/images/Getresponse/getresponse_webhook.png" alt="Setting up GetResponse Single Webhook URL"/>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using GetResponse actions and triggers. Following are the set of GetResponse actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Campaigns">
+     1. **List Campaigns** - List all campaigns in GetResponse.
+     2. **Create Campaign** - Create a campaign in GetResponse.
+     3. **Update Campaign** - Update a campaign in GetResponse.
+     </Accordion>
+     <Accordion title="Contacts">
+     4. **List Contacts** - List all contacts in GetResponse.
+     5. **Create Contact** - Create a new contact in GetResponse.
+     6. **Update Contact** - Update a contact in GetResponse.
+     7. **Get Contact by ID** - Get a contact by ID in GetResponse.
+      </Accordion>
+     <Accordion title="Tags">
+     8. **Create Tag** - Create a tag in GetResponse.
+     9. **Update Tag** - Update a Tag in GetResponse.
+      </Accordion>
+     <Accordion title="Others">
+     10. **HTTP Request** - Make HTTP API calls to any GetResponse documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Contact Added** - Triggers when a new contact is created on GetResponse.
+  </Tab>
+</Tabs>
