@@ -6,4 +6,74 @@ description: Connect with the Linked Account's Workday account.
 Workday is a **Key** based integration and does not require the setup of an app.
 </Note>
 
-Coming Soon!
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Workday** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Sub-Domain
+2. Tenant
+3. Username
+4. Password
+
+<Info>
+You need Workday Admin permissions to view Sub Domain.
+</Info>
+
+
+### Getting Credentials of Workday
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Workday/workday_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your Workday account as an Admin and search for `View API Clients`.
+2. In the `Workday REST API Endpoint`, you can find the **Sub-Domain** and **Tenant** which will be in the format where Sub-Domain is the string between `https://` and `.workday.com` and Tenant is the string at the end of the Endpoint after `/v1/`.
+<img height="200" src="/images/Workday/workday_navigation.png" alt="Navigation in Workday"/>
+
+3. `Username` and `Password` are the credentials with which you login into your Workday Environment.
+
+The Linked Account or end-user now have all the credentials required to connect with Workday.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Workday actions and triggers. Following are the set of Workday actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Applicants">
+     1. **Create/Update Applicant** - Creates or updates an applicant in Workday.
+     2. **Get Applicants** - Returns public and private information for specified applicants in Workday.
+    </Accordion>
+    <Accordion title="Compensations">
+     3. **Create/Update Compensation Plan** - Allows the creation or update of a compensation plan in Workday.
+     4. **Get Compensation Plans** - Allows the retrieval of detailed compensation plan information in Workday.
+     </Accordion>
+    <Accordion title="Journals">
+     5. **Get Journals** - Returns public and private information for specified journals in Workday.
+    </Accordion>
+    <Accordion title="Organizations">
+     6. **Get Organizations** - Returns public and private information for specified organizations in Workday.
+    </Accordion>
+    <Accordion title="Payments">
+     7. **List Payments** - Returns Payments Info for the specified criteria in Workday.
+    </Accordion>
+    <Accordion title="Position">
+     8. **Create Position** - Creates a new position in Workday.
+     9. **Get Positions** - Returns public and private information for specified positions in Workday.
+    </Accordion>
+    <Accordion title="Workers">
+     10. **Get Workers** - Returns public and private information for specified workers in Workday.
+    </Accordion>
+    <Accordion title="Signon">
+     11. **Get Valid Signon** - Returns info about valid signons in Workday.
+    </Accordion>
+    <Accordion title="Others">
+     12. **HTTP Request** - Make HTTP API calls to any Workday documented APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
