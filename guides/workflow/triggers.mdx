@@ -27,8 +27,6 @@ are created in your users' Salesforce account to sync your users' Salesforce con
 #### Scheduler
 The Scheduler trigger is used for workflows that should run automatically at a scheduled time or interval. 
 
-+ Seconds
-   (e.g. every 5 seconds)
 + Minutes
    (e.g. every 30 minutes)
 + Hourly
@@ -37,5 +35,9 @@ The Scheduler trigger is used for workflows that should run automatically at a s
    (e.g. every 2 days at 9:00 am)
 + Weekly
    (e.g. every Monday at 12:00 pm)
+
+<Note>
+The minimum time that can be set in scheduler should be greater than 5 minutes.
+</Note>
 
 Once deployed, the workflow will run automatically at the designated time for all users who have activated the workflow.
