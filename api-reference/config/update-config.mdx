@@ -196,12 +196,15 @@ This API updates the specified config.
         </Expandable>
     </ResponseField>
   </Tab>
-  <Tab title="500">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -284,11 +287,21 @@ This API updates the specified config.
     ]
 }
 ```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id is required",
+    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
 ```JSON 500
 {
     "status_code": 500,
-    "error_type": "INTERNAL_SERVER_ERROR",
-    "message": "ApplicationInstallationDetail validation failed: linked_account_id: Path `linked_account_id` is required.",
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
+    "message": "Error While Editing Config 2345432342342 for application hubspot reason: {data: 'access token revoked'}",
     "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
 }
 ```
