@@ -79,12 +79,15 @@ This API updates a linked account's details OR creates a linked account if no ac
     <ResponseField name="__v" type="integer">
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -135,8 +138,18 @@ This API updates a linked account's details OR creates a linked account if no ac
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Linked account with id T1234567 already exists in the test environment",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "Duplicate Auth key_name not allowed",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INTERNAL_SERVER_ERROR",
+    "message": "A valid app_id is required",
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```

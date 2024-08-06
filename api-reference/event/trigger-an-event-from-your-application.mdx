@@ -1,9 +1,9 @@
 ---
 title: 'Trigger event'
-api: post /api/v2/public/event/trigger
+api: post /api/v2/public/event
 ---
 
-This Api triggers a cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). This would trigger
+This API triggers a cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). This would trigger
 all the workflows associated with the specified event.
 
 ## Request description
@@ -72,7 +72,7 @@ all the workflows associated with the specified event.
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
+    "http_error_type": "BAD_REQUEST",
     "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
     "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
 }

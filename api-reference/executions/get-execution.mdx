@@ -3,7 +3,7 @@ title: 'Get execution'
 api: get /api/v2/public/execution/:execution_id
 ---
 
-This api fetches an execution's details. 
+This API fetches an execution's details. 
 
 ## Request description
 #### Headers
@@ -72,7 +72,7 @@ This api fetches an execution's details.
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
     </ResponseField>
     <ResponseField name="message" type="string">
@@ -111,7 +111,7 @@ This api fetches an execution's details.
 ```JSON 401
 {
     "status_code": 401,
-    "error_type": "UNAUTHORIZED",
+    "http_error_type": "UNAUTHORIZED",
     "message": "Invalid Credentials",
     "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
 }

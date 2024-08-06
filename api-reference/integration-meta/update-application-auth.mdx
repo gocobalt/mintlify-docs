@@ -72,23 +72,26 @@ This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an ap
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Application with app_id 646f1abea9861754b9929b76 doesn't have token_type - keybased",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "linked account with id account_id does not exist in test environment",
     "request_id": "90e83618-5743-4953-92cb-675220470272"
 }
 ```
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "No integration with slug aegis found for linked account 12345678 in test environment",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "auth_object values must be valid strings",
     "request_id": "212047f0-df39-4ef2-abc1-7e66495643c4"
 }
 ```
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
     "message": "access_token and/or refresh_token only permitted in auth_object for OAuth2 based applications",
     "request_id": "ea455085-d124-4cea-aae1-6defe1cc3b30"
 }
@@ -96,17 +99,10 @@ This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an ap
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "access_token, refresh_token, api_domain only permitted in auth_object for OAuth based applications",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "server_url,api_key only permitted in auth_object of auth_type: key_based for application app_name.",
     "request_id": "4c4a494b-250c-46c5-95d4-b8f1def56f01"
-}
-```
-```JSON 400
-{
-    "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "auth_object values must be valid strings",
-    "request_id": "4f8362ce-b36a-4c14-9b85-7fe8b57dda87"
 }
 ```
 </ ResponseExample>
