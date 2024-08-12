@@ -92,7 +92,7 @@ This API fetches an execution's details.
       Next page number
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -147,6 +147,15 @@ This API fetches an execution's details.
     "http_error_type": "INVALID_LINKED_ACCOUNT_ID",
     "message": "linked_account_id or org_id is required",
     "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>

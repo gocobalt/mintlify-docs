@@ -68,12 +68,15 @@ This API fetches an execution's details.
           Associated event id
         </ResponseField>
   </Tab>
-  <Tab title="401">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
     <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -112,8 +115,9 @@ This API fetches an execution's details.
 {
     "status_code": 401,
     "http_error_type": "UNAUTHORIZED",
-    "message": "Invalid Credentials",
-    "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>

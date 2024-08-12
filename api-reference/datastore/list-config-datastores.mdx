@@ -1,9 +1,9 @@
 ---
-title: 'Delete Config'
-api: delete /api/v2/public/slug/:slug/config/:config_id
+title: 'List Config Datastores'
+api: get /api/v2/public/datastore/config/:slug
 ---
 
-This API returns the specified config.
+This API fetches list of all config datastores.
 
 ## Request description
 #### Headers 
@@ -13,20 +13,17 @@ This API returns the specified config.
 
 #### Path Parameters
 <ParamField path="slug" type="string" required>
-  Application Slug. Eg: `docusign`
+  Application Slug. Eg: `hubspot`
 </ParamField>
 
-<ParamField path="config_id" type="string">
- Id of the config to be fetched. If not provided, `linked_account_id` is considered by default.
-</ParamField>
 
 ## Response description
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="message" type="string">
-        System generated message
-    </ResponseField>
+    
+    An array object containing names of all config datastores for the speicified application slug.
+
   </Tab>
   <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
@@ -41,43 +38,22 @@ This API returns the specified config.
     <ResponseField name="message" type="string">
     Error message
     </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
 ```JSON 200
-{
-    "message": "Installation Deleted Success"
-}
+[
+    "key_store",
+    "user_datastore"
+]
 ```
 ```JSON 400
 {
     "status_code": 400,
     "http_error_type": "BAD_REQUEST",
     "error_code": "INVALID_LINKED_ACCOUNT_ID",
-    "message": "linked_account_id is required",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
-}
-```
-```JSON 400
-{
-    "status_code": 400,
-    "http_error_type": "BAD_REQUEST",
-    "error_code": "SERVER_ERROR",
-    "message": "Missing Slug",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
-}
-```
-```JSON 400
-{
-    "status_code": 400,
-    "http_error_type": "BAD_REQUEST",
-    "error_code": "SERVER_ERROR",
-    "message": "Application with slug {slug_name} not found",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+    "message": "linked_account_id is required"
 }
 ```
 ```JSON 401
@@ -87,6 +63,14 @@ This API returns the specified config.
     "error_code": "SERVER_ERROR",
     "message": "Invalid Credentials"
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "MISSING_REQUIRED_FIELD",
+    "message": "Missing API Key"
 }
 ```
 </ ResponseExample>

@@ -45,7 +45,7 @@ This API triggers a webhook event for a specific application. You first need to 
       System generated message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -73,6 +73,15 @@ This API triggers a webhook event for a specific application. You first need to 
     "error_type": "BAD_REQUEST",
     "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
     "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>

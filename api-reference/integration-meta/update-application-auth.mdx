@@ -39,7 +39,7 @@ This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an ap
     Success message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -103,6 +103,15 @@ This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an ap
     "error_code": "SERVER_ERROR",
     "message": "server_url,api_key only permitted in auth_object of auth_type: key_based for application app_name.",
     "request_id": "4c4a494b-250c-46c5-95d4-b8f1def56f01"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>
