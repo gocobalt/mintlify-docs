@@ -47,12 +47,15 @@ all the workflows associated with the specified event.
       System generated message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
     <ResponseField name="error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -69,11 +72,21 @@ all the workflows associated with the specified event.
     "message": "Webhook Fired Success"
 }
 ```
-```JSON 400
+```JSON 401
 {
-    "status_code": 400,
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
     "http_error_type": "BAD_REQUEST",
-    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+    "error_code": "INVALID_APP_ID",
+    "message": "Default Application not found",
     "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
 }
 ```

@@ -91,7 +91,7 @@ This API is used to list all enabled applications for a linked account
      This field tells if a re-auth is required from the user for the application
     </ResponseField>
   </Tab>
-  <Tab title="401">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -179,7 +179,15 @@ This API is used to list all enabled applications for a linked account
     }
 ]
 ```
-
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
 ```JSON 404
 {
     "status_code": 404,
