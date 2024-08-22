@@ -42,3 +42,9 @@ Similar to the iterating array action, this parameter specifies whether to execu
 <img height="200" src="/images/Guides/Workflow/fixed.png" alt="Fixed Iteration action in Cobalt"/>
 
 The Group Node offers enhanced workflow flexibility, enabling users to perform repetitive tasks efficiently and iterate over arrays with ease.
+
+## Accessing Array Item inside Group Node
+
+To access the array item that is being passed in the Group Node, within any node for each iteration, it can be done so by calling `array_item` object.
+
+Consider you want to access an Id that is unique within each array item that is being passed in the Group Node. To do so, call the Group Node as a Variable under `Nodes` and write it as `{{group:array_item.Id}}`.
