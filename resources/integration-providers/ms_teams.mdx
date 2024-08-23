@@ -13,6 +13,7 @@ To setup your Microsoft Teams app in Cobalt for OAuth, you will need the followi
 1. Microsoft Azure Account. You can create one [here](https://azure.microsoft.com/en-gb/).
 2. A bot registered in the Microsoft Developer Portal for Teams (See [Creating a Teams bot](https://docs.gocobalt.io/resources/integration-providers/ms_teams#creating-a-teams-bot) for setup instructions).
 3. Microsoft Teams license
+4. Office 365 license with Admin permissions. You can get the License [here](https://www.microsoft.com/en-in/microsoft-365/business/compare-all-microsoft-365-business-products-b?ef_id=_k_CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE_k_&OCID=AIDcmmg9qnxz0z_SEM__k_CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE_k_&gad_source=1&gclid=CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE).
 
 ## Required Settings
 
@@ -53,9 +54,37 @@ Now, you need to associate this bot with your Teams application.
     - In `Basic information`, you need to provide a **short description** and **URLs** for your application's website, Privacy Policy, and Terms of Use.
 
     - Click `Save` below.
+    <Note>
+    Ensure that all the fields for App in `Basic information` are provided, otherwise it gives error while uploading the app in Teams for testing.
+    </Note>
 3. Under `Configure` in the side menu of the app, click on `App features`.
 4. Select `Bot` and choose the Bot that you created above in `Select an existing bot`, choose capabilities as applicable and click on `Save` below.
 <img height="200" src="/images/Msteams/teams_bot_associate.png" alt="Bot association to app"/>
+
+#### Testing Microsoft Teams Bot
+
+If your app is not published on the Microsoft Teams App Store, then follow the steps given to test your app in Teams:
+
+1. In your [Teams Developer Portal](https://dev.teams.microsoft.com/home), go to the `App` created for testing.
+2. Click on the triple-dot menu of the app and choose `Download app package` option. The package will get downloaded as a **.zip** file.
+<img height="200" src="/images/Msteams/download_app.png" alt="Downloading App package"/>
+
+3. Go to the [Microsoft Teams account](https://teams.microsoft.com/v2/) in which you would like to test the app and it's authentication.
+<Note>
+You will not be able to login into the platform correctly if appropriate license or permissions are missing.
+</Note>
+4. Click `Apps` option in the side menu and click on `Manage your apps` option at the bottom.
+5. Click on `Upload An App` and `Upload your app to your org's app catalog` and select the .zip file that you downloaded and you will be navigated to the `Built for your org` page.
+<img height="200" src="/images/Msteams/teams_upload.png" alt="Upload App package for testing"/>
+
+<Tip>
+If you uploaded the app through `Submit an app to your org` option, then the admin can approve it by going to [Teams Admin Centre](https://admin.teams.microsoft.com/) > `Teams Apps` > `Manage Apps` > Search for the app that you submitted > Click on the app name to open its app details page and change the status to `Allowed`.
+
+Refer [here](https://learn.microsoft.com/en-us/microsoftteams/manage-apps).
+</Tip>
+6. After a successfull upload, select your app. Click on `Add` and `Add to a team` and add the bot to a team and a channel.
+
+
 
 ## Creating an app in Microsoft Azure
 
@@ -71,7 +100,7 @@ To create a Microsoft Teams app and aquire the above mentioned credentials, plea
 
 6. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
 7. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scopes** > click on the `Add Permissions` button.
-<Info>**Offline_access**, **openid**, **ChatMessage.Send** and **ChannelMessage.Send** scope will be present under **Delegated permissions** in **Microsoft Graph**</Info>
+<Info>**Offline_access**, **openid**, **ChatMessage.Send**, **Chat.ReadWrite** and **ChannelMessage.Send** scope will be present under **Delegated permissions** in **Microsoft Graph**</Info>
 <img height="200" src="/images/Msteams/teams_config.png" alt="Setting up Teams Developer app"/>
 
 8. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
@@ -124,8 +153,7 @@ supported by Cobalt.
      1. **Post notification to a channel** - Your Bot Posts a notification to a channel in Microsoft Teams.
     </Accordion>
     <Accordion title="Meetings">
-     2. **Get meetings list** - Get all meetings list in Microsoft Teams.
-     3. **Get meeting transcript** - Get meeting transcript in Microsoft Teams.
+     2. **Get meeting transcript** - Get meeting transcript in Microsoft Teams.
      </Accordion>
      <Accordion title="Others">
      4. **HTTP Request** - Make HTTP API calls to any Microsoft Teams documented REST APIs.
