@@ -5,14 +5,37 @@ api: delete /api/v2/public/webhook
 
 This API deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhooks). 
 
+## Request description
+#### Body Parameters
+<ParamField body="id" type="string" required>
+  Unique ID of the webhook to be deleted.
+</ParamField>
+
 ## Response description
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="message" type="string">
-     System generated message
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
+    </ResponseField>
+    <ResponseField name="webhook_events" type="array">
+  Webhook events subscribed.
+  </ResponseField>
+      <ResponseField name="created_At" type="string">
+     Timestamp of webhook creation.
+    </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+      <ResponseField name="webhook_body" type="object">
+     Payload for the webhook.
+    </ResponseField>
+        <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
     </ResponseField>
   </Tab>
+
+
   <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
@@ -34,9 +57,29 @@ This API deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhook
 
 <ResponseExample>
 ```JSON 200
-{
-    "message": "Webhook deleted successfully",
-}
+[
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Workflow Completed",
+            "Workflow Errored"
+        ],
+        "createdAt": "2024-08-26T08:49:38.165Z",
+        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
+        "webhook_body": "{{event}}",
+        "_id": "66cc41a2af738a1781d02acb"
+    },
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created"
+        ],
+        "createdAt": "2024-09-12T13:34:45.627Z",
+        "webhook_url": "https://webhook.site/8a08abc7-5c9v-0qb7-b461-78fe7d714cj3",
+        "webhook_body": "{{event}}",
+        "_id": "66e2edf5ac4a8a0a47f05ff4"
+    }
+]
 ```
 ```JSON 401
 {

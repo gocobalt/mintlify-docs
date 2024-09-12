@@ -1,25 +1,47 @@
 ---
 title: 'Update Webhook'
-api: put /api/v2/public/webhook
+api: put /api/v2/public/webhook/:id
 ---
 
-This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks) url.
+This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 ## Request description
+#### Path Parameters
+<ParamField path="id" type="string" required>
+  Unique webhook id.
+</ParamField>
 #### Body Parameters
-<ParamField body="webhook_url" type="string" required>
-  Provide a url where you wish to listen to the event.
+<ParamField body="webhook_url" type="string">
+  Provide the URL where you wish to listen to the event.
+</ParamField>
+<ParamField body="webhook_events" type="array">
+  Webhooks events to subscribe. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
+</ParamField>
+<ParamField body="is_enabled" type="boolean">
+  Determines whether the webhook is active or not.
 </ParamField>
 
 ## Response description
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="webhook_url" type="string">
-      Registered webhook url
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
     </ResponseField>
     <ResponseField name="webhook_events" type="array">
-      Subscribed events.
+  Webhook events subscribed.
+  </ResponseField>
+      <ResponseField name="created_At" type="string">
+     Timestamp of webhook creation.
+    </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+      <ResponseField name="webhook_body" type="object">
+     Payload for the webhook.
+    </ResponseField>
+        <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
     </ResponseField>
   </Tab>
   <Tab title="Error">
@@ -43,13 +65,42 @@ This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks) 
 
 <ResponseExample>
 ```JSON 200
-{
-    "webhook_url": "https://mysite.com/cobalt/webhook",
-    "webhook_events": [
-        "connected-created",
-        "workflow-completed"
-    ]
-}
+[
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Workflow Completed",
+            "Workflow Errored"
+        ],
+        "createdAt": "2024-08-26T08:49:38.165Z",
+        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
+        "webhook_body": "{{event}}",
+        "_id": "66cc41a2af738a1781d02acb"
+    },
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created"
+        ],
+        "createdAt": "2024-09-12T13:34:45.627Z",
+        "webhook_url": "https://webhook.site/81d3e831-5493-4047-94d6-fcfab5489baf",
+        "webhook_body": "{{event}}",
+        "_id": "66e2edf5ac4a8a0a47f05ff4"
+    },
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
+            "Workflow Completed",
+            "Workflow Errored",
+            "Connection Expired"
+        ],
+        "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+        "_id": "66e2fd9af6b20811053931b2",
+        "createdAt": "2024-09-12T14:41:30.920Z"
+    }
+]
 ```
 ```JSON 401
 {

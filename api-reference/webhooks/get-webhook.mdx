@@ -9,11 +9,20 @@ This API provides registered Cobalt [webhook](https://app.gocobalt.io/webhooks) 
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="webhook_url" type="string">
-      Registered webhook url
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
     </ResponseField>
     <ResponseField name="webhook_events" type="array">
-      Subscribed events.
+  Webhooks events subscribed. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
+  </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+      <ResponseField name="webhook_body" type="object">
+     Payload for the webhook.
+    </ResponseField>
+        <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
     </ResponseField>
   </Tab>
   <Tab title="Error">
@@ -37,13 +46,34 @@ This API provides registered Cobalt [webhook](https://app.gocobalt.io/webhooks) 
 
 <ResponseExample>
 ```JSON 200
-{
-    "webhook_url": "https://mysite.com/cobalt/webhook",
-    "webhook_events": [
-        "connected-created",
-        "workflow-completed"
-    ]
-}
+[
+    {
+        "_id": "66cc41a2af738a1781d02acb",
+        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
+        "webhook_events": [
+            "Workflow Completed",
+            "Workflow Errored"
+        ],
+        "is_enabled": true
+    },
+    {
+        "_id": "66e2edf5ac4a8a0a47f05ff4",
+        "webhook_url": "https://deveshanand.com/",
+        "webhook_events": [
+            "Connection Created"
+        ],
+        "is_enabled": false
+    },
+    {
+        "_id": "66e2fd9af6b20811053931b2",
+        "webhook_url": "https://webhookurl.com",
+        "webhook_events": [
+            "Connection Created",
+            "Workflow Completed"
+        ],
+        "is_enabled": true
+    }
+]
 ```
 ```JSON 401
 {

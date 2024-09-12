@@ -1,14 +1,18 @@
 ---
-title: 'Unsubscribe from an event'
+title: '(Deprecated) Unsubscribe from an event'
 api: post /api/v2/public/webhook/unsubscribe
 ---
+
+<Warning>
+This API is now deprecated.
+</Warning>
 
 This API unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webhooks) events.
 
 ## Request description
 #### Body Parameters
 <ParamField body="webhook_event" type="string" required>
-  Webhooks event to unsubscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+  Webhooks event to unsubscribe. Accepted values are, `connection-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
 </ParamField>
 
 ## Response description
@@ -46,8 +50,8 @@ This API unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webho
 {
     "webhook_url": "https://mysite.com/cobalt/webhook",
     "webhook_events": [
-        "connected-created",
-        "workflow-completed"
+           "Workflow Completed",
+           "Workflow Errored"
     ]
 }
 ```

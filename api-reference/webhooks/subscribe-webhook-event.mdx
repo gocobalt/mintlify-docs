@@ -1,14 +1,17 @@
 ---
-title: 'Subscribe to events'
+title: '(Deprecated) Subscribe to events'
 api: post /api/v2/public/webhook/subscribe
 ---
+<Warning>
+This API is now deprecated.
+</Warning>
 
 This API subscribes user to Cobalt [webhook](https://app.gocobalt.io/webhooks) events.
 
 ## Request description
 #### Body Parameters
 <ParamField body="webhook_events" type="array" required>
-  Webhooks events to subscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+  Webhooks events to subscribe. Accepted values are, `connection-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
 </ParamField>
 
 ## Response description
@@ -46,8 +49,8 @@ This API subscribes user to Cobalt [webhook](https://app.gocobalt.io/webhooks) e
 {
     "webhook_url": "https://mysite.com/cobalt/webhook",
     "webhook_events": [
-        "connected-created",
-        "workflow-completed"
+            "Workflow Completed",
+            "Workflow Errored"
     ]
 }
 ```
