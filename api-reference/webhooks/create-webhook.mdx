@@ -1,5 +1,5 @@
 ---
-title: 'Create/Update Webhook'
+title: 'Create Webhook'
 api: post /api/v2/public/webhook
 ---
 
@@ -11,8 +11,11 @@ This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
   Provide a url where you wish to listen to the event.
 </ParamField>
 
-<ParamField body="webhook_events" type="array">
-  Webhooks events to subscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+<ParamField body="webhook_events" type="array" required>
+  Array of the webhooks events to subscribe. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
+</ParamField>
+<ParamField body="is_enabled" type="boolean">
+  Determines whether the webhook is active or not.
 </ParamField>
 
 #### Query Parameters
@@ -28,11 +31,23 @@ This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="webhook_url" type="string">
-      Registered webhook url
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
     </ResponseField>
     <ResponseField name="webhook_events" type="array">
-      Subscribed events.
+  Webhook events subscribed.
+  </ResponseField>
+      <ResponseField name="created_At" type="string">
+     Timestamp of webhook creation.
+    </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+      <ResponseField name="webhook_body" type="object">
+     Payload for the webhook.
+    </ResponseField>
+        <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
     </ResponseField>
   </Tab>
   <Tab title="Error">
@@ -56,13 +71,43 @@ This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 <ResponseExample>
 ```JSON 200
-{
-    "webhook_url": "https://mysite.com/cobalt/webhook",
-    "webhook_events": [
-        "connected-created",
-        "workflow-completed"
-    ]
-}
+[
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Workflow Completed",
+            "Workflow Errored"
+        ],
+        "createdAt": "2024-08-26T08:49:38.165Z",
+        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
+        "webhook_body": "{{event}}",
+        "_id": "66cc41a2af738a1781d02acb"
+    },
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created"
+        ],
+        "createdAt": "2024-09-12T13:34:45.627Z",
+        "webhook_url": "https://deveshanand.com/",
+        "webhook_body": "{{event}}",
+        "_id": "66e2edf5ac4a8a0a47f05ff4"
+    },
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
+            "Workflow Completed",
+            "Workflow Errored",
+            "Connection Expired"
+        ],
+        "createdAt": "2024-09-12T16:23:00.587Z",
+        "webhook_url": "https://webhookurl.com",
+        "webhook_body": "{{event}}",
+        "_id": "66e31564c0287b4136f77ef8"
+    }
+]
 ```
 ```JSON 401
 {
