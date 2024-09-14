@@ -1,33 +1,14 @@
 ---
-title: 'Create Webhook'
-api: post /api/v2/public/webhook
+title: 'Get webhook by ID'
+api: get /api/v2/public/webhook/:id
 ---
 
-This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
+This API fetches a registered Cobalt [webhook](https://app.gocobalt.io/webhooks) details by ID. 
 
 ## Request description
-#### Body Parameters
-<ParamField body="webhook_url" type="string" required>
-  Provide a url where you wish to listen to the event.
-</ParamField>
-
-<ParamField body="webhook_events" type="string[]" required>
-   Array of strings of webhooks events to subscribe.. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
-</ParamField>
-<ParamField body="is_enabled" type="boolean">
-  Determines whether the webhook is active or not.
-</ParamField>
-<ParamField body="webhook_type" type="string">
-  The type of webhook. Accepted values are `default` and `slack`.
-</ParamField>
-
-#### Query Parameters
-<ParamField query="page" type="integer" default="1">
-  Page number eg: 5
-</ParamField>
-
-<ParamField query="limit" type="integer" default="10">
- Records per page eg: 10
+#### Path Parameters
+<ParamField path="id" type="string" required>
+  Unique webhook id.
 </ParamField>
 
 ## Response description
@@ -38,12 +19,9 @@ This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
      Whether the webhook is active or not.
     </ResponseField>
     <ResponseField name="webhook_events" type="array">
-  Webhook events subscribed.
+  Webhooks events subscribed. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
   </ResponseField>
-    <ResponseField name="created_At" type="string">
-     Timestamp of webhook creation.
-    </ResponseField>
-    <ResponseField name="webhook_url" type="string">
+      <ResponseField name="webhook_url" type="string">
      Webhook URL to listen to the events.
     </ResponseField>
     <ResponseField name="_id" type="string">
@@ -74,20 +52,20 @@ This API registers a Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 <ResponseExample>
 ```JSON 200
-    {
-        "is_enabled": false,
-        "webhook_events": [
-            "Connection Created",
-            "Connection Deleted",
-            "Workflow Completed",
-            "Workflow Errored",
-            "Connection Expired"
-        ],
-        "webhook_url": "https://webhookurl.com",
-        "_id": "66e31564c0287b4136f77ef8",
-        "createdAt": "2024-09-12T16:23:00.587Z",
-        "webhook_type": "slack"
-    }
+{
+    "is_enabled": true,
+    "webhook_events": [
+        "Connection Created",
+        "Connection Deleted",
+        "Workflow Completed",
+        "Workflow Errored",
+        "Connection Expired"
+    ],
+    "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+    "_id": "66e5701971ff81574d55b2ba",
+    "createdAt": "2024-09-14T11:14:33.368Z",
+    "webhook_type": "slack"
+}
 ```
 ```JSON 401
 {

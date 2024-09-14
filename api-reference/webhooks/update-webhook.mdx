@@ -14,11 +14,14 @@ This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks).
 <ParamField body="webhook_url" type="string">
   Provide the URL where you wish to listen to the event.
 </ParamField>
-<ParamField body="webhook_events" type="array">
-  Webhooks events to subscribe. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
+<ParamField body="webhook_events" type="string[]">
+ Array of strings of webhooks events to subscribe. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
 </ParamField>
 <ParamField body="is_enabled" type="boolean">
   Determines whether the webhook is active or not.
+</ParamField>
+<ParamField body="webhook_type" type="string">
+  The type of webhook. Accepted values are `default` and `slack`.
 </ParamField>
 
 ## Response description
@@ -37,11 +40,11 @@ This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks).
       <ResponseField name="webhook_url" type="string">
      Webhook URL to listen to the events.
     </ResponseField>
-      <ResponseField name="webhook_body" type="object">
-     Payload for the webhook.
-    </ResponseField>
-        <ResponseField name="_id" type="string">
+    <ResponseField name="_id" type="string">
      Unique ID of the webhook.
+    </ResponseField>
+    <ResponseField name="webhook_type" type="string">
+      The type of webhook. Accepted values are `default` and `slack`.
     </ResponseField>
   </Tab>
   <Tab title="Error">
@@ -65,28 +68,6 @@ This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks).
 
 <ResponseExample>
 ```JSON 200
-[
-    {
-        "is_enabled": true,
-        "webhook_events": [
-            "Workflow Completed",
-            "Workflow Errored"
-        ],
-        "createdAt": "2024-08-26T08:49:38.165Z",
-        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
-        "webhook_body": "{{event}}",
-        "_id": "66cc41a2af738a1781d02acb"
-    },
-    {
-        "is_enabled": false,
-        "webhook_events": [
-            "Connection Created"
-        ],
-        "createdAt": "2024-09-12T13:34:45.627Z",
-        "webhook_url": "https://webhook.site/81d3e831-5493-4047-94d6-fcfab5489baf",
-        "webhook_body": "{{event}}",
-        "_id": "66e2edf5ac4a8a0a47f05ff4"
-    },
     {
         "is_enabled": true,
         "webhook_events": [
@@ -97,10 +78,10 @@ This API updates an existing Cobalt [webhook](https://app.gocobalt.io/webhooks).
             "Connection Expired"
         ],
         "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
-        "_id": "66e2fd9af6b20811053931b2",
-        "createdAt": "2024-09-12T14:41:30.920Z"
+        "_id": "66e31564c0287b4136f77ef8",
+        "createdAt": "2024-09-12T16:23:00.587Z",
+        "webhook_type": "slack"
     }
-]
 ```
 ```JSON 401
 {
