@@ -1,132 +1,104 @@
 ---
 title: 'Quickstart'
-description: 'This guide will help you launch your first integration while the following guides dive deeper into the concepts and help you integrate Cobalt into your production application.'
+description: 'This guide will help you understand how you could try out Cobalt platform and the demo workflows.'
 ---
+This guide covers the key steps, including configuring credentials, setting up a workflow, and testing the workflows. Follow the steps given below to execute a demo workflow present in your account and get the response.
 
-## Step 1: Create an account
+## Step 1: Configure Your Integration Credentials
+The first step is to configure your credentials for the integration you want to test if required.
 
-To get started, sign up for a free account at [https://www.gocobalt.io/signup](https://www.gocobalt.io/signup). 
-After creating an account, you will have access to your production and testing API keys to build and test how Cobalt works.
+Cobalt supports 2 types of Authentication: **Key-based** and **OAuth 2.0** which you can check by navigating to your integration in `Apps` > `Settings` of the integration.
 
-<img height="200" src="/images/get-api-key.png" alt="How to find the API Keys on Cobalt's dashboard"/>
+#### For Key-Based
 
-## Step 2: Enable & Configure Apps
+If the integration is key-based, you would require your own **API key** and other credentials to authenticate with the integration and test it.
 
-To enable the apps that you want to use in Cobalt, go to the **Apps** page in the Cobalt dashboard. You will see a list of the available apps. 
-Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
-
-<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
-
-**Key-based** apps do not require any additional configuration.
-
-**OAuth** apps by default use Cobalt credentials. This makes it easy to get started and connect integrations right away. However, once you're ready to ship your integrations with Cobalt, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Cobalt when they connect integrations.
-
-
-## Step 3: Create a linked account
-
-**Linked Account** is a unique identifier that Cobalt uses to store all the end customer tokens for your integration. When you create a Linked Account, 
-you must provide a **linked_account_id**. This ID can be anything you want, but it must be unique.
-
-Most of the time, the **linked_account_id** is an ID from your internal data model that represents a user or account in your system. For example, if you have 
-a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Cobalt Linked Account.
-
-Once you have created a Linked Account, you can use it to call the Cobalt APIs on behalf of your end customer. The Cobalt APIs will use the **linked_account_id**
- to associate the tokens with the correct end customer.
+To get your credentials, click on `Read Documentation` button present under `Overview` of the integration.
+<img height="200" src="/images/Concepts/read_documentation.png" alt="Get your Credentials for Authentication"/>
 
 <Tip>
-Creating a linked account should always happen server-side to prevent token leakage.
+If you are unable to find the steps of how you can get those API credentials, please contact us and we will provide the steps to you.
 </Tip>
 
-Use the API call below to create a linked account.
+#### OAuth Based
 
-```bash
-curl --location 'https://api.gocobalt.io/api/v2/public/linked-account' \
---header 'X-API-Key: COBALT_API_KEY' \
---header 'Content-Type: application/json' \
---data '{
-    "linked_account_id": "Test2",
-    "name": "Test account 2"
-}'
-```
+If the integration is OAuth 2.0, then you will need to provide credentials of your app like Client ID and Client Secret OR you can also use our OAuth app credentials by choosing `Use Our Credentials` option.
+<img height="200" src="/images/Concepts/read_documentation2.png" alt="Setup your Credentials for Authentication"/>
+- Follow these steps to configure your credentials:
 
-## Step 4: Generate 'session token' to be used by the client
+1. Navigate to the `Overview` in the integration > Click on `Read documentation` and you will be redirected to the OAuth app Setup doc for the respective integration.
+2. Create your integration credentials by following the setup guide, such as Client ID and Secret and add it in `Settings` and click on `Save`.
 
-**Session tokens** are used to protect your Cobalt API key and make it easier to manage your end customers' tokens. When your client makes a request to the Cobalt APIs, it must include the session token in the request header. 
-The Cobalt APIs will then use the session token to authenticate the request and grant access to the requested resources. Use the below API call to create a `session-token`
+<Note>For certain integrations like DocuSign, if your developer app isn’t published, you won’t be able to authenticate an account outside the developer environment. 
+Alternatively, you can request us for a Demo account credentials for testing purposes.</Note>
 
-<Tip> 
-Token creation should always happen server-side.
-</Tip>
+## Step 2: Workflow Setup
+Once your credentials are configured, you can also check the demo workflows already set in your account by navigating to `Workflows` in the integration.
+<img height="200" src="/images/Concepts/workflows_integration.png" alt="Demo Workflows in your account"/>
 
-```bash
-curl --location 'https://api.gocobalt.io/api/v2/public/session-token' \
---header 'x-api-key: COBALT_API_KEY' \
---header 'Content-Type: application/json' \
---data '{
-    "linked_account_id":"12345678"
-}'
-```
+## Step 3: Set Up API Proxy
 
-## Step 5: Integrate 'Cobalt Connect'
-
-Cobalt connect lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users' behalf (linked account in Cobalt).
-
-Cobalt hold the credentials for a given apps (for example Salesforce) on your behalf.
-
-There are 3 ways to integrate cobalt connect
-
-+ [Hosted flow](https://docs.gocobalt.io/guides/auth-flows/hosted-flow): In this method you can effortlessly redirect your users'  to Cobalt Connect, which is securely hosted by Cobalt. You can follow this guide here to get started.
-+ [Assisted flow](https://docs.gocobalt.io/guides/auth-flows/embedded-flow): It is a good option if you want your client team to be responsible for the integration of Cobalt Connect into your app. You can use the Cobalt Connect JavaScript SDK or the Cobalt Connect React SDK to build your own custom UI for Cobalt Connect. Both SDKs make it easy to let your users authorize and manage integrations with just a few lines of code.
-+ [Seamless flow](https://docs.gocobalt.io/guides/auth-flows/seamless-flow): If you want your backend team to handle the integration, you can use the Connect API directly to create your own integration experience inside your app.
-
-
-To get started, we'll use Hosted flow. Use the below API call to generate the hosted url.
-
-```bash
-curl --location 'https://api.gocobalt.io/api/v2/public/connect-url' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer {{LINKED_TOKEN}}' \
---data '{
-    "color": "#000000",
-    "bgColor":"#00FF23",
-    "name":"Jon Snow"
-}'
-```
-
-
-Go to the "hosted url" received in the response. The hosted site will display all the integration that you enabled in step 2.
-
-On the integration's page click Authorize, you will be redirected to the connector and asked to authorize the application. After you complete this flow, 
-you will be redirected back to Hosted site.
-
-The app is now ready for use. All that's left now is to make your first API call
-
->Depending on the app, your users might need to complete some configuration for an application. This will be indicated by you in the config. Your user can fill in the configuration and hit save.
-
-
-## Step 6: Your first API call to Cobalt
-
-App Events are custom events that are sent programmatically from your application via the SDK or API. For example, you might send a "New Contact Created" App Event from your application to trigger a Workflow that creates a matching contact in your users' Salesforce CRM.
-
-#### Create an event on Cobalt
-
-To create an event, go to the Your App page on Cobalt dashboard. Under the event tab click on 'New Event'. Next, enter the name and event schema of 
-your Event. The event schema that you enter here must represent a sample payload sent from your application to Cobalt.
-
-<img height="200" src="/images/create-new-event.png" alt="Create a new event"/>
+In most integrations where you want to fetch some data, you'll need to setup API proxy to capture workflow's final response during testing. It's not necessary that every workflow will have an API Proxy present, in that case you can skip this step.
 
 <Tip>
-  NOTE: The event schema must be a valid JSON object.
+Learn more about API Proxy [here](https://docs.gocobalt.io/guides/developer-settings/api_proxy).
 </Tip>
 
-#### Send an event to Cobalt
-App Events can be sent from your application to Cobalt using the event() function of the backend SDK. To trigger the event function, you must pass 
-three parameters in the request:
+Follow the steps given below to setup your own URL where you can receive the response: 
+- Navigate to the workflow for which you want to configure your URL to receive the response.
+- In the workflow, check the Native node present at the end of the workflow path and see the name of the `Action` that is present in that node.
+<img height="200" src="/images/Concepts/proxy_node.png" alt="Action setup for sync"/>
 
-<Check>Hurray! you have successfully integrated Cobalt on the server side. Now, let's look at the setup on client side.</Check>
+For eg: In the image above, the name of the API Proxy or Action present is **Bulk Create Contacts**.
+- To get your own URL for setup, go to [webhook.site](https://webhook.site/) and copy `Your unique URL`. 
+- In Cobalt, navigate to `Developers` > `API Proxies` > Search for the Action name that was setup in the workflow > Select it and paste the unique URL you copied under `Request URL` present in `API Call` and click on `Save API Call`.
+<img height="200" src="/images/Concepts/proxy_url.png" alt="Settings up API URL in API Proxy"/>
 
-## Go Deeper
-This was a simple overview to setup native integrations using Cobalt. Read on to see how Cobalt can drive your integration needs, no matter their complexity.
+## Step 4: Authenticate Linked Account
+
+Next step is to perform authentication of a Linked Account to the integration, to link it to the workflow.
+
+[Linked Accounts](https://docs.gocobalt.io/guides/platform/linked-account/general) refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform.
+
+Go to `Linked Accounts` section in Cobalt and open any Linked Account present.
+<Note>
+You can also create a new linked account if you want by clicking on `+ Add Account` button in the top right.
+</Note>
+
+Click on `Get Hosted URL` button > `Generate Hosted URL` > Copy the URL shown and open it in a new tab.
+<img height="200" src="/images/Concepts/hosted.png" alt="Navigate to Hosted Portal"/>
+
+Hosted Portal is a no-code solution built by Cobalt so that you don’t need to build your own UI to handle the integration authentication and configuration which we will now use for testing purposes.
+<Info>
+You can also build your own UI for end-users using our SDKs or APIs and [Auth Flows](https://docs.gocobalt.io/concepts/auth-flows).
+</Info>
+
+In the Hosted portal, navigate to the integration for which you want to perform authentication. If it's **OAuth** simply click on `Connect` or provide credentials if it's **Key-based** and click on `Connect`. If the authentication is successful you should see a **Connected** tag displayed beside the integration name.
+
+Next, enable the workflows which you want to test for the integration and click on `Save`.
+<img height="200" src="/images/Concepts/connected.png" alt="Integration on Hosted Portal"/>
+
+<Note>If the authentication was not successful, please ensure that all the steps in Setup doc of the integration were followed correctly.</Note>
+
+## Step 5: Test the Setup
+
+Now that everything is set up, you can proceed to test the workflow.
+
+Trigger of a Workflow can either be:
+1. **Native App Trigger** which triggers when a certain action is performed in the application. For eg: If the `Contact Created` trigger of HubSpot is present in the **Start Node** of your workflow, then it triggers when a new contact is added to your HubSpot account.
+2. **Event based triggers** which triggers when an event is called on Cobalt. You can check which Event is added to the workflow by checking the **Start Node** of the workflow.
+
+    - To start the workflow execution, go to [**Try API**](https://docs.gocobalt.io/guides/platform/tryapi) section in Cobalt, provide the required details and click on `Fire Event`.
+    <img height="200" src="/images/Guides/Platform/try-api.png" alt="Try API Section in Cobalt"/>
+
+Once the Event is fired, you can see the Event and Execution logs of your workflow by navigating to [**Logs**](https://docs.gocobalt.io/guides/platform/workflow-logs) section.
+
+Also, if the workflow executed successfully, you can check the final response received on your [webhook.site](https://webhook.site/).
+
+<Check>
+Hurray! You have successfully completed setup for an integration and also executed the workflow to receive the final response.
+</Check>
 
 
-
+## Go Deeper and Explore Cobalt
+This was a simple overview to setup native integrations using Cobalt, and how Linked Accounts and workflows interact within the platform. You can further customize workflows, explore advanced testing scenarios, or discuss alternative UI implementations on a follow-up call.
