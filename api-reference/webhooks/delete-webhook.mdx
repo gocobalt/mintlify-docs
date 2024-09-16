@@ -1,13 +1,13 @@
 ---
 title: 'Delete webhook'
-api: delete /api/v2/public/webhook
+api: delete /api/v2/public/webhook/:id
 ---
 
 This API deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhooks). 
 
 ## Request description
-#### Body Parameters
-<ParamField body="id" type="string" required>
+#### Path Parameters
+<ParamField path="id" type="string" required>
   Unique ID of the webhook to be deleted.
 </ParamField>
 
@@ -27,11 +27,11 @@ This API deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhook
       <ResponseField name="webhook_url" type="string">
      Webhook URL to listen to the events.
     </ResponseField>
-      <ResponseField name="webhook_body" type="object">
-     Payload for the webhook.
-    </ResponseField>
         <ResponseField name="_id" type="string">
      Unique ID of the webhook.
+    </ResponseField>
+    <ResponseField name="webhook_type" type="string">
+      The type of webhook. Accepted values are `default` and `slack`.
     </ResponseField>
   </Tab>
 
@@ -61,23 +61,27 @@ This API deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhook
     {
         "is_enabled": true,
         "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
             "Workflow Completed",
-            "Workflow Errored"
+            "Workflow Errored",
+            "Connection Expired"
         ],
-        "createdAt": "2024-08-26T08:49:38.165Z",
-        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
-        "webhook_body": "{{event}}",
-        "_id": "66cc41a2af738a1781d02acb"
+        "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+        "_id": "66e58b8d19becbeeea0bd11a",
+        "createdAt": "2024-09-14T13:11:41.043Z",
+        "webhook_type": "default"
     },
     {
         "is_enabled": false,
         "webhook_events": [
-            "Connection Created"
+            "Connection Created",
+            "Connection Deleted"
         ],
-        "createdAt": "2024-09-12T13:34:45.627Z",
-        "webhook_url": "https://webhook.site/8a08abc7-5c9v-0qb7-b461-78fe7d714cj3",
-        "webhook_body": "{{event}}",
-        "_id": "66e2edf5ac4a8a0a47f05ff4"
+        "webhook_url": "https://webhookurl.com/newwebhook",
+        "_id": "66e5963a51b0a208fecbca31",
+        "createdAt": "2024-09-14T13:57:14.398Z",
+        "webhook_type": "slack"
     }
 ]
 ```

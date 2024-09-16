@@ -1,6 +1,116 @@
 ---
 title: Workflow API
 ---
-<Tip>
-Coming Soon!
-</Tip>
+
+The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
+
+## Setting up Workflow API as Trigger
+
+Let's first see how you can setup a Workflow API for any of the workflows that you have in Cobalt.
+
+To set up a workflow to be triggered via the Workflow API:
+
+1. Navigate to the Start Node of the workflow.
+2. In the Start Node, select the `API Call` as the trigger method, make the required changes and click on `Save`.
+
+    The API Call setup involves three fields:
+    - **Workflow Alias (Optional)**: This allows you to set a unique identifier for the workflow trigger. If used, this alias can replace the workflow ID in the API endpoint for executing the workflow.
+    - **URL**: The URL contains the endpoint for triggering the workflow. The format for this URL is . If you’ve set up a Workflow Alias, it can be used in place of the Workflow ID after /workflow/.
+    - **Payload**: Here, you define the JSON object or payload that contains the event data you want to send to the workflow. The variables set in the payload can be accessed within the workflow just like event payloads. You can leave this field as an empty object {} if no data needs to be passed.
+<img height="200" src="/images/Guides/Workflow/workflow_api_setup.png" alt="Setup Workflow API in Cobalt"/>
+
+## Workflow API endpoints
+There are two APIs related to workflow execution: the `/execute API` and the `/response API`.
+
+### /execute API
+
+To execute a workflow, make a POST request to the workflow execution endpoint.
+
+If a Workflow Alias has been defined, you can replace `workflow_id` with the `alias` in the API.
+Send the event data in the request body, similar to how you would handle event payloads. If there is no payload, you can pass an empty JSON object {}.
+
+**Request Headers**
+
+- **linked_account_id**: The Linked account for which you want to execute the workflow.
+
+<Info>
+Using Workflow API, the workflow gets executed even for those Linked Accounts who have not enabled the workflow.
+</Info>
+
+- **slug**: Slug of the integration in which workflow is present.
+
+- **x-api-key**: Your Cobalt API key
+
+- **sync_execution**: By default, this is set to **false**, which means the API response will only include the `execution_id`. If you set sync_execution to **true**, the API response will include both the `execution_id` and the `return_value` object containing response as set in the Response node. 
+
+<Note>sync_execution = true is not allowed if the workflow contains a Group Node.</Note>
+
+
+Sample cURL for Workflow Execute API:
+``` bash cURL
+curl --location --request POST 'https://api.gocobalt.io/api/v1/workflow/{workflow_id or alias}/execute' \
+--header 'content-type: application/json' \
+--header 'linked_account_id: john@acme.io' \
+--header 'slug: asana' \
+--header 'x-api-key: tkb5b9f358-4160-4fea-a926-cf52b271489d' \
+--header 'sync_execution: false' \
+--data '
+{
+"Task Name":"Sample task",
+"Created_at":"2024-2-1",
+"Assigned_to":"John Doe"
+}'
+```
+
+**Response**
+
+```JSON 200
+{
+"return_value":
+    {
+        "success":"true",
+        "new_note":"This is the updated note content"
+    },
+"execution_id":"66e404464f475f36c0c95b5d"
+}
+```
+
+### /response API
+
+To fetch the response received in a previously executed workflow, use the following API.
+
+**Request Headers**
+
+- **linked_account_id**: The Linked account for which the workflow was executed.
+
+- **x-api-key**: Your Cobalt API key
+
+
+Sample cURL for Execution Response API:
+
+``` bash cURL
+curl --location --request GET 'https://api.gocobalt.io/api/v1/execution/{execution_id}/response' \
+--header 'linked_account_id: john@acme.io' \
+--header 'x-api-key: tkb5b9f358-4160-4fea-a926-cf52b271489d'
+```
+**Response**
+
+The API response will include the data set in the workflow’s Response node, as well as the `status` of the workflow, which can be one of the following:
+
+- COMPLETED: The workflow has successfully finished.
+
+- RUNNING: The workflow is still in progress.
+
+- ERRORED: The workflow encountered an error.
+
+``` JSON 200
+{
+    "response":  {
+        "success":"true",
+        "new_note":"This is the updated note content"
+    },
+    "status": "COMPLETED"
+}
+```
+
+The Workflow API provides a robust way to execute workflows programmatically in Cobalt. It allows greater flexibility in triggering workflows and retrieving responses, giving users control over workflow execution and monitoring via API.

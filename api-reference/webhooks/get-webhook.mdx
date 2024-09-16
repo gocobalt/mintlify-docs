@@ -1,5 +1,5 @@
 ---
-title: 'Get webhook'
+title: 'Get all webhooks'
 api: get /api/v2/public/webhook
 ---
 
@@ -18,11 +18,11 @@ This API provides registered Cobalt [webhook](https://app.gocobalt.io/webhooks) 
       <ResponseField name="webhook_url" type="string">
      Webhook URL to listen to the events.
     </ResponseField>
-      <ResponseField name="webhook_body" type="object">
-     Payload for the webhook.
-    </ResponseField>
-        <ResponseField name="_id" type="string">
+    <ResponseField name="_id" type="string">
      Unique ID of the webhook.
+    </ResponseField>
+    <ResponseField name="webhook_type" type="string">
+      The type of webhook. Accepted values are `default` and `slack`.
     </ResponseField>
   </Tab>
   <Tab title="Error">
@@ -48,30 +48,30 @@ This API provides registered Cobalt [webhook](https://app.gocobalt.io/webhooks) 
 ```JSON 200
 [
     {
-        "_id": "66cc41a2af738a1781d02acb",
-        "webhook_url": "https://webhook.site/4fa8abc7-5e3c-44c7-b453-78fe7d563fb4",
-        "webhook_events": [
-            "Workflow Completed",
-            "Workflow Errored"
-        ],
-        "is_enabled": true
-    },
-    {
-        "_id": "66e2edf5ac4a8a0a47f05ff4",
-        "webhook_url": "https://deveshanand.com/",
-        "webhook_events": [
-            "Connection Created"
-        ],
-        "is_enabled": false
-    },
-    {
-        "_id": "66e2fd9af6b20811053931b2",
-        "webhook_url": "https://webhookurl.com",
+        "is_enabled": false,
         "webhook_events": [
             "Connection Created",
-            "Workflow Completed"
+            "Connection Deleted",
+            "Workflow Completed",
+            "Workflow Errored",
+            "Connection Expired"
         ],
-        "is_enabled": true
+        "webhook_url": "https://webhookurl.com/123-br8-48gq",
+        "_id": "66e56d6584659ad40b4a6799",
+        "createdAt": "2024-09-14T11:03:01.877Z",
+        "webhook_type": "default"
+    },
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
+            "Connection Expired"
+        ],
+        "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+        "_id": "66e5701971ff81574d55b2ba",
+        "createdAt": "2024-09-14T11:14:33.368Z",
+        "webhook_type": "slack"
     }
 ]
 ```
