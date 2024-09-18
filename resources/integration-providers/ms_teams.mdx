@@ -6,6 +6,7 @@ To setup your Microsoft Teams app in Cobalt for OAuth, you will need the followi
 - Bot Client ID
 - Bot Client Secret
 - App ID
+- Tenant ID
 - Scopes
 
 ## Pre-requisites
@@ -73,7 +74,18 @@ Refer [here](https://learn.microsoft.com/en-us/microsoftteams/manage-apps).
 </Tip>
 6. After a successfull upload, select your app. Click on `Add` and `Add to a team` and add the bot to a team and a channel.
 
+#### Enable Microsoft Teams Bot for all users in an org
 
+If you want to use the Proactive Messaging action i.e. **Post notification to a user as a bot**, then Teams require you to have the Bot installed in Teams account of all the users of the org who can receive message from the bot.
+
+If you do not want to inform all the users to install the bot from `Apps` in Teams, you can also ask the Teams **Admin** to install the app by default for all the users. Follow the steps below to do this:
+
+- Sign in to [Teams Admin Centre](https://admin.teams.microsoft.com/) > Navigate to `Teams apps` > Select `Setup policies` in the side menu.
+- Select `Global (Org-wide default)` under **Manage Policies**.
+<img height="200" src="/images/Msteams/enable_all.png" alt="Enable Bot for all users in organization"/>
+- Under **Installed Apps** > Click on `Add Apps` > Search for your **Bot** by its name > Select it > click on `Add` and finally click on `Save`.
+
+The bot will now be installed by default on all the users within the Teams org.
 
 ## Creating an app in Microsoft Azure
 
@@ -98,7 +110,7 @@ Ensure that the Client Secret Value is saved as it will be shown only once.
 </Note>
 <img height="200" src="/images/Msteams/teams_credentials.png" alt="Getting Client Secret"/>
 
-10. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID`.
+10. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID` and **Tenant ID** under `Directory (tenant) ID`.
 <img height="200" src="/images/Msteams/teams_id.png" alt="Getting Client ID"/>
 
 11. For your **App ID** or Bot External ID, go to `Apps` in Teams Developer Portal, select your App which was created earlier and copy the `App ID` present under **Basic Information** of the app.
@@ -137,11 +149,12 @@ supported by Cobalt.
 <Tabs>
   <Tab title="Actions">
   <AccordionGroup>
-    <Accordion title="Notification">
+    <Accordion title="Post Message">
      1. **Post notification to a channel** - Your Bot Posts a notification to a channel in Microsoft Teams.
+     2. **Post notification to a user as a bot** - Your Bot Posts a notification to a user (proactive messaging) in Microsoft Teams.
     </Accordion>
     <Accordion title="Meetings">
-     2. **Get meeting transcript** - Get meeting transcript in Microsoft Teams.
+     3. **Get meeting transcript** - Get meeting transcript in Microsoft Teams.
      </Accordion>
      <Accordion title="Others">
      4. **HTTP Request** - Make HTTP API calls to any Microsoft Teams documented REST APIs.
