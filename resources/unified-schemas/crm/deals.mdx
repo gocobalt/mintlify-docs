@@ -1,0 +1,266 @@
+---
+title: Deals
+description: Details of the ongoing transactions throughout the stages of your sales process.
+---
+
+
+### Schema
+<ParamField body="id" type="string">
+  Record id of the deal.
+</ParamField>
+<ParamField body="title" type="string">
+  Title of the deal
+</ParamField>
+<ParamField body="owner_id" type="string">
+  Owner of the company record. Association - `Users`
+</ParamField>
+<ParamField body="owner_name" type="string">
+ Name of the record owner - `Users`
+</ParamField>
+<ParamField body="owner_email" type="string">
+  Email address of the record owner - `Users`
+</ParamField>
+<ParamField body="description" type="string">
+  Description of the deal
+</ParamField>
+<ParamField body="Amount" type="string">
+  Monetary amount associated with the deal
+</ParamField>
+<ParamField body="currency" type="enum">
+  ISO 4217 currency string associated with the amount of money. Eg: `AED`, `INR`, `USD`, `EUR` etc.
+</ParamField>
+<ParamField body="status" type="enum">
+  Status of the deal. For example: `open`, `closed`, `won`, `lost` etc.
+</ParamField>
+<ParamField body="type" type="string">
+  Type of opportunity
+</ParamField>
+<ParamField body="contact_id" type="string">
+  Contact associated with the deal
+</ParamField>
+<ParamField body="win_probability" type="string">
+  Probability of closing the deal as a success
+</ParamField>
+<ParamField body="expected_revenue" type="string">
+  Expected revenue from the deal
+</ParamField>
+<ParamField body="close_date" type="string">
+  The actual closing date for the deal. If close_date is null, the deal is not closed yet.
+</ParamField>
+<ParamField body="ownership" type="string">
+  Type of ownership of a company
+</ParamField>
+<ParamField body="email" type="string">
+  Primary email id of the deal
+</ParamField>
+<ParamField body="phone" type="string">
+  Primary phone number of the deal
+</ParamField>
+<ParamField body="fax" type="string">
+  The fax number of the deal.   
+</ParamField>
+<ParamField body="website" type="string">
+  Primary website of the deal
+</ParamField>
+<ParamField body="social_links" type="object[]">
+  Social media links of the deal
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id of the `social_links` record
+    </ResponseField>
+    <ResponseField name="url" type="string">
+        Social media URL
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Social media name
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="active" type="boolean">
+  The active status of the deal.
+</ParamField>
+<ParamField body="owner_id" type="string">
+  Owner of the company record. Association - `Users`
+</ParamField>
+<ParamField body="addresses" type="object[]">
+  Address records of the deal
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id of the `addresses` record
+    </ResponseField>
+    <ResponseField name="type" type="enum">
+        Type of address. For eg: `primary`, `secondary`, `home`, `office` etc:
+    </ResponseField>
+    <ResponseField name="string" type="string">
+        The complete address. Some APIs do not provide structured address data.
+    </ResponseField>
+     <ResponseField name="name" type="string">
+        The name for the address
+    </ResponseField>
+    <ResponseField name="line_1" type="string">
+        Line 1 for the address
+    </ResponseField>
+    <ResponseField name="line_2" type="string">
+        Line 2 for the address
+    </ResponseField>
+     <ResponseField name="street" type="string">
+        Street component of the address. Street number.
+    </ResponseField>
+    <ResponseField name="city" type="string">
+        Street component of the address
+    </ResponseField>
+    <ResponseField name="state" type="string">
+        City component of the address
+    </ResponseField>
+    <ResponseField name="country" type="string">
+        Country component of the address
+    </ResponseField>
+    <ResponseField name="postal_code" type="string">
+        Postal code component of the address
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="created_by" type="string">
+  Id of the user that created this record. Association - `Users`
+</ParamField>
+<ParamField body="updated_by" type="string">
+  Id of the user that last updated this record. Association - `Users`  
+</ParamField>
+<ParamField body="industry" type="string">
+  The type of business the company is in.
+</ParamField>
+<ParamField body="custom_fields" type="object[]">
+  Custom fields the user configured for deals and their values
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Custom field id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+        Custom field defined by the user
+    </ResponseField>
+    <ResponseField name="value" type="string">
+        Custom field value
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="emails" type="object[]">
+  Emails of the deal. Instead of a single string field, some applications provide an array of email objects.
+   <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id for the record
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Email type. For eg: `primary`, `secondary`, `work`, `personal`
+    </ResponseField>
+    <ResponseField name="email" type="string">
+        Email address
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="phone_numbers" type="object[]">
+  Phone numbers of the deal. Instead of a single string field, some applications provide an array of phone number objects.
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id for the record
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Phone number type. For eg: `primary`, `secondary`, `work`, `personal`
+    </ResponseField>
+    <ResponseField name="number" type="string">
+        Phone number
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="tags" type="string[]">
+  Tags associated with the deal
+</ParamField>
+<ParamField body="last_active" type="string">
+  Last active date-time of the deal
+</ParamField>
+<ParamField body="created_at" type="string">
+  Date-time when the deal record was created
+</ParamField>
+<ParamField body="updated_at" type="string">
+  Date-time when the deal record was last modified
+</ParamField>
+
+<ResponseExample>
+```JSON deals example
+{
+  "id": "12345",
+  "name": "SpaceX",
+  "email":"elon@musk.com",
+  "phone_number":"+11111111111",
+  "owner_id": "12345",
+  "owner_name": "Mark Wood",
+  "owner_email":"wood.mark@example.com",
+  "image": "https://www.spacex.com/static/images/share.jpg",
+  "description": "Space Exploration Technologies Corp. is an American aerospace manufacturer, space transportation services and communications company headquartered in Hawthorne, California.",
+  "vat_number": "BE0689615164",
+  "currency": "USD",
+  "status": "Open",
+  "fax": "+12129876543",
+  "annual_revenue": "+$35m",
+  "number_of_employees": "500-1000",
+  "industry": "Apparel",
+  "ownership": "Public",
+  "sales_tax_number": "12456EN",
+  "payee_number": "78932EN",
+  "websites": [
+    {
+      "id": "12345",
+      "url": "http://example.com",
+      "type": "primary"
+    }
+  ],
+  "addresses": [
+    {
+      "id": "123",
+      "city": "San Francisco",
+      "line1": "Main street",
+      "line2": "apt #",
+      "line3": "Suite #",
+      "state": "CA",
+      "country": "US",
+      "postal_code": "94104"
+    }
+  ],
+  "social_links": [
+    {
+      "id": "12345",
+      "url": "https://www.twitter.com/apideck",
+      "type": "twitter"
+    }
+  ],
+  "emails": [
+    {
+      "id": "3221",
+      "type": "primary",
+      "email": "elon@musk.com"
+    }
+  ],
+  "phone_numbers": [
+    {
+      "id": "2323",
+      "type": "primary",
+      "number": "+11111111111"
+    }
+  ],
+  "custom_fields": [
+    {
+      "id": "1233",
+      "name": "assistant",
+      "value": "Mark Cuban"
+    }
+  ],
+  "tags": [
+    "New"
+  ],
+  "last_active": "2020-09-30T07:43:32.000Z",
+  "updated_by": "12345",
+  "created_by": "12345",
+  "updated_at": "2020-09-30T07:43:32.000Z",
+  "created_at": "2020-09-30T07:43:32.000Z"
+}
+```
+</ ResponseExample>
