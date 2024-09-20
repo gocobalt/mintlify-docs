@@ -55,8 +55,7 @@
       "pages": [
         "introduction",
         "quickstart",
-        "glossary",
-        "building_salesforce"
+        "glossary"
       ]
     },
     {
@@ -108,63 +107,117 @@
     {
       "group": "Concepts",
       "pages": [
-        "concepts/linked-accounts",
-        "concepts/auth-flows",
-        "concepts/orchestration",
-        "concepts/app-config",
-        "concepts/integration",
-        "concepts/custom-app",
-        "concepts/event-model",
-        "concepts/logs"
-      ]
-    },
-
-    {
-
-      "group": "API References",
-      "pages": [
-        "api-reference/overview",
-        {
-          "group": "Applications",
-          "pages": [
-            "api-reference/integration-meta/list-applications",
-            "api-reference/integration-meta/get-application",
-            "api-reference/integration-meta/update-application-auth"
-          ]
-        },
         {
           "group": "Linked Account",
           "pages": [
-            "api-reference/customer/get-linked-account",
-            "api-reference/customer/list-linked-accounts",
-            "api-reference/customer/create-linked-account",
-            "api-reference/customer/upsert-a-linked-account",
-            "api-reference/customer/delete-linked-account"
+            "concepts/linked-account/general", 
+            "concepts/linked-account/manage-linked-account",
+            "concepts/linked-account/config-management",
+            "concepts/linked-account/integration_logs",
+            "concepts/linked-account/udf"
+          ]
+        },
+        "concepts/auth-flows",
+        {
+          "group": "Workflow",
+          "pages": [
+            "concepts/workflow/overview", 
+            "concepts/workflow/triggers",
+            "concepts/workflow/workflow_api",
+            "concepts/workflow/actions",
+            "concepts/workflow/dataslots",
+            {
+              "group": "Nodes",
+              "pages": [
+                "concepts/workflow/custom-code",
+                "concepts/workflow/datastore",
+                "concepts/workflow/delay",
+                "concepts/workflow/group",
+                "concepts/workflow/httpnode",
+                "concepts/workflow/merge",
+                "concepts/workflow/response",
+                "concepts/workflow/rule",
+                "concepts/workflow/transform"
+              ]
+            }
           ]
         },
         {
-          "group": "Config",
+         "group": "App Config",
           "pages": [
-            "api-reference/config/find-or-create-config",
-            "api-reference/config/update-config",
-            "api-reference/config/get-config",
-            "api-reference/config/delete-config"
+              "concepts/application/how-to-configure",
+              "concepts/application/mapping",
+              "concepts/application/dependent",
+              "concepts/application/field-types"
+              ]
+            },
+        "concepts/integration",
+        "concepts/event-model",
+        {
+          "group": "Logs",
+          "pages": [
+            "concepts/Logs/workflow-logs", 
+            "concepts/Logs/event-logs",
+            "concepts/Logs/webhook-logs",
+            "concepts/Logs/schedule-logs"
           ]
         },
         {
-          "group": "Datastores",
+          "group": "Custom Apps",
           "pages": [
-            "api-reference/datastore/list-config-datastores",
-            "api-reference/datastore/config-datastore-records",
-            "api-reference/datastore/search-config-records"
+            "concepts/advance-concepts/about-custom-apps",
+            "concepts/advance-concepts/setting-up-custom-app"
           ]
+        }
+      ]
+    },
+    {
+      "group": "About API Reference",
+      "pages": [
+        "api-reference/overview"
+      ]
+    },
+    {
+      "group": "Linked Account",
+      "pages": [
+        "api-reference/customer/get-linked-account",
+        "api-reference/customer/list-linked-accounts",
+        "api-reference/customer/create-linked-account",
+        "api-reference/customer/upsert-a-linked-account",
+        "api-reference/customer/delete-linked-account"
+      ]
+      },
+    {
+      "group": "Applications",
+      "pages": [
+        "api-reference/integration-meta/list-applications",
+        "api-reference/integration-meta/get-application",
+        "api-reference/integration-meta/update-application-auth"
+      ]
+      },
+      {
+        "group": "Config",
+        "pages": [
+          "api-reference/config/find-or-create-config",
+          "api-reference/config/update-config",
+          "api-reference/config/get-config",
+          "api-reference/config/delete-config"
+        ]
+        },
+        {
+        "group": "Datastores",
+        "pages": [
+          "api-reference/datastore/list-config-datastores",
+          "api-reference/datastore/config-datastore-records",
+          "api-reference/datastore/search-config-records"
+        ]
         },
         {
           "group": "Event",
           "pages": [
             "api-reference/event/trigger-an-event-from-your-application",
             "api-reference/event/trigger-event"
-          ]
+        ]
         },
         {
           "group": "Webhooks",
@@ -176,30 +229,29 @@
             "api-reference/webhooks/delete-webhook",
             "api-reference/webhooks/subscribe-webhook-event",
             "api-reference/webhooks/unsubscribe-webhook-event"
-          ]
+            ]
         },
         {
           "group": "Executions",
           "pages": [
             "api-reference/executions/get-execution",
             "api-reference/executions/list-executions"
-          ]
+        ]
         },
         {
           "group": "Session Token",
           "pages": [
             "api-reference/session-token/generate-token-for-linked-account"
-          ]
+        ]
         },
         {
           "group": "Cobalt Hosted",
           "pages": [
             "api-reference/cobalt-connect/get-connect-url",
             "api-reference/cobalt-connect/get-hosted-properties"
-          ]
-        }
-      ]
-    },
+        ]
+        },
+
     {
       "group": "Auth Flows",
       "pages": [
@@ -209,55 +261,8 @@
         "guides/auth-flows/re-auth-flow"
       ]
     },
-    {
-      "group": "Application",
-      "pages": [
-        "guides/application/app-settings",
-        {
-          "group": "App Configuration",
-          "pages": [
-            
-            "guides/application/how-to-configure",
-            "guides/application/mapping",
-            "guides/application/dependent",
-            "guides/application/field-types"
-          ]
-        }
-      ]
-    },
-    {
-      "group": "Workflow",
-      "pages": [
-        "guides/workflow/overview", 
-        "guides/workflow/triggers",
-        "guides/workflow/workflow_api",
-        "guides/workflow/actions",
-        "guides/workflow/dataslots",
-        {
-          "group": "Nodes",
-          "pages": [
-            "guides/workflow/custom-code",
-            "guides/workflow/datastore",
-            "guides/workflow/delay",
-            "guides/workflow/group",
-            "guides/workflow/httpnode",
-            "guides/workflow/merge",
-            "guides/workflow/response",
-            "guides/workflow/rule",
-            "guides/workflow/transform"
-          ]
-        },
-        "guides/workflow/execution-failure",
-        {
-          "group": "Complex Workflow Scenarios",
-          "pages": [
-            "guides/workflow/batch",
-            "guides/workflow/sync", 
-            "guides/workflow/incremental-sync" 
-          ]
-        }
-      ]
-    },
+
+
     {
       "group": "Developer Settings",
       "pages": [
@@ -267,18 +272,31 @@
       ]
     },
     {
+      "group": "Building Integration",
+      "pages": [
+        "guides/building/building_salesforce", 
+        "guides/building/building_workday",
+        "guides/building/building_netsuite"
+      ]
+    },
+    {
+    "group": "Build Workflows",
+    "pages": [
+    "guides/workflow/execution-failure",
+    {
+      "group": "Complex Workflow Scenarios",
+      "pages": [
+        "guides/workflow/batch",
+        "guides/workflow/sync", 
+        "guides/workflow/incremental-sync" 
+      ]
+    }
+  ]
+  },
+    {
       "group": "Platform",
       "pages": [ 
-        {
-          "group": "Linked Account",
-          "pages": [
-            "guides/platform/linked-account/general", 
-            "guides/platform/linked-account/manage-linked-account",
-            "guides/platform/linked-account/config-management",
-            "guides/platform/linked-account/integration_logs",
-            "guides/platform/linked-account/udf"
-          ]
-        },
+
         {
           "group": "Account Management",
           "pages": [
@@ -288,24 +306,8 @@
             "guides/platform/account-management/branding"
           ]
         },
-        {
-          "group": "Logs",
-          "pages": [
-            "guides/platform/workflow-logs", 
-            "guides/platform/event-logs",
-            "guides/platform/webhook-logs",
-            "guides/platform/schedule-logs"
-          ]
-        },
         "guides/platform/webhook",
         "guides/platform/tryapi"
-      ]
-    },
-    {
-      "group": "Custom Apps",
-      "pages": [
-        "guides/advance-concepts/about-custom-apps",
-        "guides/advance-concepts/setting-up-custom-app"
       ]
     },
     {
@@ -918,9 +920,15 @@
       "name": "Get Your API Key",
       "icon": "gear",
       "url": "https://app.gocobalt.io/developer"
+    },
+    {
+      "name": "Examples",
+      "icon": "book",
+      "url": "https://docs.gocobalt.io/guides/building/"
     }
   ],
   "footerSocials": {
-    "linkedin": "https://www.linkedin.com/company/gocobalt/"
+    "linkedin": "https://www.linkedin.com/company/gocobalt/",
+    "twitter": "https://x.com/gocobaltio"
   }
 }
