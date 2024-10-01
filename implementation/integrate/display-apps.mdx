@@ -20,9 +20,8 @@ You can find the App Setup instructions for some of the popular integrations tha
 
 ## Building Custom UI
 If you want to build a custom UI for your integrations, you can do so by using the Cobalt APIs or the Cobalt Connect SDK available in JavaScript and React. 
-
-### Cobalt API for UI
-
+<AccordionGroup>
+  <Accordion title="Cobalt API for UI">
 If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications).
 
 1. **Request**: This API will list all the apps that were enabled above. Make a GET request to the `/application` endpoint with the `linked_account_id` of the user.
@@ -107,8 +106,9 @@ curl --request GET \
 
 You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/integration-meta/get-application).
 
-### Cobalt SDK for UI
+  </Accordion>
 
+  <Accordion title="Cobalt SDK for UI">
 If you prefer to develop using the SDKs provided by Cobalt, then the **.getApp()** method will get you the list of applications enabled in Cobalt. It returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
 
 1. **Method Call**: Call the **.getapp()** method provided in the SDK and pass the slug of the application for which information needs to be fetched. If no slug is provided, you will get a list of apps.
@@ -138,8 +138,11 @@ cobalt.getApp("slack")  // to get details of a single app, e.g. slack
 }
 ```
 <Note>
-Learn more about the Assisted and Seamless flow of Cobalt Connect [here](https://docs.gocobalt.io/guides/auth-flows/embedded-flow).
+Learn more about the Embedded and Seamless flow of Cobalt Connect [here](https://docs.gocobalt.io/concepts/auth-flows/auth-flows).
 </Note>
+  </Accordion>
+</AccordionGroup>
+
 
 ## Render Application on your Frontend
 
