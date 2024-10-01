@@ -3,8 +3,7 @@ title: 'Create linked account'
 api: post /api/v2/public/linked-account
 ---
 
-This API allows you to create a new linked account for your customer within Cobalt's platform. Linked accounts represent your end-users or customers, 
-and they are essential for enabling connections with third-party applications.
+This API allows you to create a new linked account for your customer within Cobalt's platform.
 
 ## Request description
 #### Body Parameters
@@ -19,10 +18,6 @@ and they are essential for enabling connections with third-party applications.
 <ParamField body="your_app" type="object">
    An object containing the details of your application associated with you account
     <Expandable title="properties">
-        <ResponseField name="app_id" type="string" required="true">
-           Application Id of your default app. You can get that [here](https://app.gocobalt.io/your-app)
-        </ResponseField>
-
         <ResponseField name="auth_credentials" type="object">
            Your customer api credentials for pushing data to your api end point
            <Expandable title="example properties" defaultOpen="true">

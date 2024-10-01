@@ -1,0 +1,233 @@
+---
+title: Linked Accounts
+---
+
+Linked Accounts refers to the end-users or customers of our users who utilize the integrations built using Cobalt. These end-users are the ultimate beneficiaries of the seamless automation and streamlined workflows created using Cobalt.
+
+## Creating Linked Accounts
+Linked Accounts can be created either through the Cobalt Dashboard or via the API.
+
+<Accordion title="via Cobalt Dashboard" icon="laptop">
+In the Cobalt Dashboard, navigate to the `Linked Accounts` section where you have two options for adding linked accounts:
+
+1. **+ Add Account button** 
+
+Users can click on **+ Add Account** to create a single Linked Account, where they provide essential details such as the **Linked Account ID**, **Name** and optionally add an **UDF parameter** if required.
+<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
+<img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
+
+2. **Bulk CSV Import**
+
+Alternatively, users can opt for the bulk CSV import option, enabling them to add multiple linked accounts in one go. Simply click on `Import` icon and upload the CSV File. The sample format of the CSV can be checked by clicking on `Download Sample CSV`.
+<img height="200" src="/images/Guides/Linked-account/linked-bulk.png" alt="Create multiple Linked Accounts using CSV"/>
+
+</Accordion>
+
+<Accordion title="via API" icon="code">
+For users seeking programmatic control and automation, Cobalt offers the flexibility to create linked accounts via the API. By utilizing the [**Create Linked Account**](https://docs.gocobalt.io/api-reference/customer/create-linked-account) API endpoint, users can integrate linked account creation into their existing workflows and systems.
+
+Refer below to understand how you can implement it:
+<CodeGroup>
+    ```JavaScript cURL
+    curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "<string>",
+  "name": "<string>",
+  "your_app": {}
+}'
+    ```
+    ```JavaScript SDK
+   try{
+    await Client.createLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User",
+        udf: {
+            "phone": "1234567890",
+            "address": "123, Queen Street"
+        },
+        your_app:{
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+    ```
+</CodeGroup>
+</Accordion>
+
+## Info of a Linked Account
+
+Every Linked Account in Cobalt has information available about it under various Tabs like Linked Account basic info, Events triggered for Linked Account, Workflows executed etc. To know about the information offered by all the tabs, refer below. 
+
+
+<Tabs>
+  <Tab title="Overview">
+The Overview tab serves as the central hub for accessing essential information and managing configurations within a Linked Account. Users can view information such as total **Connections**, **Executions** count, and **API calls** count.
+
+<img height="200" src="/images/Guides/Linked-account/features-overview.png" alt="Linked Account Overview"/>
+
+#### Get Hosted URL
+Users can generate the URL for the Linked Account's Hosted Portal UI by clicking on the `Get Hosted URL` button.
+
+#### Integrations in the Linked Account
+The Overview tab also allows users to view a list of connected integrations of the Linked Account, manage their configurations, check **Status** of the integration and even delete connections if necessary. 
+
+  </Tab>
+
+  <Tab title="Workflows">
+    The Workflows tab provides users with insights into the workflows executed by the Linked Account. Users can view details such as the **Workflow name**, associated **Application/integration**, **Last Run date** etc., enabling them to track workflow activity effectively.
+    <img height="200" src="/images/Guides/Linked-account/features-workflows.png" alt="Linked Account Workflows"/>
+  </Tab>
+
+  <Tab title="Executions">
+
+    In the Executions tab, users can monitor the execution status of events and the workflows in which the execution occured. Users can view details of executed events, including the **Event name**, **Workflow name**, **Status** (Success or Errored), and **Date of Execution**.
+    <img height="200" src="/images/Guides/Linked-account/features-executions.png" alt="Linked Account Executions"/>
+  </Tab>
+
+    <Tab title="Events">
+    The Events tab offers users visibility into triggered or executed events. Users can access information about events triggered within applications for the Linked Account, along with the associated **Application name**, **Event date** and **Status**.
+    <img height="200" src="/images/Guides/Linked-account/features-events.png" alt="Linked Account Events"/>
+  </Tab>
+
+    <Tab title="Webhooks">
+    In the Webhooks tab, users can manage and monitor webhook activity. Users can view information about triggered webhooks, including **Event triggered name**, **Date of trigger** and **Execution Status**. This feature enables users to track any activity which occured in Cobalt.
+    <Tip>
+    To learn more about how to setup Webhooks in Cobalt, refer to our [Webhook guide](https://docs.gocobalt.io/guides/platform/webhook).
+    </Tip>
+    <img height="200" src="/images/Guides/Linked-account/features-webhooks.png" alt="Linked Account Webhooks"/>
+  </Tab>
+
+    <Tab title="Schedules">
+    Schedule Logs provide users with visibility into scheduled workflows and their associated details. These logs offer insights into which workflows are scheduled, their configurations, and status.
+  </Tab>
+</Tabs>
+
+
+## Key Features of Linked Account
+
+Linked Accounts in Cobalt provide users with a comprehensive set of features and functionalities to monitor, manage, and optimize their integrations. Let's delve into the key features of a Linked Account.
+
+<AccordionGroup>
+<Accordion title="1. Config Management">
+Config Management allows users to save configurations for Linked Accounts, and manage them from Cobalt’s dashboard.
+
+Follow the steps below to understand how you can work with Config Management.
+
+<Steps>
+  <Step title="Navigate to Config">
+    Within the Linked Account **Overview** tab, locate the Application under **Integrations**, click on the `three-dot` button in the respective row and select `Configure`.
+  </Step>
+  <Step title="Select Config from the Dropdown">
+    Choose the desired configuration settings like the value for the **Fields** or Enable or Disable **Workflows** for the Linked Account.
+  </Step>
+  <Step title="Modify the Configurations and Save">
+    Make any necessary modifications to the configuration settings as required by the end customer. Once the changes are made, click on `Save` to update configurations.
+<img height="200" src="/images/Guides/Linked-account/linked-config.png" alt="Config Management in Linked Account"/>
+  </Step>
+</Steps>
+
+</Accordion>
+
+<Accordion title="2. Integration Logs">
+Integration Logs in Cobalt allow you to monitor and troubleshoot the authentication and connectivity status of an integration for a linked account.
+
+
+To check the Integration Logs, under **Integrations** in `Overview`, click on the three-dot menu of any integration and select `Logs`.
+
+<img height="200" src="/images/Guides/Linked-account/logs-navigation.png" alt="Navigation for Linked Account Integration Logs"/>
+
+This will display logs in chronological order of all auth events associated with the integration.
+
+### Log Entries
+
+The logs show various events related to authentication of an integration of a particular Linked Account. It consists of the event name alongwith the date and timestamp when event occured.
+
+The logs include the following events:
+ 
+<AccordionGroup>
+  <Accordion title="Integration Created">
+    This entry is logged when the Linked Account successfully connects to the integration.
+  </Accordion>
+
+  <Accordion title="Integration Deleted">
+    This entry appears when the Linked Account disconnects from the integration.
+  </Accordion>
+
+  <Accordion title="Integration Expired">
+    This indicates that the API key or Access token for the integration has expired, potentially disrupting the workflow.
+  </Accordion>
+
+    <Accordion title="Reauthenticated">
+    This is logged when the Linked Account reconnects with the integration after providing the new API key or generating a new access token when the previous credentials expired, ensuring continued functionality.
+  </Accordion>
+
+    <Accordion title="Connection Failed">
+    This entry appears when the authentication fails for the integration for reasons like incorrect API Key, OAuth failure etc.
+  </Accordion>
+
+</AccordionGroup>
+
+<img height="200" src="/images/Guides/Linked-account/logs-entries.png" alt="Different Logs entries"/>
+</Accordion>
+
+<Accordion title="3. UDF Parameter">
+    **UDF (User Defined Field) parameters** in Cobalt allows you to assign custom key-value pairs to Linked Accounts.
+
+These parameters enable users to tailor workflows and configurations based on specific criteria defined by the UDF values.
+
+To create a UDF parameter for a Linked Account, follow these steps: 
+
+<Steps>
+  <Step title="Select Linked Account">
+    Choose the Linked Account for which UDF needs to be added and click on the `Update UDF` button in the right side.
+  </Step>
+  <Step title="Add UDF">
+    Specify the name of the UDF parameter and its corresponding value, click on `+` and click on the `Save` button.
+    <img height="200" src="/images/Guides/Linked-account/udf-create.png" alt="Create a UDF Parameter"/> 
+  </Step>
+</Steps>
+The UDF Parameter is added to the Linked account.
+
+UDF parameters simplify workflow access control within the Cobalt platform.
+
+In the **Config Portal** of a Workflow, users have the option to define **Access** conditions, such as `Match all conditions` or `Match any condition`. Users can then specify the name of the UDF parameter and its corresponding value that should be allowed to access the Workflow.
+<img height="200" src="/images/Guides/Linked-account/udf-config.png" alt="Config Portal in a Workflow"/> 
+
+## Sample Use Case of UDF
+Let's consider a scenario where the user requires that only few users with the Admin rights can **Reply in a Thread** in Slack. To manage access to this workflow within **Cobalt**, the company can utilize UDF parameters.
+
+By assigning a UDF parameter named **Role** with values such as **Administrator**, **Member** and **Guest** to Linked Accounts, the company can filter configurations in workflows based on the role of each Linked Account. 
+
+To use the UDF parameter in the workflow, the user will follow these steps:
+
+<Steps>
+  <Step title="Create UDF">
+    User will create UDF parameter named **Role** in the Linked accounts and assign them values.
+  </Step>
+  <Step title="Configure UDF in Workflow">
+    Navigate to **Apps** > Search for **Slack** > **Workflows** > Create a new workflow or Choose an existing one > Click on `Config Portal` in the top right corner.
+ <Tip>Learn how to create a workflow [here](https://docs.gocobalt.io/guides/workflow/overview). </Tip>
+  </Step>
+  <Step title="Adding UDF Condition">
+    Go to `Access` > Select `Match All Conditions` > Enter `Name` as **Role** and `Value` as **Administrator** > Click on `+` > Click on `Save`.
+<img height="200" src="/images/Guides/Linked-account/udf-config-eg.png" alt="Example of using UDF Parameter"/> 
+  </Step>
+</Steps>
+
+This workflow will now be visible only to the Linked Accounts who have the Role as Administrator.
+
+</Accordion>
+</AccordionGroup>
+
+
+
+
+By leveraging the features available within Linked Accounts, users can effectively monitor, manage, and optimize their integrations.
