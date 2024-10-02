@@ -1,0 +1,277 @@
+---
+title: Contacts
+description: Represents a contact, which is a person associated with a company.
+---
+
+
+### Schema
+<ParamField body="id" type="string">
+  Record id of the contact.
+</ParamField>
+<ParamField body="name" type="string">
+  Full name of the contact.
+</ParamField>
+<ParamField body="type" type="enum">
+  Platform defined type of the contact. Eg: `customer`, `supplier`, `employee`, `personal`
+</ParamField>
+<ParamField body="email" type="string">
+  Primary email id of the contact
+</ParamField>
+<ParamField body="phone" type="string">
+  Primary phone number of the contact
+</ParamField>
+<ParamField body="fax" type="string">
+  The fax number of the contact.   
+</ParamField>
+<ParamField body="website" type="string">
+  Primary website of the contact
+</ParamField>
+<ParamField body="social_links" type="object[]">
+  Social media links of the contact
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id of the `social_links` record
+    </ResponseField>
+    <ResponseField name="url" type="string">
+        Social media URL
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Social media name
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="lists" type="string[]">
+  Ids of the lists the contact belongs to
+</ParamField>
+<ParamField body="title" type="string">
+  The job title of the contact. 
+</ParamField>
+<ParamField body="active" type="boolean">
+  The active status of the contact.
+</ParamField>
+<ParamField body="status" type="enum">
+  Status of the contact. For example: `open`, `closed`, `won`, `lost` etc.
+</ParamField>
+<ParamField body="owner_id" type="string">
+  Owner of the contact. Association - `Users`
+</ParamField>
+<ParamField body="addresses" type="object[]">
+  Address records of the contact
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id of the `addresses` record
+    </ResponseField>
+    <ResponseField name="type" type="enum">
+        Type of address. For eg: `primary`, `secondary`, `home`, `office` etc:
+    </ResponseField>
+    <ResponseField name="string" type="string">
+        The complete address. Some APIs do not provide structured address data.
+    </ResponseField>
+     <ResponseField name="name" type="string">
+        The name for the address
+    </ResponseField>
+    <ResponseField name="line_1" type="string">
+        Line 1 for the address
+    </ResponseField>
+    <ResponseField name="line_2" type="string">
+        Line 2 for the address
+    </ResponseField>
+     <ResponseField name="street" type="string">
+        Street component of the address. Street number.
+    </ResponseField>
+    <ResponseField name="city" type="string">
+        Street component of the address
+    </ResponseField>
+    <ResponseField name="state" type="string">
+        City component of the address
+    </ResponseField>
+    <ResponseField name="country" type="string">
+        Country component of the address
+    </ResponseField>
+    <ResponseField name="postal_code" type="string">
+        Postal code component of the address
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="last_name" type="string">
+  Last name of the contact
+</ParamField>
+<ParamField body="middle_name" type="string">
+  Middle name of the contact
+</ParamField>
+<ParamField body="first_name" type="string">
+  First name of the contact
+</ParamField>
+<ParamField body="prefix" type="string">
+  Prefix of the contact
+</ParamField>
+<ParamField body="suffix" type="string">
+  Suffix of the contact
+</ParamField>
+<ParamField body="gender" type="enum">
+  Gender of the contact
+</ParamField>
+<ParamField body="language" type="string">
+  language code according to ISO 639-1. For eg: EN for english.
+</ParamField>
+<ParamField body="birthdate " type="string">
+  Birth date of the contact
+</ParamField>
+<ParamField body="company_id" type="string">
+  The company the contact is associated with. Association - `Companies`
+</ParamField>
+<ParamField body="company_name" type="string">
+  The name of the company the contact is associated with.   
+</ParamField>
+<ParamField body="photo_url" type="string">
+  Image url of the contact
+</ParamField>
+<ParamField body="description" type="string">
+  Description of the contact
+</ParamField>
+<ParamField body="department" type="string">
+  The department of the contact.
+</ParamField>
+<ParamField body="lead_source" type="string">
+  The lead source of the contact. Association - `Leads`
+</ParamField>
+<ParamField body="lead_id" type="string">
+  The lead the contact is associated with. Association - `Leads`
+</ParamField>
+<ParamField body="custom_fields" type="object[]">
+  Custom fields the user configured for contacts and their values
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Custom field id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+        Custom field defined by the user
+    </ResponseField>
+    <ResponseField name="value" type="string">
+        Custom field value
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="emails" type="object[]">
+  Emails of the contact. Instead of a single string field, some applications provide an array of email objects.
+   <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id for the record
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Email type. For eg: `primary`, `secondary`, `work`, `personal`
+    </ResponseField>
+    <ResponseField name="email" type="string">
+        Email address
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="phone_numbers" type="object[]">
+  Phone numbers of the contact. Instead of a single string field, some applications provide an array of phone number objects.
+  <Expandable title="all child properties">
+    <ResponseField name="id" type="string">
+        Unique id for the record
+    </ResponseField>
+    <ResponseField name="type" type="string">
+        Phone number type. For eg: `primary`, `secondary`, `work`, `personal`
+    </ResponseField>
+    <ResponseField name="number" type="string">
+        Phone number
+    </ResponseField>
+  </Expandable>
+</ParamField>
+<ParamField body="tags" type="string[]">
+  Tags associated with the contact
+</ParamField>
+<ParamField body="last_active" type="string">
+  Last active date-time of the contact
+</ParamField>
+<ParamField body="created_at" type="string">
+  Date-time when the contact record was created
+</ParamField>
+<ParamField body="updated_at" type="string">
+  Date-time when the contact record was last modified
+</ParamField>
+
+<ResponseExample>
+```JSON Contacts example
+{
+  "id": "12345",
+  "name": "Elon Musk",
+  "type": "customer",
+  "email": "elon@musk.com",
+  "phone": "+12322323490",
+  "fax": "+12129876543",
+  "website": "http://example.com",
+  "social_links": [
+    {
+      "id": "12345",
+      "url": "https://www.twitter.com/example",
+      "type": "twitter"
+    }
+  ],
+  "lists": [
+    "1234",
+    "5678"
+  ],
+  "title": "CEO",
+  "active": true,
+  "status": "open",
+  "owner_id": "54321",
+  "addresses": [
+    {
+      "id": "123",
+      "city": "San Francisco",
+      "line1": "Main street",
+      "line2": "apt #",
+      "line3": "Suite #",
+      "state": "CA",
+      "country": "US",
+      "postal_code": "94104"
+    }
+  ],
+  "last_name": "Musk",
+  "middle_name": "D.",
+  "first_name": "Elon",
+  "prefix": "Mr.",
+  "suffix": "PhD",
+  "gender": "Male",
+  "language": "EN",
+  "birthdate": "14-09-1993",
+  "company_id": "23456",
+  "company_name": "23456",
+  "photo_url": "https://unavatar.io/elon-musk",
+  "description": "Internal champion",
+  "department": "Engineering",
+  "lead_source": "Cold Call",
+  "lead_id": "34567",
+  "custom_fields": [
+    {
+      "id": "1233",
+      "name": "assistant",
+      "value": "Mark Cuban"
+    }
+  ],
+  "emails": [
+    {
+      "id": "3221",
+      "type": "primary",
+      "email": "elon@musk.com"
+    }
+  ],
+  "phone_numbers": [
+    {
+      "id": "2323",
+      "type": "primary",
+      "number": "+11111111111"
+    }
+  ],
+  "tags": [
+    "New"
+  ],
+  "last_active": "2017-10-22T20:43:21.291Z",
+  "created_at": "2017-08-12T20:43:21.291Z",
+  "updated_at": "2017-08-12T20:43:21.291Z"
+}
+```
+</ ResponseExample>
