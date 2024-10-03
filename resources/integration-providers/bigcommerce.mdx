@@ -1,0 +1,97 @@
+---
+title: Setup
+description: Connect to your BigCommerce app for OAuth.
+---
+To setup your BigCommerce app in Cobalt for OAuth, you will need the following credentials from your [BigCommerce Developer account](https://devtools.bigcommerce.com/my/apps):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. BigCommerce Developer account. You can create one [here](https://www.bigcommerce.com/start-your-trial/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. store_v2_products
+2. store_v2_products_read_only
+3. store_v2_orders
+4. store_v2_orders_read_only
+
+<Info>If you haven't already created an app in BigCommerce, you'd need to create one.</Info>
+
+### Creating an app in BigCommerce
+
+To create a BigCommerce app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [BigCommerce Developer account](https://devtools.bigcommerce.com/my/apps).
+2. Click on `+ Create an app` button in the top right and provide the `App Name`.
+<img height="200" src="/images/Bigcommerce/big_navigation.png" alt="Creating OAuth app"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `BigCommerce` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Paste the Callback Url under `Auth Callback URL` and `Load Callback URL`.
+5. Select the **mandatory scopes** in the **OAuth scopes** section, as provided in your Cobalt BigCommerce settings page and click on the `Update & Close` button.
+<img height="200" src="/images/Bigcommerce/big_config.png" alt="Setting up Developer app"/>
+
+6. Click on `View Client ID` option of the app and copy the **Client ID** and **Client Secret** displayed.
+<img height="200" src="/images/Bigcommerce/big_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Bigcommerce/big_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Bigcommerce/big_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [BigCommerce Developer account](https://devtools.bigcommerce.com/my/apps) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Edit App` > Add the scopes as added in Cobalt under `OAuth Scopes` > Click on `Update & Close`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using BigCommerce actions and triggers. Following are the set of BigCommerce actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Product">
+     1. **Get Products** - Get a list of products in BigCommerce.
+     2. **Create Product** - Create a product in BigCommerce.
+     3. **Delete Product** - Delete a product in BigCommerce.
+     4. **Update Product** - Update a product in BigCommerce.
+     </Accordion>
+     <Accordion title="Orders">
+     5. **Get Orders** - Get a list of orders in BigCommerce.
+     6. **Create Order** - Create an order in BigCommerce.
+     7. **Update Order** - Update an order in BigCommerce.
+     8. **Get Order by ID** - Get an order by ID in BigCommerce.
+      </Accordion>
+
+     <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any BigCommerce documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Order Created** - Triggers when an order is created on BigCommerce.
+         2. **Order Updated** - Triggers when an order is updated on BigCommerce.
+         3. **Refund Created** - Triggers when a refund is created on BigCommerce.
+         4. **Cart Updated** - Triggers when a cart is updated on BigCommerce.
+  </Tab>
+</Tabs>

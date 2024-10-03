@@ -1,0 +1,130 @@
+---
+title: Setup
+description: Connect to your Facebook Ads app for OAuth.
+---
+
+To setup your Facebook Ads app in Cobalt for OAuth, you will need the following credentials from your [Facebook Developer App Settings](https://developers.facebook.com/apps/):
+- Client ID
+- Client Secret 
+- Scopes
+
+### Pre-requisites
+
+1. Facebook Developer Portal. You can create one [here](https://www.facebook.com/r.php?next=https%3A%2F%2Fdevelopers.facebook.com%2Fapps%2F&locale=en_GB&display=page).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Ads_management
+2. email
+3. pages_show_list
+4. pages_manage_ads
+5. pages_manage_metadata
+6. leads_retrieval
+
+<Info>If you haven't already created an app in Facebook, you'd need to create one.</Info>
+
+### Creating an app in Facebook
+
+To create a Facebook Ads app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Facebook Developer Portal](https://developers.facebook.com/apps/).
+2. Select the `Apps` tab in the top nav bar and click on the `Create App` button.
+<img height="200" src="/images/fb_ads/fb_navigation.png" alt="Navigation for App setup"/>
+3. Select `Other` for **use-case** > Click `Next` > Select `Business` as **App-type** and click on `Next`.
+<Warning> App Type cannot be changed after the app has been created.</Warning>
+4. Enter the **App Name** for your application and click on `Create App`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Facebook Ads` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Click on `Add Product` in the left menu > Click on `Set Up` under **Facebook Login for Business** > Paste the Callback Url under **Valid OAuth Redirect URIs** and click on `Save changes`.
+<img height="200" src="/images/fb_ads/fb_config.png" alt="Setting up Facebook Ads Developer app"/>
+
+7. Go to `Basic` under the **App Settings** section in the left menu and copy the **App ID**(Client ID) and **App Secret**(Client Secret).
+<img height="200" src="/images/fb_ads/fb_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/fb_ads/fb_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Facebook Ads Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Facebook Ads, you'd need to subscribe to Facebook Ads' Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Facebook Ads webhook subscription:**
+
+1. Select **Facebook Ads** from the application list in **Cobalt**, and select `Settings`.
+2. Copy the `Single Webhook Url`.
+3. Go to OAuth app of Facebook Ads > Click on `Add Product` in the left menu > Click on `Set Up` under **Webhooks**. 
+4. Select **Page** object from drop-down and click `Subscribe to this object`. Paste the **Single Webhook URL** under `Callback URL` and the **Verify token** as `cobalt_verify_token`. Click on `Verify and save`.
+<Note>
+Ensure that the verify token entered is `cobalt_verify_token`. No other value will be able to verify the Webhook.
+</Note>
+5. Subscribe to the `Leadgen` event if not already subscribed.
+<img height="200" src="/images/fb_ads/fb_webhook.png" alt="Setting up Facebook Ads Webhook URL"/>
+
+**Test the Webhooks**
+
+<Info>
+Webhooks can be only tested while the App Mode is `Live`.
+</Info>
+
+- Toggle on the **App Mode** from `Development` to `Live`. You can test the Lead Ads Webhook at the Facebook Ads testing tool [here](https://developers.facebook.com/tools/lead-ads-testing/).
+
+#### App Review for Facebook Ads
+
+If the app will only be used by app users who have a role on the app itself, **App Review** is not required but if the app will be used by anyone without a [**Role on the app**](https://developers.facebook.com/docs/development#roles) or a [**role in a Business**](https://www.facebook.com/business/help/442345745885606?id=180505742745347) that has claimed the app, it must first undergo App Review by Meta.
+
+<Tip>
+Follow the detailed steps for an App Review submission given in the guide [here](https://developers.facebook.com/docs/resp-plat-initiatives/app-review/submission-guide).
+</Tip>
+
+Once approved, you can change the **Mode** of the app to `Live` by using the Toggle given in top Nav bar of the OAuth app.
+
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Facebook Ads actions and triggers. Following are the set of Facebook Ads actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Ad Creative">
+
+     1. **Create Ad Creative** - Create an Ad Creative in Facebook Ads.
+     2. **Update Ad Creative** - Update an Ad Creative in Facebook Ads.
+     </Accordion>
+  <Accordion title="Ad">    
+     3. **Create Ad** - Create an lead in Facebook Ads.
+     4. **Get Ad** - Get an Ad in Facebook Ads.
+    </Accordion>
+     <Accordion title="Ad Set">  
+     5. **Get all Ad Sets** - Get all Ad Sets in Facebook Ads.
+     6. **Create Ad Set** - Create an Ad Set in Facebook Ads.
+     7. **Get Ad Set** - Get an Ad Set in Facebook Ads.
+     8. **Update Ad Set** - Update an Ad Set in Facebook Ads.
+    </Accordion>
+     <Accordion title="Campaigns"> 
+     9. **Get All Campaigns** - Get all Campaigns in Facebook Ads.
+     10. **Create Campaign** - Create a Campaign in Facebook Ads.
+     11. **Update Campaign** - Update a Campaign in Facebook Ads.
+     </Accordion>
+      <Accordion title="Leadgen Forms"> 
+     12. **Get Leadgen forms** - Get all Leadgen forms in Facebook Ads.
+     13. **Create Leadgen form** - Create a Leadgen form in Facebook Ads.
+    </Accordion>
+      <Accordion title="Others"> 
+     14. **HTTP Request** - Make HTTP API calls to any Facebook Ads documented REST APIs.
+     15. **Get Profile** - Get a profile in Facebook Ads.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Leadgen Updated** - Triggers when a leadgen form is updated on Facebook Ads.
+  </Tab>
+</Tabs>

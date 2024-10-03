@@ -1,0 +1,90 @@
+---
+title: Actions
+---
+
+Workflow actions helps you to create complex orchestrations. You can drag and drop them on the workflow canvas as `nodes` of a workflow, inter-connect
+and configure them to achieve required flow. These actions can be broadly categorized as:
+
++ Cobalt's native actions
++ Cobalt's custom actions
++ Third party application actions
+
+## Cobalt's native actions
+These actions do not make any api calls themselves but help as utility tools for making deeper orchestrations.
+
+#### Rule
+You can add conditional logic to workflows using our rule node. Rule node allows you to define rules to determine which of two paths your workflow should execute.
+<Tip>
+To learn more about the Rule Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/rule).
+</Tip>
+
+#### Delay
+You can add delay to your workflow using our delay node. Delay allows you to pause the execution of next step till a certain time. 
+<Tip>
+To learn more about the Delay Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/delay).
+</Tip>
+
+#### Merge
+The Merge Node in Cobalt offers essential functionality for merging multiple branches of a workflow into a single flow. This is especially useful for converging parallel processes within a workflow at a common point before continuing with subsequent actions.
+<Tip>
+To learn more about the Merge Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/merge).
+</Tip>
+
+#### Custom Code
+This action takes takes in parameters and use them to manipulate the data using custom code in any preferred language. Response from this node can be accessed by
+entering a `#` and then selecting the Custom Code node that has been added to the workflow, followed by `function_return_value.result.<property name>}}`. Or `{{node.<node number>.response:function_return_value.result.<property name>}}` 
+<Tip>
+To learn more about the Custom Code Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/custom-code).
+</Tip>
+
+#### Group
+This action is used to loop over an entity or a flow for a fixed number of iterations or over an array input.
+<Tip>
+To learn more about the Group Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/group).
+</Tip>
+
+#### DataStore
+Datastore node helps you create variables at runtime and add values to them. These variables can be then accessed across the workflow like any other variables by entering `$`.
+<Tip>
+To learn more about the DataStore Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/datastore).
+</Tip>
+
+#### HTTP
+HTTP Node allows you to create an HTTP Request to any API of the integration for which the workflow is being created.
+<Tip>
+To learn more about the HTTP Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/httpnode).
+</Tip>
+
+#### Response
+Cobalt offers its users to subscibe to its [Webhooks](https://docs.gocobalt.io/guides/webhook/overview) and notify them when any of the subscribed events gets fired.
+Response node lets you notify you about those events and define the data that needs to be sent to you along with the notification.
+<Tip>
+To learn more about the Response Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/response).
+</Tip>
+
+#### Transform
+This node lets you transform complex JSON into an easily accessible format.
+<Tip>
+To learn more about the Transform Node, refer to the guide [here](https://docs.gocobalt.io/guides/workflow/transform).
+</Tip>
+
+## Cobalt's custom actions
+You can create [custom actions](https://docs.gocobalt.io/guides/developer-settings/api_proxy) or **API Proxies** of your organization for your customers to use in the developer settings.
+Those actions can be accessed using this node.
+<img height="200" src="/images/api_proxy.png" alt="API Proxies in Cobalt"/>
+
+## Third party application actions
+Cobalt supports 100+ third party applications on its platform. Users can connect to these applications through Cobalt to make use of their APIs. When you select an application
+from the `Apps` list to create a workflow, you can find it in the right panel along with the other actions. Drag and drop it on the  workflow canvas to make use of the the application's APIs
+supported by Cobalt.
+
+#### HTTP Request
+Users can also make any custom api call to the selected application that is not available with Cobalt using the HTTP request.
+
+#### Configuring URL Request
+You can enter the request URL in the input under **"Request URL"**. You can also include parameters as part of the URL by typing double curly brackets `{{` to invoke the **variable menu**.
+The variable menu allows you to reference data from upstream steps in your request URL. 
+
+#### Sending Data in Request
+You can easily send JSON in a request by choosing Raw in the dropdown to the right of Body. When creating the raw JSON body, you can type in static values or 
+reference variables from upstream steps by typing $ or #

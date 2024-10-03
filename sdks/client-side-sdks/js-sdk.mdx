@@ -2,6 +2,9 @@
 title: Javascript SDK
 ---
 
+<Tip>
+You can refer to the Cobalt's GitHub repo for Javascript SDK [here](https://gocobalt.github.io/cobalt-js/).
+</Tip>
 #### Install
 
 First, install `@cobaltio/cobalt-js`  and via the terminal.
@@ -14,9 +17,9 @@ npm install --save  @cobaltio/cobalt-js
 Import `Cobalt` and initialise it.
 
 ```JavaScript
-import Config from "@cobaltio/cobalt-js";
+import { Cobalt } from "@cobaltio/cobalt-js";
 
-const config = new Config({ token: "SESSION_TOKEN" });
+const cobalt = new Cobalt({ token: "COBALT_SESSION_TOKEN" });
 ```
 
 #### .getApp()
@@ -53,7 +56,8 @@ Example Response:
 		"_v": "1.0.0",
 		"description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
 	},
-	"slug": "slack"
+	"slug": "slack",
+	"reauth_required": false
 }
 ```
 

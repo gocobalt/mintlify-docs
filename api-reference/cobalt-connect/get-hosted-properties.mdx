@@ -1,14 +1,14 @@
 ---
 title: 'Get hosted properties'
-api: get /api/v2/public/connect-url
+api: get /api/v2/public/hosted-properties
 ---
 This API returns the hosted properties saved against the session token
 
 ## Request description
 #### Headers
 <ParamField header="Authorization" type="string">
-Unlike other API's in this documentation. This api requires the session token as a bearer token. Please ommit the `x-api-key` from the header of this api.
-  ```bash Header for Generate Connect URL api
+Unlike other API's in this documentation. This API requires the session token as a bearer token. Please ommit the `x-api-key` from the header of this API.
+  ```bash Header for Generate Connect URL API
   Authorization:  Bearer {SESSION TOKEN}
   ```
 </ParamField>
@@ -33,17 +33,17 @@ Unlike other API's in this documentation. This api requires the session token as
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+  <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
     </ResponseField>
     <ResponseField name="request_id" type="string">
     System generated request id
-    </ResponseField>
-    <ResponseField name="stack" type="string">
-    Error stack
     </ResponseField>
   </Tab>
 </Tabs>
@@ -59,10 +59,10 @@ Unlike other API's in this documentation. This api requires the session token as
 ```JSON 500
 {
     "status_code": 500,
-    "error_type": "INTERNAL_SERVER_ERROR",
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
     "message": "Authorization Token Missing",
-    "request_id": "c34e179c-783d-4464-af6a-7a353e301a46",
-    "stack": "Error: Authorization Token Missing\n    at getToken (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\dist\\providers\\JWT.js:38:11)\n    at tokenAuth (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\dist\\middlewares\\AuthV3.js:61:46)\n    at Layer.handle [as handle_request] (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\route.js:144:13)\n    at Route.dispatch (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\route.js:114:3)\n    at Layer.handle [as handle_request] (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:284:15\n    at Function.process_params (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Function.handle (C:\\Users\\Admin\\Desktop\\Cobalt\\bkout_integration_auth_backend\\node_modules\\express\\lib\\router\\index.js:175:3)"
+    "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
 }
 ```
 </ ResponseExample>

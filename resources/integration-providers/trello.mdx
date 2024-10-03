@@ -1,0 +1,67 @@
+---
+title: Connect
+description: Connect with the Linked Account's Trello account.
+---
+<Note>
+Trello is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Trello** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. API Key
+2. API Token
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Trello
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Trello/trello_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your Trello account and go to [Power-Ups Admin](https://trello.com/power-ups/admin) page.
+2. Click on the `Power-Ups` under **Apps** in the side menu and click on `New`.
+<img height="200" src="/images/Trello/trello_navigation.png" alt="Navigation for Key"/>
+
+3. Enter the `Name`, select `Workspace`, fill all the required fields and click on `Create`.
+4. Click on `Generate a new API key` > click on `Generate API Key` and copy the `API Key`.
+<img height="200" src="/images/Trello/trello_credentials.png" alt="Getting Credentials"/>
+5. To get the `API Token`, you'll have to generate it manually. Click on `Token` hyperlinked button under **API Key** section, `Allow` permissions and copy the **Token** displayed.
+<img height="200" src="/images/Trello/trello_credentials2.png" alt="Getting API Token"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Trello.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Trello actions and triggers. Following are the set of Trello actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Card">
+     1. **Create Card** - Create a new card in Trello.
+     2. **Update Card** - Update a card in Trello.
+     3. **Delete Card** - Delete a card in Trello.
+     4. **Add Comment to Card** - Add a comment to a card in Trello.
+     5. **Update Comment on Card** - Update a comment on a card in Trello.
+    </Accordion>
+    <Accordion title="Board">
+     6. **Create Board** - Create a board in Trello.
+     7. **Add Member to Board** - Add a member to a board in Trello.
+     </Accordion>
+    <Accordion title="Others">
+     8. **HTTP Request** - Make HTTP API calls to any Trello documented REST APIs.
+     9. **Create List** - Create a new list in Trello.
+     10. **Get Members of an Organization** - Get members of an organization in Trello.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    1. **Any event involving this model will trigger the webhook** - Triggers when any mutation is performed on the model in Trello.
+  </Tab>
+</Tabs>

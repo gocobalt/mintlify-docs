@@ -1,0 +1,60 @@
+---
+title: Rule Node
+---
+The Rule Node in Cobalt enables users to define conditions that must be met for further execution within a workflow. By adding rule nodes along with start nodes and app nodes, users can add conditional logic that executes different paths.
+
+## Steps to use Rule Node
+To utilize the Rule Node effectively, follow these steps:
+
+### Create Workflow
+
+Begin by navigating to the respective app and creating a new workflow. Add an event and publish the workflow to make it operational.
+
+<Tip>Learn more about Workflows [here](https://docs.gocobalt.io/guides/workflow/overview).</Tip>
+
+### Add Rule 
+
+Within the workflow, add a rule node as per your requirement along with other nodes to define the workflow flow.
+
+### Define Rule Condition
+
+Configure the rule node by selecting the appropriate rule condition. First, select the `Condition Rule` for the node which can either be **Match Any Condition** or **Match All Conditions**. 
+
+In `Compare Values of`, click on `+ Map Fields` and specify the **variable**, **operator** and **value** for the condition. 
+
+<Info>Multiple Conditions can be applied in a single node by clicking on `+ Map Fields` button.</Info>
+
+The Rule Node offers the following Operators or Conditions to be used:
+- Equal to                                                                  
+- Not Equal to
+- Is Null
+- Is Not Null
+- Does Exist?
+- Does Not Exist?
+- Contains
+- Does Not Contain
+<img height="200" src="/images/Guides/Workflow/rule-node.png" alt="Rule Node in Cobalt"/>
+
+## Workflow Execution
+### Condition Met: 
+
+If the specified rule condition is met during execution, the actions to be performed should now be added to the **Green** `+` button of Rule node, which signifies Conditions satisfied state.
+
+### Condition Unmet: 
+
+If the rule condition is not met during execution, the steps to be performed in that case can be added to the **Red** `+` button of the Rule Node.
+<img height="200" src="/images/Guides/Workflow/rule_condition.png" alt="Rule Node Condition status in Cobalt"/>
+
+## Using the Rule Node in Workflow
+Some of the key features of using Rule Node in a workflow are:
+
+**Conditional Logic** 
+
+Users can incorporate conditional logic into workflows, enabling them to respond dynamically to varying conditions and scenarios.
+
+**Workflow Control** 
+
+By defining rule conditions, users can ensure actions are performed only when specified conditions are met.
+
+
+The Rule Node in Cobalt empowers users to create dynamic and responsive workflows by incorporating conditional logic. By defining rule conditions, users can automate processes efficiently and ensure workflows execute in accordance with predefined criteria.

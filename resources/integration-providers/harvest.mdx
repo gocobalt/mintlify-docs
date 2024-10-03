@@ -1,0 +1,80 @@
+---
+title: Setup
+description: Connect to your Harvest app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Harvest. In this guide, we will look at the OAuth App setup process.
+
+To setup your Harvest app in Cobalt for OAuth, you will need the following credentials from your [Harvest Developer account](https://id.getharvest.com/developers):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Harvest Developer account. You can create one [here](https://www.getharvest.com/signup).
+
+<Info>If you haven't already created an app in Harvest, you'd need to create one.</Info>
+
+### Creating an app in Harvest
+
+To create a Harvest app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Harvest Developer account](https://id.getharvest.com/developers).
+2. Click on the `Developers` icon in the top nav bar and click on `Create new OAuth2 application` button under **OAuth2 Applications** section.
+<img height="200" src="/images/Harvest/harvest_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Harvest` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Provide an app `Name` > Paste the Callback Url under `Redirect URL` > Choose `Access` as **I can work with multiple accounts** > Click on `Create Application`.
+
+5. Copy the **Client ID** and **Client Secret** from the `Parameters` section.
+<img height="200" src="/images/Harvest/harvest_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Harvest/harvest_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Harvest actions and triggers. Following are the set of Harvest actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Invoice">
+     1. **List Invoices** - List all invoices in Harvest.
+     2. **Create Invoice** - Create an invoice in Harvest.
+     3. **Update Invoice** - Update an invoice in Harvest.
+     4. **Delete Invoice** - Delete an invoice in Harvest.
+     </Accordion>
+     <Accordion title="Time Entry">
+     5. **List Time entries** - List all time entries in Harvest.
+     6. **Create Time Entry by duration** - Create a time entry by duration in Harvest.
+     7. **Update Time Entry** - Update a time entry in Harvest.
+      </Accordion>
+     <Accordion title="Users">
+     8. **List Users** - List all users in Harvest.
+     9. **Create User** - Create a new user in Harvest.
+     10. **Delete User** - Delete a user in Harvest.
+      </Accordion>
+     <Accordion title="Payments">
+     11. **List Payments** - List all payments in Harvest.
+     12. **Create Invoice Payment** - Create an invoice payment in Harvest.
+      </Accordion>
+     <Accordion title="Company">
+     13. **Update Company** - Update a company in Harvest.
+     14. **Get a Company** - Get a company by ID in Harvest.
+      </Accordion>
+
+     <Accordion title="Others">
+     15. **HTTP Request** - Make HTTP API calls to any Harvest documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>

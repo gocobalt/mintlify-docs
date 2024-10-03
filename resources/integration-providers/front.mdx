@@ -1,0 +1,103 @@
+---
+title: Setup
+description: Connect to your Front app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Front. In this guide, we will look at the OAuth App setup process.
+
+To setup your Front app in Cobalt for OAuth, you will need the following credentials from your [Front Developer account](https://app.frontapp.com/settings/developers):
+- Client ID
+- Client Secret
+- App Secret
+
+### Pre-requisites
+
+1. Front account. You can create one [here](https://front.com/signup).
+
+
+<Info>If you haven't already created an app in Front, you'd need to create one.</Info>
+
+### Creating an app in Front
+
+To create a Front app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Front Developer account](https://app.frontapp.com/settings/developers).
+2. Click on the `Settings` icon in the top right and select `Developers` from the side menu.
+<img height="200" src="/images/Front/front_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create App` button > enter the `App Name` and `Short Description` and click on `Create`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Front` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to `OAuth` tab in your app > click on `Add Redirect URL` > Paste the Callback Url and click on `Save`.
+6. Copy the **Client ID** and **Client Secret** from the App Credentials section in `OAuth` tab.
+<img height="200" src="/images/Front/front_redirect.png" alt="Getting Credentials"/>
+7. Navigate to `Basic information` tab in the app > Scroll down and copy the `App secret` present.
+<img height="200" src="/images/Front/front_secret.png" alt="Getting App Secret"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Front/front_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id, Client secret and App secret and save it.
+
+
+#### Front Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Front, you'd need to subscribe to Front's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Front webhook subscription:**
+
+1. Select **Front** from the application list in **Cobalt**, and select `Settings`.
+2. Provide the `Client ID`, `Client Secret` and `App Secret` > Copy the `Single Webhook Url` and click on `Save`.
+<Info>
+Front Webhooks required App secret for verification and registration of Webhooks.
+</Info>
+3. Select your OAuth app > Go to `Features` tab > Select `Webhook` in your [Front Developer Dashboard](https://app.frontapp.com/settings/developers) > Click on `Create Webhook`.
+4. Paste the **Single Webhook Url** inside the `Webhook URL` section, select the relevant events in `Subscribed events` dropdown and click on `Create`.
+
+<img height="200" src="/images/Front/front_webhook.png" alt="Setting up Front Single Webhook URL"/>
+
+#### Making Front App Public
+
+To make the Front app available to all the users outside your organization, the app needs to go through a review process.
+
+To submit your app for review, fill out the form provided by Front [here](https://airtable.com/shrYbZrIP3g4YXi8M).
+
+<Tip>
+To learn more about the App Review process, refer [here](https://dev.frontapp.com/docs/partnering-with-front).
+</Tip>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Front actions and triggers. Following are the set of Front actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Conversation">
+     1. **List Conversations** - Get all the conversations in Front.
+     2. **Create Conversation** - Create a conversation in Front.
+     3. **Update Conversation** - Updates a conversation in Front.
+     4. **Search Conversations** - Search conversations in Front.
+     </Accordion>
+     <Accordion title="Messages">
+     5. **Create Message** - Create a message in Front.
+      </Accordion>
+     <Accordion title="Tags">
+     6. **Create Tag** - Create a tag in Front.
+     7. **Update Tag** - Update a tag in Front.
+      </Accordion>
+     <Accordion title="Users">
+     8. **List Users** - List all users in Front.
+      </Accordion>
+     <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any Front documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Comment Added** - Triggers when a teammate comments on a conversation on Front.
+         2. **Conversation Tagged** - Triggers when a teammate tags a conversation on Front.
+  </Tab>
+</Tabs>

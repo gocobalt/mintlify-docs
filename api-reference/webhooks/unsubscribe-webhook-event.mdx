@@ -1,14 +1,18 @@
 ---
-title: 'Unsubscribe event'
+title: '(Deprecated) Unsubscribe from an event'
 api: post /api/v2/public/webhook/unsubscribe
 ---
 
-This api unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webhooks) events.
+<Warning>
+This API is now deprecated.
+</Warning>
+
+This API unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webhooks) events.
 
 ## Request description
 #### Body Parameters
 <ParamField body="webhook_event" type="string" required>
-  Webhooks event to unsubscribe. Accepted values are, `connected-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
+  Webhooks event to unsubscribe. Accepted values are, `connection-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
 </ParamField>
 
 ## Response description
@@ -22,12 +26,15 @@ This api unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webho
       Subscribed events.
     </ResponseField>
   </Tab>
-  <Tab title="500">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -43,15 +50,25 @@ This api unsubscribes user from a Cobalt [webhook](https://app.gocobalt.io/webho
 {
     "webhook_url": "https://mysite.com/cobalt/webhook",
     "webhook_events": [
-        "connected-created",
-        "workflow-completed"
+           "Workflow Completed",
+           "Workflow Errored"
     ]
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 ```JSON 500
 {
     "status_code": 500,
-    "error_type": "INTERNAL_SERVER_ERROR",
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
     "message": "Request failed with status code 500",
     "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
 }

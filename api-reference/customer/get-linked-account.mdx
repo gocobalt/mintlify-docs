@@ -1,9 +1,9 @@
 ---
-title: 'Get linked account'
+title: 'Get linked account by ID'
 api: get /api/v2/public/linked-account/:linked_account_id
 ---
 
-This api lets you fetch an existing linked account record
+This API retrieves information about a specific linked account by using its unique identifier.
 
 ## Request description
 #### Path Parameters
@@ -46,8 +46,11 @@ This api lets you fetch an existing linked account record
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -75,23 +78,18 @@ This api lets you fetch an existing linked account record
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Linked account with id T1234567 already exists in the test environment",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "Linked account with id T123456765 already exists in the test environment",
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
-</ ResponseExample>
-
-
-<ResponseExample>
-```bash 200
-ok
-```
-```JSON 400
+```JSON 401
 {
-    "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Linked account with id T1234567 already exists in the test environment",
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```

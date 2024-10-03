@@ -1,0 +1,70 @@
+---
+title: Setup
+description: Connect to your Calendly app for OAuth.
+---
+To setup your Calendly app in Cobalt for OAuth, you will need the following credentials from your [Calendly Developer Portal](https://developer.calendly.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Calendly Developer account. You can create one [here](https://developer.calendly.com/create-a-developer-account).
+
+<Info>If you haven't already created an app in Calendly, you'd need to create one.</Info>
+
+### Creating an app in Calendly
+
+To create a Calendly app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Calendly Developer Portal](https://developer.calendly.com/).
+2. Click on the `Profile` icon in the top right, select `My Apps` and click on the `+ Create new app` button.
+<img height="200" src="/images/Calendly/calendly_navigation.png" alt="Navigation for App setup"/>
+
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Calendly` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. After clicking on `+ Create new app` button, enter the **App Name**, select `Kind of app` as **Web**, choose `Environment Type`, paste the Callback Url under `Redirect URI` and click on `Save and continue`.
+5. Copy the **Client ID** and **Client Secret** displayed.
+<img height="200" src="/images/Calendly/calendly_credentials.png" alt="Getting Credentials"/>
+
+<Warning>
+Client Secret and Webhook signing key will be visible only once, so make ensure that they are copied and saved somewhere for future reference.
+</Warning>
+
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Calendly/calendly_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Calendly actions and triggers. Following are the set of Calendly actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Events">
+     1. **List Events** - List all scheduled events in Calendly.
+     2. **Get Event** - Get a scheduled event in Calendly.
+     3. **Cancel Event** - Cancel a scheduled event in Calendly.
+     </Accordion>
+     <Accordion title="Groups">
+     4. **List Groups** - List all groups in Calendly.
+     5. **Get Group Relationship** - Get a group relationship in Calendly.
+     </Accordion>
+     <Accordion title="Others">
+     6. **HTTP Request** - Make HTTP API calls to any Calendly documented REST APIs.
+     7. **Get Current User** - Get the current user's details in Calendly.
+     </Accordion>
+
+  </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Invitee created** - Triggers when an Invitee is created in Calendly.
+    2. **Invitee cancelled** - Triggers when an Invitee is cancelled in Calendly.
+  </Tab>
+</Tabs>

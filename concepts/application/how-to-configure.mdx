@@ -1,0 +1,71 @@
+---
+title: How To Configure
+---
+
+Configuration is a customization that your end-customers can store for each of their integrations. You can create a new dataslot to store a value from 
+selected or entered by your users. Some examples of dataslots are:
+
++ Slack - Select a channel where messages will be posted
++ Greenhouse/Lever - Select a job where candidates will be added
++ Hubspot/Pipedrive - Select a stage to which the deal has to be added
++ Docusign - Select a template from which a document will be sent to a signer
+
+<img height="200" src="/images/config_dataslot.png" alt="Displaying the config dataslot to user"/>
+
+#### Create config dataslots on Cobalt's platform
+
+The first thing is to add a new config dataslot inside each application by clicking on `Config Portal`.
+
+<img height="200" src="/images/access_config_dataslot.png" alt="Accessing config dataslot"/>
+
+There are different three types of config dataslots: Select, mapping and text. Look at the below example to set a new config dataslot.
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/embed/5e352cf6366b49c78aa82cc4e91f39e9?sid=2876456e-b6ea-4fa3-bc9b-f33a5e1b4c2c"
+  title="Map the event object with config dataslot"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
+## Handling multiple configs
+Handling multiple configs is an advanced feature for users who want to store and run different configs for a single workflow. To do so, 
+we need to set a unique id while calling the config() and updateConfig() functions.
+
+#### Step 1: Setting a unique config id
+You can set a unique config while calling the .config() function as shown below. Make sure that config ids are stored on your end.
+
+```JavaScript
+cobalt.config('pipedrive','configid-1');
+//creating a config using an id 'configid-1' 
+
+cobalt.config('pipedrive','configid-2');
+//creating a config using another id 'configid-2' 
+```
+Similarly, while calling the updateConfig() function make sure that you also use the respective config id.
+
+#### Step 2: Using Config id while triggering events
+While triggering a new event from the backend SDK, you need to pass the respective config id to use the stored value inside the config.
+
+```JavaScript
+// Send the "New Contact Created" App Event
+try{
+    const data = await Client.event({
+        linked_account_id:"<Account Id of the user eg: example@someemail.com>",
+        event: "New Contact Created",
+        config_id: "configid-2", //event will trigger a workflow using configid-2
+        payload: {
+           "name": "Jeff Atwood",
+            "email": "jeff@stackoverflow.com",
+            "phone": "4151231234",
+            "company": "Stack Overflow",
+            "role": "Founder"
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```

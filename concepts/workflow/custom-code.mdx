@@ -1,0 +1,81 @@
+---
+title: Custom Code Node
+---
+The Custom Code node in Cobalt enables users to execute custom functions within workflows, allowing for flexible and tailored automation solutions. Users can leverage their preferred programming language to create custom logic and functionality.
+
+## Custom Code Input Fields
+The Custom Code node Input Fields consists of three sections:
+
+### Variable Parameters
+In this section, users can define the variable parameters required for the custom code execution. These parameters can be used within the code to customize the behavior based on dynamic inputs.
+
+### Language Selection
+Users can choose the programming language for the custom code execution from the available options: **Python** or **JavaScript**. The selected language determines the syntax and capabilities available for writing the custom code.
+
+### Custom Code
+In this section, the user can write their own custom code which they want to get executed within the **writeYourCode** function.
+
+<img height="200" src="/images/Guides/Workflow/custom-node.png" alt="Custom Code Node in Cobalt"/>
+
+## Steps to Use Custom Code Node
+To utilize the Custom Code node effectively, follow these steps:
+
+### Create Workflow
+Begin by navigating to the respective app and creating a new workflow. Add an event and publish the workflow to activate it.
+
+### Add Custom Code Node
+Within the workflow, add a Custom Code node as per your requirement along with other nodes to define the workflow flow.
+
+### Configure Custom Code
+**Define Variable Parameters**
+
+Specify the variable parameters required for the custom code execution in the Variable Parameters section. These parameters can be accessed within the code to customize its behavior dynamically.
+
+**Select Language**
+
+Choose the programming language for the custom code execution by selecting either Python or JavaScript from the dropdown list.
+
+**Write Code**
+
+Once the language is selected, users can write the custom code in the designated code editor. The code should be written within the writeYourCode function, where it will be executed during workflow execution.
+
+Refer below to the functions for the Custom Code:
+<CodeGroup>
+    ```javascript JavaScript
+    /**
+* The Return type of the method must be a 
+* result object.
+* 
+* Example {"result": <anything>}
+*/
+function writeYourCode(params){
+//Write Your code here
+}
+let stdin = '';
+    process.stdin.on('data', data => {
+    stdin += data;
+});
+process.stdin.on('end', () => {
+    const inputObject = JSON.parse(stdin.trim());
+    const params = inputObject.params;
+    console.log(JSON.stringify(writeYourCode(params)));
+});
+    ```
+    ```python Python
+   function writeYourCode(params){
+}
+    ```
+</CodeGroup>
+
+### Define Node Rule Conditions
+Optionally, add **Node Rule Conditions** to the Custom Code node to specify conditions under which the custom code will be executed. Configure the conditions using the same approach as a Rule node, specifying **variables**, **operators**, and **values**.
+<Tip>
+Learn more about Rule Node [here](https://docs.gocobalt.io/guides/workflow/rule).
+</Tip>
+
+These conditions can be configured to `Match Any Conditions` or `Match All Conditions`, depending on the workflow requirements.
+
+## Workflow Execution with Custom Code Node
+During workflow execution, the Custom Code node executes the custom code defined by the user, passing any specified variable parameters as inputs. The output of the custom code execution can be captured and used in subsequent steps of the workflow.
+
+By leveraging the Custom Code node in Cobalt, users can extend the capabilities of their workflows by incorporating custom logic and functionality tailored to their specific requirements.

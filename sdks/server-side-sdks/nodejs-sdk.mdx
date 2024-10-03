@@ -1,7 +1,9 @@
 ---
 title: NodeJS SDK
 ---
-
+<Tip>
+You can refer to the Cobalt's GitHub repo for the NodeJS SDK [here](https://github.com/gocobalt/cobalt-sdk).
+</Tip>
 #### Install
 
 First install `@cobaltio/cobalt` via the terminal.
@@ -307,6 +309,42 @@ Example response:
         }
     ],
     "slug": "slack"
+}
+```
+
+#### .event()
+Triggers a webhook event created for your app. This would trigger all the workflows associated with the specified event. If slug is specified, only workflows of that particular app associated with the event would be triggered.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|event| Mandatory | String | Event Name|
+|slug| Optional | String | Application slug|
+|config_id| Optional | String | Unique id|
+|payload| Optional | Object | Event payload|
+
+```JavaScript
+try{
+    const data = await Client.event({
+        linked_account_id:"<Account Id of the user eg: example@someemail.com>",
+        event: "Event 1",
+        config_id:"config-1",
+        slug:"slack",
+        payload: {
+            "<Key 1>": "<Value 1, Type: Any>",
+            "<Key 2>": "<Value 2, Type: Any>",
+            ...
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+```
+
+Example Response
+```JSON
+{
+    "message": "Webhook Fired Success"
 }
 ```
 

@@ -1,8 +1,65 @@
 ---
-title: Slack
+title: Setup
 description: Connect your Slack app for OAuth.
 ---
+### Pre-requisites
 
-<Info>
- Coming Soon!
-</Info>
+1. Slack Developer Account.
+2. Required Settings for the App. You can find it in [Overview](https://docs.gocobalt.io/resources/integration-providers/slack_overview#required-settings).
+
+
+### Creating an app in Slack
+
+To create a Slack app and aquire the app credentials, please follow the steps mentioned below:
+
+1. Log in to your [Slack App Dashboard](https://api.slack.com/apps).
+2. Click on the `Create New App` button in the upper right side and select `From scratch` option.
+<img height="200" src="/images/Slack/Slack_navigation.png" alt="Navigation for App setup"/>
+3. Enter the **App name** and **select a workspace** from the dropdown to develop your app in and click on the `Create App` button.
+4. Copy the Callback URL as provided in your Slack settings page in Cobalt. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Slack` > `Settings` > `Use your credentials` > `Callback Url`.
+5. Navigate to `Features` > `OAuth & Permissions` and **scroll down** to `Redirect URLs` section in the Settings of the App. Click on `Add New Redirect URL` > Paste the Callback URL > Click on `Add` > Click on the `Save URLs` button.
+6. Scroll down in the same page to `Scopes` section, select the **mandatory scopes** as provided in your Cobalt Slack settings page by clicking on `Add an OAuth Scope` button and selecting the scope required.
+<img height="200" src="/images/Slack/Slack_config.png" alt="Setting up Slack Developer app"/>
+7. Click on the `Basic Information` under **Settings** in the left menu , scroll down to `App Credentials` section  and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Slack/Slack_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Slack/Slack_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client Secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Slack/Slack_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Slack App Dashboard](https://api.slack.com/apps) and update the scopes as added on Cobalt.
+
+Navigate to  `Your Apps` > Select the OAuth App created for Cobalt > Click on `OAuth & Permissions` under **Features** in the left menu  > Scroll down to the `Scopes` section > Add the scopes as added in Cobalt by clicking `Add an OAuth Scope` and select the scope.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Slack single webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Slack, you'd need to subscribe to Slack's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Slack webhook subscription:**
+
+1. Select Slack from the application list in **Cobalt**, and select `Settings`.
+2. Copy the `Single Webhook Url`
+3. In your [Slack App Dashboard](https://api.slack.com/apps), select the OAuth App created for Cobalt > Select `Event Subscriptions` under **Features** > Turn the toggle `On` for **Enable Events**.
+4. Paste the Webhook URL under `Request URL`. Cobalt will automatically respond to Slack's challenge request and begin listening to events on behalf of your app.
+
+5. Click on `Save Changes` at the bottom of the Slack App dashboard.
+
+<img height="200" src="/images/Slack/Slack_webhook.png" alt="Setting up Slack Events URL"/>

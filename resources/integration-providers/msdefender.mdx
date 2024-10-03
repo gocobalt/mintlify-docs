@@ -1,0 +1,113 @@
+---
+title: Setup
+description: Connect to your Microsoft Defender app for OAuth.
+---
+To setup your Microsoft Defender app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+- Client ID
+- Client Secret
+- Tenant ID
+- Scopes
+
+### Pre-requisites
+
+1. Microsoft Azure Account. You can create one [here](https://azure.microsoft.com/en-gb/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. User.Read
+
+<Info>If you haven't already created an app in Microsoft Azure, you'd need to create one.</Info>
+
+### Creating an app in Microsoft Azure
+
+To create a Microsoft Defender app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/).
+2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
+<img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
+3. Navigate to `Overview` in the side menu > Click on `+Add` > Select `App Registration`.
+4. Enter the App **Name** for your application and select `Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)` under **Supported Account Types**.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Microsoft Defender` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Under the **Redirect URI** section, select **Platform** as `Web`, paste the **Callback Url** as the URL and click `Register`. 
+<img height="200" src="/images/Msonedrive/onedrive_register.png" alt="App Registration"/>
+<Info>
+If you already have an app created, then follows these steps to add Redirect URL: 
+
+Select your Application > Select **Authentication** in side menu > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
+</Info>
+7. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
+8. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scope** > click on the `Add Permissions` button.
+9. For Defender specific scopes, navigate to `APIs my organization uses` tab > Search for `WindowsDefenderATP` and choose the required scopes from `Delegated permissions`.
+<img height="200" src="/images/Msdefender/defender_config.png" alt="Setting up Defender Developer app"/>
+
+10. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
+11.  Copy the displayed **Client Secret** under the `Value` column.
+<img height="200" src="/images/Msdefender/defender_credentials.png" alt="Getting Client Secret"/>
+
+11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID` and **Tenant ID** under `Directory (tenant) ID`.
+<img height="200" src="/images/Msdefender/defender_id.png" alt="Getting Client and Tenant ID"/>
+
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Msdefender/defender_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Msdefender/defender_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt and follow **Step 8** and **9** [above](https://docs.gocobalt.io/resources/integration-providers/msdefender#creating-an-app-in-microsoft-azure).
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Microsoft Defender actions and triggers. Following are the set of Microsoft Defender actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+    <Accordion title="Alert">
+     1. **List Alerts** - Get all alerts in Microsoft Defender.
+     2. **Create Alert** - Create an alert in your Microsoft Defender.
+     3. **Update Alert** - Update an alert in your Microsoft Defender.
+     </Accordion>
+        <Accordion title="Machines">
+     4. **List Machines** - Get all machines in Microsoft Defender.
+     5. **Update Machine** - Update a machine in Microsoft Defender.
+     </Accordion>
+        <Accordion title="Software">
+     6. **List Softwares** - List all softwares in Microsoft Defender.
+     7. **List Machines By Software** - List machines by software ID in Microsoft Defender.
+     </Accordion>
+        <Accordion title="Vulnerabilities">
+     8. **Get All Vulnerabilities** - Get all vulnerabilities in Microsoft Defender.
+     9. **Get Vulnerability By ID** - Get a vulnerability by ID in Microsoft Defender.
+     10. **List Vulnerabilities By Machine** - Get all vulnerabilities by machine in Microsoft Defender.
+     11. **Get Vulnerabilities By Software** - Get all vulnerabilities by Software in Microsoft Defender.
+     </Accordion>
+     <Accordion title="Others">
+     12. **HTTP Request** - Make HTTP API calls to any Microsoft Defender documented REST APIs.
+</Accordion>
+</AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+         There are no triggers in this application.
+  </Tab>
+</Tabs>

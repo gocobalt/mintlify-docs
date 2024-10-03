@@ -1,0 +1,197 @@
+---
+title: Dependent
+description: "Dependency of config dataslot is an advanced feature for certain fields that require dependency on previous config dataslot."
+---
+
+<img height="200" src="/images/dependent_field.png" alt="Setting Dependency"/>
+
+For eg. in Google Sheets, to load the list of headers inside a worksheet, the user has to first select a worksheet. Furthermore, to select a worksheet, the user has to select a sheet. There are three config dataslots
+
++ Select a sheet
++ Select a worksheet
++ Select headers
+
+
+Let's look at the example below:
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/embed/de75bc2559b94523b0fb426dbb946b13?sid=580fc90c-7d64-4801-ac6e-51dc04b3146f"
+  title="Setting Google sheet dependency"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
+In case of dependent dataslots, the list of options will only load when the value inside the parent dataslot is set. Let's look at the example of 
+Google Sheets, where value is not set for any of the three dataslots:
+
+```JavaScript
+/* The options appear only in the first 
+config id because its value is not yet set and 
+other config dataslots are dependent on this.
+*/
+{
+    "application_data_slots": [
+        {
+            "required": false,
+            "id": "646333dbc7f3ab6e2bf4ed12",
+            "name": "Select a Sheet",
+            "has_dynamic_map_fields": false,
+            "field_type": "select",
+            "options": [
+                {
+                    "name": "List of users",
+                    "value": "11Sei6p5yHQmjyfHXeSXxpnIJRSSyM774X82-mOTJNe4"
+                },
+                {
+                    "name": "List of Employees",
+                    "value": "1eQWXziv-RbBye9OuyoQbGzZ3wHMcNedZ3x759O2EeZo"
+                },
+                {
+                    "name": "List of Contacts",
+                    "value": "1QVYAqowEnOgwxDzJ_AeODbmkdVAcL2ZW6LlRTZoMxVo"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:google_sheets:1",
+            "labels": []
+        },
+        {
+            "required": false,
+            "id": "646333e5c7f3ab6e2bf4ed22",
+            "name": "Select a Worksheet",
+            "has_dynamic_map_fields": false,
+            "field_type": "select",
+            "parent": "646333dbc7f3ab6e2bf4ed12",
+            "dynamic_slot_identifier": "dynamic:google_sheets:2",
+            "labels": []
+        },
+        {
+            "required": false,
+            "id": "646333f4c7f3ab6e2bf4ed4e",
+            "name": "Select Headers",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "parent": "646333e5c7f3ab6e2bf4ed22",
+            "dynamic_slot_identifier": "dynamic:google_sheets:3",
+            "labels": [
+                {
+                    "name": "Header 1",
+                    "value": "6463340bc7f3ab6e2bf4edca"
+                },
+                {
+                    "name": "Header 2",
+                    "value": "6463340bc7f3ab6e2bf4edcb"
+                },
+                {
+                    "name": "Header 3",
+                    "value": "6463340bc7f3ab6e2bf4edcc"
+                }
+            ]
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```
+
+Once the values of Sheet and Worksheet config dataslots are set, all the options will come in the response:
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": false,
+            "id": "646333dbc7f3ab6e2bf4ed12",
+            "name": "Select a Sheet",
+            "has_dynamic_map_fields": false,
+            "field_type": "select",
+            "options": [
+                {
+                    "name": "List of users",
+                    "value": "11Sei6p5yHQmjyfHXeSXxpnIJRSSyM774X82-mOTJNe4"
+                },
+                {
+                    "name": "List of Employees",
+                    "value": "1eQWXziv-RbBye9OuyoQbGzZ3wHMcNedZ3x759O2EeZo"
+                },
+                {
+                    "name": "List of Contacts",
+                    "value": "1QVYAqowEnOgwxDzJ_AeODbmkdVAcL2ZW6LlRTZoMxVo"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:google_sheets:1",
+            "labels": [],
+            "value": "1QVYAqowEnOgwxDzJ_AeODbmkdVAcL2ZW6LlRTZoMxVo"
+            // Value is set to "List of Contacts"
+        },
+        {
+            "required": false,
+            "id": "646333e5c7f3ab6e2bf4ed22",
+            "name": "Select a Worksheet",
+            "has_dynamic_map_fields": false,
+            "field_type": "select",
+            "options": [
+                {
+                    "name": "US",
+                    "value": 0
+                },
+                {
+                    "name": "UK",
+                    "value": 235386608
+                },
+                {
+                    "name": "Europe",
+                    "value": 644453895
+                }
+            ],
+            "parent": "646333dbc7f3ab6e2bf4ed12",
+            "dynamic_slot_identifier": "dynamic:google_sheets:2",
+            "labels": [],
+            "value": 0
+            // Value is set to "US" worksheet
+        },
+        {
+            "required": false,
+            "id": "646333f4c7f3ab6e2bf4ed4e",
+            "name": "Select Headers",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "Name",
+                    "value": "A"
+                },
+                {
+                    "name": "Email",
+                    "value": "B"
+                },
+                {
+                    "name": "Phone",
+                    "value": "C"
+                }
+            ],
+            "parent": "646333e5c7f3ab6e2bf4ed22",
+            "dynamic_slot_identifier": "dynamic:google_sheets:3",
+            "labels": [
+                {
+                    "name": "Header 1",
+                    "value": "6463340bc7f3ab6e2bf4edca"
+                },
+                {
+                    "name": "Header 2",
+                    "value": "6463340bc7f3ab6e2bf4edcb"
+                },
+                {
+                    "name": "Header 3",
+                    "value": "6463340bc7f3ab6e2bf4edcc"
+                }
+            ]
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```

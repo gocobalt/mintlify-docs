@@ -1,0 +1,54 @@
+---
+title: Transform Node
+---
+
+The Transform node in Cobalt empowers users to manipulate and transform complex JSON data into a more accessible format using **JSONata expressions**. This versatile node streamlines data processing and enables users to extract specific information or perform custom transformations on JSON objects within workflows.
+
+<Tip>
+If you want to learn about JSONata expression, refer [here](https://jsonata.org/).
+</Tip>
+
+## Input Fields
+The Transform node offers two input fields:
+
+<Note>
+Please note that both the input and query fields are required for the Transform node to function properly.
+</Note>
+
+### Input
+
+This field accepts a JSON object, where the Array needs to be given and can be selected from a **DataSlot** or a previous **Node** in the workflow. It serves as the input data for transformation.
+The format of the **Input** can be in the format:
+```javascript
+{
+  "input": "{Array_name}" // When you have the Array
+  "input": "{{Node_name: data}}" // When you want to fetch response of a previous node.
+  // The Node_name is selected by using Nodes in Variables
+
+  // "input" and "data" key can be replaced by any other word like result etc.
+}
+```
+
+### Query
+
+In this field, users need to provide a valid [**JSONata expression**](https://jsonata.org/) to query or transform the input object. The expression structure in Query is given below.
+```javascript
+{
+  "output": "JSONata expression" 
+  // The key should be "output" in Query field.
+}
+```
+<Info>
+If only the JSONata expression is provided in Query field rather than an object, then the node will give an empty response and result cannot be used in further nodes of the Workflow.
+</Info>
+
+<img height="200" src="/images/Guides/Workflow/transform-node.png" alt="Transform Node in Cobalt"/>
+
+## Node Rule Conditions
+The Transform node also supports Node Rule Conditions, allowing users to define conditions under which the transformation should occur. This provides additional control and flexibility in workflow execution based on specific criteria.
+
+By leveraging the Transform node in Cobalt workflows, users can efficiently process and manipulate JSON data, enabling seamless integration and automation of data-driven processes. Whether extracting specific information or performing complex transformations, the Transform node offers a powerful tool for managing JSON data within workflows.
+
+
+
+

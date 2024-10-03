@@ -1,0 +1,168 @@
+---
+title: Setup
+description: Connect to your Microsoft Teams app for OAuth.
+---
+To setup your Microsoft Teams app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+- Bot Client ID
+- Bot Client Secret
+- App ID
+- Tenant ID
+- Scopes
+
+## Pre-requisites
+
+1. Microsoft Azure Account. You can create one [here](https://azure.microsoft.com/en-gb/).
+2. A bot registered in the Microsoft Developer Portal for Teams (See [Creating a Teams bot](https://docs.gocobalt.io/resources/integration-providers/ms_teams#creating-a-teams-bot) for setup instructions).
+3. Microsoft Teams license
+4. Office 365 license with Admin permissions. You can get the License [here](https://www.microsoft.com/en-in/microsoft-365/business/compare-all-microsoft-365-business-products-b?ef_id=_k_CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE_k_&OCID=AIDcmmg9qnxz0z_SEM__k_CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE_k_&gad_source=1&gclid=CjwKCAjw_ZC2BhAQEiwAXSgCloY2vJ2eh49x83xLN_LPcZPN2s1JL7GFVKrq6AQ9qbxJDsyWx0UrzhoCqswQAvD_BwE).
+
+## Required Settings
+
+* **Mandatory Scopes** 
+1. openid
+2. offline_access
+
+<Info>If you haven't already created an app in Microsoft Azure, you'd need to create one.</Info>
+
+## Creating a Teams bot
+
+#### New Bot creation steps
+To create a Microsoft Teams bot, please follow the steps mentioned below:
+
+1. Log in to your [Microsoft Developer Portal for Teams](https://dev.teams.microsoft.com/).
+2. Navigate to `Tools` in the side menu and select `Bot Management`.
+<img height="200" src="/images/Msteams/teams_bot.png" alt="Navigation for Bot setup"/>
+3. Click on `+ New Bot` > provide a **Name** and click on `Add`. It's recommended to append a word like `Bot` so that it's easy to identify this later on.
+
+#### Associate Teams bot to application
+
+Now, you need to associate this bot with your Teams application.
+
+1. In the Teams Developer Portal, navigate to `Apps` in the side menu.
+2. If you do not have a Teams app yet, click New app and provide a name. This name will be the one displayed in the Microsoft Teams store and to your users.
+
+    - In `Basic information`, you need to provide a **short description** and **URLs** for your application's website, Privacy Policy, and Terms of Use.
+
+    - Click `Save` below.
+    <Note>
+    Ensure that all the fields for App in `Basic information` are provided, otherwise it gives error while uploading the app in Teams for testing.
+    </Note>
+3. Under `Configure` in the side menu of the app, click on `App features`.
+4. Select `Bot` and choose the Bot that you created above in `Select an existing bot`, choose capabilities as applicable and click on `Save` below.
+<img height="200" src="/images/Msteams/teams_bot_associate.png" alt="Bot association to app"/>
+
+#### Testing Microsoft Teams Bot
+
+If your app is not published on the Microsoft Teams App Store, then follow the steps given to test your app in Teams:
+
+1. In your [Teams Developer Portal](https://dev.teams.microsoft.com/home), go to the `App` created for testing.
+2. Click on the triple-dot menu of the app and choose `Download app package` option. The package will get downloaded as a **.zip** file.
+<img height="200" src="/images/Msteams/download_app.png" alt="Downloading App package"/>
+
+3. Go to the [Microsoft Teams account](https://teams.microsoft.com/v2/) in which you would like to test the app and it's authentication.
+<Note>
+You will not be able to login into the platform correctly if appropriate license or permissions are missing.
+</Note>
+4. Click `Apps` option in the side menu and click on `Manage your apps` option at the bottom.
+5. Click on `Upload An App` and `Upload your app to your org's app catalog` and select the .zip file that you downloaded and you will be navigated to the `Built for your org` page.
+<img height="200" src="/images/Msteams/teams_upload.png" alt="Upload App package for testing"/>
+
+<Tip>
+If you uploaded the app through `Submit an app to your org` option, then the admin can approve it by going to [Teams Admin Centre](https://admin.teams.microsoft.com/) > `Teams Apps` > `Manage Apps` > Search for the app that you submitted > Click on the app name to open its app details page and change the status to `Allowed`.
+
+Refer [here](https://learn.microsoft.com/en-us/microsoftteams/manage-apps).
+</Tip>
+6. After a successfull upload, select your app. Click on `Add` and `Add to a team` and add the bot to a team and a channel.
+
+#### Enable Microsoft Teams Bot for all users in an org
+
+If you want to use the Proactive Messaging action i.e. **Post notification to a user as a bot**, then Teams require you to have the Bot installed in Teams account of all the users of the org who can receive message from the bot.
+
+If you do not want to inform all the users to install the bot from `Apps` in Teams, you can also ask the Teams **Admin** to install the app by default for all the users. Follow the steps below to do this:
+
+- Sign in to [Teams Admin Centre](https://admin.teams.microsoft.com/) > Navigate to `Teams apps` > Select `Setup policies` in the side menu.
+- Select `Global (Org-wide default)` under **Manage Policies**.
+<img height="200" src="/images/Msteams/enable_all.png" alt="Enable Bot for all users in organization"/>
+- Under **Installed Apps** > Click on `Add Apps` > Search for your **Bot** by its name > Select it > click on `Add` and finally click on `Save`.
+
+The bot will now be installed by default on all the users within the Teams org.
+
+## Creating an app in Microsoft Azure
+
+To create a Microsoft Teams app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/).
+2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
+<img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
+3. Navigate to  `App Registrations` under `Manage` in the side menu and select the app representing your bot, not your Microsoft Teams app.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Microsoft Teams` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Select **Authentication** in side menu under `Manage` > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
+<img height="200" src="/images/Msteams/teams_redirect.png" alt="App Registration"/>
+
+6. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
+7. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scopes** > click on the `Add Permissions` button.
+<img height="200" src="/images/Msteams/teams_config.png" alt="Setting up Teams Developer app"/>
+
+8. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
+9.  Copy the displayed **Client Secret** under the `Value` column.
+<Note> 
+Ensure that the Client Secret Value is saved as it will be shown only once.
+</Note>
+<img height="200" src="/images/Msteams/teams_credentials.png" alt="Getting Client Secret"/>
+
+10. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID` and **Tenant ID** under `Directory (tenant) ID`.
+<img height="200" src="/images/Msteams/teams_id.png" alt="Getting Client ID"/>
+
+11. For your **App ID** or Bot External ID, go to `Apps` in Teams Developer Portal, select your App which was created earlier and copy the `App ID` present under **Basic Information** of the app.
+<img height="200" src="/images/Msteams/teams_app_id.png" alt="Getting Client ID"/>
+
+## Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Msteams/teams_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+## Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Msteams/teams_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt and follow **Step 6** and **7** [above](https://docs.gocobalt.io/resources/integration-providers/ms_teams#creating-an-app-in-microsoft-azure).
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+## Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Teams actions and triggers. Following are the set of Teams actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+    <Accordion title="Post Message">
+     1. **Post notification to a channel** - Your Bot Posts a notification to a channel in Microsoft Teams.
+     2. **Post notification to a user as a bot** - Your Bot Posts a notification to a user (proactive messaging) in Microsoft Teams.
+    </Accordion>
+    <Accordion title="Meetings">
+     3. **Get meeting transcript** - Get meeting transcript in Microsoft Teams.
+     </Accordion>
+     <Accordion title="Others">
+     4. **HTTP Request** - Make HTTP API calls to any Microsoft Teams documented REST APIs.
+</Accordion>
+</AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+         There are no triggers in this application.
+  </Tab>
+</Tabs>

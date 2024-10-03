@@ -1,0 +1,61 @@
+---
+title: Connect
+description: Connect with the Linked Account's Twilio account.
+---
+<Note>
+Twilio is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Twilio** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Auth Token
+2. Account SID
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Trello
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Twilio/twilio_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Twilio account](https://console.twilio.com/).
+2. In the home page, complete the first step to enable your `Account SID` and `Auth token`.
+3. Under `Account Info`, you will find the `Account SID` and the `Auth Token`.
+<img height="200" src="/images/Twilio/twilio_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Twilio.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Twilio actions and triggers. Following are the set of Twilio actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Messages">
+     1. **Create Message** - Create a new message in Twilio.
+     2. **Get Message by ID** - Get a message by ID in Twilio.
+     3. **List Messages** - List all messages in Twilio.
+     4. **Update Message** - Update a message in Twilio.
+     5. **Delete Message** - Delete a message in Twilio.
+    </Accordion>
+    <Accordion title="Calls">
+     6. **Create Call** - Create a call in Twilio.
+     7. **List calls** - List all calls in Twilio.
+     8. **Get Call by ID** - Get a call by ID in Twilio.
+     </Accordion>
+    <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any Twilio documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    1. **Message Received** - Triggers when a message is received in Twilio.
+  </Tab>
+</Tabs>

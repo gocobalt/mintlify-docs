@@ -43,6 +43,10 @@
     {
       "name": "SDKs",
       "url": "sdks"
+    },
+    {
+      "name": "Resources",
+      "url": "resources"
     }
   ],
   "navigation": [
@@ -55,75 +59,155 @@
       ]
     },
     {
-      "group": "Concepts",
+      "group": "Implementation Guide",
       "pages": [
-        "concepts/linked-accounts",
-        "concepts/auth-flows",
-        "concepts/orchestration",
-        "concepts/app-config",
-        "concepts/integration",
-        "concepts/custom-app",
-        "concepts/event-model",
-        "concepts/logs"
-      ]
-    },
-    {
-      "group": "Resources",
-      "pages": [
+        "implementation/overview",
         {
-          "group": "Integration Proiders",
-          "pages": [
-            "resources/integration-providers/hubspot", 
-            "resources/integration-providers/slack",
-            "resources/integration-providers/salesforce",
-            "resources/integration-providers/pipedrive",
-            "resources/integration-providers/workable",
-            "resources/integration-providers/lever",
-            "resources/integration-providers/docusign"
+          "group": "Integrate",
+          "pages":[
+            "implementation/integrate/cobalt-account",
+            "implementation/integrate/setup-linked-account",
+            "implementation/integrate/get-access-token",
+            "implementation/integrate/display-apps",
+            "implementation/integrate/manage-connection",
+            "implementation/integrate/end-user-config"
+          ]
+        },
+        {
+          "group": "Communicate",
+          "pages":[
+            "implementation/communicate/write-data",
+            "implementation/communicate/get-data"
+          ]
+        },
+        {
+          "group": "Test Integration",
+          "pages":[
+            "implementation/Test-Integration/develop-test",
+            "implementation/Test-Integration/node-test",
+            "implementation/Test-Integration/orchestration-test"
+          ]
+        },
+        {
+          "group": "Additional ",
+          "pages":[
+            "implementation/additional/reauth",
+            "implementation/additional/workflow-failure",
+            "implementation/additional/workflow-access"
+          ]
+        },
+        {
+          "group": "Deploy",
+          "pages":[
+            "implementation/deploy/live-checklist"
           ]
         }
       ]
     },
     {
-      "group": "API References",
+      "group": "Concepts",
       "pages": [
+
+        "concepts/linked_account",
         {
-          "group": "Linked Account",
+          "group": "Auth Flows",
           "pages": [
-            "api-reference/customer/get-linked-account",
-            "api-reference/customer/list-linked-accounts",
-            "api-reference/customer/create-linked-account",
-            "api-reference/customer/upsert-a-linked-account",
-            "api-reference/customer/delete-linked-account"
+            "concepts/auth-flows/auth-flows",
+            "concepts/auth-flows/re-auth-flow"
+          ]
+        },
+        "concepts/logs",
+        {
+          "group": "Workflow",
+          "pages": [
+            "concepts/workflow/overview", 
+            "concepts/workflow/triggers",
+            "concepts/workflow/workflow_api",
+            "concepts/workflow/actions",
+            "concepts/workflow/dataslots",
+            {
+              "group": "Nodes",
+              "pages": [
+                "concepts/workflow/custom-code",
+                "concepts/workflow/datastore",
+                "concepts/workflow/delay",
+                "concepts/workflow/group",
+                "concepts/workflow/httpnode",
+                "concepts/workflow/merge",
+                "concepts/workflow/response",
+                "concepts/workflow/rule",
+                "concepts/workflow/transform"
+              ]
+            }
           ]
         },
         {
-          "group": "Applications",
+         "group": "App Config",
           "pages": [
-            "api-reference/integration-meta/list-applications",
-            "api-reference/integration-meta/get-application",
-            "api-reference/integration-meta/update-application-auth"
+              "concepts/application/how-to-configure",
+              "concepts/application/mapping",
+              "concepts/application/dependent",
+              "concepts/application/field-types"
+              ]
+            },
+        "concepts/integration",
+        "concepts/event-model",
+        {
+          "group": "Custom Apps",
+          "pages": [
+            "concepts/advance-concepts/about-custom-apps",
+            "concepts/advance-concepts/setting-up-custom-app"
           ]
+        }
+      ]
+    },
+    {
+      "group": "About API Reference",
+      "pages": [
+        "api-reference/overview"
+      ]
+    },
+    {
+      "group": "Linked Account",
+      "pages": [
+        "api-reference/customer/get-linked-account",
+        "api-reference/customer/list-linked-accounts",
+        "api-reference/customer/create-linked-account",
+        "api-reference/customer/upsert-a-linked-account",
+        "api-reference/customer/delete-linked-account"
+      ]
+      },
+    {
+      "group": "Applications",
+      "pages": [
+        "api-reference/integration-meta/list-applications",
+        "api-reference/integration-meta/get-application",
+        "api-reference/integration-meta/update-application-auth"
+      ]
+      },
+      {
+        "group": "Config",
+        "pages": [
+          "api-reference/config/find-or-create-config",
+          "api-reference/config/update-config",
+          "api-reference/config/get-config",
+          "api-reference/config/delete-config"
+        ]
         },
         {
-          "group": "Config",
-          "pages": [
-            "api-reference/config/find-or-create-config",
-            "api-reference/config/update-config",
-            "api-reference/config/get-config",
-            "api-reference/config/delete-config"
-          ]
+        "group": "Datastores",
+        "pages": [
+          "api-reference/datastore/list-config-datastores",
+          "api-reference/datastore/config-datastore-records",
+          "api-reference/datastore/search-config-records"
+        ]
         },
         {
           "group": "Event",
           "pages": [
-            "api-reference/event/create-event",
-            "api-reference/event/update-event",
-            "api-reference/event/get-event",
-            "api-reference/event/list-events",
-            "api-reference/event/delete-event",
-            "api-reference/event/trigger-an-event-from-your-application"
-          ]
+            "api-reference/event/trigger-an-event-from-your-application",
+            "api-reference/event/trigger-event"
+        ]
         },
         {
           "group": "Webhooks",
@@ -131,78 +215,67 @@
             "api-reference/webhooks/create-webhook",
             "api-reference/webhooks/update-webhook",
             "api-reference/webhooks/get-webhook",
+            "api-reference/webhooks/get-webhook-by-id",
             "api-reference/webhooks/delete-webhook",
             "api-reference/webhooks/subscribe-webhook-event",
             "api-reference/webhooks/unsubscribe-webhook-event"
-          ]
+            ]
         },
         {
           "group": "Executions",
           "pages": [
             "api-reference/executions/get-execution",
             "api-reference/executions/list-executions"
-          ]
+        ]
         },
         {
           "group": "Session Token",
           "pages": [
             "api-reference/session-token/generate-token-for-linked-account"
-          ]
+        ]
         },
         {
-          "group": "Cobalt Connect",
+          "group": "Cobalt Hosted",
           "pages": [
             "api-reference/cobalt-connect/get-connect-url",
             "api-reference/cobalt-connect/get-hosted-properties"
-          ]
-        }
-      ]
-    },
-    {
-      "group": "Auth Flows",
-      "pages": [
-        "guides/auth-flows/hosted-flow",
-        "guides/auth-flows/embedded-flow",
-        "guides/auth-flows/seamless-flow",
-        "guides/auth-flows/re-auth-flow"
-      ]
-    },
-    {
-      "group": "Application",
-      "pages": [
-        "guides/application/app-settings",
-        {
-          "group": "App Configuration",
-          "pages": [
-            
-            "guides/application/how-to-configure",
-            "guides/application/mapping",
-            "guides/application/dependent",
-            "guides/application/field-types"
-          ]
-        }
-      ]
-    },
-    {
-      "group": "Workflow",
-      "pages": [
-        "guides/workflow/overview", 
-        "guides/workflow/triggers",
-        "guides/workflow/actions"
-      ]
-    },
+        ]
+        },
+        
     {
       "group": "Developer Settings",
       "pages": [
         "guides/developer-settings/overview", 
         "guides/developer-settings/events",
-        "guides/developer-settings/actions"
+        "guides/developer-settings/api_proxy"
       ]
     },
     {
+      "group": "Building Integration",
+      "pages": [
+        "guides/building/building_salesforce", 
+        "guides/building/building_workday",
+        "guides/building/building_netsuite"
+      ]
+    },
+    {
+    "group": "Build Workflows",
+    "pages": [
+    "guides/workflow/execution-failure",
+    {
+      "group": "Complex Workflow Scenarios",
+      "pages": [
+        "guides/workflow/batch",
+        "guides/workflow/sync", 
+        "guides/workflow/incremental-sync" 
+      ]
+    }
+  ]
+  },
+    {
       "group": "Platform",
       "pages": [ 
-        "guides/platform/linked-account",
+
         {
           "group": "Account Management",
           "pages": [
@@ -226,7 +299,9 @@
     {
       "group": "Custom application",
       "pages": [
-        "guides/custom-application/setting-up-custom-app"
+        "guides/custom-application/setting-up-custom-app",
+        "guides/platform/webhook",
+        "guides/platform/tryapi"
       ]
     },
     {
@@ -242,6 +317,579 @@
     {
       "group": "Client-side SDKs",
       "pages": ["sdks/client-side-sdks/react-sdk", "sdks/client-side-sdks/js-sdk"]
+    },
+    {
+      "group": "Resources",
+      "pages": [
+        {
+          "group": "Integration Providers",
+          "pages": [
+            "resources/integration-providers/overview",
+            {
+              "group": "Adobe Sign",
+              "pages": [
+                "resources/integration-providers/adobesign"
+              ]
+            },
+            {
+              "group": "Agile CRM",
+              "pages": [
+                "resources/integration-providers/agilecrm"
+              ]
+            },
+            {
+              "group": "Aircall",
+              "pages": [
+                "resources/integration-providers/aircall"
+              ]
+            },
+            {
+              "group": "Airtable",
+              "pages": [
+                "resources/integration-providers/airtable"
+              ]
+            },
+            {
+              "group": "Apptivo",
+              "pages": [
+                "resources/integration-providers/apptivo"
+              ]
+            },
+            {
+              "group": "Asana",
+              "pages": [
+                "resources/integration-providers/asana"
+              ]
+            },
+            {
+              "group": "Attio",
+              "pages": [
+                "resources/integration-providers/attio"
+              ]
+            },
+            {
+              "group": "Basecamp",
+              "pages": [
+                "resources/integration-providers/basecamp"
+              ]
+            },
+            {
+              "group": "BigCommerce",
+              "pages": [
+                "resources/integration-providers/bigcommerce"
+              ]
+            },
+            {
+              "group": "Bitbucket",
+              "pages": [
+                "resources/integration-providers/bitbucket"
+              ]
+            },
+            {
+              "group": "Box",
+              "pages": [
+                "resources/integration-providers/box"
+              ]
+            },
+            {
+              "group": "Calendly",
+              "pages": [
+                "resources/integration-providers/calendly"
+              ]
+            },
+            {
+              "group": "Capsule CRM",
+              "pages": [
+                "resources/integration-providers/capsule"
+              ]
+            },
+            {
+              "group": "Chargify",
+              "pages": [
+                "resources/integration-providers/chargify"
+              ]
+            },
+            {
+              "group": "ClickUp",
+              "pages": [
+                "resources/integration-providers/clickup"
+              ]
+            },
+            {
+              "group": "Clover",
+              "pages": [
+                "resources/integration-providers/clover"
+              ]
+            },
+            {
+              "group": "Confluence",
+              "pages": [
+                "resources/integration-providers/confluence"
+              ]
+            },
+            {
+              "group": "Constant Contact",
+              "pages": [
+                "resources/integration-providers/constant_contact"
+              ]
+            },
+            {
+              "group": "Copper",
+              "pages": [
+                "resources/integration-providers/copper"
+              ]
+            },
+            {
+              "group": "Customer.io",
+              "pages": [
+                "resources/integration-providers/customer_io"
+              ]
+            },
+            {
+              "group": "Deel",
+              "pages": [
+                "resources/integration-providers/deel"
+              ]
+            },
+            {
+              "group": "DocuSign",
+              "pages": [
+                "resources/integration-providers/docusign"
+              ]
+            },
+            {
+              "group": "Dropbox",
+              "pages": [
+                "resources/integration-providers/dropbox"
+              ]
+            },
+            {
+              "group": "Epic",
+              "pages": [
+                "resources/integration-providers/epic"
+              ]
+            },
+            {
+              "group": "Etsy",
+              "pages": [
+                "resources/integration-providers/etsy"
+              ]
+            },
+            {
+              "group": "Exact Online",
+              "pages": [
+                "resources/integration-providers/exactonline"
+              ]
+            },
+            {
+              "group": "Facebook Ads",
+              "pages": [
+                "resources/integration-providers/facebook_ads"
+              ]
+            },
+            {
+              "group": "Figma",
+              "pages": [
+                "resources/integration-providers/figma"
+              ]
+            },
+            {
+              "group": "Fireflies.ai",
+              "pages": [
+                "resources/integration-providers/fireflies"
+              ]
+            },
+            {
+              "group": "FreeAgent",
+              "pages": [
+                "resources/integration-providers/freeagent"
+              ]
+            },
+            {
+              "group": "FreshBooks",
+              "pages": [
+                "resources/integration-providers/freshbooks"
+              ]
+            },
+            {
+              "group": "FreshSales CRM",
+              "pages": [
+                "resources/integration-providers/freshsales"
+              ]
+            },
+            {
+              "group": "Front",
+              "pages": [
+                "resources/integration-providers/front"
+              ]
+            },
+            {
+              "group": "GetResponse",
+              "pages": [
+                "resources/integration-providers/getresponse"
+              ]
+            },
+            {
+              "group": "GitHub",
+              "pages": [
+                "resources/integration-providers/github"
+              ]
+            },
+            {
+              "group": "Gong",
+              "pages": [
+                "resources/integration-providers/gong"
+              ]
+            },
+            {
+              "group": "Google Admin",
+              "pages": [
+                "resources/integration-providers/google_admin"
+              ]
+            },
+            {
+              "group": "Google Drive",
+              "pages": [
+                "resources/integration-providers/google_drive"
+              ]
+            },
+            {
+              "group": "Google Sheets",
+              "pages": [
+                "resources/integration-providers/sheets_overview",
+                "resources/integration-providers/google_sheets",
+                "resources/integration-providers/sheets_features"
+              ]
+            },
+            {
+              "group": "Gusto",
+              "pages": [
+                "resources/integration-providers/gusto"
+              ]
+            },
+            {
+              "group": "Harvest",
+              "pages": [
+                "resources/integration-providers/harvest"
+              ]
+            },
+            {
+              "group": "Help Scout",
+              "pages": [
+                "resources/integration-providers/helpscout"
+              ]
+            },
+            {
+              "group": "HiBob",
+              "pages": [
+                "resources/integration-providers/hibob"
+              ]
+            },
+            {
+              "group": "HighLevel",
+              "pages": [
+                "resources/integration-providers/highlevel"
+              ]
+            },
+            {
+              "group": "Hubspot",
+              "pages": [
+                "resources/integration-providers/hubspot_overview",
+                "resources/integration-providers/hubspot",
+                "resources/integration-providers/hubspot_features"
+              ]
+            },
+            {
+              "group": "Intercom",
+              "pages": [
+                "resources/integration-providers/intercom"
+              ]
+            },
+            {
+              "group": "Jibble",
+              "pages": [
+                "resources/integration-providers/jibble"
+              ]
+            },
+            {
+              "group": "Jira",
+              "pages": [
+                "resources/integration-providers/jira_overview",
+                "resources/integration-providers/jira",
+                "resources/integration-providers/jira_features"
+              ]
+            },
+            {
+              "group": "Keap",
+              "pages": [
+                "resources/integration-providers/keap"
+              ]
+            },
+            {
+              "group": "Keka HR",
+              "pages": [
+                "resources/integration-providers/keka"
+              ]
+            },
+            {
+              "group": "Lever",
+              "pages": [
+                "resources/integration-providers/lever"
+              ]
+            },
+            {
+              "group": "Mailchimp",
+              "pages": [
+                "resources/integration-providers/mailchimp"
+              ]
+            },
+            {
+              "group": "Marketo",
+              "pages": [
+                "resources/integration-providers/marketo_overview",
+                "resources/integration-providers/marketo",
+                "resources/integration-providers/marketo_features"
+              ]
+            },
+            {
+              "group": "Miro",
+              "pages": [
+                "resources/integration-providers/miro"
+              ]
+            },
+            {
+              "group": "Microsoft Office 365",
+              "pages": [
+                "resources/integration-providers/ms_365"
+              ]
+            },
+            {
+              "group": "Microsoft Defender",
+              "pages": [
+                "resources/integration-providers/msdefender"
+              ]
+            },
+            {
+              "group": "Microsoft Dynamics CRM",
+              "pages": [
+                "resources/integration-providers/ms_dynamics_crm"
+              ]
+            },
+            {
+              "group": "Microsoft OneDrive",
+              "pages": [
+                "resources/integration-providers/ms_one_drive"
+              ]
+            },
+            {
+              "group": "Microsoft Teams",
+              "pages": [
+                "resources/integration-providers/ms_teams"
+              ]
+            },
+            {
+              "group": "Monday",
+              "pages": [
+                "resources/integration-providers/monday"
+              ]
+            },
+            {
+              "group": "MyOB",
+              "pages": [
+                "resources/integration-providers/myob"
+              ]
+            },
+            {
+              "group": "NetSuite",
+              "pages": [
+                "resources/integration-providers/netsuite",
+                "resources/integration-providers/netsuite_oauth"
+              ]
+            },
+            {
+              "group": "Notion",
+              "pages": [
+                "resources/integration-providers/notion"
+              ]
+            },
+            {
+              "group": "OpenText",
+              "pages": [
+                "resources/integration-providers/opentext"
+              ]
+            },
+            {
+              "group": "Outreach",
+              "pages": [
+                "resources/integration-providers/outreach"
+              ]
+            },
+            {
+              "group": "PagerDuty",
+              "pages": [
+                "resources/integration-providers/pagerduty"
+              ]
+            },
+            {
+              "group": "Pandle",
+              "pages": [
+                "resources/integration-providers/pandle"
+              ]
+            },
+            {
+              "group": "Pardot",
+              "pages": [
+                "resources/integration-providers/pardot_overview",
+                "resources/integration-providers/pardot_create",
+                "resources/integration-providers/salesforce_pardot",
+                "resources/integration-providers/pardot_features"
+              ]
+            },
+            {
+              "group": "Pipedrive",
+              "pages": [
+                "resources/integration-providers/pipedrive"
+              ]
+            },
+            {
+              "group": "QuickBooks",
+              "pages": [
+                "resources/integration-providers/quickbooks"
+              ]
+            }, 
+            {
+              "group": "Salesforce",
+              "pages": [
+                "resources/integration-providers/salesforce_overview",
+                "resources/integration-providers/salesforce",
+                "resources/integration-providers/salesforce_features"
+              ]
+            },
+            {
+              "group": "Salesforce Financial Services Cloud",
+              "pages": [
+                "resources/integration-providers/salesforce_finance"
+              ]
+            },
+            {
+              "group": "Salesloft",
+              "pages": [
+                "resources/integration-providers/salesloft"
+              ]
+            },
+            {
+              "group": "Sentry",
+              "pages": [
+                "resources/integration-providers/sentry"
+              ]
+            }, 
+            {
+              "group": "ServiceNow",
+              "pages": [
+                "resources/integration-providers/servicenow"
+              ]
+            }, 
+            {
+              "group": "Shopify",
+              "pages": [
+                "resources/integration-providers/shopify"
+              ]
+            }, 
+            {
+              "group": "Slack",
+              "pages": [
+                "resources/integration-providers/slack_overview",
+                "resources/integration-providers/slack",
+                "resources/integration-providers/slack_features"
+              ]
+            },
+            {
+              "group": "SurveyMonkey",
+              "pages": [
+                "resources/integration-providers/survey_monkey"
+              ]
+            },
+            {
+              "group": "Tableau",
+              "pages": [
+                "resources/integration-providers/tableau"
+              ]
+            },
+            {
+              "group": "Talkdesk",
+              "pages": [
+                "resources/integration-providers/talkdesk"
+              ]
+            },
+            {
+              "group": "Teamwork",
+              "pages": [
+                "resources/integration-providers/teamwork"
+              ]
+            },
+            {
+              "group": "Trello",
+              "pages": [
+                "resources/integration-providers/trello"
+              ]
+            },
+            {
+              "group": "Twilio",
+              "pages": [
+                "resources/integration-providers/twilio"
+              ]
+            },
+            {
+              "group": "Workable",
+              "pages": [
+                "resources/integration-providers/workable"
+              ]
+            },
+            {
+              "group": "Workday",
+              "pages": [
+                "resources/integration-providers/workday"
+              ]
+            },
+            {
+              "group": "Xero",
+              "pages": [
+                "resources/integration-providers/xero"
+              ]
+            },
+            {
+              "group": "Zendesk Sell",
+              "pages": [
+                "resources/integration-providers/zendesk_crm"
+              ]
+            },
+            {
+              "group": "Zettle",
+              "pages": [
+                "resources/integration-providers/zettle"
+              ]
+            },
+            {
+              "group": "Zoho Books",
+              "pages": [
+                "resources/integration-providers/zohobooks"
+              ]
+            },
+            {
+              "group": "Zoho CRM",
+              "pages": [
+                "resources/integration-providers/zoho"
+              ]
+            },
+            {
+              "group": "Zoom",
+              "pages": [
+                "resources/integration-providers/zoom"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "openapi": "api-reference/openapi.yaml",
@@ -265,15 +913,16 @@
     {
       "name": "Get Your API Key",
       "icon": "gear",
-      "url": "https://app.gocobalt.io/your-app"
+      "url": "https://app.gocobalt.io/developer"
     },
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://www.gocobalt.io/blogs"
+      "name": "Examples",
+      "icon": "book",
+      "url": "https://docs.gocobalt.io/guides/building/"
     }
   ],
   "footerSocials": {
-    "linkedin": "https://www.linkedin.com/company/gocobalt/"
+    "linkedin": "https://www.linkedin.com/company/gocobalt/",
+    "twitter": "https://x.com/gocobaltio"
   }
 }

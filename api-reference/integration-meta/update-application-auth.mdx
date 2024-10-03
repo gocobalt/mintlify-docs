@@ -1,9 +1,9 @@
 ---
-title: 'Update application auth'
-api: put /api/v2/public/application/:slug
+title: 'Migrate Token for a Linked Account'
+api: put /api/v2/public/migrate-token
 ---
 
-This API is used to update a linked accounts's auth object (API keys, Access Tokens, etc;) of an application integration in Cobalt.
+This API is used to Migrate Auth Object (API keys, Access Tokens, etc;) of an application to an integration in Cobalt.
 
 ## Request description
 #### Headers 
@@ -11,14 +11,9 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
   Unique customer identification id. For Eg: markwood@some_email.com
 </ParamField>
 
-#### Path Parameters
-<ParamField path="slug" type="string" required>
-  Application slug. For Eg: `slack`
-</ParamField>
-
 #### Body Parameters
 <ParamField body="auth_object" type="object" required>
-   An object containing the details of your application associated with you account
+   An object containing the details of your application associated with your account
     <Expandable title="Example properties">
         <ResponseField name="bot_token" type="string">
            Example property: Eg: for `slack` - Bot Token
@@ -27,6 +22,10 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
           Example property: Eg: for `slack` - workspace_token
         </ResponseField>
     </Expandable>
+</ParamField>
+
+<ParamField path="slug" type="string" required>
+  Application slug. For Eg: `slack`
 </ParamField>
 
 ## Response description
@@ -40,7 +39,7 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
     Success message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -73,23 +72,26 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Application with app_id 646f1abea9861754b9929b76 doesn't have token_type - keybased",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "linked account with id account_id does not exist in test environment",
     "request_id": "90e83618-5743-4953-92cb-675220470272"
 }
 ```
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "No integration with slug aegis found for linked account 12345678 in test environment",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "auth_object values must be valid strings",
     "request_id": "212047f0-df39-4ef2-abc1-7e66495643c4"
 }
 ```
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
     "message": "access_token and/or refresh_token only permitted in auth_object for OAuth2 based applications",
     "request_id": "ea455085-d124-4cea-aae1-6defe1cc3b30"
 }
@@ -97,17 +99,19 @@ This API is used to update a linked accounts's auth object (API keys, Access Tok
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "access_token, refresh_token, api_domain only permitted in auth_object for OAuth based applications",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "server_url,api_key only permitted in auth_object of auth_type: key_based for application app_name.",
     "request_id": "4c4a494b-250c-46c5-95d4-b8f1def56f01"
 }
 ```
-```JSON 400
+```JSON 401
 {
-    "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "auth_object values must be valid strings",
-    "request_id": "4f8362ce-b36a-4c14-9b85-7fe8b57dda87"
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>

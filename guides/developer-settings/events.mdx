@@ -24,7 +24,7 @@ Click on `New Event` and select a model.
 <img height="200" src="/images/create-event.png" alt="Creating an event"/>
 
 Change the name and update the sample payload as per your requirement and click `Create event`. It is expected that you pass on the data as the `Sample Payload`
-while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow by entering `$`.
+while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow.
 
 In the below example, we are using `firstName` defined inside the `Contact` event in an Activecampaign workflow.
 
@@ -68,3 +68,5 @@ curl --request POST \
 
 Event URL can be used as a quick resort to trigger an event. If you wish to have better control on triggering such as triggering the worflow executions for a specific application,
 instead of for all application workflows with which the event is associated, kindly refer the [REST APIs](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application) support for events.
+
+To trigger an event from Cobalt platform so that you can simulate event execution, test workflows and validate the behavior of associated actions, you can use the `Try API` feature of Cobalt. Refer [here](https://docs.gocobalt.io/guides/platform/tryapi) to learn how you can use Try API.

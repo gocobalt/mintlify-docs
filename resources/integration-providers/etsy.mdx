@@ -1,0 +1,94 @@
+---
+title: Setup
+description: Connect to your Etsy app for OAuth.
+---
+To setup your Etsy app in Cobalt for OAuth, you will need the following credentials from your [Etsy Developer account](https://www.etsy.com/developers):
+- Keystring
+- Shared Secret
+
+### Pre-requisites
+
+1. Etsy Developer account. You can create one [here](https://www.etsy.com/in-en/join).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. listings_r
+2. listings_d
+3. listings_w
+4. Transactions_r
+
+<Info>If you haven't already created an app in Etsy, you'd need to create one.</Info>
+
+### Creating an app in Etsy
+
+To create a Etsy app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Etsy Developer account](https://www.etsy.com/developers).
+2. Click on the `Manage your Apps` icon in the side menu and click `Create a New App` button.
+<img height="200" src="/images/Etsy/etsy_navigation.png" alt="Navigation for App setup"/>
+3. Enter the App `Name`, `Description`, `Website URL` and other details and click on `Read Terms and Create App` button.
+4. Copy the `Keystring`**(Client ID)** and `Shared Secret`**(Client Secret)** displayed.
+<img height="200" src="/images/Etsy/etsy_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Etsy/etsy_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Etsy/etsy_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### App Approval for Etsy
+
+Once the app is created in Etsy, it needs to be approved by the Etsy team before it can be used for OAuth.
+
+If the keys are not approved in 3-4 Business days, you can contact the Etsy Developer team at developers@etsy.com describing your **use-case**, **App name** and the **Keystring** of the App to be approved.
+
+The app will be approved for `Personal Access` and since the app is only going to be used by a handful of Etsy members, then Commercial Access may not be required. Instead, these members can be added on as provisional users.
+<Tip>
+Learn how to add provisional users to your app [here](https://groups.google.com/g/etsy-api-v2/c/_TA7DrM2uSU/m/rSs2INR9orQJ).
+</Tip>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Etsy actions and triggers. Following are the set of Etsy actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Listings">
+     1. **Get Listing by Shop** -Get listing by shop in Etsy.
+     2. **Create Draft Listing** - Create a listing for a Shop in Etsy.
+     3. **Delete Listing** - Deletes a listing in Etsy.
+     4. **Update Listing** - Update listing in Etsy.
+     </Accordion>
+     <Accordion title="Payments">
+     5. **Get payments** - Get Payments of a shop in Etsy.
+     6. **Get shop payment by receipt ID** - Get payment by receipt ID in Etsy.
+      </Accordion>
+     <Accordion title="Others">
+     7. **HTTP Request** - Make HTTP API calls to any Etsy documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>

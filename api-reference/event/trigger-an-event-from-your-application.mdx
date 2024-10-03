@@ -1,10 +1,10 @@
 ---
-title: 'Trigger event'
-api: post /api/v2/public/event/trigger/:slug
+title: 'Trigger an event'
+api: post /api/v2/public/event
 ---
 
-This Api triggers a cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). This would trigger
-all the workflows associated with the specified event. If `slug` is specified, only workflows of that particular app associated with the event would be triggered.
+This API triggers a Cobalt [event](https://app.gocobalt.io/developer/events). This would trigger
+all the workflows associated with the specified event.
 
 ## Request description
 #### Headers
@@ -16,10 +16,6 @@ all the workflows associated with the specified event. If `slug` is specified, o
   If not provided, `linked_account_id` is considered by default.
 </ParamField>
 
-#### Path Parameters
-<ParamField path="slug" type="string">
-  Application slug. Eg: `pipedrive`
-</ParamField>
 
 #### Body Parameters
 <ParamField body="event" type="string" required>
@@ -51,12 +47,15 @@ all the workflows associated with the specified event. If `slug` is specified, o
       System generated message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
     <ResponseField name="error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -73,11 +72,21 @@ all the workflows associated with the specified event. If `slug` is specified, o
     "message": "Webhook Fired Success"
 }
 ```
-```JSON 400
+```JSON 401
 {
-    "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_APP_ID",
+    "message": "Default Application not found",
     "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
 }
 ```

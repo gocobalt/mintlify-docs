@@ -1,0 +1,58 @@
+---
+title: About Custom Apps
+---
+Custom Apps in Cobalt provide users with the flexibility to create and integrate their own custom applications into their workflows. These custom apps function similarly to other pre-built integrations available in Cobalt, allowing users to tailor their automation processes according to their specific needs.
+
+## Creating Custom Apps
+Custom Apps can be created within the `Apps` section of Cobalt, alongside other available integrations. 
+
+When creating a custom app, users have the option to specify various details such as the **Name**, **Category**, **Description** and **Slug** to identify the app within the Cobalt platform.
+
+Custom App will also have a tag `Custom` written on their card in the App list.
+
+<Info>
+Learn in detail about how you can create a Custom App in Cobalt [here](https://docs.gocobalt.io/guides/advance-concepts/setting-up-custom-app).
+</Info>
+<img height="200" src="/images/Guides/Platform/custom-app.png" alt="Custom App in the Apps list in Cobalt"/>
+
+## Authentication Methods
+Custom Apps support multiple authentication methods. To setup the Authorization for the Custom App, navigate to `Authorization` in the App and choose the desired method.
+
+The methods of **Authorization** are: 
+
+### Key Based 
+
+If the Custom App requires API Key based authentication, select `Key Based`. It requires users to set up an API for generating access tokens.
+<img height="200" src="/images/Guides/Platform/key.png" alt="Key-based authorization"/>
+
+### OAuth 1.0 
+If the App requires OAuth 1.0 auth, select `Oauth1`. It requires the user to provide information like **Auth token API**, **Token Type**, **Token Field** name etc. 
+
+<img height="200" src="/images/Guides/Platform/oauth1.png" alt="OAuth 1.0 authorization"/>
+
+### OAuth 2.0 
+If you want to provide OAuth 2.0 type authorization, select `OAuth 2.0` in the methods. 
+
+Users need to provide details such as **Client ID**, **Client ID Param Name**, **Client Secret**, **Redirect URL**, **Auth and Token URLs**, **Scopes** etc., along with the API for acquiring the access token.
+<img height="200" src="/images/Guides/Platform/oauth2.png" alt="OAuth 2.0 authorization"/>
+
+### No Auth 
+
+Select this option if no authentication is required for accessing the custom app.
+
+## App Configuration
+Similar to the pre-built integrations on Cobalt, users can configure various aspects in the Custom App, including **Actions**, **Workflows**, and App-specific configurations. 
+
+App configuration allows users to fine-tune the behavior of the custom app according to their requirements.
+<img height="200" src="/images/Guides/Platform/config.png" alt="Configuring the App"/>
+
+## Adding Actions and Workflows
+Custom Apps support the addition of Actions and Workflows, enabling users to define specific tasks and automation processes within the app. 
+
+Actions can be created to perform specific functions or interact with external systems similar to the API Proxy in Cobalt, while Workflows allow users to orchestrate a series of actions to achieve complex automation scenarios.
+<img height="200" src="/images/Guides/Platform/actions.png" alt="Actions in the Custom App"/>
+<Info>
+Learn more about how to create an Action and Workflow in the Custom App.
+- [Action](https://docs.gocobalt.io/guides/developer-settings/actions)
+- [Workflow](https://docs.gocobalt.io/guides/workflow/overview)
+</Info>

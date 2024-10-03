@@ -1,0 +1,48 @@
+---
+title: Angular SDK
+---
+
+You can find information about Cobalt's SDK for frontend Angular at [https://www.npmjs.com/package/@cobaltio/ngx-cobalt](https://www.npmjs.com/package/@cobaltio/ngx-cobalt).
+<Tip>
+You can refer to the Cobalt's GitHub repo for the Angular SDK [here](https://github.com/gocobalt/angular-cobalt-js).
+</Tip>
+#### Install
+
+First, install `@cobaltio/ngx-cobalt @angular/material` and `@cobaltio/cobalt-js` via the terminal.
+
+```bash
+npm install --save @cobaltio/cobalt-js @cobaltio/ngx-cobalt @angular/material
+```
+
+#### Initialise
+
+Import `CobaltConfig`
+
+```bash
+import { CobaltConfig } from '@cobaltio/ngx-cobalt';
+
+@Component({
+    selector: 'app-root',
+    standalone: true,
+    imports: [
+        CobaltConfig,
+        //...
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
+})
+```
+
+#### Usage
+
+> * Pass the Cobalt session token (that you generated using the Cobalt backend SDK) to the component.
+> * Ideally you'd render the Config component inside a modal, `token` & `slug` are the only required attributes.
+
+```JavaScript
+<cobalt-config
+    id="OPTIONAL_UNIQUE_CONFIG_ID"
+    token="COBALT_TOKEN"
+    slug="APP_SLUG"
+    [labels]="LABELS"
+/>
+```

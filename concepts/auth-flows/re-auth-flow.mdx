@@ -1,0 +1,96 @@
+---
+title: Re-Authentication
+---
+
+Cobalt makes use of the API credentials and Access tokens authorised by your end customers to authenticate the API calls to an application. 
+
+Once the end customer goes through the auth flow, Cobalt saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
+of the created orchestration.
+
+However, there are certain conditions where Cobalt can no longer authenticate the API on behalf of your end customers.
+1. The provided API credentials for eg: API keys, API secrets has been expired.
+2. The access token or refresh token of the end customer has been revoked.
+3. The refresh token of the end customer has been expired.
+4. The end customer uninstalls the application.
+5. The user deletes the application being used by their customer.
+
+For such scenarios Cobalt flags an application integration for `reauth-required` for the customer and they would need to re-authenticate for the workflows to function again.
+
+
+### Handling re-auth
+
+When any of the above mentioned scenarios occur, Cobalt sets a flag `reauth-required` for the application integration of the customer. You could find this
+in the application response object. See below - 
+
+```bash cURL
+  curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/application \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <x-api-key>'
+```
+below is a sample response with an application with expired authentication.
+
+```JSON Response
+ [
+    {
+        "name": "Slack",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+        "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+        "auth_type": "oauth2",
+        "tags": [
+            "Communication"
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+        },
+        "connected": true,
+        "connected_accounts": [
+            {
+                "identifier": "Cobalt",
+                "connectedAt": "2023-05-31T07:45:59.841Z"
+            }
+        ],
+        "slug": "slack",
+        "reauth_required": true
+    },
+    ...
+]
+```
+This re-authentication flow is handled by the Hosted flow and the Embedded flow where the user would be asked to re-connect if the application authentication has expired.
+
+<img height="200" src="/images/expired-app.png" alt="Application with expired authentication"/>
+
+If you have been using the Seamless flow for customizing the code on the client side, just check for the `reauth_required` field in the application list response,
+and use the `.connect()` method to connect to the application again.
+
+```Javascript Re-authentication
+cobalt.connect("slack") // opens a new tab for re-authentication
+cobalt.connect("twilio", {
+  number: "<credential>",
+  sid: "<credential>",
+}) // saves the new auth data for key based apps
+
+```
+Checkout the [auth methods](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) for more details.
+
+<img height="200" src="/images/reconnect.png" alt="Reconnect app with expired auth"/>
+
+### Getting notified using webhook.
+Cobalt supports webhook subscription for an event when an application auth gets expired for a linked account. You would need to subscribe for the event `Connection Expired`.
+Cobalt would then notify you whenever an app connection expires and provide details about the application and the account.
+
+```json Webhook payload
+{
+ "linked_account_id": "12345",
+ "org_id": "645270e37917442c4307297a",
+ "environment": "test",
+ "type": "General",
+ "event": "Connection Expired",
+ "slug": "pipedrive",
+ "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
+}
+```
+<img height="200" src="/images/connection-expired-webhook.png" alt="Webhook subscription for connection expired"/>
+
+<Note>Checkout [Cobalt webhooks](https://docs.gocobalt.io/guides/platform/webhook) for more details.</Note>

@@ -1,54 +1,60 @@
 ---
-title: "Overview"
-description: "Example overview page before API endpoints"
+title: Overview
 ---
+Cobalt's API allows developers to integrate and automate various functionalities within the Cobalt platform. This guide provides an overview of how to find the API key, descriptions of each available resource, and details about the rate limits of the Cobalt API.
 
-## Cobalt API
-Welcome to Cobalt's API documentation! Our API provides a powerful and flexible way to integrate Cobalt's services into your applications. 
-Whether you're building a CRM, finance application, or any other SaaS platform, Cobalt's API can help you connect seamlessly with various third-party 
-applications.
+## Finding the Cobalt API Key
+To execute API requests, an API key is required. Follow these steps to find your API key:
 
-## Base URL
-Nullam convallis mauris at nunc consectetur, ac imperdiet leo rutrum. Maecenas cursus purus a pellentesque blandit. Pellentesque vitae lacinia libero, non mollis metus.
+- Log in to your [Cobalt account](app.gocobalt.io).
+- On the dashboard, navigate to `Developer` section under `Settings` in the side menu.
+- Under the **Setup** tab, you will find the `API Key` in **Overview** section.
+- You can copy the API key for either the **Test environment** or the **Production environment**.
+<img height="200" src="/images/getting_api.png" alt="Getting API Key"/>
 
-```bash
-https://api.gocobalt.io
-```
 
-## Authentication
-Cobalt apis uses api key to authenticate requests. You may use either of test or production keys depending upon the environment that you want to use.
-You can find the api keys [here](https://app.gocobalt.io/your-app)
+## Rate Limits of Cobalt API
 
-```bash
-'x-api-key': '<Cobalt API key>'
-```
+Cobalt API has specific rate limits to ensure efficient and fair usage.
 
-#### Provide API keys as a header parameter
-Provide your API key in the request headers as:
+**Standard Rate Limit**: 20 events per second.
 
-```bash Example Request
-curl --location --request POST 'https://api.gocobalt.io/api/user' \
---header 'Content-Type: application/json' \
---header 'x-api-key:  <Cobalt API Key>' \
---data-raw '{
-    "Example_Keyname": ""
-}'
-```
+**Burst Rate Limit**: Allows a burst of 5 events in an instant within a second.
 
-#### Supported Formats
-Cobalt APIs support sending request body with the application/json content-type. All replies are also encoded in application/json; charset=utf-8
 
-#### HTTP response codes
+## API Resources
+The Cobalt API includes several resources, each serving a specific purpose. Below is a brief description of each resource:
 
-| Name     | Description       | Sample Response      | 
-| ---------|-------------------|----------------------|
-| 200      | Success           | `{"Success": true}`  |
-| 400      | Bad Request       |                      |
-| 401      | Unauthorised      |                  |
-| 403      | Rate Limit Hit    |                  |
-| 404      | Not Found         |                  | 
-| 500      | Server Error      |                  | 
+1. **Linked Account**
 
-## Rate Limiting
-Please be aware that Cobalt enforces rate limiting to ensure fair usage and prevent abuse. The rate limit is set to 10 requests per minute for each 
-linked account. Make sure to manage your API usage accordingly to avoid throttling of subsequent requests.
+Linked Accounts refer to the end-users or customers of our users who utilize the integrations built using the Cobalt platform.
+
+2. **Applications**
+
+This resource refers to the integrations that the user has enabled in the Cobalt platform.
+
+3. **Config**
+
+This resource refers to the configs created in Cobalt for each integration.
+
+4. **Event**
+
+This resource refers to the events that are created in Cobalt and are used to trigger workflows in any integration.
+
+5. **Webhooks**
+
+Webhooks allow users subscribe to get real-time notifications when events occur in Cobalt.
+
+6. **Executions**
+
+This resource fetches the details of an execution in Cobalt.
+
+7. **Session Token**
+
+This resource is used to generate a session token to authenticate a linked account.
+
+8. **Cobalt Hosted**
+
+This resource is used to create hosted portal URLs or the properties saved against the session token.
+
+This overview provides the foundational knowledge needed to start working with Cobalt's API. For more detailed information on each API endpoint, refer to the Cobalt API Reference.

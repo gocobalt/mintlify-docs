@@ -1,9 +1,9 @@
 ---
-title: 'List executions'
+title: 'Get all executions'
 api: get /api/v2/public/execution
 ---
 
-This api fetches an execution's details. 
+This API retrieves a list of all executions. 
 
 ## Request description
 #### Headers
@@ -92,12 +92,15 @@ This api fetches an execution's details.
       Next page number
     </ResponseField>
   </Tab>
-  <Tab title="401">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -137,12 +140,22 @@ This api fetches an execution's details.
 }
 ```
 
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "http_error_type": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id or org_id is required",
+    "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
 ```JSON 401
 {
     "status_code": 401,
-    "error_type": "UNAUTHORIZED",
-    "message": "Invalid Credentials",
-    "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 </ ResponseExample>

@@ -1,9 +1,9 @@
 ---
-title: 'List applications'
+title: 'Get all applications'
 api: get /api/v2/public/application
 ---
 
-This API is used to list all enabled applications for a linked account
+This API lists all enabled applications for a specific linked account.
 
 ## Request description
 #### Headers 
@@ -87,8 +87,11 @@ This API is used to list all enabled applications for a linked account
     <ResponseField name="slug" type="string">
      Application slug
     </ResponseField>
+    <ResponseField name="reauth_required" type="boolean">
+     This field tells if a re-auth is required from the user for the application
+    </ResponseField>
   </Tab>
-  <Tab title="401">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -120,7 +123,8 @@ This API is used to list all enabled applications for a linked account
             "_v": "1.0.0",
             "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices."
         },
-        "slug": "google_drive"
+        "slug": "google_drive",
+        "reauth_required": false
     },
     {
         "name": "Docusign",
@@ -139,7 +143,8 @@ This API is used to list all enabled applications for a linked account
                 "connectedAt": "2023-05-22T07:52:31.270Z"
             }
         ],
-        "slug": "docusign"
+        "slug": "docusign",
+        "reauth_required": false
     },
     {
         "name": "Copper",
@@ -169,16 +174,26 @@ This API is used to list all enabled applications for a linked account
             "_v": "1.0.0",
             "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace."
         },
-        "slug": "copper"
+        "slug": "copper",
+        "reauth_required": false
     }
 ]
 ```
-
 ```JSON 401
 {
     "status_code": 401,
-    "error_type": "UNAUTHORIZED",
-    "message": "Invalid Credentials",
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "Linked Account with account id 66b0d2f25bfbf7ed1a4e6e38 for org 65c9ef72f4b95fce32e8ccf8 in environment test not found",
     "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
 }
 ```

@@ -1,0 +1,196 @@
+---
+title: Setup
+description: Connect to your Shopify app for OAuth.
+---
+To setup your Shopify app in Cobalt for OAuth, you will need the following credentials from your [Shopify Partner Dashboard](https://partners.shopify.com/current/resources):
+- Client ID
+- Client Secret
+- Scopes
+
+## Pre-requisites
+
+1. Shopify Developer account or Shopify Partners account. You can create one [here](https://developers.shopify.com/).
+2. Shopify development store. Follow the steps [here](https://help.shopify.com/en/partners/dashboard/managing-stores/development-stores#create-a-development-store-for-testing-apps-or-themes) to create a development store.
+
+<Info>If you haven't already created an app in Shopify, you'd need to create one.</Info>
+
+## Creating an app in Shopify
+
+To create a Shopify app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Shopify Partner Dashboard](https://partners.shopify.com/current/resources).
+2. Click on `Apps` in the left menu of the Dashboard.
+<img height="100" src="/images/Shopify/Shopify_navigation.png" alt="Navigation for App setup"/>
+3. Click on the `Create App` button in the top right and choose `Create App Manually`.
+4. Enter the unique App Name for your application and click on `Create`.
+5. In **Cobalt**, go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Shopify` > `Settings` > `Use your credentials` > `Callback Url`. Copy the Callback URL as provided in your Shopify settings page.
+6. In the App settings in Shopify Partner Dashboard, navigate to `Build` > `Configuration` > `URLs` section > Remove the default URL present in `Allowed redirection URL(s)` > Paste the copied Callback Url > Click on the `Save and Release` button in the top side > `Release`. 
+<img height="200" src="/images/Shopify/Shopify_config.png" alt="Setting up Shopify Developer app"/>
+7. Navigate to `Overview` in the left menu and copy the **Client ID** and **Client Secret** from the **Client credentials** section.
+<img height="200" src="/images/Shopify/Shopify_credentials.png" alt="Getting Credentials"/>
+
+## Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Shopify/Shopify_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+## Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section.
+
+For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Shopify/Shopify_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+## Access to protected customer data
+Some Shopify APIs alongwith the scopes, also require access to **protected customer data**. For eg. Abandoned checkouts, Draft Order etc.
+
+**To Request Access of protected customer data**:
+
+1. In the left menu of the App, select `API access`.
+2. Scroll down to `Access requests` section > `Protected customer data access` > `Request access`.
+<img height="200" src="/images/Shopify/Shopify_protected.png" alt="protected customer data request"/>
+3. Select `Protected customer data`, provide your reasons for using it, and click `Save`.
+4. Complete rest of the requirements and submit the app for review.
+
+<Info>To learn more about protected customer data, visit [here](https://shopify.dev/docs/apps/store/data-protection/protected-customer-data).</Info>
+
+## Managing Distribution of the Shopify App
+
+**To setup Shopify App Distribution:**
+
+1. In the left menu of App settings, navigate to `Release` > `Distribution`.
+2. Choose `Public distribution` from `Select a distribution method`.
+<img height="200" src="/images/Shopify/Shopify_distribution.png" alt="Distribution Methods in Shopify"/>
+<Warning>
+You can't change the distribution method after you select it, so make sure that you understand the different capabilities and requirements of each type.
+</Warning>
+3. Click on `Select` and confirm the distribution selected.
+
+## Going Live with Shopify
+
+Once you have tested the Shopify integration with Cobalt using a test shop, it is time to publish your application so that other production shops of different organizations can install/authorize your application.
+
+Shopify mandates publishing and listing of your application in order to be installed by other users from different organizations. This requires a review from the Shopify team who make sure that the application is installed through their marketplace as well and not just through the installation URL generated through Cobalt’s SDKs.
+
+To list your application on Shopify, the following steps need to be followed:
+
+#### 1. Setup App URL page
+
+As soon as the user clicks to install your application on Shopify’s marketplace, they are redirected to the `App URL` provided by you in the Shopify app configuration.
+
+<img height="200" src="/images/Shopify/Shopify_appurl.png" alt="App URL page setup"/>
+
+Make sure a page exists for the URL provided or create a new page. This page would be responsible for handling installation requests.
+
+When the user is redirected to the `App URL` page, you can access the **shop_name** from the URL argument `shop`.
+
+<img height="200" src="/images/Shopify/Shopify_shop.png" alt="Shop Name"/>
+
+Create another page to handle the redirect URL. Then using the  **Redirect page URI**, **Client ID**, **Shop name** and required scopes, generate the following `Shopify auth URL` and open it in the browser for the user redirected to the App URL page. This opens up the **Shopify permission** page.
+```Java
+https://{Shop_Name}/admin/oauth/authorize?client_id={SHOPIFY_CLIENT_ID}&redirect_uri={REDIRECT_CALLBACK_URL}&scope={SHOPIFY_SCOPES}
+```
+
+#### 2. Setting up Redirect URL page
+
+In the previous step, we created a page to handle redirect URI and used that to generate the Shopify auth URL. Add the **Redirect URL** as one of the `Allowed Redirection URLs` in the application configuration.
+<img height="200" src="/images/Shopify/Shopify_allowed.png" alt="Adding Redirect URL for the new page"/>
+
+Once the user allows permissions from the Shopify permission page, the user is redirected to to this page. The URL consists of the **shop name** and a **code**.
+
+#### 3. Acquiring access token from redirect URL
+
+Make use of the **shop name** and **code** from the previous step to make an API call to get the Access token.
+```Java
+curl --location --request POST 'https://{Shop-Name}.myshopify.com/admin/oauth/access_token?client_id={Client-ID}&client_secret={Client-Secret}&code={Code}'
+```
+<Note>
+Replace the `Client ID` and `Client Secret` with your valid credentials. This will provide you with a response consisting of the `access token` and `shop name`. Migrate the acquired token to Cobalt.
+</Note>
+
+#### 4. Migrating access token to Cobalt
+
+Once the access token is acquired, send it to Cobalt for further handling API authentications, token expiries and retries.
+```JavaScript
+curl --location --request PUT 'https://api.gocobalt.io/api/v2/public/migrate-token' \
+--header 'x-api-key: {{Cobalt API KEY}}' \
+--header 'linked_account_id: {{LINKED_ACCOUNT_ID}}' \
+--header 'Content-Type: application/json' \
+--data '{
+    "slug":"shopify",
+    "auth_object":{
+        "access_token": {{Access Token}},
+        "store_name": {{Store Name}}
+    }
+}'
+```
+<Note>
+Replace the API key, linked account ID, access token and store name with the valid values.
+</Note>
+
+#### 5. Subscribing to mandatory privacy webhooks
+
+Shopify requires you to provide compliance webhook URLs to publish applications to the marketplace. They use this webhook URL to notify regarding **Customer data requests**, **Customer data erasure**, and **Shop data erasure** so that relevant action be taken.
+
+Copy the `Single webhook URL` from the Cobalt Shopify app setting page and paste them as Shopify `Compliance webhooks` URLs in the Shopify app configuration page. Click `Save and release` at the top to save your changes.
+<img height="200" src="/images/Shopify/Shopify_compliance.png" alt="Compliance Webhooks for Shopify"/>
+
+- **Creating workflows to respond to privacy webhooks**
+
+Next, create 3 workflows that listen for these triggers in the workflow builder and publish them for all users:
+
+1. Customer data request (Customer Data Requested Trigger)
+2. Customer data erasure (Delete Customer Data Requested Trigger)
+3. Shop data erasure (Delete Shop Data Requested Trigger)
+
+## Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Shopify actions and triggers. Following are the set of Shopify actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Inventory">
+     1. **Get Inventory Items** - Get all inventory items in Shopify.
+    </Accordion>
+    <Accordion title="Locations">
+     2. **Get Locations** - Get all locations in Shopify.
+    </Accordion>
+    <Accordion title="Orders">
+     3. **Get Orders** - Get all orders in Shopify.
+    </Accordion>
+    <Accordion title="Products">
+     4. **Get Products** - Get all products in Shopify.
+    </Accordion>
+    <Accordion title="Others">
+     5. **HTTP Request** - Make HTTP API calls to any Shopify documented REST APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+      1. **Product Created** - Triggers when a product is created on Shopify.
+      2. **Order Created** - Triggers when an order is created on Shopify.
+      3. **Order Updated** - Triggers when an order is updated on Shopify.
+      4. **Order Cancelled** - Triggers when an order is cancelled on Shopify.
+      5. **Order Fulfilled** - Triggers when an order is fulfilled on Shopify.
+      6. **Order Paid** - Triggers when an order is paid on Shopify.
+      7. **Refund Created** - Triggers when a new refund is created without errors on an order on Shopify.
+      8. **Fulfillment Created** - Triggers when a fulfillment is created on Shopify.
+      9. **Fulfillment Updated** - Triggers when a fulfillment is updated on Shopify.
+      10. **Customer Data Requested** - Triggers when the customer data is requested in Shopify.
+      11. **Delete Customer Data Requested** - Triggers when the delete customer data is requested in Shopify.
+      12. **Delete Shop Data Requested** - Triggers when the delete shop data is requested in Shopify.
+  </Tab>
+</Tabs>

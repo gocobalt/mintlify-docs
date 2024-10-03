@@ -1,9 +1,9 @@
 ---
-title: 'Update linked account'
+title: 'Upsert linked account'
 api: put /api/v2/public/linked-account
 ---
 
-This api Updates a linked accounts's details by , Or creates a linked account if no account present if no account found for the provided .
+This API updates the details of an existing linked account or creates a new one if no account exists for the provided linked account ID.
 
 ## Request description
 #### Body Parameters
@@ -79,12 +79,15 @@ This api Updates a linked accounts's details by , Or creates a linked account if
     <ResponseField name="__v" type="integer">
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -135,8 +138,27 @@ This api Updates a linked accounts's details by , Or creates a linked account if
 ```JSON 400
 {
     "status_code": 400,
-    "error_type": "BAD_REQUEST",
-    "message": "Linked account with id T1234567 already exists in the test environment",
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "Duplicate Auth key_name not allowed",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INTERNAL_SERVER_ERROR",
+    "message": "A valid app_id is required",
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```

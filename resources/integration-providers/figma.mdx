@@ -1,0 +1,60 @@
+---
+title: Setup
+description: Connect to your Figma app for OAuth.
+---
+To setup your Figma app in Cobalt for OAuth, you will need the following credentials from your [Figma Developer Portal](https://www.figma.com/developers):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Figma Developer account. You can create one [here](https://www.figma.com/signup?cont=/developers).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. files:read
+
+<Info>If you haven't already created an app in Figma, you'd need to create one.</Info>
+
+### Creating an app in Figma
+
+To create a Figma app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Figma Developer Portal](https://www.figma.com/developers).
+2. Click on `My apps` in the top nav bar.
+<img height="200" src="/images/Figma/figma_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Figma` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Click on `+ Create a new app` button, enter the **App Name** and the **Website URL**, Upload a **Logo**, paste the **Callback Url** and click on the `Save` button.
+
+6. Copy the **Client ID** and **Client Secret** displayed on the screen.
+<Info>
+Ensure that the Client Secret is copied as it will not be shown again.
+</Info>
+<img height="200" src="/images/Figma/figma_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+<img height="200" src="/images/Figma/figma_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Figma/figma_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Figma actions and triggers. An action with any API of Figma can be created by using the **HTTP Request** Action.

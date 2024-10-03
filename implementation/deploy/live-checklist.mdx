@@ -1,0 +1,64 @@
+---
+title: Go Live Checklist
+description: Validate that your application is ready for deployment with the Cobalt go-live checklist.
+---
+If you have followed the [Implementation Guide](https://docs.gocobalt.io/implementation/overview) completely, your application is ready for deployment. The following checklist is focused list of recommendations to validate that your application is ready for deployment. This will ensure a seamless experience for your customers, make your integration more robust and secure, and set you up for success when you launch into production.
+
+## Integrate Cobalt Auth flow 
+
+Cobalt auth flows lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf.
+
+- [Integrate Cobalt auth flows](https://docs.gocobalt.io/guides/auth-flows/embedded-flow) into your application’s frontend. It should be displayed as a part of your onboarding flow, preferably behind an authentication login.
+- [Create Session Tokens](https://docs.gocobalt.io/implementation/integrate/get-access-token) for your linked accounts.
+
+**Design a seamless connection experience**
+- Create a smooth frontend to [display the integrations](https://docs.gocobalt.io/implementation/integrate/display-apps) to your customers.
+- [Create a Linked Account](https://docs.gocobalt.io/implementation/integrate/setup-linked-account) for the user whenever he signs up to the platform.
+- **Display Auth text** to your customer when they want to connect to an integration. If the application is key-based, provide them the instructions to get the API Key.
+
+## Configure Integration 
+
+Configure the integration that you want to enable for your customers, correctly in the Cobalt Dashboard.
+- Ensure that the correct Client ID and Client Secret are used in the OAuth app Setup.
+- Check if the Callback URL provided by Cobalt has been added to your OAuth app.
+- The scopes selected in the OAuth app should be correct for the actions that you want to perform.
+
+## Integrate Cobalt API or SDK
+
+Following steps are recommended to build a resilient integration using the API or SDK.
+- [Integrate the Cobalt APIs](https://docs.gocobalt.io/api-reference/customer/get-linked-account) or SDKs for Listing Applications, Config etc. into your application’s backend.
+
+**Handle Responses**
+- Parse through the response received and use the required fields from it.
+
+**Handle Errors**
+- Your application should be able to handle errors you may receive from API Call or SDK Method call.
+- [Handle Re-Authentication](https://docs.gocobalt.io/implementation/additional/reauth) of users if required for any application.
+
+## Workflows implementation
+It is necessary to ensure that the Workflows created for your users are logically optimal and are able to provide the required functionality.
+- Ensure that the Workflow created is optimized and can provide the required functionality covering all the cases with minimum no. of nodes.
+- [Workflow Failures](https://docs.gocobalt.io/implementation/additional/workflow-failure) are properly handled on your platform.
+- Check if the access of a workflow is provided to the required Linked accounts or not using the [Access Control](https://docs.gocobalt.io/implementation/additional/workflow-access).
+
+**Actions and Triggers of the Workflow**
+For a workflow, it is essential that the correct information is read and write.
+- The [payload created in Events](https://docs.gocobalt.io/implementation/communicate/write-data) should be such that all the required information is available in it.
+- The workflow should be able to provide proper information for the [API Proxies to read](https://docs.gocobalt.io/implementation/communicate/get-data).
+
+**Testing Workflows**
+- All the [nodes of a workflow](https://docs.gocobalt.io/implementation/Test-Integration/node-test) should be tested and the errors should be handled.
+- [Orchestration testing](https://docs.gocobalt.io/implementation/Test-Integration/orchestration-test) will make sure that the Workflow is able to provide the required functionality.
+
+## Test the integration and go live
+Before going live, it is valuable to know the test scenarios for your Cobalt integration.
+- An integration involves different [test scenarios](https://docs.gocobalt.io/implementation/Test-Integration/develop-test) which should be thoroughly tested.
+- Some integrations provide free Sandbox/trial accounts which should be used for testing before going live.
+
+## Support
+The following steps will ensure you and your team is set up for success once your Cobalt integration has gone live.
+- You can contact Cobalt Support either by sending an email to `integrations@gocobalt.io`, or `@Cobalt Support` if you have a shared Slack channel with Cobalt.
+
+
+
+

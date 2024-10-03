@@ -1,0 +1,36 @@
+---
+title: Custom App setup
+---
+This guide walks you through the setup process for creating and configuring a custom app within Cobalt, covering essential steps such as defining credentials and authorization methods.
+
+## Creating a Custom App
+The first step in setting up a custom app is creating it within the Cobalt platform. 
+
+To create a Custom App, follow these steps:
+- Navigate to `Apps` section in Cobalt and click on the `+ Add App` button in the top right corner.
+<img height="200" src="/images/Guides/Platform/custom-create.png" alt="Create a Custom App in Cobalt"/>
+- Choose `Manually` > Give the Custom App `Name` > Provide a `Slug` and a `Description` if required > Click on `Create App`.
+<Note>
+Slug will be auto-generated from the App Name if not provided by the user
+</Note>
+- Click on `Enable` in the top right if the user wants to enable the app for the Linked Accounts.
+- Details about the App like **Name**, **Category**, **Slug** etc can be edited in the `Overview` section of the App. Click on the `Edit` icon, change the details and click on `Save changes`.
+<img height="200" src="/images/Guides/Platform/custom-details.png" alt="Custom App Details in Cobalt"/>
+
+<Info>
+To delete a Custom App, simply click on the `Bin` icon in the top-right and click on `Delete` to confirm it.
+</Info>
+
+
+## Configuring Credentials and Authorization
+Effective integration of a custom app requires proper configuration of credentials and authorization methods. Custom Apps support 4 authentication methods which are **Key Based**, **OAuth 1**, **OAuth 2.0** and **No Auth** for the app.
+
+To setup the Authorization for the Custom App, navigate to `Authorization` in the App and choose the desired method.
+
+<Tip>To learn more about the `Authorization` methods in Custom Apps, refer [here](https://docs.gocobalt.io/guides/advance-concepts/about-custom-apps#authentication-methods).</Tip>
+<img height="200" src="/images/Guides/Platform/key.png" alt="Custom App Authorization"/>
+
+## Linked Account Connecting to Custom App
+
+Once your custom app is set up and authenticated, a Linked Account can connect to the Custom App just like any other integration available in Cobalt. Depending on the Authorization method configured, the Linked Account will be required to follow different steps to connect.
+<img height="200" src="/images/Guides/Platform/custom-linked.png" alt="Linked account connecting to Custom App"/>

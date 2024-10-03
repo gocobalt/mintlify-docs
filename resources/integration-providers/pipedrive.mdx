@@ -1,8 +1,127 @@
 ---
-title: Pipedrive
+title: Setup
 description: Access to your users' Pipedrive CRM record through OAuth.
 ---
+To setup your Pipedrive app in Cobalt for OAuth, you will need the following credentials from your [Pipedrive Developer account](https://developers.pipedrive.com/):
+- Client ID
+- Client Secret
+- Scopes
 
-<Info>
- Coming Soon!
-</Info>
+### Pre-requisites
+
+1. Pipedrive Developer account. You can create one [here](https://developers.pipedrive.com/#signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Administer Account
+
+<Info>If you haven't already created an app in Pipedrive, you'd need to create one.</Info>
+
+### Creating an app in Pipedrive
+
+To create a Pipedrive app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Pipedrive Developer account](https://developers.pipedrive.com/).
+2. Click on the `Profile` icon in the top right and select `Developer Hub` button.
+<img height="200" src="/images/Pipedrive/Pipedrive_navigation.png" alt="Navigation for App setup"/>
+3. Click on `+ Create an App` button in the top right and choose `Create Private App`.
+4. Enter the unique App Name for your application.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Pipedrive` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Paste the Callback URL and click on the `Save` button.
+6. Select the **mandatory scopes** in the **OAuth and access scopes** section, as provided in your Cobalt Pipedrive settings page and click on the `Save` button.
+<img height="200" src="/images/Pipedrive/Pipedrive_config.png" alt="Setting up Developer app"/>
+
+7. Click on the `Change to live` button besides `Save` to change the App status from **Draft** to **Live**.
+8. Scroll down in the **OAuth and access scopes** section and copy the **Client ID** and **Client Secret** from the Client ID section.
+<img height="200" src="/images/Pipedrive/Pipedrive_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Pipedrive/Pipedrive_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Pipedrive/Pipedrive_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Pipedrive developer account dashboard](https://developers.pipedrive.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `OAuth & access scopes` under App Settings > Add the scopes as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Pipedrive actions and triggers. Following are the set of Pipedrive actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Lead">
+     1. **Create Lead** - Create a lead in Pipedrive.
+     2. **Update Lead** - Update a lead in Pipedrive.
+     3. **Delete Lead** - Delete a lead in Pipedrive.
+     4. **Get Lead** - Get all leads in Pipedrive.
+     5. **Get Lead by ID** - Get a lead by ID in Pipedrive.
+     6. **Search Leads** - Search leads in Pipedrive.
+     </Accordion>
+     <Accordion title="Person">
+     7. **Create Person** - Create a person in Pipedrive.
+     8. **Update Person** - Update a person in Pipedrive.
+     9. **Delete Person** - Delete a person in Pipedrive.
+     10. **Create Person Field** - Create person field in Pipedrive.
+      </Accordion>
+     <Accordion title="Organization">
+     11. **Create Organization** - Create an organization in Pipedrive.
+     12. **Update Organization** - Update an organization in Pipedrive.
+     13. **Delete Organization** - Delete an organization in Pipedrive.
+     14. **Get Organizations** - Get all organizations in Pipedrive.
+     15. **Get Organization by ID** - Get an organization by ID in Pipedrive.
+     16. **Search Organizations** - Search organizations in Pipedrive.
+      </Accordion>
+     <Accordion title="Deal">
+     17. **Create Deal** - Create a deal in Pipedrive.
+     18. **Update Deal** - Update a deal in Pipedrive.
+     19. **Delete Deal** - Delete a deal in Pipedrive.
+     20. **Get Deals** - Get all deals in Pipedrive.
+     21. **Get Deal by ID** - Get a deal by ID in Pipedrive.
+     22. **Search Deals** - Search deals in Pipedrive.
+      </Accordion>
+     <Accordion title="Note">
+     23. **Create Note** - Create a note in Pipedrive.
+     24. **Update Note** - Update a note in Pipedrive.
+     25. **Get Notes** - Get all notes in Pipedrive.
+     26. **Get Note by ID** - Get a note by ID in Pipedrive.
+    </Accordion>
+     <Accordion title="Contact">
+     27. **Get Contacts** - Get all contacts in Pipedrive.
+     28. **Get Contact by ID** - Get a contact by ID in Pipedrive.
+     29. **Search Contacts** - Search contacts in Pipedrive.
+     </Accordion>
+
+     <Accordion title="Others">
+     30. **HTTP Request** - Make HTTP API calls to any Pipedrive documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Person Created** - Triggers when a person is created on Pipedrive.
+         2. **Person property Updated** - Triggers when a person property is updated on Pipedrive.
+         3. **Organization Created** - Triggers when an organization is created on Pipedrive.
+         4. **Organization Updated** - Triggers when an organization is updated on Pipedrive.
+         5. **Deal Created** - Triggers when a deal is created on Pipedrive.
+         6. **Deal is Updated** - Triggers when a deal is updated on Pipedrive.
+  </Tab>
+</Tabs>

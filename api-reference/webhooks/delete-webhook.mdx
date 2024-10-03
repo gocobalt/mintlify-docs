@@ -1,24 +1,50 @@
 ---
 title: 'Delete webhook'
-api: get /api/v2/public/webhook
+api: delete /api/v2/public/webhook/:id
 ---
 
-This api deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhooks). 
+This API deletes a registered Cobalt [webhook](https://app.gocobalt.io/developer/webhooks). 
+
+## Request description
+#### Path Parameters
+<ParamField path="id" type="string" required>
+  Unique ID of the webhook to be deleted.
+</ParamField>
 
 ## Response description
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="message" type="string">
-     System generated message
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
+    </ResponseField>
+    <ResponseField name="webhook_events" type="array">
+  Webhook events subscribed.
+  </ResponseField>
+      <ResponseField name="created_At" type="string">
+     Timestamp of webhook creation.
+    </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+        <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
+    </ResponseField>
+    <ResponseField name="webhook_type" type="string">
+      The type of webhook. Accepted values are `default` and `slack`.
     </ResponseField>
   </Tab>
-  <Tab title="500">
+
+
+  <Tab title="Error">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="http_error_type" type="string">
     System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -31,14 +57,48 @@ This api deletes the registered Cobalt [webhook](https://app.gocobalt.io/webhook
 
 <ResponseExample>
 ```JSON 200
+[
+    {
+        "is_enabled": true,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
+            "Workflow Completed",
+            "Workflow Errored",
+            "Connection Expired"
+        ],
+        "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+        "_id": "66e58b8d19becbeeea0bd11a",
+        "createdAt": "2024-09-14T13:11:41.043Z",
+        "webhook_type": "default"
+    },
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted"
+        ],
+        "webhook_url": "https://webhookurl.com/newwebhook",
+        "_id": "66e5963a51b0a208fecbca31",
+        "createdAt": "2024-09-14T13:57:14.398Z",
+        "webhook_type": "slack"
+    }
+]
+```
+```JSON 401
 {
-    "message": "Webhook deleted successfully",
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
 }
 ```
 ```JSON 500
 {
     "status_code": 500,
-    "error_type": "INTERNAL_SERVER_ERROR",
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
     "message": "Request failed with status code 500",
     "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
 }

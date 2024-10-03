@@ -1,8 +1,59 @@
 ---
-title: Workable
-description: Connect to your Workable app for OAuth.
+title: Connect
+description: Connect with the Linked Account's Workable account.
 ---
+<Note>
+Workable is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Workable** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Base URL
+2. Access Token
 
 <Info>
- Coming Soon!
+To understand how a Linked Account can get the above mentioned credentials, refer [here](https://docs.gocobalt.io/resources/integration-providers/workable#getting-credentials-of-workable).
 </Info>
+
+
+### Getting Credentials of Workable
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Workable/workable_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your Workable account and copy the **Base URL** of your account.
+2. Click on the `Profile` icon in the top right and select `Settings`.
+<img height="200" src="/images/Workable/workable_navigation.png" alt="Navigation in Workable"/>
+3. Navigate to `Integrations` > `Apps` in the side menu > Scroll down to `API Access Tokens` section > Click on `Generate API Token` button. 
+4. Enter the `Name`, `Expiry` depending on your use case, select the `API Scopes` and click on `Generate Token`.
+5. Copy the **Access Token** displayed.
+<img height="200" src="/images/Workable/workable_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Workable.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Workable actions and triggers. Following are the set of Workable actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Candidate">
+     1. **Create a Candidate** - Create a candidate in Workable.
+     </Accordion>
+     <Accordion title="Note">
+     2. **Create a Note/Comment** - Create a Note/Comment in Workable.
+     </Accordion>
+    <Accordion title="Others">
+     3. **HTTP Request** - Make HTTP API calls to any Workable documented REST APIs.
+</Accordion>
+  </AccordionGroup>   
+  </Tab>
+
+  <Tab title="Triggers">
+        1. **Candidate created** - Triggers when a candidate is created in Workable.
+        2. **Candidate stage changed** - Triggers when a candidate is updated in Workable.
+  </Tab>
+</Tabs>

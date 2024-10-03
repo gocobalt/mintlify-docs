@@ -1,0 +1,158 @@
+---
+title: Key Based Connect
+description: Connect with the Linked Account's NetSuite account.
+---
+<Note>
+NetSuite is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Pre-requisites
+
+1. NetSuite account.
+2. Token Based Auth Enabled in Linked Account's Netsuite.
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **NetSuite** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Account ID
+2. Consumer Key
+3. Consumer Secret
+4. Token ID
+5. Token Secret
+
+<img height="200" src="/images/Netsuite/netsuite_key_config.png" alt="Connect a Linked Account"/>
+
+### Enable Token Based Auth in NetSuite
+
+Before creating the credentials in NetSuite, you are required to enable Token Based Auth. Follow the steps given below:
+
+1. Navigate to `Setup` > `Company` > `Enable Features` in your Netsuite account.
+<img height="200" src="/images/Netsuite/netsuite_enable.png" alt="Enabling OAuth in Netsuite"/>
+2. Select the `SuiteCloud` tab present, scroll down and enable `Token-Based Authentication` checkbox under **Manage Authentication** section.
+
+
+### Getting Credentials of NetSuite
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+
+1. Log in to your Netsuite account with Admin permissions.
+2. To get your **Account ID**, navigate to `Setup` > `Company` > `Company Information` and copy the `Account ID` present there.
+<img height="200" src="/images/Netsuite/netsuite_navigation.png" alt="Navigating for Account ID"/>
+
+3. Click on `Setup` > `Integration` > `Manage Integrations` and choose `New`.
+<img height="200" src="/images/Netsuite/netsuite_create.png" alt="Navigating for App creation"/>
+4. Enter the App **Name** and under `Authentication`, uncheck the `TBA: Authorization Flow` under **Token-based authentication** and then disable `Authorization Code Grant` checkbox under **OAuth 2.0**.
+<img height="200" src="/images/Netsuite/netsuite_create_token.png" alt="Creating Integration Credentials"/>
+5. Click on `Save` and copy the `Consumer Key` and `Consumer Secret` displayed under **Client Credentials** section.
+<img height="200" src="/images/Netsuite/netsuite_credentials2.png" alt="Getting Consumer Key and Secret"/>
+
+6. Navigate to **Dashboard** and click on `Manage Access Tokens` under **Settings** in the side menu.
+<img height="200" src="/images/Netsuite/netsuite_navigate_token.png" alt="Navigation for Token Credentials"/>
+
+7. Click on `New My Access Token` > Select the Integration created above from the `Application Name` drop-down > Provide a `Token Name` and click on `Save`.
+<Note>
+Ensure that you selected the correct app in the Application Name drop-down.
+</Note>
+8. Copy the `Token ID` and `Token Secret` displayed under **Token Id/Secret** section.
+<img height="200" src="/images/Netsuite/netsuite_credentials3.png" alt="Getting Token ID and Secret"/>
+
+The Linked Account or end-user now have all the credentials required to connect with NetSuite.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using NetSuite actions and triggers. Following are the set of NetSuite actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Accounts">
+     1. **Get Accounts** - Get all accounts in Netsuite.
+     2. **Create Account** - Create a new account in Netsuite.
+     3. **Update Account** - Update an account in Netsuite.
+     </Accordion>
+     <Accordion title="Boms">
+     4. **Get Boms** - Get all Boms in Netsuite.
+     5. **Create Boms** - Create a new Bom in Netsuite.
+     6. **Update Boms** - Update an Bom in Netsuite.
+     7. **Get Bom by ID** - Get a Bom by ID in Netsuite.
+      </Accordion>
+     <Accordion title="Campaigns">
+     8. **Create Campaign** - Create a campaign in Netsuite.
+     9. **Get Campaigns** - Get Campaign list in Netsuite.
+     10. **Update Campaign** - Update a campaign in Netsuite.
+     11. **Delete Campaign** - Delete a campaign in Netsuite.
+      </Accordion>
+     <Accordion title="Contacts">
+     12. **Create Contact** - Create a contact in Netsuite.
+     13. **Get Contact** - Get all contacts in Netsuite.
+     14. **Update Contact** - Update a contact in Netsuite.
+      </Accordion>
+     <Accordion title="Currency">
+     15. **Get Currency** - List all currencies in Netsuite.
+     16. **Create Currency** - Create a currency in Netsuite.
+     17. **Get Currency By Id** - Get a currency by ID in Netsuite.
+     18. **Update Currency** - Update a currency in Netsuite.
+     </Accordion>
+     <Accordion title="Customer">
+     19. **Get Customers** - Get all customers in Netsuite.
+     20. **Create Customer** - Create a customer in Netsuite.
+     21. **Get Customer By Id** - Get a customer by ID in Netsuite.
+     22. **Update Customer** - Update a customer in Netsuite.
+     </Accordion>
+     <Accordion title="Departments">
+     23. **Get Departments** - List all departments in Netsuite.
+      </Accordion>
+     <Accordion title="Employees">
+     24. **Get Employees** - Get all employees in Netsuite.
+     25. **Create Employee** - Create an employee in Netsuite.
+     26. **Update Employee** - Update an employee in Netsuite.
+     27. **Delete Employee** - Delete an employee in Netsuite.
+      </Accordion>
+     <Accordion title="Inventory Items">
+     28. **Get Inventory Item** - Get all inventory items in Netsuite.
+     29. **Create Inventory Item** - Create an inventory item in Netsuite.
+     30. **Update Inventory Item** - Update an inventory item in Netsuite.
+    </Accordion>
+     <Accordion title="Invoice">
+     31. **Get Invoices* - Get all invoices in Netsuite.
+    </Accordion>
+     <Accordion title="Opportunities">
+     32. **Get Opportunities** - Get all opportunities in Netsuite.
+     33. **Create Opportunity** - Create an opportunity in Netsuite.
+     34. **Update Opportunity** - Update an opportunity in Netsuite.
+     35. **Delete Opportunity** - Delete an opportunity in Netsuite.
+    </Accordion>
+     <Accordion title="Sales Record">
+     36. **Get Sales Record** - Get all sales records in Netsuite.
+     37. **Create Create Sales Record** - Create a sales record in Netsuite.
+     38. **Get Sales Record By Id** - Get a Sales record by ID in Netsuite.
+     39. **Update Sales Record** - Update sales record in Netsuite.
+     </Accordion>
+     <Accordion title="Subsidiary">
+     40. **Get Subsidiary** - Get all subsidiaries in Netsuite.
+     41. **Get Subsidiary By Id** - Get a subsidiary by ID in Netsuite.
+     </Accordion>
+     <Accordion title="Tasks">
+     42. **Create Task** - Create a task in Netsuite.
+     43. **Get Tasks** - Get all tasks in Netsuite.
+     44. **Update Task** - Update task in Netsuite.
+     45. **Delete Task** - Delete task in Netsuite.
+    </Accordion>
+     <Accordion title="Timesheets">
+     46. **Get Timesheets** - Get all Timesheets in Netsuite.
+     </Accordion>
+     <Accordion title="Vendors">
+     47. **Create Vendor** - Create a vendor in Netsuite.
+     48. **Delete Vendor** - Delete a vendor in Netsuite.
+     </Accordion>
+     <Accordion title="Others">
+     39. **HTTP Request** - Make HTTP API calls to any NetSuite documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>

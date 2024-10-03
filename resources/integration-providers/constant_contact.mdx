@@ -1,0 +1,61 @@
+---
+title: Setup
+description: Connect to your Constant Contact app for OAuth.
+---
+To setup your Constant Contact app in Cobalt for OAuth, you will need the following credentials from your [Constant Contact Developer Account](https://developer.constantcontact.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Constant Contact Developer Account. You can create one [here](https://www.constantcontact.com/smb/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. offline_access
+2. account_read
+
+<Info>If you haven't already created an app in Constant Contact, you'd need to create one.</Info>
+
+### Creating an app in Constant Contact
+
+To create a Constant Contact app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Constant Contact Developer Account](https://developer.constantcontact.com/).
+2. Click on **My Applications** in the top nav bar and click on `New Application`.
+<img height="200" src="/images/Constant/constant_navigation.png" alt="Navigation for App setup"/>
+3. Enter the `App Name`, Select **OAuth2 flow** as `Authorization Code Flow and Implicit Flow`, **Refresh Token Type** as `Rotating Refresh Tokens` and click `Create`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Constant Contact` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to **Details** section of your OAuth app > Click pencil icon to edit in `Redirect URI` > paste the Callback Url > Click `Confirm`. Click `Save` in the top right.
+
+6. Copy the **Client ID** from **App Details** section. Click `Generate Client Secret` and copy the **Client Secret** displayed.
+<Info> Copy the Client Secret as it will be showed only once.</Info>
+<img height="200" src="/images/Constant/constant_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Constant/constant_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Constant/constant_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Constant Contact actions and triggers. An action with any API of Constant Contact can be created by using the **HTTP Request** Action.

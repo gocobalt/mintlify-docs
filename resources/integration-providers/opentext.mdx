@@ -1,0 +1,79 @@
+---
+title: Setup
+description: Connect to your OpenText app for OAuth.
+---
+To setup your OpenText app in Cobalt for OAuth, you will need the following credentials from your [OpenText Developer account](https://developer.opentext.com/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. OpenText Developer account. You can create one [here](https://ui.otiam.opentext.com/#/walkup).
+2. Signed up for Free (Trial) of **Services Bundle** in [plans](https://developer.opentext.com/plans).
+
+
+<Info>If you haven't already created an app in OpenText, you'd need to create one.</Info>
+
+### Creating an app in OpenText
+
+To create a OpenText app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [OpenText Admin Center Console](https://developer.opentext.com/).
+2. Click on the `Apps` option under **App Management** in the side menu and click on `+ Add` button > `Add new standalone app`.
+<img height="200" src="/images/Opentext/opentext_navigation.png" alt="Navigation for App setup"/>
+3. Enter the `Display Name`, unique `App Name`, `Version` and `Description` for your application and click on `Save`.
+4. Copy the **Client ID** and **Client Secret** from the `Confidentials Credentials` section.
+<img height="200" src="/images/Opentext/opentext_credentials.png" alt="Getting Credentials"/>
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `OpenText` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. In the app created in OpenText, navigate to `Service Clients` in the side menu > Select the app with matching Client ID that you received in Step 4 > Click on `Manage Redirect URLs` > `Add URL` > Paste the Callback URL and click on `Save`.
+<img height="200" src="/images/Opentext/opentext_config.png" alt="Setting up Developer app"/>
+
+7. Now navigate to `Subscriber Tenants` option in the side menu and click on `Add to tenant`. Add all the tenants here for which you want to enable the OAuth app and click on `Add`.
+<Note>
+This step is necessary, otherwise the tenant will not be able to perform Auth with the app.
+</Note>
+
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Opentext/opentext_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using OpenText actions and triggers. Following are the set of OpenText actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Documents">
+     1. **List Documents** - Get all documents in OpenText.
+     2. **Create Document** - Create a document in OpenText.
+     </Accordion>
+     <Accordion title="Files">
+     3. **List Files** - List all files in OpenText.
+     4. **Create File** - Create a file instance in OpenText.
+     5. **Delete File** - Delete file instance in OpenText.
+      </Accordion>
+     <Accordion title="Folders">
+     6. **List Folders** - List all folders in OpenText.
+     7. **Create Folder** - Create a folder instance in OpenText.
+     8. **Delete Folder** - Delete folder instancen in OpenText.
+      </Accordion>
+
+     <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any OpenText documented REST APIs.
+     10. **List Categories** - List all categories in OpenText.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>

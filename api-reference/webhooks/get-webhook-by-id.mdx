@@ -1,0 +1,88 @@
+---
+title: 'Get webhook by ID'
+api: get /api/v2/public/webhook/:id
+---
+
+This API fetches a registered Cobalt [webhook](https://app.gocobalt.io/developer/webhooks) details by ID. 
+
+## Request description
+#### Path Parameters
+<ParamField path="id" type="string" required>
+  Unique webhook id.
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="is_enabled" type="boolean">
+     Whether the webhook is active or not.
+    </ResponseField>
+    <ResponseField name="webhook_events" type="array">
+  Webhooks events subscribed. Accepted values are, `Connection Created`, `Connection Deleted`, `Workflow Completed`, `Workflow Errored`, `Connection Expired`.
+  </ResponseField>
+      <ResponseField name="webhook_url" type="string">
+     Webhook URL to listen to the events.
+    </ResponseField>
+    <ResponseField name="_id" type="string">
+     Unique ID of the webhook.
+    </ResponseField>
+    <ResponseField name="webhook_type" type="string">
+      The type of webhook. Accepted values are `default` and `slack`.
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "is_enabled": true,
+    "webhook_events": [
+        "Connection Created",
+        "Connection Deleted",
+        "Workflow Completed",
+        "Workflow Errored",
+        "Connection Expired"
+    ],
+    "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+    "_id": "66e5701971ff81574d55b2ba",
+    "createdAt": "2024-09-14T11:14:33.368Z",
+    "webhook_type": "slack"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ ResponseExample>

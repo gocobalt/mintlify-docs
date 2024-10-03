@@ -1,23 +1,158 @@
 ---
 title: Logs
-description: "Detailed insights of an orchestration"
 ---
 
-Cobalt provides complete transparency of what goes under the hood with its logs feature. User has access to logs specific to a particular event, 
-a worflow or a subscribed webhook data been pushed towards the user.
+Logs in Cobalt are essential for monitoring workflows, troubleshooting issues during executions, and gaining insights into platform activities. They provide detailed records of the events, API calls, and workflow executions, enabling users to trace operations and ensure everything is functioning as expected.
 
-### Event Logs
-These logs provides details regrading an event that was fired by a user or any application. It provides details such as associated worflows, Date & time
-when this event was fired, accociated application, associated linked accounts, Cobalt environment and the event payload data.
+There are various types of Logs that you can see in Cobalt:
 
-### Worflow Logs
-Worflow logs provides detailed insight of its execution in a sequentials manner, right from when it was triggered to when the execution ended and everthing in between.
-A worflow is comprised of various nodes, and a worflow logs gives provides description about their successful or errored execution and details regarding it.
+## Workflow Logs
 
-Cobalt has an auto retry mechanism for any worflow execution. This means, each worflow is executed at least 2 times incase it faces any error. If these errors are network
-or authentication related, and are resolved while being retried, they are successfully executed. If not, Cobalt provides a manual `retry` option. This gives user
-the power the flexibility to fix the related issue and execute the worflow from the platform itself.
+**Workflow Logs** or **Executions** is able to provide various details about a workflow that was executed, like the basic information about workflow, errors that occured or even filter out the Workflow logs based on various criterias. 
 
-### Webhook Logs
-Cobalt lets users to subscribe to webhook events allowing them to receive notifications and associated data when such an event occurs in Cobalt. Webhook logs
-gives the insights regarding these webhook calls being made to the user.
+With advanced features such as detailed execution details, request/response data, and contextual information, workflow logs enable users to gain deeper insights into the execution process and ensure optimal performance.
+
+To view the Logs, navigate to `Logs` in **Cobalt** and check the `Executions` tab.
+<img height="200" src="/images/Guides/Platform/workflow-logs.png" alt="Workflow Logs Cobalt"/>
+
+**Key Functionalities**
+
+To test a workflow in Cobalt, user can also execute a workflow through the **Try API** section in Cobalt.
+
+<Info> 
+To learn more about Try API and how it can be used, refer to our guide [here](https://docs.gocobalt.io/guides/platform/tryapi).
+</Info>
+Some of the key functionalities of Workflow logs are described in details below:
+<AccordionGroup>
+  <Accordion title="Advanced Filtering Options">
+Users can apply various filters to search for specific workflows based on criteria such as **Status**, **Workflow Name**, **Linked Account ID**, **Application** or **Date**. This advanced filtering capability enables users to quickly locate relevant workflows and focus on areas requiring attention.
+<img height="200" src="/images/Guides/Platform/workflow-logs-filter.png" alt="Filter Logs in Cobalt"/>
+### **Detailed Workflow Details**: 
+
+Users can click on any **Workflow** within the logs to access more detailed information. This feature allows users to delve deeper into individual workflows, providing insights into the execution flow, status, and any associated errors.
+<img height="200" src="/images/Guides/Platform/workflow-logs-details.png" alt="Details of a Workflow in Cobalt"/>
+  </Accordion>
+
+  <Accordion title="Retry Functionality">
+
+For workflows that encounter errors, users have the option to retry execution by clicking on the `Retry` button in the top right corner of the Workflow details. 
+
+<Note>The retry functionality is limited to a single attempt, ensuring controlled execution and preventing potential issues.</Note>
+<img height="200" src="/images/Guides/Platform/workflow-logs-retry.png" alt="Retry an errored Workflow in Cobalt"/>
+  </Accordion>
+
+  <Accordion title="Node Activity Details">
+In the details of each workflow, users can view the activity of individual nodes present in the workflow. This includes information about the status or errors encountered by each node, execution duration, response etc. providing granular insights into the execution flow and potential points of failure.
+<img height="200" src="/images/Guides/Platform/workflow-logs-node.png" alt="Execution details of Workflow nodes in Cobalt"/>
+  </Accordion>
+</AccordionGroup>
+
+## Event Logs
+
+Event logs in Cobalt provide users with comprehensive insights into the triggers and activity associated with their integrations, enabling effective monitoring, analysis, and troubleshooting.
+<Info> 
+To learn more about Event in Cobalt, refer to our guide [here](https://docs.gocobalt.io/guides/developer-settings/events).
+</Info>
+
+To access the Event Logs, navigate to the `Logs` section in Cobalt and select the `Events` tab.
+<img height="200" src="/images/Guides/Platform/event-logs.png" alt="Event Logs Cobalt"/>
+
+**Key Functionalities**
+
+
+Some of the key functionalities of Event logs are described in details below:
+<AccordionGroup>
+  <Accordion title="Advanced Filtering Options">
+Event logs offer advanced filtering options, allowing users to refine their search based on criteria such as **Event Name**, **Linked Account ID**, **Status (Success or Errored)**, and **Date**. This flexibility enables users to quickly locate and analyze specific event occurrences, enhancing monitoring and analysis capabilities.
+<img height="200" src="/images/Guides/Platform/event-logs-filter.png" alt="Filter Logs in Cobalt"/>
+  </Accordion>
+
+  <Accordion title="Detailed Event Information">
+To view information in detail about an Event log, just click on it and a new page with the details will be launched.
+
+Each log entry provides detailed information about the event occurrence, including its **Status**, **Event** name with its **ID**, associated **Application**, **Environment** is Test or Production, Event **Received date**, and Event **Created date**. 
+
+The Details of an Event Log page has primarily 3 sub-sections:
+1. **Workflows**: In this section, the user can see the Workflows in which the event got executed along with the ID of the Workflow. An event can get multiple workflows triggered if required and the Logs can help the user identify which were the triggered workflows.
+<Note>This section will not be visible if there was no Workflow that was associated with the event.</Note>
+2. **URL**: This is the **Event URL** that received the event, typically associated with a webhook endpoint. Users can review this information to trace the source of the event and analyze its impact on integration workflows.
+3. **Payload**: The Payload section presents the payload data associated with the event, providing users with insights into the information transmitted during the integration process.
+
+
+<img height="200" src="/images/Guides/Platform/event-logs-details.png" alt="Details of an Event in Cobalt"/>
+  </Accordion>
+</AccordionGroup>
+
+## Webhook Logs
+
+Webhook logs allows users to monitor the execution of webhooks subscribed to in Cobalt. With comprehensive logging capabilities, users can gain insights into webhook events, track execution status, and review request/response data for effective integration management.
+
+To access the Webhook Logs, navigate to the `Logs` section in Cobalt and select the `Webhooks` tab.
+<img height="200" src="/images/Guides/Platform/webhook-logs.png" alt="Webhook Logs Cobalt"/>
+
+**Key Functionalities**
+
+<Info> 
+To learn more about Webhooks in Cobalt and how they can be subscribed, refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
+</Info>
+Some of the key functionalities of Webhook logs are described in details below:
+<AccordionGroup>
+  <Accordion title="Advanced Filtering Options">
+Similar to workflow logs, Webhook logs offer advanced filtering options, allowing users to refine their search based on criteria such as **Status** which can either be Success or Errored, **Linked Account ID** and **Triggered Date**. This flexibility enables users to quickly locate and analyze specific webhook events.
+<img height="200" src="/images/Guides/Platform/webhook-logs-filter.png" alt="Filter Logs in Cobalt"/>
+  </Accordion>
+
+  <Accordion title="Detailed Execution Details">
+To view information in detail about a Webhook log, just click on it and a new page with the details will be launched.
+
+Webhook logs provide detailed information about each webhook event, including its **Execution status**, **Linked Account ID**, **timestamp**, **environment**, and **fired date**. Users can review this information to track the flow of webhook events and identify any issues or anomalies.
+<img height="200" src="/images/Guides/Platform/webhook-logs-details.png" alt="Details of a Webhook in Cobalt"/>
+  </Accordion>
+
+  <Accordion title="Request and Response Data">
+    For each webhook event, users can view the associated request and response data, providing insights into the interaction between Cobalt and external systems. This information is useful for debugging integration issues and ensuring the reliability of webhook executions.
+  </Accordion>
+
+  <Accordion title="Supported Webhook Events">
+  Cobalt supports five main webhook events, including:
+
+- Connection Created
+- Connection Deleted
+- Connection Expired
+- Workflow Completed
+- Workflow Errored
+
+<Tip>
+Learn in detail about the 5 Webhook Event types [here](https://docs.gocobalt.io/guides/platform/webhook#event-types).
+</Tip>
+
+These events correspond to key actions and milestones in the integration lifecycle, allowing users to stay informed about changes and updates in their integrations.
+  </Accordion>
+</AccordionGroup>
+
+
+## Schedule Logs
+Schedule Logs provide users with visibility into scheduled workflows and their associated details, facilitating efficient management and monitoring of automated processes. These logs offer insights into which workflows are scheduled, their configurations, and status.
+
+To access the Schedule Logs, navigate to the `Logs` section in Cobalt and select the `Schedules` tab.
+<img height="200" src="/images/Guides/Platform/schedule-logs.png" alt="Schedule Logs Cobalt"/>
+
+In Cobalt, Schedule Logs offer a comprehensive view of scheduled workflows, displaying essential information such as:
+
+<CardGroup cols={2}>
+  <Card title="Workflow Name and ID">
+    Identifies the workflow scheduled for execution.
+  </Card>
+  <Card title="Schedule Cron">
+    Specifies the cron expression defining the schedule for workflow execution.
+  </Card>
+  <Card title="Event">
+    Indicates the Event ID triggering the scheduled workflow.
+  </Card>
+<Card title="Status">
+    Reflects the current status of the scheduled workflow, either **Active** or **Inactive**.
+  </Card>
+</CardGroup>
+
+These details enable users to quickly identify scheduled workflows, understand their configurations, and track their status within the Cobalt platform.
+

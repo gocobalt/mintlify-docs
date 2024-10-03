@@ -1,0 +1,73 @@
+---
+title: Connect
+description: Connect with the Linked Account's Chargify account.
+---
+<Note>
+Chargify is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Chargify** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. API Key
+2. Base URL
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Maxio Chargify
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Chargify/chargify_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Chargify account](https://app.chargify.com/).
+2. Click on `Select a Site` dropdown in the side menu and choose a site .
+<img height="200" src="/images/Chargify/chargify_navigation.png" alt="Navigation in Chargify"/>
+
+3. Copy the **Base URL** of your site now.
+4. Click on `Config` in the side menu > Choose `Integrations` > Select `API Keys`.
+5. Click on the `New API Key` button and copy the API key displayed.
+<Info>
+Copy the API Key as it will not be shown again.
+</Info>
+<img height="200" src="/images/Chargify/chargify_credentials.png" alt="Getting Credentials"/>
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Chargify actions and triggers. Following are the set of Chargify actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Customers">
+     1. **List Customers** - List customers in Chargify.
+     2. **Create Customer** - Create a customer in Chargify.
+     3. **Update Customer** - Update a customer in Chargify.
+     4. **Delete Customer** - Delete a customer in Chargify.
+    </Accordion>
+    <Accordion title="Invoices">
+     5. **List Invoices** - List invoices in Chargify.
+     6. **Get Invoice** - Get an invoice in Chargify.
+     7. **Void Invoice** - Void an invoice in Chargify.
+     </Accordion>
+    <Accordion title="Subscriptions">
+     8. **Create Subscription** - Create a subscription in Chargify.
+     9. **Find Subscription** - Find subscription in Chargify.
+     10. **Update Subscription** - Update a subscription in Chargify.
+     </Accordion>
+    <Accordion title="Others">
+     11. **HTTP Request** - Make HTTP API calls to any Chargify documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    1. **Customer Created** - Triggers when a customer is created in Chargify.
+    2. **Customer Updated** - Triggers when a customer is updated in Chargify.
+    3. **Customer Deleted** - Triggers when a customer is deleted in Chargify.
+    4. **Invoice Issued** - Triggers when an invoice is issued in Chargify.
+  </Tab>
+</Tabs>

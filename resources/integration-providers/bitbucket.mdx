@@ -1,0 +1,95 @@
+---
+title: Setup
+description: Connect to your Bitbucket app for OAuth.
+---
+To setup your Bitbucket app in Cobalt for OAuth, you will need the following credentials from your [Bitbucket Account](https://bitbucket.org/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Bitbucket Account. You can create one [here](https://www.atlassian.com/software/bitbucket/bundle).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Account
+
+<Info>If you haven't already created an app in Bitbucket, you'd need to create one.</Info>
+
+### Creating an app in Bitbucket
+
+To create a Bitbucket app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Bitbucket Account](https://bitbucket.org/).
+2. Click on your **Profile** in the top right corner, go to the `All workspaces` page and select a Workspace.
+<img height="200" src="/images/Bitbucket/bitbucket_navigation.png" alt="Navigation for App setup"/>
+3. Go to `Workspace Settings` > `Apps and Features` in the side menu > `OAuth consumers` and click `Add consumer` button.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Bitbucket` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Enter the App `Name` and paste the `Callback URL`.
+6. Select the **mandatory scopes** in the **Permissions** section, as provided in your Cobalt Bitbucket settings page and click on the `Save` button.
+<img height="200" src="/images/Bitbucket/bitbucket_config.png" alt="Setting up Bitbucket Developer app"/>
+
+7. Click on the app created and copy the `Key`**(Client ID)** and `Secret`**(Client Secret)**.
+<img height="200" src="/images/Bitbucket/bitbucket_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Bitbucket/bitbucket_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Bitbucket/bitbucket_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Bitbucket Account](https://bitbucket.org/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Edit` in the Ellipsis button > Add the permissions as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Bitbucket actions and triggers. Following are the set of Bitbucket actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Issues">
+     1. **List Issues** - List issues in Bitbucket.
+     2. **Create Issue** - Create an issue in Bitbucket.
+     3. **Update Issue** - Update an issue in Bitbucket.
+     </Accordion>
+     <Accordion title="Project">
+     4. **Create Project** - Create a project in a workspace in Bitbucket.
+     5. **Delete Project** - Delete a project for a workspace in Bitbucket.
+     6. **Update Project** - Update a project for a workspace in Bitbucket.
+      </Accordion>
+     <Accordion title="Workspaces">
+     7. **List Workspaces** - List workspaces for user in Bitbucket.
+     8. **Get Workspace By Id** - Get a workspace in Bitbucket.
+      </Accordion>
+
+     <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any Bitbucket documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Issue Created** - Triggers when an issue is created on Bitbucket.
+         2. **Comment Created** - Triggers when a comment is created on Bitbucket.
+  </Tab>
+</Tabs>

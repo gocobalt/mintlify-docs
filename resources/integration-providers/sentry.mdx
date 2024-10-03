@@ -1,0 +1,65 @@
+---
+title: Connect
+description: Connect with the Linked Account's Sentry account.
+---
+<Note>
+Sentry is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Sentry** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Custom Integration Token
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Sentry
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Sentry/sentry_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Sentry account](https://sentry.io/auth/login/).
+2. Click on the `Settings` option in the side menu and click on `Custom Integrations` under **Developer Settings**.
+<img height="200" src="/images/Sentry/sentry_navigation.png" alt="Navigation in Sentry"/>
+
+3. Click on `Create New Integration` > Choose `Integration Type` as **Internal Integration** and click on `Next`.
+4. Provide a `Name` for the integration > Choose required `Permissions` and click on `Save Changes`.
+5. Scroll down to `Tokens` section in the integration > Click on `+ New Token` and copy the Token displayed.
+<img height="200" src="/images/Sentry/sentry_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Sentry.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Sentry actions and triggers. Following are the set of Sentry actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Projects">
+     1. **Create Project** - Create a new project in Sentry.
+     2. **Update Projecte** - Update a project in Sentry.
+     3. **Delete Project** - Delete a project in Sentry.
+     4. **List Projects** - List all projects in Sentry.
+    </Accordion>
+    <Accordion title="Organization Members">
+     5. **List Members** - List all members in Sentry.
+     6. **Add Member** - Add a new member in Sentry.
+     7. **Delete Member** - Delete a member in Sentry.
+     </Accordion>
+    <Accordion title="Others">
+     8. **HTTP Request** - Make HTTP API calls to any Sentry documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    1. **Issue Created** - Triggers when an issue is created on Sentry.
+    2. **Issue Resolved** - Triggers when an issue is resolved on Sentry.
+    3. **Comment Created** - Triggers when a comment is created on Sentry.
+  </Tab>
+</Tabs>

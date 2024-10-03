@@ -1,0 +1,88 @@
+---
+title: 'Trigger an event for single app'
+api: post /api/v2/public/event/:slug
+---
+This API triggers a webhook event for a specific application using its slug. Ensure the event is created on your Cobalt dashboard prior to triggering.
+
+## Request description
+#### Headers
+<ParamField header="linked_account_id" type="string" required>
+  Application slug. Eg: `pipedrive`
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string">
+  Application slug. Eg: `pipedrive`
+</ParamField>
+
+#### Body Parameters
+<ParamField body="event" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Event payload with user data required for the workflow.
+  ```JSON Example payload
+    {
+      "first_name": "Mark",
+      "last_name": "wood",
+      "employee_id": 221,
+      "is_new": false,
+      "address":{
+        "house_no":"221",
+        "street": "lorem ipsum",
+        "pincode":560103
+      }
+    }
+  ```
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="message" type="string">
+      System generated message
+    </ResponseField>
+  </Tab>
+  <Tab title="Error response">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "message": "Webhook Fired Success"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+    "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>
+

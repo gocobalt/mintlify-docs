@@ -1,0 +1,106 @@
+---
+title: 'Search Datastore Records'
+api: post /api/v2/public/datastore/config/:slug/:datastore_name/search
+---
+
+This API searches for records within a config datastore.
+
+## Request description
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application Slug. Eg: `hubspot`
+</ParamField>
+
+<ParamField path="datastore" type="string" required>
+ Name of the datastore to be searched.
+</ParamField>
+
+#### Body Parameters
+<ParamField body="record_id" type="string">
+  Unique ID of the record.
+</ParamField>
+
+<ParamField body="item" type="string">
+  Key/ item name.
+</ParamField>
+
+<ParamField body="value" type="string">
+  Value of a key to use for search.
+</ParamField>
+
+<Note>
+If the Request Body is sent as empty, the API response will be an empty array.
+</Note>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="record_id" type="string">
+        Unique ID of the record.
+    </ResponseField>
+    <ResponseField name="item" type="string">
+        Name of the key or item.
+    </ResponseField>
+    <ResponseField name="value" type="string">
+        String stored as the value of the item.
+    </ResponseField>
+
+  </Tab>
+  <Tab title="Error response">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+    {
+        "record_id": "fa796472-a22c-4c58-bf4a-cf2809fe4253",
+        "item": "uniqueItem_22",
+        "value": "uniqueValue_22"
+    }
+]
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id is required"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "MISSING_REQUIRED_FIELD",
+    "message": "Missing API Key"
+}
+```
+</ ResponseExample>

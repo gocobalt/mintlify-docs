@@ -5,7 +5,7 @@ Click on `Use this template` to copy the Mintlify starter kit. The starter kit c
 - Guide pages
 - Navigation
 - Customizations
-- API Reference pages
+- API Reference pages 
 - Use of popular components and test
 
 ### 👩‍💻 Development
@@ -22,7 +22,7 @@ Run the following command at the root of your documentation (where mint.json is)
 mintlify dev
 ```
 
-### 😎 Publishing Changes
+### 😎 Publishing Changes 
 
 Install our Github App to autopropagate changes from youre repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
 
