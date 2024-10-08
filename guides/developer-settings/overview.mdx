@@ -20,7 +20,7 @@ Here, you can configure the API call to be made to fetch an access token each ti
 setting up an api call using the `base_url`,  `access_key` and `secret` as linked account variables. These values needs to be first set as `UDF` parameters while the
 linked account is being created. Check out this [API reference](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) for details.
 
-<img height="200" src="/images/developer-setting-auth.png" alt="Setting up api authentication for default app"/>
+<img height="200" src="/images/Developer/developer-setting-auth.png" alt="Setting up api authentication for default app"/>
 
 Here, the user is making a POST request to its server path `/auth` with `api-key` `api-secret` & `Content-Type` as header parameters. We expect as token object in return.
 
@@ -36,5 +36,5 @@ we get the token response from the above api call in the following fashion:
 Upon receiving the token object in response, we need to define where to set it while making an API call to the server. This can be achieved in this section. In the below
 example we are setting the token as a header parameter for any forthcoming API calls to the server via the default application's actions.
 
-<img height="200" src="/images/injection.png" alt="Setting up auth header for a default action"/>
+<img height="200" src="/images/Developer/injection.png" alt="Setting up auth header for a default action"/>
 

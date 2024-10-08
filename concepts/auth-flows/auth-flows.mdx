@@ -1,24 +1,42 @@
 ---
 title: Auth Flows
-description: "Cobalt's auth flows provides a secure and seamless environment for your users to grant authorization to their data."
+description: "Cobalt's auth flows provides a seamless environment for your users to grant authorization to their third party application data."
 ---
 
-When creating application integrations and orchestrations, accessing customer's data becomes imminent. With Cobalt's auth flows this process not only becomes
-quick and frictionless but heavily customizable too. Cobalt allows your end-customers to configure specific settings for each integration, enhancing 
-flexibility and customization.
+When creating application integrations, accessing customer's data is a required step. Using Cobalt's auth flows this process becomes both
+quick and heavily customizable.
+
+### Pre-requisites
+Below are a few pre-requisites that you need to do before choosing an Auth Flow:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/concepts/linked_account).
+</Note>
+
+<Tip>
+ We recommend you create a linked account at the same time as your customer signs up within your app.
+</Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
 
 ### Auth flow integration options
-Cobalt provides 3 different ways for Auth flow integrations
+Cobalt provides 3 different ways for Auth flow of integrations
 
   <Accordion title="Hosted flow" icon="cloud" description="Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.">
-    Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication and configuration. Behind the scenes, 
-hosted flow implements the Cobalt API endpoints and handles the following features for your customers:
+    Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
 
-- List all enabled application
+- List all enabled applications
 - Handle the Auth flow
-- Manage integration
-- Search for integrations
-- Integration configuration for your end user
+- Manage integration configuration for your end user.
 
 
 <Warning>
@@ -30,24 +48,21 @@ To get started, follow the 2 steps:
 <Steps>
 
   <Step title="Generate Hosted URL">
-    To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a POST request to the Session Token API to create a valid 
-session for a user. 
+    To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a `POST` request to the `Create Hosted URL` API.
 <Tip>
 Check out the [Cobalt's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
 </Tip>
-
-The generated URL can be then used to redirect the user to the
-hosted UI (https://connect.gocobalt.io), or can be embedded within your UI.
   </Step>
 
-  <Step title="Redirect to hosted connect">
-    Once you have the `hosted_url`, you can redirect the user to the hosted Cobalt Connect. Connect displays your enabled application. Your user can select the application they want to connect and perform authentication.
+  <Step title="Redirect to Hosted portal">
+  The generated URL can be then used to redirect the user to the Hosted UI, or can be embedded within your UI. Your user can select the application they want to connect and perform authentication.
+  <img height="200" src="/images/Guides/hosted-portal.png" alt="Hosted Portal in Cobalt"/>
   </Step>
 
 </Steps>
 
 
-You can modify the UI of Cobalt connect using the [hosted_properties](https://docs.gocobalt.io/api-reference/cobalt-connect/get-hosted-properties).
+You can modify the UI of Hosted Portal using the [hosted_properties](https://docs.gocobalt.io/api-reference/cobalt-connect/get-hosted-properties).
 
 
 | Property | Description |
@@ -58,118 +73,23 @@ You can modify the UI of Cobalt connect using the [hosted_properties](https://do
 </Accordion>
 
   <Accordion title="Embedded Flow" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
-    Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt connect into your React application. You can easily let your users authorize and 
-manage integration configuration and makes credential handling more secure.
+    Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt auth flow into your React application.
 
-To get started, follow the 3 steps:
-<Steps>
-  <Step title="Generate session token">
-    To use Embedded flow, you will need to first get the session token. This can be achieved by making a POST request to the [Session Token API](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) to create a 
-valid session for a user along with the hosted url.
-  </Step>
+  It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
 
-  <Step title="Install frontend SDK">
-    To open Cobalt Connect with React, you will need to initialise the React SDK with the below call 
-
-```bash
-npm install --save @cobaltio/react-cobalt-js
-```
-
-</Step>
-
-<Step title="Open Cobalt connect">
-    ```Javascript
-// import Provider & Config components
-import { Provider, Config } from "@cobaltio/react-cobalt-js";
-
-// Config component needs to be wrapped inside the Provider component.
-// And pass the Cobalt session token (that you generated using the Cobalt backend SDK) to the provider.
-<Provider sessionToken={ cobaltToken }>
-    {
-        // ideally you'd render the Config component inside a modal.
-        // the component only gets rendered when `slug` is passed.
-        <Config
-            id="SOME_UNIQUE_CONFIG_ID" // Optional
-            slug="APP_SLUG" // application type / slug
-            // dynamic fields payload (optional)
-            fields={{ /* PAYLOAD */ }}
-            // you can override the component's container style if you want
-            style={{
-                borderRadius: 8,
-                maxWidth: 450,
-            }}
-        />
-    }
-</Provider>
-```
-  </Step>
-</Steps>
+    <Info>
+    Learn more about Cobalt's React SDK and how to initialize it [here](http://docs.gocobalt.io/sdks/client-side-sdks/react-sdk).
+    </Info>
 
 
 For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.
   </Accordion>
 
   <Accordion title="Seamless Flow" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
-  Cobalt provides a series of endpoints and SDK functions that allow you to build the journey for your customers to connect your platform with the third party applications.
+  Cobalt provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
 
 The general steps to build your own flow are:
 <AccordionGroup>
-  <Accordion title="Create a Linked account on Cobalt when a user signs up for your app">
-In order to enable your customer to connect to third party app, you first need to create a 
-[Linked account](https://docs.gocobalt.io/concepts/linked_account) for them.
-<Tip>
- We recommend you create a linked account at the same time as your customer signs up within your app.
-</Tip>
-
-Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) or the [.upsertLinkedAccount()](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#upsertlinkedaccount) method of the NodeJS SDK to create or update a linked account.
-<CodeGroup>
-```bash cURL
-curl --request PUT \
-  --url https://api.gocobalt.io/api/v2/public/linked-account \
-  --header 'Content-Type: application/json' \
-  --header 'x-api-key: <api-key>' \
-  --data '{
-  "linked_account_id": "<string>",
-  "name": "<string>",
-  "your_app": {
-    "app_id": "64da0b57c9ae95561bb0a2ea",
-    "auth_credentials":
-        {
-            "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
-        }
-  },
-  "udf": {
-    "phone": "1234567890",
-    "address": "121, Queen Street"
-  }
-}'
-```
-```JavaScript NodeJS
-try{
-    await Client.upsertLinkedAccount({
-        linked_account_id: "user@example.com",
-        name: "User2",
-        udf: {
-            "phone": "1234567890",
-            "address": "121, Queen Street"
-        },
-        your_app: {
-            app_id: "64da0b57c9ae95561bb0a2ea",
-            auth_credentials:{
-                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
-            }
-        }
-    })
-}catch(error){
-    //Catch any error
-}
-```
-</CodeGroup>
-
-By creating a Linked Account for your customer, you can easily track their connection status and manage their integration with third-party apps 
-seamlessly from the moment they sign up within your app.
-  </Accordion>
-
   <Accordion title="Display a list of integrations for your users to select">
 Retrieve a list of all integrations available to connect using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications) or [.getApplications()](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#getapplications) method and display them in your UI.
 <CodeGroup>
@@ -200,24 +120,9 @@ Online require the specific use of QuickBooks branded buttons, including specifi
 </Tip>
 </Accordion>
 
-  <Accordion title="Generate session token">
-  With session tokens, Cobalt enables secure and seamless user interactions with the Cobalt frontend SDK, ensuring that each request is authenticated and authorized properly during the user's session.
+  <Accordion title="Install and Initialise SDK">
 
-  <Warning>
-  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
-  </Warning>
-  </Accordion>
-
-  <Accordion title="Direct your user to authorize a connection with their selected platform">
-Cobalt frontend SDK documentation: [https://github.com/gocobalt/cobalt-js#cobaltjs](https://github.com/gocobalt/cobalt-js#cobaltjs)
-
-The preferred way to install the Cobalt frontend SDK for javascript is to use the npm package manager. Simply type the following into a terminal window:
-
-```bash
-npm install @cobaltio/cobalt-js
-```
-
-Alternatively, you can also install the frontend SDK on the browser using the script tag:
+  Install the Cobalt Frontend SDK for JavaScript that you want to use. You can install by either using `npm package manager` or directly in browser by using the `script` tag.
 
 ```html
 <!-- use a specific version -->
@@ -232,19 +137,17 @@ Alternatively, you can also install the frontend SDK on the browser using the sc
 <script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
 ```
 
-Initializing the javascript SDK using session token from **step 3**:
+Initialize the javascript SDK using the Session token.
 
-```Javascript
-const cobalt = new Cobalt({
-    // the token you generate for linked accounts using the cobalt backend SDK
-    token: "COBALT_SESSION_TOKEN",
-});
-```
+<Tip>
+Learn more about Cobalt’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
+</Tip>
+
   </Accordion>
 
   <Accordion title="Manage Connections">
 Cobalt provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
-lets your customers to connect to an application platform, authorizing you to access the platform apis and data on their behalf.
+lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
 
 ```Javascript
 cobalt.connect("slack") // opens a new tab for oauth apps
@@ -253,7 +156,6 @@ cobalt.connect("twilio", {
   sid: "ACCOUNT_SID",
 }) // saves the auth data for key based apps
 ```
-Once authenticated, you would be able to manage the config associated with the customer(Linked account).
 
 The [`.disconnect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#disconnect) method similarly, lets the user to disconnect from the application platform, revoking
 the authorization and deleting any and all configurations of the Linked account saved for that particular application.
@@ -277,7 +179,7 @@ cobalt.config({
   </Accordion>
 
   <Accordion title="Save/Update the configuration">
-The `.config()` method provides you with all the published workflows and settings input for the user required to execute the orchestration. The user can now enable the workflows,
+The `.config()` method provides you with all the published workflows and settings input for the user. The user can now enable the workflows,
 enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig) method.
 
 ```Javascript

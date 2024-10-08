@@ -4,7 +4,7 @@ title: Mapping
 Data mapping comes as a crucial feature when you want your users to map their application platform's fields to your fields in order to make sure the correct data is being
 synced from the platform and vice versa.
 
-<img height="200" src="/images/mapping.png" alt="Mapping fields"/>
+<img height="200" src="/images/Config/mapping.png" alt="Mapping fields"/>
 
 Such can be mappings can be either static or dynamic depending upon your use case. In either case, you'd have to create a Map-type dataslot setting in your application or workflow
 configuration settings in Cobalt. A Map-type dataslot is a type of User Setting that allows your users to define a mapping between an object in your application (an "Application Object") 
@@ -14,7 +14,7 @@ and an object in their connected integration account (an "Integration Object").
 Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields. User can create the
 required labels in the configuration pages specific to a workflow or the application itself in the cobalt dashboard.
 
-<img height="200" src="/images/static-mapping.png" alt="Static Mapping of fields"/>.
+<img height="200" src="/images/Config/static-mapping.png" alt="Static Mapping of fields"/>.
 
 On setting the static map-type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated
 static value. This `value` is mapped to the application platform fields. 
@@ -70,7 +70,7 @@ Scenarios where the fields cannot be pre-defined for mapping and changes dynamic
 map your labels dynamically while creating your config. To do so, instead of creating the labels in the configuration pages specific to a workflow or the application,
 simply toggle the `Dynamic` option of the data slot and provide the `Labels Object Name`.
 
-<img height="200" src="/images/dynamic-mapping.png" alt="Dynamic Mapping of fields"/>.
+<img height="200" src="/images/Config/dynamic-mapping.png" alt="Dynamic Mapping of fields"/>.
 
 Now while creating the config using `.config()` method, pass on the required dynamic labels under the created `Labels Object Name`. Check out this [documentation](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#config) for more details.
 

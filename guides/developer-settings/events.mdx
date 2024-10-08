@@ -8,7 +8,7 @@ once you set it up, one event can make several workflows get executed. This is h
 'User verified' could set off one workflow in Salesforce and another in HubSpot, making it easy to achieve consistent integration across various platforms without needing extra 
 technical work.
 
-<img height="200" src="/images/event-trigger.png" alt="Selecting an event trigger"/>
+<img height="200" src="/images/Developer/event-trigger.png" alt="Selecting an event trigger"/>
 
 Above image shows a user selecting from their default application events as a trigger for a Pipedrive workflow.
 
@@ -21,14 +21,14 @@ To create an event, go to Settings > Developer > Events,
 
 Click on `New Event` and select a model.
 
-<img height="200" src="/images/create-event.png" alt="Creating an event"/>
+<img height="200" src="/images/Developer/create-event.png" alt="Creating an event"/>
 
 Change the name and update the sample payload as per your requirement and click `Create event`. It is expected that you pass on the data as the `Sample Payload`
 while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow.
 
 In the below example, we are using `firstName` defined inside the `Contact` event in an Activecampaign workflow.
 
-<img height="200" src="/images/event-payload.png" alt="Using an event payload as a variable"/>
+<img height="200" src="/images/Developer/event-payload.png" alt="Using an event payload as a variable"/>
 
 Now, when you actually trigger the event `Contact`, this workflow will get executed with `name` field consisting of the value sent by you as `firstName` while triggering
 the event.
@@ -39,7 +39,7 @@ Cobalt events can be triggered using various methods. You can make use of the `E
 
 Copy the event URL. Then copy the event that you would like to trigger. See below for reference,
 
-<img height="200" src="/images/copy-payload.png" alt="Setting up event trigger"/>
+<img height="200" src="/images/Developer/copy-payload.png" alt="Setting up event trigger"/>
 
 Then you can just make the POST API call with `linked_account_id` and `x-api-key` in the headers
 
