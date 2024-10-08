@@ -2,19 +2,14 @@
 title: Re-Authentication
 ---
 
-Cobalt makes use of the API credentials and Access tokens authorised by your end customers to authenticate the API calls to an application. 
-
 Once the end customer goes through the auth flow, Cobalt saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
-of the created orchestration.
+of the created workflows.
 
 However, there are certain conditions where Cobalt can no longer authenticate the API on behalf of your end customers.
-1. The provided API credentials for eg: API keys, API secrets has been expired.
+1. The provided API credentials for eg: API keys, Refresh token has expired.
 2. The access token or refresh token of the end customer has been revoked.
-3. The refresh token of the end customer has been expired.
-4. The end customer uninstalls the application.
-5. The user deletes the application being used by their customer.
-
-For such scenarios Cobalt flags an application integration for `reauth-required` for the customer and they would need to re-authenticate for the workflows to function again.
+3. The end customer uninstalls the application.
+4. The user deletes the application being used by their customer.
 
 
 ### Handling re-auth
