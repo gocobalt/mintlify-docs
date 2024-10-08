@@ -1,0 +1,118 @@
+---
+title: "Linked Accounts"
+description: "Linked Account represents your app's `end user` or `customer` who connects and uses **third-party apps** through your platform."
+---
+
+### Overview
+
+Linked Account contains detailed information about your users' integration, allowing you to efficiently monitor and manage integrations.
+
+You can track `app connections`, `total executions`, and `API calls` at the customer level.
+
+<Frame>
+    <img src="/images/Linked Account/Overview.png" />
+</Frame>
+
+<br/>
+### Managing Linked Account
+Linked Accounts can be `created`, `updated` or `deleted` either through the **dashboard** or **via API**.
+
+<AccordionGroup>
+    <Accordion title="via Cobalt Dashboard" icon="laptop">
+In the Cobalt Dashboard, go to `Dashboard` > `Linked Accounts`. Click **+ Add Account**, then enter the `Linked Account ID`, `Name` and `UDF Parameter`.
+
+<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
+
+<Frame>
+    <img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
+</Frame>
+<br/>
+You can also `bulk` create linked accounts by importing a `.csv` file.
+
+</Accordion>
+
+<Accordion title="via API" icon="code">
+You can create the [**Linked Account**](https://docs.gocobalt.io/api-reference/customer/create-linked-account) using the below curl.
+<Note>Linked account operations should always happen on the server side</Note>
+
+<CodeGroup>
+    ```JavaScript cURL
+    curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "<string>",
+  "name": "<string>",
+  "your_app": {}
+}'
+    ```
+    ```JavaScript SDK
+   try{
+    await Client.createLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User",
+        udf: {
+            "phone": "1234567890",
+            "address": "123, Queen Street"
+        },
+        your_app:{
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials:{
+                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
+            }
+        }
+    })
+}catch(error){
+    //Catch any error
+}
+    ```
+</CodeGroup>
+</Accordion>
+  
+</AccordionGroup>
+
+
+<Info>**Linked account id** should be `unique` for every user. It can be any unique `id` eg. `email` or `primary key` representing the user</Info>
+
+### Monitoring Linked Account
+You can get insights into how each customer uses the integration, including logs for `executions`, `schedules`, `events`, and `webhooks`, aiding in observability and debugging.
+
+
+<AccordionGroup>
+<Accordion title=" End user app configuration">
+Your customer must have set certain configuration after authentication. You can change your user configuration from the dashboard.
+
+<Steps>
+  <Step title="Navigate to Config">
+    Within the Linked Account **Overview** tab, locate the Application under **Integrations**, click on the `three-dot` button in the respective row and select `Configure`.
+  </Step>
+  <Step title="Select Config from the Dropdown">
+    Choose the desired configuration settings like the value for the **Fields** or Enable or Disable **Workflows** for the Linked Account.
+  </Step>
+  <Step title="Modify the Configurations and Save">
+    Make any necessary modifications to the configuration settings as required by the end customer. Once the changes are made, click on `Save` to update configurations.
+<img height="200" src="/images/Guides/Linked-account/linked-config.png" alt="Config Management in Linked Account"/>
+  </Step>
+</Steps>
+
+</Accordion>
+
+<Accordion title=" Integration Logs">
+You can monitor and troubleshoot the `authentication` and `connectivity` status of an integration.
+
+
+To check the Integration Logs, under **Integrations** in `Overview`, click on the three-dot menu of any integration and select `Logs`.
+
+<img height="200" src="/images/Guides/Linked-account/logs-navigation.png" alt="Navigation for Linked Account Integration Logs"/>
+
+This will display logs in chronological order of all auth events associated with the integration.
+
+
+</Accordion>
+</AccordionGroup>
+
+
+
+
+By leveraging the features available within Linked Accounts, users can effectively monitor, manage, and optimize their integrations.
