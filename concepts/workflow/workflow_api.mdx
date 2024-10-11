@@ -9,15 +9,23 @@ The Workflow API in Cobalt allows users to execute workflows programmatically in
 Let's first see how you can setup a Workflow API for any of the workflows that you have in Cobalt.
 
 To set up a workflow to be triggered via the Workflow API:
+<Steps>
+  <Step title="Navigation">
+    Navigate to the `Start Node` of the workflow.
+  </Step>
 
-1. Navigate to the Start Node of the workflow.
-2. In the Start Node, select the `API Call` as the trigger method, make the required changes and click on `Save`.
+  <Step title="Setup Workflow API">
+    In the Start Node, select the `API Call` as the trigger method, make the required changes and click on `Save`.
 
     The API Call setup involves three fields:
     - **Workflow Alias (Optional)**: This allows you to set a unique identifier for the workflow trigger. If used, this alias can replace the workflow ID in the API endpoint for executing the workflow.
     - **URL**: The URL contains the endpoint for triggering the workflow. The format for this URL is . If you’ve set up a Workflow Alias, it can be used in place of the Workflow ID after /workflow/.
     - **Payload**: Here, you define the JSON object or payload that contains the event data you want to send to the workflow. The variables set in the payload can be accessed within the workflow just like event payloads. You can leave this field as an empty object {} if no data needs to be passed.
 <img height="200" src="/images/Guides/Workflow/workflow_api_setup.png" alt="Setup Workflow API in Cobalt"/>
+  </Step>
+</Steps>
+
+
 
 ## Workflow API endpoints
 There are two APIs related to workflow execution: the `/execute API` and the `/response API`.
@@ -112,5 +120,3 @@ The API response will include the data set in the workflow’s Response node, as
     "status": "COMPLETED"
 }
 ```
-
-The Workflow API provides a robust way to execute workflows programmatically in Cobalt. It allows greater flexibility in triggering workflows and retrieving responses, giving users control over workflow execution and monitoring via API.
