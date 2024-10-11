@@ -64,3 +64,23 @@ Select the OAuth App created for Cobalt > Click on `Permissions` in the left men
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
 identical to the ones selected in the platform.
 </Warning>
+
+#### Jira Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Jira, you'd need to subscribe to Jira's Webhook. Cobalt provides
+a single webhook URL to manage such event triggers for all your customers.
+
+**To setup Jira webhook subscription:**
+
+1. Select **Jira** from the application list in **Cobalt**, and select `Settings`.
+2. Copy the `Single Webhook Url`.
+3. In your **Jira Admin account**, click on `Gear` icon in the top right > Select `System` under Jira Settings.
+<img height="200" src="/images/Jira/jira_system.png" alt="Jira Webhooks Registration"/>
+4. Scroll down in the side menu and select `WebHooks`.
+
+
+5. Click on `+ Create a WebHook`, give it a `Name`, paste the Webhook URL that you copied under `URL` and add relevant events for which you want to be notified.
+<Note>
+Make sure the WebHook created has the **Enabled** status.
+</Note>
+<img height="200" src="/images/Jira/jira-url.png" alt="Setting up Jira WebHook URL"/>
+
