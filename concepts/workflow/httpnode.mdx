@@ -8,30 +8,16 @@ The HTTP Node in Cobalt is designed to make HTTP requests to the APIs of the spe
 
 The HTTP Node is configured to interact with the APIs of the integration that the workflow is based on. Here’s how to set up and use the HTTP Node:
 
-### Add the HTTP Node
+<Steps>
+  <Step title="Add the HTTP Node">
+    In your workflow, drag and drop the HTTP Node from the list of available nodes.
+  </Step>
+  <Step title="Configure the HTTP Request">
+    Once the HTTP Node is added, configure the request details like `Method`, `URL`, `Body` etc. to match the API of the integration.
+  </Step>
 
-In your workflow, select the HTTP Node from the list of available nodes. This node can be placed at any point in the workflow where you need to make an HTTP request to the integration’s API.
-
-### Configure the HTTP Request
-
-Once the HTTP Node is added, configure the request details to match the API of the integration:
-
-- **HTTP Method**: Select the HTTP method (GET, POST, PUT, DELETE, etc.) appropriate for your request.
-
-- **URL**: Specify the endpoint of the integration’s API you wish to interact with.
-
-- **Body**: (Optional) Provide the body of the request.
-
-- **Query Parameters**: (Optional) Add any query parameters needed for the request.
-
-- **Headers**: (Optional) Include any headers required for the request. Headers such as Authentication or content-type need not be configured as these are handled by Cobalt.
-
-### Define Node Rule Conditions
-
-Optionally, add **Node Rule Conditions** to the HTTP node to specify conditions under which the custom code will be executed. Configure the conditions using the same approach as a Rule node, specifying **variables**, **operators**, and **values**.
-<Tip>
-Learn more about Rule Node [here](https://docs.gocobalt.io/guides/workflow/rule).
-</Tip>
+</Steps>
 
 
-By utilizing the HTTP Node, users can efficiently manage API interactions within the scope of the integration, enhancing the automation capabilities and simplifying workflow design within Cobalt.
+
+By utilizing the HTTP Node, users can efficiently manage API interactions within the scope of the integration.
