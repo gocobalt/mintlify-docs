@@ -6,4 +6,47 @@ description: Connect with the Linked Account's AWS Security Hub account.
 AWS Security Hub is an **API Key** based integration and does not require the setup of an app.
 </Note>
 
-<Tip>Coming Soon!</Tip>
+### Required Credentials of a Linked Account
+
+To successfully connect with the **AWS Security Hub** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Access Key ID
+2. Secret access key
+3. Region
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of AWS Security Hub
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/AWSSecurityHub/cobalt.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [AWS Security Hub](https://console.aws.amazon.com/securityhub/) and copy your `Domain` from the URL. Your Login Email is the `Email` required.
+2. Click on your Profile icon in the top right corner and click on `Security Credentials`.
+<img height="200" src="/images/AWSSecurityHub/profileicpon.png" alt="Navigation in Trello"/>
+
+4. Drag down the side bar to the Access Keys column. This is the API key.
+<img height="200" src="/images/AWSSecurityHub/api_key.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with AWS Security Hub.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using AWS Security Hub actions and triggers. Following are the set of AWS Security Hub actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Members">
+     1. **List Members** - Lists details about all member accounts in Security Hub.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

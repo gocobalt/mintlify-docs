@@ -1,0 +1,84 @@
+---
+title: Setup
+description: Connect to your Azure Security Centre app for OAuth.
+---
+To setup your Azure Security Centre in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Microsoft Azure Account. You can create one [here](https://azure.microsoft.com/en-gb/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. User.Read
+2. User.ReadWrite
+3. Directory.Read.All
+4. Directory.ReadWrite.All
+5. User.Read.All
+6. User.ReadWrite.All
+7. offline_access
+
+<Info>If you haven't already created an app in Microsoft Azure, you'd need to create one.</Info>
+
+### Creating an app in Microsoft Azure
+
+To create a Azure Security Centre app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/).
+2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
+<img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
+3. Navigate to `Overview` in the side menu > Click on `+Add` > Select `App Registration`.
+4. Enter the App **Name** for your application and select `Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)` under **Supported Account Types**.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Ms365` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Under the **Redirect URI** section, select **Platform** as `Web`, paste the **Callback Url** as the URL and click `Register`. 
+<img height="200" src="/images/AzureSecurityCenter/entraWaala.png" alt="App Registration"/>
+<Info>
+If you already have an app created, then follows these steps to add Redirect URL: 
+
+Select your Application > Select **Authentication** in side menu > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
+</Info>
+7. Navigate to `Manage` > `API permissions` in the side menu > Click on `+ Add a permission`.
+8. Choose the `Microsoft Graph` card under **Microsoft APIs** > Choose `Application permissions` > Select the **mandatory scopes** > click on the `Add Permissions` button.
+<Info>**Offline_access** scope will be present under **Delegated permissions** in **Microsoft Graph**</Info>
+<img height="200" src="/images/Ms365/ms365_config.png" alt="Setting up Azure Security Centre Developer app"/>
+
+9. Navigate to `Certificates and Secrets` in the side menu and under **Client Secrets** tab, press the `+ New client secret` button. Give a **Description**, select the best expiry for your application and click `Add` to create your credentials.
+10.  Copy the displayed **Client Secret** under the `Value` column.
+<img height="200" src="/images/Ms365/ms365_credentials.png" alt="Getting Client Secret"/>
+
+11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID`.
+<img height="200" src="/images/Ms365/ms365_id.png" alt="Getting Client ID"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/AzureSecurityCenter/cobalt_ss.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/AzureSecurityCenter/scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt and follow **Step 7** and **8** [above](https://docs.gocobalt.io/resources/integration-providers/ms_365#creating-an-app-in-microsoft-azure).
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Microsoft 365 actions and triggers. Following are the set of Azure Security Centre actions and triggers
+supported by Cobalt.
