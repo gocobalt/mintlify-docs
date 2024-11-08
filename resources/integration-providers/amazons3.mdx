@@ -6,3 +6,59 @@ description: Connect with the Linked Account's Amazon S3 account.
 Amazon S3 is an **API Key** based integration and does not require the setup of an app.
 </Note>
 
+### Required Credentials of a Linked Account
+
+To successfully connect with the **AWS Security Hub** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Access Key ID
+2. Secret access key
+3. Region
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Amazon S3
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Amazons3/s3_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [AWS Account](https://console.aws.amazon.com) with S3 Permissions and copy the `Region` from the URL present before **.console**.
+2. Click on your Profile in the top right corner and click on `Security Credentials`.
+<img height="200" src="/images/AWSSecurityHub/profileicpon.png" alt="Navigation in AWS"/>
+
+4. Scroll down to the **Access Keys** section and click on `Create access key`.
+<img height="200" src="/images/AWSSecurityHub/api_key.png" alt="Creating Credentials"/>
+5. Select a **Use case** > Click on `Next` and provide a name for the key under `Description tag value` and click on `Create access key`.
+6. Copy the `Access Key` and `Secret access key` displayed on the screen.
+<img height="200" src="/images/Amazons3/s3_credentials.png" alt="Getting Credentials"/>
+
+<Tip>
+Save your Secret Key as it will be visible only once.
+</Tip>
+
+The Linked Account or end-user now have all the credentials required to connect with Amazon S3.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Amazon S3 actions and triggers. Following are the set of Amazon S3 actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Bucket">
+     1. **Get Buckets** - Returns a list of all buckets owned by the authenticated sender in Amazon S3.
+     2. **Create Bucket** - Create a new bucket in Amazon S3.
+     3. **Delete Bucket** - Delete a bucket in Amazon S3.
+    </Accordion>
+    <Accordion title="Others">
+     4. **HTTP Request** - Make HTTP API calls to any Amazon S3 documented REST APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

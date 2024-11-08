@@ -24,12 +24,19 @@ To understand how a Linked Account can get the above mentioned credentials, refe
 To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
 <img height="200" src="/images/AWSSecurityHub/cobalt.png" alt="Connect a Linked Account"/>
 
-1. Log in to your [AWS Security Hub](https://console.aws.amazon.com/securityhub/) and copy your `Domain` from the URL. Your Login Email is the `Email` required.
-2. Click on your Profile icon in the top right corner and click on `Security Credentials`.
-<img height="200" src="/images/AWSSecurityHub/profileicpon.png" alt="Navigation in Trello"/>
+1. Log in to your [AWS account](https://console.aws.amazon.com/securityhub/) with SecurityHub permissions and copy the `Region` from the URL present before **.console**.
+2. Click on your Profile in the top right corner and click on `Security Credentials`.
+<img height="200" src="/images/AWSSecurityHub/profileicpon.png" alt="Navigation in AWS"/>
 
-4. Drag down the side bar to the Access Keys column. This is the API key.
-<img height="200" src="/images/AWSSecurityHub/api_key.png" alt="Getting Credentials"/>
+4. Scroll down to the **Access Keys** section and click on `Create access key`.
+<img height="200" src="/images/AWSSecurityHub/api_key.png" alt="Creating Credentials"/>
+5. Select a **Use case** > Click on `Next` and provide a name for the key under `Description tag value` and click on `Create access key`.
+6. Copy the `Access Key` and `Secret access key` displayed on the screen.
+<img height="200" src="/images/Amazons3/s3_credentials.png" alt="Getting Credentials"/>
+
+<Tip>
+Save your Secret Key as it will be visible only once.
+</Tip>
 
 The Linked Account or end-user now have all the credentials required to connect with AWS Security Hub.
 
@@ -41,7 +48,10 @@ supported by Cobalt.
   <Tab title="Actions">
   <AccordionGroup>
   <Accordion title="Members">
-     1. **List Members** - Lists details about all member accounts in Security Hub.
+     1. **List Members** - Lists details about all member accounts in AWS Security Hub.
+    </Accordion>
+    <Accordion title="Others">
+     2. **HTTP Request** - Make HTTP API calls to any AWS Security Hub documented REST APIs.
     </Accordion>
   </AccordionGroup>
   </Tab>
