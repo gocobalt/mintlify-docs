@@ -1,39 +1,22 @@
 ---
-title: 'Upsert Config'
-api: post /api/v2/public/config
+title: 'Get All Installed Configs'
+api: get /api/v2/public/slug/:slug/configs
 ---
 
-This API checks for an existing config based on a specified `config_id`  (if not provided, the `config_id` defaults to the `linked_account_id`.) If the config exists, it returns the existing setup or else creates a new config.
+This API retrieves all the installed configs for an application using its unique identifier.
 
 ## Request description
 #### Headers 
 <ParamField header="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com
 </ParamField>
-
-#### Body Parameters
-<ParamField body="slug" type="string" required>
-  Application slug. Eg: `mailerlite`
+<ParamField header="disable_field_options" type="boolean">
+  If true, field options will not be returned in the response.
 </ParamField>
 
-<ParamField body="config_id" type="string">
-  A unique id for the config. If not provided, `linked_account_id` is considered as the `config_id` by default.
-</ParamField>
-
-<ParamField body="labels" type="object">
-   An object containing dynamic mapping of user specified fields.
-    <Expandable title="Example properties">
-        <ResponseField name="customer_mapping" type="array">
-            <Expandable title="example properties" defaultOpen="true">
-                <ResponseField name="name" type="string">
-                   Example label. Eg: `Customer Name`
-                </ResponseField>
-                <ResponseField name="value" type="string">
-                   Example value. Generally this is the field through which the user passed value for mapping. Eg: `customer_name`
-                </ResponseField>
-           </Expandable>
-        </ResponseField>
-    </Expandable>
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application Slug. Eg: `docusign`
 </ParamField>
 
 ## Response description
@@ -164,63 +147,62 @@ This API checks for an existing config based on a specified `config_id`  (if not
 <ResponseExample>
 ```JSON 200
 {
-    "slug": "mailerlite",
-    "config_id": "config_4",
-    "fields": [
-        {
-            "required": false,
-            "id": "646473c7e7b74deee820458f",
-            "name": "MailerLite Field Mapping",
-            "field_type": "map",
-            "options": [
-                {
-                    "name": "City",
-                    "value": "city"
-                },
-                {
-                    "name": "Company",
-                    "value": "company"
-                },
-                {
-                    "name": "Country",
-                    "value": "country"
-                },
-                {
-                    "name": "Last name",
-                    "value": "last_name"
-                },
-                {
-                    "name": "Name",
-                    "value": "name"
-                },
-                {
-                    "name": "Phone",
-                    "value": "phone"
-                }
-            ],
-            "labels": [
-                {
-                    "name": "Customer Name",
-                    "value": "name"
-                },
-                {
-                    "name": "Customer Last Name",
-                    "value": "last_name"
-                },
-                {
-                    "name": "Customer's Company",
-                    "value": "company"
-                }
-            ]
-        }
-    ],
+    "slug": "pipedrive",
+    "config_id": "173135978",
+    "fields": [],
     "workflows": [
         {
-            "id": "649d230c2ce6b9b07b163e61",
-            "name": "Add a Subscriber to Mailerlite",
+            "id": "649d9cbf71ad565d0ce8c5b6",
+            "name": "Create Deal",
             "description": "",
             "enabled": false,
-            "fields": []
+            "fields": [
+                {
+                    "required": false,
+                    "id": "649d9d2571ad565d0ce8c64f",
+                    "name": "Pipeline",
+                    "field_type": "select",
+                    "options": [
+                        {
+                            "name": "Pipeline",
+                            "value": 1
+                        },
+                        {
+                            "name": "New pipeline",
+                            "value": 3
+                        }
+                    ],
+                    "labels": [],
+                    "value": 1
+                },
+                {
+                    "required": false,
+                    "id": "649d9d4371ad565d0ce8c68a",
+                    "name": "Stage",
+                    "field_type": "select",
+                    "options": [
+                        {
+                            "name": "Qualified",
+                            "value": 1
+                        },
+                        {
+                            "name": "Contact Made",
+                            "value": 2
+                        },
+                        {
+                            "name": "Prospect Qualified",
+                            "value": 3
+                        },
+                        {
+                            "name": "Needs Defined",
+                            "value": 4
+                        }
+                    ],
+                    "parent": "649d9d2571ad565d0ce8c64f",
+                    "labels": [],
+                    "value": 3
+                }
+            ]
         }
     ]
 }
@@ -241,6 +223,15 @@ This API checks for an existing config based on a specified `config_id`  (if not
     "error_code": "SERVER_ERROR",
     "message": "Invalid Credentials"
     "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 500
+{
+    "status_code": 500,
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
+    "message": "Application with id 3asdasdasd768768asd does not exist for org Cobalt or is not enabled",
+    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
 }
 ```
 </ ResponseExample>
