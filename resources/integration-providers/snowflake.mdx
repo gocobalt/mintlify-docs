@@ -32,7 +32,7 @@ To acquire the required credentials and connect a Linked Account, please follow 
 
 3. Open **Terminal/Bash** in your laptop(Linux/Mac/Windows) and type the following command:
 ```bash Command
-openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out private_key.p8
+openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out private_key.p8 -scrypt
 ```
 4. You will be prompted to provide `Encryption Password`. Provide a password, verify it and save it with you. This is your `Passphrase` for authentication.
 <img height="200" src="/images/Snowflake/snowflake_pass.png" alt="Snowflake Passphrase"/>

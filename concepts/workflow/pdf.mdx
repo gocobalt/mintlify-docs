@@ -1,0 +1,33 @@
+---
+title: PDF Node
+---
+The PDF node in Cobalt workflows allows users to create PDF files from HTML inputs or to merge multiple PDFs seamlessly.
+
+This node supports two primary actions: 
+
+<Accordion title="Create PDF from HTML" description="This action enables the conversion of an HTML file into a PDF document with customizable settings." defaultOpen = "true">
+  
+User is required to provide the **HTML** that will be converted to a PDF. Once the node is successfully executed, the generated PDF is stored in an S3 bucket, and the link to the file is provided in the response.
+
+Optionally users can also configure other settings for the output PDF such as `Page Layout`, `Format`, `Width` and `Height`.
+<Tip>
+The default format for the PDF is A4.
+</Tip>
+If required, users can also specify a **password** to create a protected PDF document.
+
+<img height="200" src="/images/Guides/Workflow/pdf-node.png" alt="PDF Node in Cobalt"/>
+
+</Accordion>
+
+
+
+
+
+<Accordion title="Merge PDFs" description="This action allows the merging of multiple PDFs into a single PDF." defaultOpen = "true">
+
+User is required to provide an **array of URLs** as an input for all the PDFs to be merged and can also set a password for the Merged PDF if required.
+
+</Accordion>
+
+
+
