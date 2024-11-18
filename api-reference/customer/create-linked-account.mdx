@@ -16,7 +16,11 @@ This API allows you to create a new linked account for your customer within Coba
 </ParamField>
 
 <ParamField body="your_app" type="object">
-   An object containing the details of your application associated with you account
+   An object containing the details of your application associated with your account.
+    <Warning>
+    Passing an empty `your_app` object without `auth_credentials` will throw an API Error.
+   </Warning>
+    <Tip>It is recommended to either do not pass your_app object or pass it with auth_credentials.</Tip>
     <Expandable title="properties">
         <ResponseField name="auth_credentials" type="object">
            API Credentials of your customers which will be used to make calls to your APIs.
