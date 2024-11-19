@@ -1,0 +1,77 @@
+---
+title: Workflow Testing
+description: Workflow Testing in Cobalt enables you to test your workflow's functionality by running it with sample payloads as you build it.
+---
+
+It allows you to:
+
+- Execute multiple test cases for a workflow by modifying the input payload.
+
+- Test and inspect the output values of each workflow node.
+
+- Use the Run Node button at the bottom of each step to execute it for the authenticated Linked Account.
+
+
+## Pre-requisites for Workflow Testing
+
+Before testing a workflow, ensure the following steps are completed:
+
+
+<Accordion title="Configure a Linked Account" defaultOpen="true">
+Click the `Configuration` button in the workflow editor and select a **[Linked Account](https://docs.gocobalt.io/concepts/linked_account)** under `Prerequisites` for the workflow.
+
+If the Linked Account is not authenticated with the integration or if its authentication has expired, a warning will appear.
+
+Click the **Authorize Application** button to reauthenticate or establish a connection with the integration.
+<img height="200" src="/images/Guides/Workflow/testing_linked_account.png" alt="Authenticating Linked Account for testing"/>
+Once authentication is complete, a **Connected**  status will be displayed.
+</Accordion>
+
+<Check>Click `Next` to proceed.</Check>
+
+
+<Accordion title="Provide a Sample Payload" defaultOpen="true">
+Enter a payload with data to be used during workflow testing.
+A sample payload will automatically load based on the event trigger defined in the workflow.
+Modify the sample payload if necessary to suit your testing requirements.
+<img height="200" src="/images/Guides/Workflow/testing_payload.png" alt="Setting Payload for testing"/>
+</Accordion>
+
+
+After completing these steps, click the `Save Configuration` button. 
+
+<Check>Your workflow is now ready for testing.</Check>
+
+## Steps to test
+
+Cobalt provides options for testing both ndividual nodes or the entire workflow.
+
+#### Testing Node
+<Steps>
+  <Step title="Select Node">
+    Click on the node you want to test.
+  </Step>
+  <Step title="Run Node">
+    At the bottom of the editor, click the `Run Node` button.
+<Warning>Testing for Group Node and Pagination is currently not supported.</Warning>
+  </Step>
+  <Step title="Check Input and Output">
+    Expand the testing modal by clicking the `^` button at the bottom and view the input and output details of the test run under the `Node` tab.
+    <img height="200" src="/images/Guides/Workflow/node_output.png" alt="Checking Input and Output of Test execution"/>
+  </Step>
+</Steps>
+
+<Check>Once the node executes successfully, a checkmark appears on the node, indicating it has been tested.</Check>
+
+
+#### Testing Entire Workflow
+
+
+Open the testing modal present at the bottom and switch from the `Node` tab to the `Workflow` tab.
+
+Click on `Run Workflow` button to perform a test execution and a **Test Run** log is generated with output of each node.
+<Warning>Since testing for Group nodes is not supported currently, you might not receive the logs of the group node.</Warning>
+<img height="200" src="/images/Guides/Workflow/workflow_output.png" alt="Checking Output of Workflow Test run"/>
+
+
+This streamlined approach of Workflow Testing ensures that your workflows perform as expected before deploying them in production.
