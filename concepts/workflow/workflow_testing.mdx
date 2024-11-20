@@ -74,4 +74,18 @@ Click on `Run Workflow` button to perform a test execution and a **Test Run** lo
 <img height="200" src="/images/Guides/Workflow/workflow_output.png" alt="Checking Output of Workflow Test run"/>
 
 
+## Workflow Templating]
+
+In Cobalt workflows, you can use dynamic variables generated through **Run Node** test execution to seamlessly access data from previous nodes. This method allows you to incorporate tested node response data into subsequent nodes.
+
+<Tip>
+To learn more about how to do Templating in Cobalt, refer to the docs [here](https://docs.gocobalt.io/concepts/workflow/templating).
+</Tip>
+
+Simply go to input field where you want to use variable within a node, select **Nodes** tab from the `Insert Variable` modal, choose the node whose response you want to access and select the field from that node response.
+  <img height="200" src="/images/Guides/Workflow/response_example.png" alt="Using Node response as variable"/>
+
+  In this example, we used the `id` received in the response when project was created and it's visible as `4.id` in the field which is of the format `<node_number>.<response_field>`.
+
+
 This streamlined approach of Workflow Testing ensures that your workflows perform as expected before deploying them in production.
