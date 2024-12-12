@@ -1,0 +1,93 @@
+---
+title: Setup
+description: Connect to your Adobe Workfront app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Adobe Workfront. In this guide, we will look at the OAuth App setup process.
+
+To setup your Adobe Workfront app in Cobalt for OAuth, you will need the following credentials from your [Adobe Workfront account](https://business.adobe.com/in/products/workfront/login.html):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Adobe Workfront account. You can create a test account [here](https://forms.office.com/pages/responsepage.aspx?id=Wht7-jR7h0OUrtLBeN7O4QITwtQrafJLqrB15dCBC2xUQkxLMVhISzhZM0pZV1VQQzRWRTBVNDFDMy4u).
+
+<Info>If you haven't already created an app in Adobe Workfront, you'd need to create one.</Info>
+
+### Creating an app in Adobe Workfront
+
+To create a Adobe Workfront app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Adobe Workfront account](https://business.adobe.com/in/products/workfront/login.html).
+2. Click on the waffle icon in the top right of the nav bar, select `Setup` in the menu and choose `OAuth2 Application` under **System** in the side menu.
+<img height="200" src="/images/Adobeworkfront/workfront_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create app integration` button > Choose **Web Application** under `Authentication method` > Provide a `Name` for your app and click on `Create`.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Adobe Workfront` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Select the app created, paste the Callback Url under `Redirect URls` and click on `Save`.
+
+6. Copy the `Client ID' and generate a Secret by clicking on `+Add Client Secret` under **Basic information** section.
+<img height="200" src="/images/Adobeworkfront/workfront_credentials.png" alt="Getting Credentials"/>
+
+<Note>
+Store the Client Secret somewhere as it will be shown only once.
+</Note>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Adobeworkfront/workfront_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client Secret and save it.
+
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Adobe Workfront actions and triggers. Following are the set of Adobe Workfront actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Document">
+     1. **Update Document** - Updates existing Document By ID in Adobe Workfront.
+     2. **Delete Document** - Delete existing Document By ID in Adobe Workfront.
+     3. **Get Documents** - Search all Documents in Adobe Workfront.
+     </Accordion>
+     <Accordion title="Folder">
+     4. **Create Folder** - Creates a new Folder in Adobe Workfront.
+     5. **Update Folder** - Updates existing Folder By ID in Adobe Workfront.
+     6. **Delete Folder** - Delete existing Folder By ID in Adobe Workfront.
+     7. **Get Folders** - Search all Folders in Adobe Workfront.
+      </Accordion>
+     <Accordion title="Project">
+     8. **Create Project** - Creates a new Project in Adobe Workfront.
+     9. **Update Project** - Updates existing Project By ID in Adobe Workfront.
+     10. **Get Projects** - Search all Projects in Adobe Workfront.
+     11. **Delete Folder** - Delete existing Folder By ID in Adobe Workfront.
+     12. **Get Folders** - Search all Folders in Adobe Workfront.
+      </Accordion>
+    <Accordion title="Task">
+     13. **Create Task** - Creates a new Task in Adobe Workfront.
+     14. **Update Task** - Updates existing Task By ID in Adobe Workfront.
+     15. **Delete Task** - Delete existing Task By ID in Adobe Workfront.
+     16. **Get Task** - Search all Tasks in Adobe Workfront.
+    </Accordion>
+    <Accordion title="User">
+     17. **Create User** - Creates a new user in Adobe Workfront.
+     18. **Update User** - Updates existing user By ID in Adobe Workfront.
+     19. **Delete User** - Delete existing user By ID in Adobe Workfront.
+     20. **Get Users** - Search all Users in Adobe Workfront.
+    </Accordion>
+     <Accordion title="Others">
+     21. **HTTP Request** - Make HTTP API calls to any Adobe Workfront documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Task Completed** - Triggers when task is completed on Adobe Workfront.
+         2. **Issue Status Updated** - Triggers when issue status is changed on Adobe Workfront.
+         3. **New Issue Created** - Triggers when new issue is created on Adobe Workfront.
+  </Tab>
+</Tabs>

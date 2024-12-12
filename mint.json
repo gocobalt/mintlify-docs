@@ -1,6 +1,8 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Cobalt",
+  "theme": "quill",
+  "versions": ["v2", "v1"],
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -34,7 +36,8 @@
   "tabs": [
     {
       "name": "Guides",
-      "url": "guides"
+      "url": "guides",
+      "version": "v1"
     },
     {
       "name": "API Reference",
@@ -49,9 +52,27 @@
       "url": "resources"
     }
   ],
+  "anchors": [
+    {
+      "name": "Postman",
+      "icon": "code",
+      "url": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
+    },
+    {
+      "name": "Get Your API Key",
+      "icon": "gear",
+      "url": "https://app.gocobalt.io/developer"
+    },
+    {
+      "name": "Examples",
+      "icon": "book",
+      "url": "guides/building"
+    }
+  ],
   "navigation": [
     {
       "group": "Documentation",
+      "version": "v1",
       "pages": [
         "introduction",
         "quickstart",
@@ -59,7 +80,71 @@
       ]
     },
     {
+      "group": "Documentation",
+      "version": "v2",
+      "pages": [
+        "overview",
+        {
+          "group": "Examples",
+          "pages":[
+            "examples/build_salesforce",
+            "examples/build_netsuite",
+            "examples/build_workday"
+          ]
+        },
+        {
+          "group": "Implementation Guide",
+          "pages": [
+            "implementation/overview",
+            {
+              "group": "Integrate",
+              "pages":[
+                "implementation/integrate/cobalt-account",
+                "implementation/integrate/setup-linked-account",
+                "implementation/integrate/get-access-token",
+                "implementation/integrate/display-apps",
+                "implementation/integrate/manage-connection",
+                "implementation/integrate/end-user-config"
+              ]
+            },
+            {
+              "group": "Communicate",
+              "pages":[
+                "implementation/communicate/write-data",
+                "implementation/communicate/get-data"
+              ]
+            },
+            {
+              "group": "Test Integration",
+              "pages":[
+                "implementation/Test-Integration/develop-test",
+                "implementation/Test-Integration/node-test",
+                "implementation/Test-Integration/orchestration-test"
+              ]
+            },
+            {
+              "group": "Additional ",
+              "pages":[
+                "implementation/additional/reauth",
+                "implementation/additional/workflow-failure",
+                "implementation/additional/workflow-access"
+              ]
+            },
+            {
+              "group": "Deploy",
+              "pages":[
+                "implementation/deploy/live-checklist"
+              ]
+            }
+          ]
+        },
+        "Solutions",
+        "Governance"
+      ]
+    },
+    {
       "group": "Implementation Guide",
+    "version": "v1",
       "pages": [
         "implementation/overview",
         {
@@ -105,7 +190,110 @@
       ]
     },
     {
+      "group":"Build",
+      "version": "v2",
+      "pages":[
+        {
+          "group":"Integration Basics",
+          "pages": [
+            "build/basics/quickstart",
+            {
+              "group":"Platform Setup",
+              "pages":[
+                "build/basics/proxies",
+                "build/basics/events",
+                "build/basics/webhooks",
+                "build/basics/user_forms"
+              ]
+            }
+          ]
+        },
+
+
+        {
+          "group":"Connectors",
+          "pages": [
+            "build/connectors/overview",
+            "build/connectors/authentication",
+            "build/connectors/config",
+            "build/connectors/add_to_marketplace"
+          ]
+        },
+
+        {
+          "group":"Build Workflow",
+          "pages": [
+            "build/workflow/overview",
+            "build/workflow/triggering_workflow",
+            {
+              "group": "Nodes",
+              "pages": [
+                "build/workflow/custom-code",
+                "build/workflow/datastore",
+                "build/workflow/delay",
+                "build/workflow/group",
+                "build/workflow/httpnode",
+                "build/workflow/merge",
+                "build/workflow/pdf",
+                "build/workflow/response",
+                "build/workflow/rule",
+                "build/workflow/email",
+                "build/workflow/transform"
+              ]
+            },
+            "build/workflow/data_mapper",
+            "build/workflow/datarefs",
+            "build/workflow/human_task",
+            "build/workflow/internal_functions",
+            "build/workflow/variables",
+            "build/workflow/workflow_testing"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Ship Integrations",
+      "version": "v2",
+      "pages": [
+        {
+          "group":"Auth Flows",
+          "pages": [
+            "ship/auth_flows/modal",
+            "ship/auth_flows/hosted",
+            "ship/auth_flows/build_your_own",
+            "ship/auth_flows/re-auth-flow"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Maintain",
+      "version": "v2",
+      "pages": [
+        "maintain/observability",
+        "maintain/logs",
+        "maintain/reliability",
+        "maintain/platform_rbac"
+      ]
+    },
+    {
+      "group": "Custom App",
+      "version": "v2",
+      "pages": [
+        "maintain/custom_app",
+        "maintain/custom_app_auth"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "version": "v2",
+      "pages": [
+        "deployment/overview"
+      ]
+    },
+    {
       "group": "Concepts",
+      "version": "v1",
       "pages": [
 
         "concepts/linked_account",
@@ -302,6 +490,12 @@
               "group": "Adobe Sign",
               "pages": [
                 "resources/integration-providers/adobesign"
+              ]
+            },
+            {
+              "group": "Adobe Workfront",
+              "pages": [
+                "resources/integration-providers/adobe_workfront"
               ]
             },
             {
@@ -901,23 +1095,6 @@
       "mode": "simple"
     }
   },
-  "anchors": [
-    {
-      "name": "Postman",
-      "icon": "code",
-      "url": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
-    },
-    {
-      "name": "Get Your API Key",
-      "icon": "gear",
-      "url": "https://app.gocobalt.io/developer"
-    },
-    {
-      "name": "Examples",
-      "icon": "book",
-      "url": "guides/building"
-    }
-  ],
   "footerSocials": {
     "linkedin": "https://www.linkedin.com/company/gocobalt/",
     "twitter": "https://x.com/gocobaltio"

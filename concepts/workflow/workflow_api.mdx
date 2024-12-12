@@ -82,6 +82,10 @@ curl --location --request POST 'https://api.gocobalt.io/api/v1/workflow/{workflo
 "execution_id":"66e404464f475f36c0c95b5d"
 }
 ```
+<Info>
+If sync_execution is set to `true` and any node has **Skip Node on Error** enabled, then Node Retry for that node is not allowed in case of a workflow error.
+</Info>
+
 
 ### /response API
 
@@ -120,3 +124,4 @@ The API response will include the data set in the workflow’s Response node, as
     "status": "COMPLETED"
 }
 ```
+
