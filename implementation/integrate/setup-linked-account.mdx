@@ -1,6 +1,8 @@
 ---
 title: Set Up Linked Accounts
 ---
+<img height="200" src="/images/implementation/linked_account_sequence.png" alt="Sequence Diagram for Creating Linked Account and Session Token"/>
+
 **Linked Accounts** refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform. When you create a Linked Account, you must provide a `linked_account_id`. This ID can be anything you want, but it must be unique.
 
 Most of the time, the linked_account_id is an ID from your internal data model that represents a user or account in your system. For example, if you have a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Cobalt Linked Account.
@@ -10,8 +12,6 @@ Auth tokens and User configurations will be stored against the Linked account id
 <Info> 
 To learn more about Linked Accounts, you can refer to the Linked Accounts Guide [here](https://docs.gocobalt.io/concepts/linked_account).
 </Info>
-
-You can create Linked Accounts programatically by using Cobalt APIs or SDK methods.
 
 ### Using Cobalt API or SDK
 Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) call below or the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create or update a linked account.

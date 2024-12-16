@@ -1,7 +1,45 @@
 ---
 title: Data Refs
+description: Data Refs allow you to create and manage references for entities across multiple integrations directly within Cobalt.
 ---
-<Info>
 
-Coming Soon!
-</Info>
+The references in Data Refs allow you to unify IDs from various systems under a single record in Cobalt. `Record ID` refers to the ID you create while `External ID` refers to the ID of that entity in the integration.
+
+For example, consider a Data Ref named **Users**:
+<img height="200" src="/images/Guides/Workflow/dataref.png" alt="Users DataRef in Cobalt"/>
+
+By maintaining these mappings, Data Refs allow you to quickly access and update information across integrations.
+
+<Note>
+Each Linked Account in Cobalt maintains its own distinct Data Refs, even if they share the same name and you can filter the Data Refs for a Linked Account in Cobalt dashboard.
+</Note>
+
+## Data Refs in Dashboard
+
+All Data Refs can be accessed and managed through the `Data Refs` section in the dashboard:
+
+Navigate to `Settings` > [Data Refs](https://app.gocobalt.io/datarefs) and view the details such as Name, Associated Linked account ID and the records.
+
+## Data Refs Actions
+Data Refs node offers a range of actions which can be used in a Workflow:
+<img height="200" src="/images/Guides/Workflow/dataref_Actions.png" alt="DataRef Actions in Cobalt"/>
+
+<Accordion title="Create Ref">
+  This action allows user to create a record in a Data Ref. If the Data Ref doesn't exist for the Linked Account, a new Data Ref with the record is created.
+</Accordion>
+
+<Accordion title="Create Bulk Refs">
+  This action allows user to create records in bulk in a Data Ref. If the Data Ref doesn't exist for the Linked Account, a new Data Ref with the records is created.
+</Accordion>
+
+<Accordion title="Get Ref from Record ID">
+  This action fetches an array of all external IDs associated with a specific Cobalt Record ID.
+</Accordion>
+
+<Accordion title="Get Ref from External ID">
+  This action fetches the record ID associated with the specific External ID of the application.
+</Accordion>
+
+<Accordion title="Delete Ref by Record ID">
+  This action allows user to delete a record in a Data Ref using the `Record ID`.
+</Accordion>

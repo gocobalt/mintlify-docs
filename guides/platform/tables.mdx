@@ -1,6 +1,74 @@
 ---
-title: Tables
+title: Tables by Cobalt
+description: Tables by Cobalt allows users to manage and use dynamic data generated within workflows and are structured with rows and columns.
 ---
+
+
+## Tables Types
+The type of a Table can be chosen by the user when the **Create Table** action is selected in the `Tables by Cobalt` node.
+<Info>
+You can only create a Persistent table when you create one using the `New Table` option in dashboard.
+</Info>
+
+It can be of two types:
+#### Non-Persistent Table
+
+This type of Table and its data is available only within the context of the workflow execution in which it is created and cannot be accessed through **Tables** in dashboard.
+
+#### Persistent Table
+
+This Table and its data can be accessed across all the workflows in any application. 
+<Note>
+You can find the list of all Persistent Tables in your Cobalt dashboard. 
+</Note>
+
+
+
+## Tables in dashboard
+
+All persistent tables created in the Cobalt platform can be accessed by navigating to `Settings` > [Tables](https://staging.gocobalt.io/tables). This section provides details about each table, such as its ID and Name.
+
+Additionally, you can click on any Table to view and manage its records directly from this interface.
+<img height="200" src="/images/Guides/Workflow/list_persistent.png" alt="View all Persistent Tables in Cobalt"/>
+
+## Table Actions
+Table node offers a range of actions which can be used in a Workflow:
+
+<Accordion title="Create Table">
+
+Users can create new Table within workflows, specifying its Type (Persistent or Non-Persistent) and defining the structure of the Table records.
+
+While using this action, the user is required to provide information like the **Type**, **Name** and the **Columns** for the Table.
+
 <Tip>
-Coming Soon!
+You can also create a Persistent table in the dashboard by clicking on the `New Table` option and then access it directly in the workflow.
 </Tip>
+</Accordion>
+
+<Accordion title="Delete Table">
+Users have the option to delete existing Tables by providing the `Table ID`.
+</Accordion>
+
+<Accordion title=" Get Tables">
+Users can retrieve a list of all Tables by providing the type of tables which they want to fetch.
+</Accordion>
+
+<Accordion title="Add Table Record">
+Users can add new records to a Table, by selecting the Table and then adding the required data.
+</Accordion>
+
+<Accordion title="Search Table Records">
+Users can search for specific records within a Table by searching for records based on any of the columns' value.
+</Accordion>
+
+<Accordion title="Get Table Records">
+Users can retrieve all the records of a Table by providing its `Table ID`.
+</Accordion>
+
+<Accordion title="Update Table Record">
+Users can update existing records of a Table by entering the new values in the respective fields to update.
+</Accordion>
+
+<Accordion title="Delete Table Record">
+  Users can delete specific records from a Table by providing the unique **Record_Id** of the record which was generated.
+</Accordion>
