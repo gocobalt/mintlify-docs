@@ -2,8 +2,112 @@
 title: Webhooks
 description: Learn how to setup Webhooks in Cobalt
 ---
-<Tip>
-Coming Soon!  
 
-Please refer to v1 docs currently.
-</Tip>
+
+## What are webhooks?
+
+A webhook is a method to provide external applications with real-time information about data changes in a platform.
+
+A webhook delivers data to the application at the moment that there is a change, resulting in data being pushed. Unlike REST APIs where the application polls the API at regular intervals in order to get the changed data. This makes webhooks much more efficient and friendly.
+
+## Event Types
+Currently Cobalt 5 webhook event types:
+
+<Accordion title="Connection Created">
+ A connection is created
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Created",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:03:27 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Connection Deleted">
+   A connection is deleted
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Deleted",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:04:27 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Connection Expired">
+   A connection is removed or does not exist
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Expired",
+  "slug": "pipedrive",
+  "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Workflow Completed">
+   Workflow has been successfully executed
+ ```javascript
+{
+  "linked_account_id": "12345",
+  "instance_id": "656f30f69144bb8f183c0118",
+  "workflow_id": "6495792b9b6ca6d77a17e513",
+  "config_id": "12345",
+  "event": "Workflow Completed",
+  "workflow_name": "Export contact to Hubspot",
+  "status": "COMPLETED"
+}
+ ```
+</Accordion>
+
+<Accordion title="Workflow Errored">
+   Workflow execution stopped because of an error
+ ```javascript
+{
+  "linked_account_id": "12345",
+  "instance_id": "656f308b9144bb8f183bfc7b",
+  "workflow_id": "6495792b9b6ca6d77a17e513",
+  "config_id": "12345",
+  "event": "Workflow Errored",
+  "workflow_name": "Export contact to Hubspot",
+  "status": "ERRORED"
+}
+ ```
+</Accordion>
+
+## How to subscribe to webhook events?
+There are 2 ways to subscribe to Cobalt events:
+
+- via the Cobalt's platform
+- via the Webhook subscription API
+
+### Via Cobalt's platform
+Go to Dashboard > Developer > Webhooks tab
+
+![Webhooks](/images/Developer/webhooks.png)
+
+To create a Webhook subscription, click on `+ Add Webhook`, enter the Webhook URL of the endpoint from your system, and select the desired events you want to receive webhook events for.
+
+<Info>Webhooks should use HTTPS and expect to receive POST requests</Info>
+
+After you clicked **Add Webhook**, you are subscribed to the Webhook events.
+
+### Via the Webhook subscription 
+You can manage the webhook subscription using our webhooks API. Visit the [API reference](/api-reference/webhooks/create-webhook) 
+
+
+## Receive events
+On receiving an event, you should respond with an `HTTP 200 OK` to signal to Cobalt that the event was successfully delivered. Otherwise, Cobalt will consider the event delivery a failure and retry up to 3 times, with exponential backoff.

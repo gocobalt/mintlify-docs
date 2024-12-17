@@ -1,8 +1,38 @@
 ---
 title: Overview
+description: "Application platforms that you can connect with Cobalt."
 ---
-<Tip>
-Coming Soon!  
 
-Please refer to v1 docs currently.
-</Tip>
+Cobalt offers 200+ applications that can be connected for your customers to use across various segments such as `Accounting`, `ATS`, `HRIS`, `CRM`, `Sales`, `Marketing` and many more.
+Integrating with these platforms are pretty quick and seamless too using our [Auth flow](/ship/auth_flows) mechanisms.
+<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
+
+### Creating and launching Integrations
+The end customers can have access to apps enabled by the user. You just need to select from any of the available applications in the [Apps](https://app.gocobalt.io/apps) section of the platform and enable it.
+
+However, for your end customer to connect with this plaform, provide authorization for their data to be accessed and for you to access their platform APIs, you need to follow the below steps:
+<Steps>
+  <Step title="Enable Integration">
+    Select the application and click on `Go Live`.
+  </Step>
+  <Step title="Configure Credentials">
+    In `Settings` section provide the required details under the `Configure Credentials` section. 
+    <Tip>
+    For API key auth based applications, no configuration is required on the Cobalt dashboard. You just need to enable the application. Your customer would
+    provide the details in the auth flow portal.
+    </Tip>
+
+    For OAuth based applications, you would need to provide credentials such as `Client ID`, `Client Secret` etc. or Cobalt offers the option to **Use our credentials** for playing around.
+    <Info>
+    To know how you setup an OAuth app for the integration, refer to [Resources](/resources/integration-providers/overview) section.
+    </Info>
+  </Step>
+  <Step title="Enable required permissions">
+    Make sure all the scopes mentioned under `Permissions and scopes` has been selected in the scopes panel in the developer account as well.
+    <img height="200" src="/images/Concepts/app-settings.png" alt="App Settings "/>
+  </Step>
+</Steps> 
+
+<Check>You're good to go! Your customer can now access the the application auth flow portal.</Check>
+
+Once the customer connects with the application by providing the API credentials or logging in to the application from the auth flow portal, they can see the defined settings and published workflows.

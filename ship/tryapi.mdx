@@ -1,0 +1,36 @@
+---
+title: Try API
+description: More about the Try API Settings and how it can assist you to fire and test events in Cobalt.
+---
+
+The **Try API** feature in Cobalt allows users to simulate event execution, providing a convenient way to test workflows and validate the behavior of associated actions. By firing events from the Try API interface, users can verify the correctness and responsiveness of their workflows.
+
+The Try API feature can be utilized in both **Production** and **Test** environments, providing flexibility for testing and validation purposes. 
+
+Events selected through the Try API interface can serve as triggers within workflows, enabling comprehensive testing of workflow execution and automation logic. The payload associated with the selected event is automatically loaded within the Try API interface, allowing users to make necessary modifications before firing the event.
+
+### Pre-Condition:
+Before utilizing the Try API feature, ensure that the Application is connected and configured properly.
+
+### Execution
+
+To fire an event in the Try API section, follow these steps:
+
+- Navigate to the Application for which you want to create and test a workflow.
+- Create a workflow and add an event along with associated actions. Publish the workflow to make it available for execution.
+<Tip>
+Learn more about how to create workflows [here](https://docs.gocobalt.io/guides/workflow/overview).
+</Tip>
+- Enable the workflow for a Linked Account after making a successful connection through authenticating.
+- Navigate to the **Try API** section in Cobalt.
+- Select the **Linked Account**, choose the desired **Event** from the available options, specify the **Application** associated with the workflow. Optionally, select a **Config ID** if required.
+<Note>
+If an **Application** is not selected for Try API, then all the workflows in the associated **Linked Account** with the selected **Event** will be fired.
+</Note>
+- Click on the `Fire Event` button in the top right.
+<img height="200" src="/images/Guides/Platform/try-api.png" alt="Try API Section in Cobalt"/>
+
+#### Expected Result
+Upon firing the event using the Try API feature, it will be logged within the Cobalt system. You can check the logs of the events by navigating to **Events** tab in the [**Logs**](https://docs.gocobalt.io/concepts/logs) section in Cobalt.
+<img height="200" src="/images/Guides/Platform/try-api-logs.png" alt="Logs of Try API in Cobalt"/>
+

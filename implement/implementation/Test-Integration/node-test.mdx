@@ -1,0 +1,69 @@
+---
+title: Node Level Tests
+description: In this, users will learn to validate the behavior and output of specific components of Workflows before progressing to more complex configurations.
+---
+Node-level testing is a critical aspect of ensuring the reliability and functionality of workflows. This approach allows for thorough testing, early issue detection, and streamlined troubleshooting, ultimately leading to robust and efficient integration workflows.
+## Testing Scenarios and Best Practices
+
+### 1. Input Validation Testing: 
+
+Verify that each node correctly processes input data according to defined specifications. Test scenarios include:
+- Providing valid input data.
+- Supplying invalid input data to check error handling.
+<Tip>
+Learn more about the Nodes available in Cobalt [here](https://docs.gocobalt.io/guides/workflow/datastore).
+</Tip>
+
+### 2. Data Transformation Testing: 
+
+Validate the transformation logic within Transform node to ensure accurate data processing. Test scenarios include:
+- Verifying data integrity after transformation.
+- Validating the response received from the Transform Node.
+<Tip>
+Learn more about the Transform Node [here](https://docs.gocobalt.io/guides/workflow/transform).
+</Tip>
+
+
+### 3. Integration Point Testing: 
+
+Test the connectivity and data exchange between nodes and external systems. Test scenarios include:
+- Simulating the actions and their responses.
+- Testing error handling during integration failures.
+
+
+### 4. Conditional Logic Testing: 
+
+Validate the conditional statements and branching logic created using a Rule node within the Workflow. Test scenarios include:
+- Testing different conditions and outcomes.
+- Verifying the correct execution path based on conditions.
+
+<Tip>
+Learn more about the Rule Node [here](https://docs.gocobalt.io/guides/workflow/rule).
+</Tip>
+
+## Execution and Verification Process
+Follow the steps mentioned below to perform Node level testing in Cobalt:
+
+1. **Select Node for Testing**: Choose a specific node within the workflow to test.
+
+2. **Define Test Scenarios**: Identify various test scenarios to validate the node's functionality.
+
+3. **Execute Tests**: Run the Workflow through **Try API** according to the test scenario by providing appropriate inputs to observe the behavior and output of the node.
+<Info>
+Learn more about how Try API works in Cobalt [here](https://docs.gocobalt.io/guides/platform/tryapi).
+</Info>
+
+4. **Verify Results**: Compare the response obtained with the expected outcomes to ensure correctness. You can check the Node response by navigating to `Logs` in Cobalt > `Executions` > Check the Workflow logs.
+<Tip>
+Learn more about Workflow logs [here](https://docs.gocobalt.io/guides/platform/workflow-logs).
+</Tip>
+
+5. **Iterate and Expand**: If the results match expectations, proceed to add more nodes to the workflow. If discrepancies occur, troubleshoot and retest until the node functions as intended.
+
+
+By performing Node level testing, you get benefits such as early issue detection, improved debugging and enhanced reliability leading to an efficient Workflow development.
+
+## Checkpoint + Next step
+<Check>
+You have now successfully created and tested all the nodes of your workflow. Next Step is to perform [Orchestration Level testing](https://docs.gocobalt.io/implementation/Test-Integration/orchestration-test) to check whether workflows work correctly or not.
+</Check>
