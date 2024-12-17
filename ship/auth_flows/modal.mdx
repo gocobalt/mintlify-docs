@@ -1,3 +1,218 @@
 ---
 title: Cobalt Modal
+description: "Cobalt's auth flows provides a seamless environment for your users to grant authorization to their third party application data."
 ---
+
+When creating application integrations, accessing customer's data is a required step. Using Cobalt's auth flows this process becomes both
+quick and heavily customizable.
+
+### Pre-requisites
+Below are a few pre-requisites that you need to do before choosing an Auth Flow:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/concepts/linked_account).
+</Note>
+
+<Tip>
+ We recommend you create a linked account at the same time as your customer signs up within your app.
+</Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
+
+### Auth flow integration options
+Cobalt provides 3 different ways for Auth flow of integrations
+
+  <Accordion title="Hosted flow" icon="cloud" description="Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.">
+    Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
+
+- List all enabled applications
+- Handle the Auth flow
+- Manage integration configuration for your end user.
+
+
+<Warning>
+Dynamic field mapping feature is currently not supported in the Hosted auth flow.
+</Warning>
+
+
+To get started, follow the 2 steps:
+<Steps>
+
+  <Step title="Generate Hosted URL">
+    To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a `POST` request to the `Create Hosted URL` API.
+<Tip>
+Check out the [Cobalt's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
+</Tip>
+  </Step>
+
+  <Step title="Redirect to Hosted portal">
+  The generated URL can be then used to redirect the user to the Hosted UI, or can be embedded within your UI. Your user can select the application they want to connect and perform authentication.
+  <img height="200" src="/images/Guides/hosted-portal.png" alt="Hosted Portal in Cobalt"/>
+  </Step>
+
+</Steps>
+
+
+You can modify the UI of Hosted Portal using the [hosted_properties](https://docs.gocobalt.io/api-reference/cobalt-connect/get-hosted-properties).
+
+
+| Property | Description |
+|--------------|---------------------|
+| color | Modify the theme color of Cobalt connect|
+| name | Display name of your end customer |
+| bgColor | Background Colour of your end customer |
+</Accordion>
+
+  <Accordion title="Embedded Flow" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
+    Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt auth flow into your React application.
+
+  It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
+
+    <Info>
+    Learn more about Cobalt's React SDK and how to initialize it [here](http://docs.gocobalt.io/sdks/client-side-sdks/react-sdk).
+    </Info>
+
+
+For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.
+  </Accordion>
+
+  <Accordion title="Seamless Flow" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
+  Cobalt provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
+
+The general steps to build your own flow are:
+<AccordionGroup>
+  <Accordion title="Display a list of integrations for your users to select">
+Retrieve a list of all integrations available to connect using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications) or [.getApplications()](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#getapplications) method and display them in your UI.
+<CodeGroup>
+
+``` JavaScript cURL
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/application \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>'
+```
+```JavaScript NodeJS
+try{
+    const data = await Client.getApplications("<linked_account_id>", {
+        page:5,
+        limit:10
+    })
+}catch(error){
+    //Catch any error
+}
+```
+</CodeGroup>
+
+With the above call you can get all the details related to an appliction for a user.
+
+<Tip>
+We recommend using the assets provided by Cobalt as they meet the requirements of the supported integrations. For example QuickBooks 
+Online require the specific use of QuickBooks branded buttons, including specific hover states.
+</Tip>
+</Accordion>
+
+  <Accordion title="Install and Initialise SDK">
+
+  Install the Cobalt Frontend SDK for JavaScript that you want to use. You can install by either using `npm package manager` or directly in browser by using the `script` tag.
+
+```html
+<!-- use a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0.1"></script>
+
+<!-- use a version range instead of a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0"></script>
+
+<!-- omit the version completely to use the latest one -->
+<!-- you should NOT use this in production -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+```
+
+Initialize the javascript SDK using the Session token.
+
+<Tip>
+Learn more about Cobalt’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
+</Tip>
+
+  </Accordion>
+
+  <Accordion title="Manage Connections">
+Cobalt provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
+lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
+
+```Javascript
+cobalt.connect("slack") // opens a new tab for oauth apps
+cobalt.connect("twilio", {
+  number: <"Registered number">,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for key based apps
+```
+
+The [`.disconnect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#disconnect) method similarly, lets the user to disconnect from the application platform, revoking
+the authorization and deleting any and all configurations of the Linked account saved for that particular application.
+
+```Javascript
+cobalt.disconnect("slack")
+```
+  </Accordion>
+
+  <Accordion title="Allow users to configure the connection">
+Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the [`.config()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) method to find an 
+exisiting config or creating a new config for the linked account. 
+
+``` Javascript
+cobalt.config({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
+  </Accordion>
+
+  <Accordion title="Save/Update the configuration">
+The `.config()` method provides you with all the published workflows and settings input for the user. The user can now enable the workflows,
+enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig) method.
+
+```Javascript
+cobalt.updateConfig({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+
+    }
+  ]
+})
+```
+  </Accordion>
+
+</AccordionGroup>
+
+  </Accordion>
+
+
+
+### Authorization journey
+Cobalt lets you take the authorization for customer's data in 3 simple steps:
+1. Open the auth flow portal for the customer using any of the above mentioned integration options.
+2. Customer provides consent or API Credentials for the respective app.
+3. Customer configures the data required for the connection, such as selecting specific integration settings. 
+
+<Check>And done! Customer has now successfully connected the application(s) and can now make use of the published orchestrations.</Check>

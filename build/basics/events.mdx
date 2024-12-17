@@ -2,8 +2,74 @@
 title: Events
 description: Learn how to setup an Event in Cobalt
 ---
-<Tip>
-Coming Soon!  
 
-Please refer to v1 docs currently.
-</Tip>
+Events are the trigger entities that are used to define a start point of a workflow and can be triggered using the [REST APIs](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application) or the Event URL assigned for the Organization.
+Think of these custom events as signals sent from your app using the Cobalt SDK or Event API to kick off different processes. 
+
+Cobalt events are `common models`. This means once you set it up, one event can make several workflows get executed. This is handy when you want the same event to do similar things in different apps. 
+
+For example, an event **User verified** could set off one workflow in Salesforce and another in HubSpot, making it easy to achieve consistent integration across various platforms without needing extra 
+technical work.
+
+<img height="200" src="/images/Developer/event-trigger.png" alt="Selecting an event trigger"/>
+
+Above image shows a user selecting from their default application events as a trigger for a Pipedrive workflow.
+
+
+#### Creating an event
+An event model contains name of the event and the trigger payload. The trigger payload contains sample data schema that can be used as data variables and are used
+inside a workflow as placeholders while defining the workflow. The actual data passed while triggering the event takes place of those variables inside the workflows.
+
+To create an event, go to Settings > Developer > Events,
+
+Click on `New Event` and select a model.
+
+<img height="200" src="/images/Developer/create-event.png" alt="Creating an event"/>
+
+Change the name and update the sample payload as per your requirement and click `Create event`. It is expected that you pass on the data as the `Sample Payload`
+while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow.
+
+In the below example, we are using `firstName` defined inside the `Contact` event in an Activecampaign workflow.
+
+<img height="200" src="/images/Developer/event-payload.png" alt="Using an event payload as a variable"/>
+
+Now, when you actually trigger the event `Contact`, this workflow will get executed with `name` field consisting of the value sent by you as `firstName` while triggering
+the event.
+
+#### Triggering an event.
+
+Cobalt events can be triggered using various methods. You can make use of the `Event URL`. Go to Settings > Developer > Events  
+
+Copy the event URL. Then copy the event that you would like to trigger. See below for reference,
+
+<img height="200" src="/images/Developer/copy-payload.png" alt="Setting up event trigger"/>
+
+Then you can just make the POST API call with `linked_account_id` and `x-api-key` in the headers
+
+```curl
+curl --request POST \
+  --url https://api.gocobalt.io/api/v1/webhook/64c357c739ec788238ab5f9b \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <x-api-key>' \
+  --data '{
+        "event": "Add Contact",
+        "payload": {
+            "first_name": "Subrat",
+            "last_name": "Dash",
+            "email": "subrat.1108@gmail.com",
+            "phone": "7624826260",
+            "id": ""
+        }
+    }'
+```
+
+<Warning>
+    In the above cURL example, we have not mentioned the `config_id` in the headers. The config id essentially defines the default config with which the worflow shall
+    be executed. If `config_id` is not mentioned, Cobalt considers the `linked_account_id` as the `config_id` by default.
+</Warning>
+
+Event URL can be used as a quick resort to trigger an event. If you wish to have better control on triggering such as triggering the worflow executions for a specific application,
+instead of for all application workflows with which the event is associated, kindly refer the [REST APIs](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application) support for events.
+
+To trigger an event from Cobalt platform so that you can simulate event execution, test workflows and validate the behavior of associated actions, you can use the `Try API` feature of Cobalt. Refer [here](https://docs.gocobalt.io/guides/platform/tryapi) to learn how you can use Try API.

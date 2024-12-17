@@ -1,0 +1,38 @@
+---
+title: What are Field Types
+---
+
+Cobalt lets you define settings for your end customers after they authorize an application. You take inputs from your end customers to facilitate your desired orchestration.
+To do so, Cobalt supports various types of fields to define the settings.
+
+<img height="200" src="/images/Config/field_types.png" alt="Field types supported by Cobalt"/>
+
+### Primitive field types
+Primitive field types are the basic input types defined by Cobalt. `Text`, `Number`, `Select`, `Email` & `Date` fields can be used by the users to take inputs with the respective
+types from the user.
+
+Using the `Select` field type, you can let you customers select from a list of options defined by you.
+
+<img height="200" src="/images/Config/select_field_type.png" alt="Select field type with options in Cobalt"/>
+
+The end customer can select a value from your defined options, which can then be used in a workflow orchestration.
+
+### Select field types
+There might arise conditions where you want your end customers to select from a list which is platform specific and cannot be configured using Primitive field types. For
+example, `List of Stages` or `List of Tags`. Such lists are platform specific and prone to changes. As a result hard coding the options using Primitive field types is not
+recommended. To cater to such issues, Cobalt provides `Select Fields`.
+
+To use Select fields, create a setting and select the type from the list of Select fields available. The users can then select from the options defined for the
+field which is fetched from the platform in real time. The below image shows the list of `Pipedrive` Select fields to choose from.
+
+<img height="200" src="/images/Config/dynamic_fields.png" alt="Pipedrive dynamic fields"/>
+
+#### Mapping fields type
+
+If you want your users to map a platform defined list of properties to the triggers payload properties being sent by you, then you should select `Map V2` type. 
+
+For example, Mapping Contact fields. You can define labels and ask the users to map the labels with the required custom properties defined in the platform.
+
+<Tip>
+Learn more about Mapping [here](/build/connectors/config/mapping).
+</Tip>

@@ -1,0 +1,252 @@
+---
+title: Field Mapping
+---
+Field mapping comes as a crucial feature when you want your users to map their application platform's fields to your fields in order to make sure the correct data is being
+synced from the platform and vice versa.
+
+<img height="200" src="/images/Config/mapping.png" alt="Mapping fields"/>
+
+Such mappings can be either **static** or **dynamic** depending upon your use case. In either case, you'd have to create a `Map V2` type dataslot setting in your application or workflow
+configuration settings in Cobalt. 
+
+A `Map V2` type dataslot is a type of user config that allows your users to define a mapping between an object in **your application (Source Column)** and an object in their **connected integration account (Destination Column)**.
+
+### Static mapping 
+Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields. User can create the required labels by choosing `Select` as the type and entering the `Options`.
+
+<img height="200" src="/images/Config/static-mapping.png" alt="Static Mapping of fields"/>
+
+On setting the static map type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated
+static value. This `value` is mapped to the application platform fields. 
+
+```JavaScript
+"fields": [
+    {
+      "required": false,
+      "id": "65a0ee61b542ff4a62fe68b9",
+      "name": "Map Deal Fields",
+      "field_type": "map",
+      "options": [
+        {
+          "name": "HubSpot Campaign",
+          "value": "hs_campaign"
+        },
+        {
+          "name": "Closed Won Date (Internal)",
+          "value": "hs_closed_won_date"
+        },
+        {
+          "name": "Global Term Line Item Discount Percentage",
+          "value": "hs_line_item_global_term_hs_discount_percentage"
+        },
+      ...
+      ],
+      "labels": [
+        {
+          "name": "Name",
+          "value": "65a0ef4db542ff4a62fe6a0c"
+        },
+        {
+          "name": "Amount",
+          "value": "65a0ef4db542ff4a62fe6a0d"
+        },
+        {
+          "name": "Request ID",
+          "value": "65a0ef4db542ff4a62fe6a0e"
+        }
+      ],
+      "multiple": false,
+      "hidden": false
+    }
+]
+```
+
+Next time when you'd like to update the value of the mapped field with some data, send the data against
+the system generated `value`.
+
+
+### Dynamic mapping
+Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Cobalt provides a feature to
+map your labels dynamically while creating your config. To do so, instead of creating the labels in the configuration pages specific to a workflow or the application,
+simply toggle the `Dynamic` option of the data slot and provide the `Labels Object Name`.
+
+<img height="200" src="/images/Config/dynamic-mapping.png" alt="Dynamic Mapping of fields"/>
+
+Now while creating the config using `.config()` method, pass on the required dynamic labels under the created `Labels Object Name`. Check out this [documentation](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#config) for more details.
+
+```JavaScript
+cobalt.config({
+  slug: "hubspot",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {
+    "Contact Fields":[
+        {
+            "name": "First Name",
+            "value": "first_name"
+        },
+        {
+            "name": "Registration id",
+            "value": "r_t353553gq12"
+        }
+    ]
+  }
+})
+```
+<Info>
+Note here that unlike static mapping, the label value here is not system generated but defined by the user.
+</Info>
+
+### Getting map-type config from frontend SDK
+Use the config() function to get the config of a particular app.
+
+`cobalt.config('mailerlite','configid');`
+
+Let's look at a sample response of map-type dataslot.
+
+>As you can see, the previously empty 'labels' array now has the options configured above on the platform - 'Name' and 'Email'.
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": true,
+            "id": "645df2f8e77af6ed8d02f32f",
+            "name": "Map Mailerlite Fields",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "Secondary_Email",
+                    "value": "secondary_email"
+                },
+                {
+                    "name": "Zip",
+                    "value": "z_i_p"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:mailerlite:1",
+            "labels": [
+                {
+                    "name": "Name",
+                    "value": "645df30fe77af6ed8d02f338"
+                },
+                {
+                    "name": "Email",
+                    "value": "645df30fe77af6ed8d02f339"
+                }
+            ]
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```
+
+### Updating value of map-type config
+
+Use the updateConfig() function to save the selected value. In this case an object with respective labels and their values will be needed to pass.
+
+```JavaScript
+cobalt.updateConfig('pipedrive','1234',{
+    "config_id": "1234",
+    "application_data_slots": {
+        "645df2f8e77af6ed8d02f32f": {
+            "645df30fe77af6ed8d02f339": "secondary_email",
+            "645df30fe77af6ed8d02f338": "name"
+            }
+        /*[response.application_data_slots[0].id] : {
+            [response.application_data_slots[0].labels[0].value]: response.application_data_slots[0].options[4].value
+            [response.application_data_slots[0].labels[1].value]: response.application_data_slots[0].options[6].value
+          } 
+        */
+    },
+    "workflows": []
+});
+```
+
+It will return the same response as config() functions with updates in the changed value. You will notice that the value is now added in the object.
+
+```JavaScript
+{
+    "application_data_slots": [
+        {
+            "required": true,
+            "id": "645df2f8e77af6ed8d02f32f",
+            "name": "Map Mailerlite Fields",
+            "has_dynamic_map_fields": false,
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "Secondary_Email",
+                    "value": "secondary_email"
+                }
+            ],
+            "dynamic_slot_identifier": "dynamic:mailerlite:1",
+            "labels": [
+                {
+                    "name": "Name",
+                    "value": "645df30fe77af6ed8d02f338"
+                },
+                {
+                    "name": "Email",
+                    "value": "645df30fe77af6ed8d02f339"
+                }
+            ],
+            "value": {
+                "645df30fe77af6ed8d02f339": "secondary_email",
+                "645df30fe77af6ed8d02f338": "name"
+            }
+        }
+    ],
+    "workflows": [],
+    "config_id": "1234"
+}
+```

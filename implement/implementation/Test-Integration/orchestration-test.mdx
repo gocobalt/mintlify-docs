@@ -1,0 +1,69 @@
+---
+title: Orchestrations Tests
+description: In this, we learn about Orchestration Testing which evaluates the end-to-end behavior and performance of the entire workflow in various scenarios.
+---
+After completing node-level testing, orchestrating tests allows users to assess the seamless execution of interconnected nodes, data flow, and overall workflow behavior. By simulating real-world scenarios and diverse payloads, users can ensure the reliability, scalability, and efficiency of their integrations.
+
+## Test Scenarios for Orchestration Testing
+
+### 1. End-to-End Workflow Testing
+
+Validate the entire workflow from start to finish to ensure all nodes function correctly in sequence. Try executing the Workflow through the [Try API](https://docs.gocobalt.io/guides/platform/tryapi) section. Test scenarios include:
+
+- Triggering the workflow with different input data or payload.
+
+- Verifying the expected output at the end of the workflow.
+For eg: If the Workflow is supposed to create a New Contact on a successful execution, then check whether the Contact was created or not in the account.
+
+### 2. Error Handling Testing 
+
+Evaluate the system's response to errors and exceptions within the workflow. Test scenarios include:
+
+- Introducing errors at different nodes to test error recovery mechanisms.
+- Verifying error notifications and logging.
+
+### 3. Performance Testing 
+
+Assess the performance and scalability of the workflow under varying load conditions. Test scenarios include:
+
+- Simulating high-volume data processing.
+- Monitoring response times and resource utilization.
+
+### 4. Integration Point Validation 
+
+Verify the integration points with external systems and services for data exchange. Test scenarios include:
+- Testing API integrations with different payloads.
+- Validating data consistency across integrated systems.
+
+## Execution and Verification Process
+Follow the steps mentioned below to perform Orchestration testing in Cobalt:
+
+**1. Prepare Test Data**: Define test data and payloads in [Events](https://docs.gocobalt.io/guides/developer-settings/events) to simulate different scenarios.
+
+**2. Execute Orchestration Tests**: Trigger the workflow with predefined test data through the Try API section to observe the behavior.
+
+**3. Monitor and Analyze**: Monitor the workflow execution, data flow, and system responses for anomalies.
+
+**4. Verify Results**: Compare the actual response with expected results to ensure the workflow functions as intended. To check the status of Workflow, navigate to `Logs` > `Executions` in Cobalt and check the workflow status.
+<Tip>
+Learn more about Workflow logs [here](https://docs.gocobalt.io/guides/platform/workflow-logs).
+</Tip>
+
+**5. Iterate and Optimize**: Identify areas for improvement, optimize performance, and refine the workflow based on Logs obtained.
+
+## Benefits of Orchestration Testing
+By performing Orchestration testing, you can ensure that the workflow has:
+
+- Comprehensive Validation: Ensure the seamless integration and interaction of nodes within the workflow.
+
+- Error Resilience: Validate error handling mechanisms and recovery processes for robust workflows.
+
+- Performance Optimization: Identify bottlenecks, optimize resource utilization, and enhance workflow efficiency.
+
+- End-to-End Reliability: Confirm the reliability and consistency of data processing and system interactions across the entire workflow.
+
+
+## Checkpoint + Next Step 
+<Check>
+You have now successfully verified and tested your workflows. It's time to now make these orchestrations live for your users.
+</Check>

@@ -1,0 +1,211 @@
+---
+title: Manager End-user configurations
+---
+Now, since the user has successfully connected with the enabled application, he is now redirected back to your integrations page. You can now use the Cobalt API or SDK to find an existing config or create a new config for the Linked Account.
+
+<img height="200" src="/images/implementation/config_sequence.png" alt="Sequence Diagram for User Config"/>
+
+
+## Create Config
+You can create config for the Linked Account through the Cobalt Connect SDKs or using the APIs.
+
+You can use the **.config()** method or the [Create Config API](https://docs.gocobalt.io/api-reference/config/find-or-create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
+
+1. **Request** - `Application Slug` and `linked_account_id` are mandatory fields for the request. You can request in the following way:
+<CodeGroup>
+``` JavaScript .config()
+cobalt.config({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
+``` JavaScript cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "slug": "<string>",
+  "config_id": "<string>",
+  "labels": {}
+}'
+```
+</CodeGroup>
+2. **Response** - The method will return a JSON Object as response containing the information about config of the application for the Linked Account and provides you with all the published workflows and settings input for the user required to execute the orchestration.
+``` JavaScript Response
+{
+	"slug": "slack",
+	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
+	"fields": [
+		{
+			"required": false,
+			"id": "64da0b57c9ae95561bb0a24d",
+			"name": "Channel",
+			"field_type": "select",
+			"options": [
+				{
+					"name": "general",
+					"value": "C044U7Q074J"
+				}
+			],
+			"labels": []
+		}
+	],
+	"workflows": [
+		{
+			"id": "64d1fac58716dc5065127ffe",
+			"name": "Send message in a channel",
+			"description": "",
+			"enabled": false,
+			"fields": [
+				{
+					"required": false,
+					"id": "64da0b57c9ae95561bb0a24f",
+					"name": "Channel",
+					"field_type": "select",
+					"options": [
+						{
+							"name": "general",
+							"value": "C044U7Q074J"
+						}
+					],
+					"labels": []
+				}
+			]
+		}
+	],
+	"field_errors": []
+}
+```
+
+## Update Config
+
+The user can now enable the workflows, enter data for the settings and map fields. These updates to the config can be made using the SDK or the APIs.
+
+1. **Request** - You can use the **.updateconfig()** method or the [Update Config API](https://docs.gocobalt.io/api-reference/config/update-config) which updates the specified config of a Linked Account. You can also enable or disable the Workflows of a user by updating the config.
+<CodeGroup>
+``` JavaScript Method
+cobalt.updateConfig({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+
+    }
+  ]
+})
+```
+``` JavaScript cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "slug": "<string>",
+  "config_id": "<string>",
+  "fields": {
+    "64abea6d941ba774d124b19c": "<string>"
+  },
+  "workflows": [
+    {
+      "id": "<string>",
+      "enabled": true,
+      "fields": {
+        "64abea6d941ba774d124b19c": "<string>"
+      }
+    }
+  ]
+}'
+```
+</CodeGroup>
+<Info>You can learn in detail about the method in our JS SDK Doc [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig).</Info>
+
+2. **Response** - In response, you get the updated config information for the application.
+``` JavaScript Response
+{
+    "slug": "mailerlite",
+    "config_id": "config_4",
+    "fields": [
+        {
+            "required": false,
+            "id": "646473c7e7b74deee820458f",
+            "name": "MailerLite Field Mapping",
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                },
+                {
+                    "name": "Country",
+                    "value": "country"
+                },
+                {
+                    "name": "Last name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Phone",
+                    "value": "phone"
+                },
+                {
+                    "name": "State",
+                    "value": "state"
+                },
+                {
+                    "name": "Zip",
+                    "value": "z_i_p"
+                }
+            ],
+            "labels": [
+                {
+                    "name": "Customer Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Customer Last Name",
+                    "value": "last_name"
+                },
+                {
+                    "name": "Customer's Company",
+                    "value": "company"
+                }
+            ]
+        }
+    ],
+    "workflows": [
+        {
+            "id": "649d230c2ce6b9b07b163e61",
+            "name": "Add a Subscriber to Mailerlite",
+            "description": "",
+            "enabled": false,
+            "fields": []
+        }
+    ]
+}
+```
+
+## Checkpoint + Next Step
+
+<Check>
+After this step, you should know how to manage config of a user. You are now ready to create Workflows for your users in the integration.
+</Check>

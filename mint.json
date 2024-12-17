@@ -40,6 +40,11 @@
       "version": "v1"
     },
     {
+      "name": "Implementation & Guides",
+      "url": "implementation",
+      "version": "v2"
+    },
+    {
       "name": "API Reference",
       "url": "api-reference"
     },
@@ -66,7 +71,7 @@
     {
       "name": "Examples",
       "icon": "book",
-      "url": "guides/building"
+      "url": "implementation/examples"
     }
   ],
   "navigation": [
@@ -80,111 +85,56 @@
       ]
     },
     {
-      "group": "Documentation",
+      "group": "Getting Started",
       "version": "v2",
       "pages": [
         "overview",
-        {
-          "group": "Examples",
-          "pages":[
-            "examples/build_salesforce",
-            "examples/build_netsuite",
-            "examples/build_workday"
-          ]
-        },
-        {
-          "group": "Implementation Guide",
-          "pages": [
-            "implementation/overview",
-            {
-              "group": "Integrate",
-              "pages":[
-                "implementation/integrate/cobalt-account",
-                "implementation/integrate/setup-linked-account",
-                "implementation/integrate/get-access-token",
-                "implementation/integrate/display-apps",
-                "implementation/integrate/manage-connection",
-                "implementation/integrate/end-user-config"
-              ]
-            },
-            {
-              "group": "Communicate",
-              "pages":[
-                "implementation/communicate/write-data",
-                "implementation/communicate/get-data"
-              ]
-            },
-            {
-              "group": "Test Integration",
-              "pages":[
-                "implementation/Test-Integration/develop-test",
-                "implementation/Test-Integration/node-test",
-                "implementation/Test-Integration/orchestration-test"
-              ]
-            },
-            {
-              "group": "Additional ",
-              "pages":[
-                "implementation/additional/reauth",
-                "implementation/additional/workflow-failure",
-                "implementation/additional/workflow-access"
-              ]
-            },
-            {
-              "group": "Deploy",
-              "pages":[
-                "implementation/deploy/live-checklist"
-              ]
-            }
-          ]
-        },
-        "Solutions",
-        "Governance"
+        "quickstart"
       ]
     },
     {
-      "group": "Implementation Guide",
+    "group": "Implementation Guide",
     "version": "v1",
       "pages": [
-        "implementation/overview",
+        "implement/implementation/overview",
         {
           "group": "Integrate",
           "pages":[
-            "implementation/integrate/cobalt-account",
-            "implementation/integrate/setup-linked-account",
-            "implementation/integrate/get-access-token",
-            "implementation/integrate/display-apps",
-            "implementation/integrate/manage-connection",
-            "implementation/integrate/end-user-config"
+            "implement/implementation/integrate/cobalt-account",
+            "implement/implementation/integrate/setup-linked-account",
+            "implement/implementation/integrate/get-access-token",
+            "implement/implementation/integrate/display-apps",
+            "implement/implementation/integrate/manage-connection",
+            "implement/implementation/integrate/end-user-config"
           ]
         },
         {
           "group": "Communicate",
           "pages":[
-            "implementation/communicate/write-data",
-            "implementation/communicate/get-data"
+            "implement/implementation/communicate/write-data",
+            "implement/implementation/communicate/get-data"
           ]
         },
         {
           "group": "Test Integration",
           "pages":[
-            "implementation/Test-Integration/develop-test",
-            "implementation/Test-Integration/node-test",
-            "implementation/Test-Integration/orchestration-test"
+            "implement/implementation/Test-Integration/develop-test",
+            "implement/implementation/Test-Integration/node-test",
+            "implement/implementation/Test-Integration/orchestration-test"
           ]
         },
         {
           "group": "Additional ",
           "pages":[
-            "implementation/additional/reauth",
-            "implementation/additional/workflow-failure",
-            "implementation/additional/workflow-access"
+            "implement/implementation/additional/reauth",
+            "implement/implementation/additional/workflow-failure",
+            "implement/implementation/additional/workflow-access"
           ]
         },
         {
           "group": "Deploy",
           "pages":[
-            "implementation/deploy/live-checklist"
+            "implement/implementation/deploy/live-checklist"
           ]
         }
       ]
@@ -194,18 +144,12 @@
       "version": "v2",
       "pages":[
         {
-          "group":"Integration Basics",
+          "group":"Platform Setup",
           "pages": [
-            "build/basics/quickstart",
-            {
-              "group":"Platform Setup",
-              "pages":[
                 "build/basics/proxies",
                 "build/basics/events",
                 "build/basics/webhooks",
                 "build/basics/user_forms"
-              ]
-            }
           ]
         },
 
@@ -215,7 +159,21 @@
           "pages": [
             "build/connectors/overview",
             "build/connectors/authentication",
-            "build/connectors/config",
+            {
+              "group":"Config",
+              "pages":[
+                "build/connectors/config/config",
+                {
+                  "group":"Field Types",
+                  "pages":[
+                    "build/connectors/config/field_type_intro",
+                    "build/connectors/config/mapping",
+                    "build/connectors/config/rule_engine"
+
+                  ]
+                }
+              ]
+            },
             "build/connectors/add_to_marketplace"
           ]
         },
@@ -229,6 +187,7 @@
               "group": "Nodes",
               "pages": [
                 "build/workflow/custom-code",
+                "build/workflow/data_mapper",
                 "build/workflow/datastore",
                 "build/workflow/delay",
                 "build/workflow/group",
@@ -238,15 +197,16 @@
                 "build/workflow/response",
                 "build/workflow/rule",
                 "build/workflow/email",
+                "build/workflow/tables",
                 "build/workflow/transform"
               ]
             },
-            "build/workflow/data_mapper",
             "build/workflow/datarefs",
             "build/workflow/human_task",
             "build/workflow/internal_functions",
             "build/workflow/variables",
-            "build/workflow/workflow_testing"
+            "build/workflow/workflow_testing",
+            "build/workflow/templating"
           ]
         }
       ]
@@ -263,7 +223,8 @@
             "ship/auth_flows/build_your_own",
             "ship/auth_flows/re-auth-flow"
           ]
-        }
+        },
+        "ship/tryapi"
       ]
     },
     {
@@ -289,6 +250,13 @@
       "version": "v2",
       "pages": [
         "deployment/overview"
+      ]
+    },
+    {
+      "group": "Governance & Compliance",
+      "version": "v2",
+      "pages": [
+        "governance"
       ]
     },
     {
@@ -445,6 +413,71 @@
         "guides/developer-settings/overview", 
         "guides/developer-settings/events",
         "guides/developer-settings/api_proxy"
+      ]
+    },
+    {
+      "group": "Implementation Guide",
+      "version": "v2",
+      "pages": [
+        "implementation/overview",
+        {
+          "group": "Integrate",
+          "pages":[
+            "implementation/integrate/cobalt-account",
+            "implementation/integrate/setup-linked-account",
+            "implementation/integrate/get-access-token",
+            "implementation/integrate/display-apps",
+            "implementation/integrate/manage-connection",
+            "implementation/integrate/end-user-config"
+          ]
+        },
+        {
+          "group": "Communicate",
+          "pages":[
+            "implementation/communicate/write-data",
+            "implementation/communicate/get-data"
+          ]
+        },
+        {
+          "group": "Test Integration",
+          "pages":[
+            "implementation/Test-Integration/develop-test",
+            "implementation/Test-Integration/node-test",
+            "implementation/Test-Integration/orchestration-test"
+          ]
+        },
+        {
+          "group": "Additional ",
+          "pages":[
+            "implementation/additional/reauth",
+            "implementation/additional/workflow-failure",
+            "implementation/additional/workflow-access"
+          ]
+        },
+        {
+          "group": "Deploy",
+          "pages":[
+            "implementation/deploy/live-checklist"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Examples",
+      "version": "v2",
+      "pages":[
+        "implementation/examples/build_salesforce",
+        "implementation/examples/build_netsuite",
+        "implementation/examples/build_workday"
+      ]
+    },
+    {
+      "group": "Solutions",
+      "version": "v2",
+      "pages":[
+        "implementation/solution/two_way_sync",
+        "implementation/solution/data_import",
+        "implementation/solution/push_data"
       ]
     },
     {
