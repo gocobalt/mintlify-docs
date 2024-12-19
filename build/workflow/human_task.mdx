@@ -1,7 +1,67 @@
 ---
 title: Human Task
+description: Human Task is the way to involve human input in workflow execution to bring a layer of user interaction.
 ---
-<Info>
 
-Coming Soon!
+It allows you to send forms to your users during workflow execution and use the response received in further nodes. 
+
+## Pre-requisite
+
+To use the Human Task feature, you need to have the following:
+
+#### Configure your SMTP Credentials.
+
+Follow the steps below to configure:
+<Steps>
+  <Step title="Navigate for setup">
+    In the platform, click on your profile in the to right corner and select `Account`.
+
+    Switch to `Email` tab.
+    <img height="200" src="/images/Guides/Nodes/navigate_human.png" alt="Navigation to configure SMTP"/>
+  </Step>
+  <Step title="Provide required credentials & test">
+    Fill in the SMTP credentials and test them by clicking on `Send Email` button.
+
+    If it was successful, your connection is established.
+  </Step>
+</Steps>
+
+#### User Forms
+
+User forms define the form layout that you will send to your users to receive the inputs. You need to have atleast one user form to use in the Human Task node.
+
+<Tip>
+Learn more about User Forms and how to create one [here](/build/basics/user_forms).
+</Tip>
+
+## Human Task in workflow
+
+In the workflow where you want a form to be sent to users, add the Human Task node. 
+
+#### Human Task node setup
+
+In the node, you can configure information about how you want to send the form to your users.
+
+Using the `Timeout` field, you can set the time in minutes until which the form will be available. Provide rest of the information such as **Sender Email**, **Receiver's Emails**, **Subject** and **Body** of the email.
+
+You also need to select the User form which you want to send by choosing it from the dropdown in `Forms` field.
+
+ <img height="200" src="/images/Guides/Nodes/add_human.png" alt="Human Task Node in workflow"/>
+
+ Once you select a form, the fields defined in the form will get auto generated in the node and you can insert static data or another node's response in those fields. Once done, click on `Save`.
+
+#### Human Task in Workflow execution
+
+Once the workflow with human task node is executed, the form will be sent to the receivers.
+
+<Info>
+The Human Task Node will be in waiting state in execution Logs until the timeout period gets over or the forms get submitted.
 </Info>
+
+In the email received, a form link is available for receivers to fill. The form looks like below:
+ <img height="200" src="/images/Guides/Nodes/form.png" alt="Form opened"/>
+
+Once the form gets submitted, the workflow will continue further execution and you can access the form response in further nodes.
+<Tip>
+The form_status field received in the response of the node will either be **timeout** or **submitted**. 
+</Tip>
