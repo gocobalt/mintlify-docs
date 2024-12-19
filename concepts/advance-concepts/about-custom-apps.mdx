@@ -1,18 +1,17 @@
 ---
-title: About Custom Apps
+title: Custom App Setup
+description: Create and integrate your custom applications
 ---
-Custom Apps in Cobalt provide users with the flexibility to create and integrate their own custom applications into their workflows. These custom apps function similarly to other pre-built integrations available in Cobalt, allowing users to tailor their automation processes according to their specific needs.
+Any integration can be setup as Custom App and they function similarly to other pre-built integrations available in Cobalt.
 
 ## Creating Custom Apps
-Custom Apps can be created within the `Apps` section of Cobalt, alongside other available integrations. 
 
-When creating a custom app, users have the option to specify various details such as the **Name**, **Category**, **Description** and **Slug** to identify the app within the Cobalt platform.
+To create a custom app, click on `+ Add App` in the **Apps** section and specify **Name**, **Description** and **Slug** to identify the app within the Cobalt platform and click on `Create`
 
-Custom App will also have a tag `Custom` written on their card in the App list.
+<Tip>
+You can also generate Actions for the custom app by providing the OpenAPI Spec.
+</Tip>
 
-<Info>
-Learn in detail about how you can create a Custom App in Cobalt [here](https://docs.gocobalt.io/guides/advance-concepts/setting-up-custom-app).
-</Info>
 <img height="200" src="/images/Guides/Platform/custom-app.png" alt="Custom App in the Apps list in Cobalt"/>
 
 ## Authentication Methods
@@ -20,39 +19,106 @@ Custom Apps support multiple authentication methods. To setup the Authorization 
 
 The methods of **Authorization** are: 
 
-### Key Based 
-
-If the Custom App requires API Key based authentication, select `Key Based`. It requires users to set up an API for generating access tokens.
+<Accordion title="Key Based ">
+  If the Custom App requires API Key based authentication, select `Key Based`. It requires users to set up an API for generating access tokens.
 <img height="200" src="/images/Guides/Platform/key.png" alt="Key-based authorization"/>
 
-### OAuth 1.0 
-If the App requires OAuth 1.0 auth, select `Oauth1`. It requires the user to provide information like **Auth token API**, **Token Type**, **Token Field** name etc. 
+Follow the steps below to setup your custom app:
+<Steps>
+  <Step title="Select Key Auth type">
+    Select either of **Basic Auth**, **Bearer Token** or **API Key** as the auth mechanism.
+  </Step>
+  <Step title="Configure User Input Fields">
+    Add the input fields that will be visible to your users asking for the required API credentials and click on `Save`.
+  </Step>
+  <Step title="Map Auth fields">
+    Once you have added the required user input fields, map those fields now to setup auth data.
+   <img height="200" src="/images/Guides/Platform/key-setup.png" alt="Key-based authorization setup"/> 
+    </Step>
+<Step title="Add Base URL">
+    Provide the Base URL of the API endpoints for the custom app and the key code for Invalid API Credentials.
+  </Step>
+  <Step title="Setup Identifier and Validation">
+    Optionally, you can also provide an endpoint which will be called to perform validation of the provided credentials.
+    <Tip>
+    Its recommended to provide a GET API endpoint to perform validation, so as to avoid modifying any data using the credentials.
+    </Tip>
+    <img height="200" src="/images/Guides/Platform/key-valid.png" alt="Key-based auth validation"/> 
+  </Step>
+</Steps>
 
-<img height="200" src="/images/Guides/Platform/oauth1.png" alt="OAuth 1.0 authorization"/>
+<Check>
+Congratulations!
 
-### OAuth 2.0 
+You have successfully setup a Key based Custom Application in Cobalt.
+</Check>
+
+
+</Accordion>
+
+<Accordion title="OAuth 2.0 ">
 If you want to provide OAuth 2.0 type authorization, select `OAuth 2.0` in the methods. 
 
-Users need to provide details such as **Client ID**, **Client ID Param Name**, **Client Secret**, **Redirect URL**, **Auth and Token URLs**, **Scopes** etc., along with the API for acquiring the access token.
-<img height="200" src="/images/Guides/Platform/oauth2.png" alt="OAuth 2.0 authorization"/>
+<img height="200" src="/images/Guides/Platform/oauth_setup.png" alt="OAuth 2.0 authorization"/>
 
-### No Auth 
+Follow the steps below to configure OAuth mechanism for your custom app:
+<Steps>
+  <Step title="Provide OAuth Credentials">
+    Add the **Client ID**, **Client Secret** and the **Scopes** of the developer OAuth 2.0 app that you have created.
+    <Warning>
+Ensure that you add the provided `Callback URL` in your developer OAuth 2.0 app.
+    </Warning>
+  </Step>
+  <Step title="Add Authorization and Token URL">
+    Add the Authorization and Token URL required for OAuth authentication in the provided fields, select `Client Authentication` type and `Save`. 
+    <Info>
+You can find both the URLs from the Authentication documentation of the custom app that you are setting up.
+    </Info>
+  </Step>
+  <Step title="Setup Refresh Mechanism and API Base URL">
+    In the `API Setup` section, provide the **Base URL** for the APIs and appropriate code i.e. **Expired Access Token Codes** which is received on token expiry for the Refresh mechanism to work.
+    <img height="200" src="/images/Guides/Platform/oauth_refresh.png" alt="OAuth 2.0 Refresh mechanism"/>
+  </Step>
+    <Step title="Setup Identifier and Validation">
+    Optionally, you can also provide an endpoint which will be called to perform validation of the provided credentials.
+    <Tip>
+    Its recommended to provide a GET API endpoint to perform validation, so as to avoid modifying any data using the credentials.
+    </Tip>
+  </Step>
+  <Step title="Extract Access Token & Refresh Token">
+  In the `Auth Tokens Data` section, you will provide the mapping using which the tokens can be extracted once received on callback on successful authorization.
 
+  Usually an object is received after authorization which will be saved as `access_token_response` on Cobalt's end and you need to provide the key mapping of the required fields from the object.
+  <img height="200" src="/images/Guides/Platform/oauth_tokens.png" alt="Extract Access Token"/>
+  </Step>
+</Steps>
+<Check>
+Congratulations!
+
+You have successfully setup a OAuth 2.0 Custom Application in Cobalt.
+</Check>
+
+</Accordion>
+
+<Accordion title="No Auth">
 Select this option if no authentication is required for accessing the custom app.
+</Accordion>
 
-## App Configuration
-Similar to the pre-built integrations on Cobalt, users can configure various aspects in the Custom App, including **Actions**, **Workflows**, and App-specific configurations. 
+## Custom Actions for App
+Custom Apps support the addition of Actions of APIs.
 
-App configuration allows users to fine-tune the behavior of the custom app according to their requirements.
-<img height="200" src="/images/Guides/Platform/config.png" alt="Configuring the App"/>
+#### Create Custom Action
 
-## Adding Actions and Workflows
-Custom Apps support the addition of Actions and Workflows, enabling users to define specific tasks and automation processes within the app. 
+Select `Custom Actions`, click on the `New Action` button and provide a **Name** and **Description**.
 
-Actions can be created to perform specific functions or interact with external systems similar to the API Proxy in Cobalt, while Workflows allow users to orchestrate a series of actions to achieve complex automation scenarios.
+Add any required or optional **Fields** for the API and add the API under `API Call` section.
+<Note>
+Provide the API by breaking it into 2 parts i.e. Base URL and the Endpoint.
+</Note>
 <img height="200" src="/images/Guides/Platform/actions.png" alt="Actions in the Custom App"/>
-<Info>
-Learn more about how to create an Action and Workflow in the Custom App.
-- [Action](https://docs.gocobalt.io/guides/developer-settings/actions)
-- [Workflow](https://docs.gocobalt.io/guides/workflow/overview)
-</Info>
+
+#### Enable Pagination for Custom Action
+If the Action's API supports pagination, then you can add it to the custom action. Go to the **API Call** section and enable the `Pagination` toggle.
+
+In the `Type` field, select the pagination type and provide the required fields and click on `Save API Call`.
+<img height="200" src="/images/Guides/Platform/action_pagination.png" alt="Actions Pagination in the Custom App"/>

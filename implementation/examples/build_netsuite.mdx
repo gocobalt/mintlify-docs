@@ -1,9 +1,427 @@
 ---
 title: Build NetSuite Integration
-description: In this example guide, you will build a NetSuite integration using Cobalt
 ---
-<Tip>
-Coming Soon!  
+In this guide, we will walk through the essential steps required to build a NetSuite integration using the Cobalt platform. This process involves three major steps i.e. User Authentication with NetSuite, Creating Workflows and Using workflows for users.
 
-Please refer to v1 docs currently.
+## Authenticating with NetSuite integration
+
+To get started, first you need to enable the NetSuite integration in your account and also setup some basic processes.
+
+<Steps>
+
+<Step title="Enable the NetSuite App">
+### Step 1: Enable the NetSuite App
+
+After setting up your account, the next step is to enable the NetSuite app in your Cobalt account.
+
+<Note>Apps cannot be enabled using the API. You will need to enable the app through the UI.</Note>
+
+To enable the NetSuite app:
+
+Navigate to `Apps` in Cobalt and search for **Netsuite** and enable the app by clicking on the `Go Live` button in the top right corner.
+<img height="200" src="/images/Examples/netsuite/enable_netsuite.png" alt="Enable NetSuite App"/>
+
+Since this is a API Key based app, you do not need to perform any setup forn user authentication.
+<Tip>
+Follow the steps given [here](https://docs.gocobalt.io/resources/integration-providers/netsuite) to get your API credentials required for authentication.
 </Tip>
+
+Once the app is enabled, you can proceed to create and manage workflows and linked accounts associated with NetSuite.
+</Step>
+
+<Step title="Create a Linked Account">
+### Step 2: Create a Linked Account
+
+A Linked Account in Cobalt represents the end-users or customers who will use the integration through the platform. Each Linked Account requires a unique linked_account_id, which typically corresponds to an ID from your internal data model (e.g., a user or account ID).
+
+<Tip>
+Learn more about Linked Accounts [here](/build/basics/linked_account).
+</Tip>
+
+To upsert (create or update) a Linked Account, use the following API call:
+<CodeGroup>
+```bash cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "<string>",
+  "name": "<string>"'
+```
+</CodeGroup>
+
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|name| Optional | String | Name of the customer|
+
+You can check the Linked Accounts in your Cobalt account by navigating to the **Linked Accounts** section in the side menu.
+
+Once the Linked Account is successfully created or updated, it will be ready for authentication in the next step.
+</Step>
+
+<Step title="Generate Session Token for your Linked Account">
+### Step 3: Generate Token
+After creating a Linked Account, the next step is to generate a session token. Session tokens help protect your Cobalt API key and manage end-customer tokens more securely.
+
+To create a session token, use the following API call:
+<CodeGroup>
+```JavaScript cURL
+    curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/session-token \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "<string>"
+}'
+```
+</CodeGroup>
+
+This session token will be included in subsequent requests to Cobalt APIs to authenticate and authorize the actions.
+</Step>
+
+<Step title="Open Hosted Portal Auth Flow">
+### Step 4: Open Hosted Portal Auth Flow
+Next, you will need to generate a Hosted URL that your users will use to authenticate with Salesforce. Cobalt securely stores the credentials and handles API calls on behalf of your users.
+
+Use the following API call to generate the Hosted URL:
+<CodeGroup>
+```JavaScript cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "color": "<string>",
+  "bgColor": "<string>",
+  "name": "<string>"
+}'
+}'
+```
+</CodeGroup>
+
+The response will return a Hosted URL that your users can visit to authenticate and connect their Salesforce accounts.
+<Info> Hosted Portal is a no-code solution provided by Cobalt that removes the need to build your own UI for handling integration authentication and configuration. </Info>
+</Step>
+<Step title="Authenticate Using Hosted Portal">
+### Step 5: Perform Key based Authentication
+
+Visit the Hosted URL provided in the API response. The Hosted Portal will display all the integrations you have enabled, including NetSuite.
+
+To authenticate:
+
+- Navigate to the NetSuite integration in the portal.
+- Provide the requested credentials.
+- Click on Connect to begin successfully authenticate with NetSuite.
+
+</Step>
+</Steps>
+
+<Check>
+You have successfully authenticated with NetSuite integration.
+
+The next step is to create workflows for your use-case.
+</Check>
+
+## Creating Workflows in NetSuite
+There are 2 major categories of workflows that you can create in NetSuite currently.
+
+<CardGroup cols={2}>
+  <Card title="Data Import from NetSuite" icon="download">
+    Sync data from NetSuite to your system.
+  </Card>
+  <Card title="Push Data to NetSuite" icon="upload">
+    Create data on NetSuite from your system.
+  </Card>
+</CardGroup>
+
+Let's look at a sample workflow for each case.
+
+#### Data Import from NetSuite
+  Consider a use-case where you want to sync all the contacts present in NetSuite to your system.
+
+In the NetSuite integration, go to `Workflows` and create a new workflow by clicking on `+Add Workflow` button and name it as `Sync Contacts`.
+
+<Accordion title="Data Import from NetSuite">
+
+Follow the steps given to build the workflow:
+<Steps>
+  <Step title="Add Trigger in Start Node">
+
+    All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
+   For this workflow we will use the Event Based trigger.
+  <Tip>
+  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  </Tip>
+    Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
+<img height="200" src="/images/Examples/netsuite/event_netsuite.png" alt="Event for workflow"/>
+
+Give a name to your event and keep the payload as an empty object.
+  </Step>
+
+  <Step title="Add NetSuite Node">
+
+    Now to fetch all the contacts present in your user's account, we need to call NetSuite API.
+
+    Click on `Nodes` option in the top right and drag the NetSuite Node from **Native Apps** section to the workflow builder. Connect this node with Start Node and select `Get Contact` action in the node.
+  <img height="200" src="/images/Examples/netsuite/netsuite_action.png" alt="Choose Node"/>
+  </Step>
+
+<Step title="Add Custom Code node">
+  We fetched all the contacts data from NetSuite, but NetSuite API only sends the IDs of the contacts in the API response, so now we need to loop through all the IDs and get contact data.
+
+  Drag the Custom Code from the Utility Nodes section onto the workflow builder and connect it with Salesforce node.
+
+</Step>
+
+<Step title="Mapping Contact fields">
+
+  Click on `+ Map Fields` under Input Parameters, add key name as `contacts` and in value we will provide the response received through NetSuite node which will be restructured.
+
+  In `Value`, select **Nodes** tab under Insert Variable and click on `+` of the NetSuite Node.
+    <img height="200" src="/images/Examples/netsuite/map_netsuite.png" alt="Mapping API Response for workflow"/>
+
+  You can now do mapping using JavaScript code. Try the sample code provided below:
+  ```
+  function yourFunction(params) {
+const res = params.contacts.map(ele=>{
+        const output =  {
+            id: ele.Id,
+            title: ele.Name,
+            description: ele.Description || 'Description not available',
+            amount: ele.Amount,
+            title: ele.Title,
+            status: ele.StageName
+
+        }
+        return output
+    })
+    return {"result": res || [] }
+}
+```
+</Step>
+
+<Step title="API Proxy in Workflow">
+You have successfully fetched all contacts and structured the payload. Now to receive it in your server, you need to configure an API Proxy.
+
+In Cobalt Dashboard, navigate to `Developer` > `API Proxies` and click on `New Action`. Configure an API endpoint, where you want to receive the response.
+
+If you want to test, go to [webhook.site](https://webhook.site/) and copy `Your unique URL` and configure this as a POST Request and `Save`.
+    <img height="200" src="/images/Examples/salesforce/proxy_salesforce.png" alt="Configuring API Proxy workflow"/>
+
+<Tip>Learn more about API Proxies [here](https://docs.gocobalt.io/build/basics/proxies).</Tip>
+</Step>
+
+<Step title="Use API Proxy in Workflow">
+From Native Apps nodes, add your org's Node and connect it with Custom Code.
+
+Click on the node and select the API Proxy that you created from the Actions. Add the response from Custom Code node in data field and click on `Save`.
+<Note>
+Ensure that you add a field in the API Proxy where you can pass the JSON data and then added it to the API Call body as well in the POST request.
+</Note>
+    <img height="200" src="/images/Examples/netsuite/proxy_workflow.png" alt="Configuring API Proxy in the workflow"/>
+</Step>
+
+</Steps>
+
+<Check>
+Hurray!!
+
+You have successfully created a NetSuite workflow to sync all the opportunities to your system.
+</Check>
+</Accordion>
+
+
+
+
+
+#### Push Data to NetSuite
+
+Consider a use-case where you want to create a contact present in your system to NetSuite.
+
+This workflow will be fired when you send an Event with the payload of the contact to be added.
+
+In the NetSuite integration, go to `Workflows` and create a new workflow by clicking on `+Add Workflow` button and name it as `Create New Contact`.
+
+<Accordion title="Push Data to NetSuite">
+Follow the steps given to build the workflow:
+<Steps>
+  <Step title="Add Trigger in Start Node">
+
+    All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
+   For this workflow we will use the Event Based trigger.
+  <Tip>
+  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  </Tip>
+    Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
+<img height="200" src="/images/Examples/salesforce/event_salesforce_add.png" alt="Event for workflow"/>
+
+Give a name to your event and provide all the data related to the contact in the payload.
+  </Step>
+  <Step title="Add NetSuite Node">
+  Now to create a new contact in NetSuite, we need to call NetSuite API.
+
+  Click on `Nodes` option in the top right and drag the NetSuite Node from **Native Apps** section to the workflow builder. Connect this node with Start Node.
+  </Step>
+
+  <Step title="Add Action in node">
+    Click on NetSuite Node and add the `Create Contact` action.
+    To provide the data in all the fields from your Event payload, just click on a field and from the **Event** tab under Insert Variable, select the fields from the body that you sent as payload.
+    <img height="200" src="/images/Examples/netsuite/create_netsuite.png" alt="Create Contact action"/>
+<Warning>
+Ensure that all the mandatory fields in the action are filled, else the NetSuite API will give error.
+</Warning>
+  </Step>
+</Steps>
+<Check>
+Hurray!!
+
+You have successfully created a NetSuite workflow to create a new contact.
+</Check>
+</Accordion>
+
+<Check>
+You have successfully created the workflows for your use case.
+
+Next step is to enable and execute those workflows for your Linked Accounts.
+</Check>
+
+
+## Executing the Workflows
+
+To run these workflows for your users or Linked Accounts, you need to do the following steps:
+
+<Steps>
+  <Step title="Create Config for Linked Account">
+  Config is a customization that you store for each integration of your end-customers.
+  ## Create Config
+You can create config for the Linked Account through the Cobalt Connect SDKs or using the APIs.
+
+You can use the **.config()** method or the [Create Config API](https://docs.gocobalt.io/api-reference/config/find-or-create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
+
+Make a request with the  `Application Slug` and `linked_account_id` as mandatory fields for it. You can request in the following way:
+<CodeGroup>
+``` JavaScript .config()
+cobalt.config({
+  slug: "netsuite",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
+``` JavaScript cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "slug": "<string>",
+  "config_id": "<string>",
+  "labels": {}
+}'
+```
+</CodeGroup>
+It will return information about config of the application for the Linked Account and provides you with all the published workflows and settings input for the user required to execute the workflow.
+``` JavaScript Response
+{
+	"slug": "netsuite",
+	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
+	"fields": [],
+	"workflows": [
+		{
+			"id": "64d1fac58716dc5065127ffe",
+			"name": "Sync Contacts",
+			"description": "",
+			"enabled": false,
+			"fields": []
+		}
+	],
+	"field_errors": []
+}
+```
+  
+  </Step>
+
+  <Step title="Enable Workflow">
+    Now you need to enable the workflow for your Linked account. You can either ask the user to enable them or you can do so for them by using the [Update Config API](https://docs.gocobalt.io/api-reference/config/update-config) or **.updateconfig()** method.
+
+Make the following request:
+<CodeGroup>
+``` JavaScript Method
+cobalt.updateConfig({
+  slug: "netsuite",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+
+    }
+  ]
+})
+```
+``` JavaScript cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "slug": "<string>",
+  "config_id": "<string>",
+  "fields": {
+    "64abea6d941ba774d124b19c": "<string>"
+  },
+  "workflows": [
+    {
+      "id": "<string>",
+      "enabled": true,
+      "fields": {
+        "64abea6d941ba774d124b19c": "<string>"
+      }
+    }
+  ]
+}'
+```
+</CodeGroup>
+In response, you get the updated config information for the application.
+
+  </Step>
+
+  <Step title="Third Step">
+    Once the required workflows are enabled, you need to fire event to start execution. You can use the [Trigger Event for app](https://docs.gocobalt.io/api-reference/event/trigger-event) API with the following request:
+    ```JavaScript cURL
+  curl --request POST \
+    --url https://api.gocobalt.io/api/v2/public/event/:slug \
+    --header 'Content-Type: application/json' \
+    --header 'linked_account_id: <linked_account_id>' \
+    --header 'x-api-key: <api-key>' \
+    --data '{
+    "event": "<string>",
+    "payload": {}
+    }'
+    ```
+  </Step>
+  <Step title="Check Execution Logs">
+  Once the workflow execution has been fired, you can check the Logs of the workflow [here](https://app.gocobalt.io/logs).
+
+  <Tip>
+Learn more about logs and observability [here](https://docs.gocobalt.io/maintain/logs).
+  </Tip>
+  </Step>
+
+</Steps>
+
+<Check>
+Congratulations!!
+
+You have successfully created a NetSuite integration and executed it for your users.
+</Check>

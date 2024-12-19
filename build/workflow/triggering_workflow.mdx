@@ -1,7 +1,54 @@
 ---
-title: Trigger Workflows
+title: Intro to Workflow Triggers
+description: All workflows start with a trigger.
 ---
 
-<Tip>
-Coming Soon!
+Trigger determines when the workflow will run and how data is passed into the workflow. Triggers are setup in the `Start Node` of workflow. Following are the available workflow trigger types.
+
+## App Events
+  App Events are custom events that are sent from your application via the Cobalt SDK or API to trigger Workflows. 
+
+In general, App Events are useful for triggering workflows that map data from your application to your users' apps. For example, you might send a `Contact Created` App Event from your application to trigger a Workflow that creates a matching contact in your users' Salesforce CRM.
+
+<Info>
+An App Event can be used to trigger multiple workflows.  This is useful in cases where you may want the same event to trigger similar workflows across different integrations.
+</Info>
+
+<img height="200" src="/images/Examples/salesforce/event_salesforce.png" alt="Event for workflow"/>
+
+<Tip>Learn more about **Events** in our guide [here](/build/basics/events).</Tip>
+
+
+## Default App Triggers
+  
+Default App triggers can be used to run workflows based on events in your users' apps in real-time. This is achieved through the app's webhooks and are available as Triggers in the integration.
+
+For example, you might want to trigger a workflow whenever new contacts are created in your users' Salesforce account, to sync contacts to your application in real-time. Then this can be done by using the `Contact Created` trigger.
+    <img height="200" src="/images/Examples/salesforce/trigger_salesforce.png" alt="Contact created trigger event"/>
+
+## Schedule
+
+  The Scheduler trigger is used for workflows that should run automatically at a scheduled time or interval. 
+
++ Minutes
+   (e.g. every 30 minutes)
++ Hourly
+   (e.g. every hour at 15 minutes past the hour)
++ Daily
+   (e.g. every 2 days at 9:00 am)
+
+    <img height="200" src="/images/Guides/Workflow/schedule_trigger.png" alt="Schedule Trigger"/>
+
+<Note>
+The minimum time that can be set in scheduler should be greater than 5 minutes.
+</Note>
+
+Once deployed, the workflow will run automatically at the designated time for all users who have activated the workflow.
+
+
+## Workflow API
+  The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
+
+  <Tip>
+Know more about Workflow API [here](https://docs.gocobalt.io/guides/workflow/workflow_api).
 </Tip>
