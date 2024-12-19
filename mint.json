@@ -71,7 +71,7 @@
     {
       "name": "Examples",
       "icon": "book",
-      "url": "implementation/examples"
+      "url": "https://docs.gocobalt.io/implementation/examples/"
     }
   ],
   "navigation": [
@@ -146,10 +146,20 @@
         {
           "group":"Platform Setup",
           "pages": [
+                "build/basics/linked_account",
                 "build/basics/proxies",
                 "build/basics/events",
                 "build/basics/webhooks",
-                "build/basics/user_forms"
+                "build/basics/user_forms",
+                {
+                  "group":"Account Management",
+                  "pages":[
+                    "build/basics/account-management/general", 
+                    "build/basics/account-management/users",
+                    "build/basics/account-management/access",
+                    "build/basics/account-management/branding"
+                  ]
+                } 
           ]
         },
 
@@ -158,7 +168,6 @@
           "group":"Connectors",
           "pages": [
             "build/connectors/overview",
-            "build/connectors/authentication",
             {
               "group":"Config",
               "pages":[
@@ -168,6 +177,7 @@
                   "pages":[
                     "build/connectors/config/field_type_intro",
                     "build/connectors/config/mapping",
+                    "build/connectors/config/dependent",
                     "build/connectors/config/rule_engine"
 
                   ]
@@ -182,13 +192,18 @@
           "group":"Build Workflow",
           "pages": [
             "build/workflow/overview",
-            "build/workflow/triggering_workflow",
+            {
+              "group":"Triggers",
+              "pages": [
+                "build/workflow/triggering_workflow",
+                "build/workflow/workflow_api"
+              ]
+            },
             {
               "group": "Nodes",
               "pages": [
                 "build/workflow/custom-code",
                 "build/workflow/data_mapper",
-                "build/workflow/datastore",
                 "build/workflow/delay",
                 "build/workflow/group",
                 "build/workflow/httpnode",
@@ -241,8 +256,7 @@
       "group": "Custom App",
       "version": "v2",
       "pages": [
-        "maintain/custom_app",
-        "maintain/custom_app_auth"
+        "maintain/custom_app"
       ]
     },
     {

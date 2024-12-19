@@ -1,12 +1,12 @@
 ---
-title: Group Node
+title: Loop Node
 ---
-The Group Node in Cobalt allows users to iterate over entities or execute a series of actions for a fixed number of iterations.
+The Loop Node in Cobalt allows users to iterate over entities or execute a series of actions for a fixed number of iterations.
 
-To incorporate repetitive actions or iterate over arrays within a workflow, users simply place the desired action nodes inside the Group Node and provide values for the input fields based on their requirements.
-<img height="200" src="/images/Guides/Workflow/group-node.png" alt="Group Node in Cobalt"/>
+To incorporate repetitive actions or iterate over arrays within a workflow, users simply place the desired action nodes inside the Loop Node and provide values for the input fields based on their requirements.
+<img height="200" src="/images/Guides/Workflow/group-node.png" alt="Loop Node in Cobalt"/>
 ## Actions
-The Group Node offers two distinct actions to choose from:
+The Loop Node offers two distinct actions to choose from:
 <Accordion title="Iterating Array">
 Select this action when iterating over an array. When using this action, the user specifies the array to iterate over.
 </Accordion>
@@ -16,13 +16,13 @@ Choose this action when you want to iterate a fixed number of times. With this a
 
 
 ## Input Fields
-The input fields for the Group Node vary based on the selected action.
+The input fields for the Loop Node vary based on the selected action.
 In case of `Iterating Array`, you need to provide the array which will determine the no. of times the loop will be executed while in `Fixed iteration`, you simply provide the **Number of Iterations**.
 
 <img height="200" src="/images/Guides/Workflow/iterating.png" alt="Iterating Array Action in Cobalt"/>
 
-## Accessing Array Item inside Group Node
+## Accessing Array Item inside Loop Node
 
-To access the array item that is being passed in the Group Node, within any node for each iteration, it can be done so by calling `array_item` object.
+To access the array item that is being passed in the Loop Node, within any node for each iteration, it can be done so by calling `array_item` object.
 
-Consider you want to access an `Id` that is unique within each array item that is being passed in the Group Node. To do so, call the Group Node as a Variable under `Nodes` and write it as `{{group:array_item.Id}}`.
+Consider you want to access an `Id` that is unique within each array item that is being passed in the Loop Node. To do so, call the Loop Node as a Variable under `Nodes` and write it as `{{group:array_item.Id}}`.
