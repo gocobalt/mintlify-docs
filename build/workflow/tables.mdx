@@ -13,11 +13,11 @@ You can only create a Persistent table when you create one using the `New Table`
 It can be of two types:
 #### Non-Persistent Table
 
-This type of Table and its data is available only within the context of the workflow execution in which it is created and cannot be accessed through **Tables** in dashboard.
+This type of Table and its data is available only within the context of the workflow execution and gets deleted once instance execution is completed. It cannot be accessed through **Tables** in dashboard.
 
 #### Persistent Table
 
-This Table and its data can be accessed across all the workflows in any application. 
+This Table and its data can be accessed across all the workflows in any application and are not deleted until user explicitly deletes them.
 <Note>
 You can find the list of all Persistent Tables in your Cobalt dashboard. 
 </Note>
@@ -30,6 +30,13 @@ All persistent tables created in the Cobalt platform can be accessed by navigati
 
 Additionally, you can click on any Table to view and manage its records directly from this interface.
 <img height="200" src="/images/Guides/Workflow/list_persistent.png" alt="View all Persistent Tables in Cobalt"/>
+
+#### Limitations in Tables
+
+A table has the following constraints:
+- Table can have max **10 columns**.
+- Table can have max **50,000 rows/records**.
+
 
 ## Table Actions
 Table node offers a range of actions which can be used in a Workflow:
