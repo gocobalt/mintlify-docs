@@ -1,12 +1,12 @@
 ---
-title: Cobalt Modal
+title: Auth flows options
 description: Cobalt's auth flows provides a seamless environment for your users to grant authorization to their third party application data.
 ---
 
 When creating application integrations, accessing customer's data is a required step. Using Cobalt's auth flows this process becomes both
 quick and heavily customizable.
 
-### Pre-requisites
+## Pre-requisites
 Below are a few pre-requisites that you need to do before choosing an Auth Flow:
 
 **1. Create Linked Account**
@@ -28,11 +28,12 @@ Know more about Linked Accounts and how you can create one in the guide [here](h
   The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
   </Warning>
 
-### Auth flow integration options
+## Auth flow integration options
 Cobalt provides 3 different ways for Auth flow of integrations
 
-  <Accordion title="Hosted flow" icon="cloud" description="Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.">
-    Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
+#### Hosted Flow
+<Accordion title="Hosted flow" icon="cloud" description="Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.">
+  Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
 
 - List all enabled applications
 - Handle the Auth flow
@@ -72,7 +73,9 @@ You can modify the UI of Hosted Portal using the [hosted_properties](https://doc
 | bgColor | Background Colour of your end customer |
 </Accordion>
 
-  <Accordion title="Embedded Flow" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
+#### Embedded Flow (Cobalt Modals)
+
+<Accordion title="Embedded Flow" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
     Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt auth flow into your React application.
 
   It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
@@ -85,7 +88,9 @@ You can modify the UI of Hosted Portal using the [hosted_properties](https://doc
 For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.
   </Accordion>
 
-  <Accordion title="Seamless Flow" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
+#### Seamless Flow (Build your own Frontend)
+
+<Accordion title="Seamless Flow" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
   Cobalt provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
 
 The general steps to build your own flow are:
