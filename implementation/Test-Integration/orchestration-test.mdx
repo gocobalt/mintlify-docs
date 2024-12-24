@@ -1,14 +1,14 @@
 ---
-title: Orchestrations Tests
-description: In this, we learn about Orchestration Testing which evaluates the end-to-end behavior and performance of the entire workflow in various scenarios.
+title: Workflow Tests
+description: In this, we learn about Workflow Testing which evaluates the end-to-end behavior and performance of the entire workflow in various scenarios.
 ---
-After completing node-level testing, orchestrating tests allows users to assess the seamless execution of interconnected nodes, data flow, and overall workflow behavior. By simulating real-world scenarios and diverse payloads, users can ensure the reliability, scalability, and efficiency of their integrations.
+After completing node-level testing, workflow tests allows users to assess the seamless execution of interconnected nodes, data flow, and overall workflow behavior. By simulating real-world scenarios and diverse payloads, users can ensure the reliability, scalability, and efficiency of their integrations.
 
-## Test Scenarios for Orchestration Testing
+## Test Scenarios
 
 ### 1. End-to-End Workflow Testing
 
-Validate the entire workflow from start to finish to ensure all nodes function correctly in sequence. Try executing the Workflow through the [Try API](https://docs.gocobalt.io/guides/platform/tryapi) section. Test scenarios include:
+Validate the entire workflow from start to finish to ensure all nodes function correctly in sequence. Try executing the Workflow through the [Try API](https://docs.gocobalt.io/ship/tryapi) section. Test scenarios include:
 
 - Triggering the workflow with different input data or payload.
 
@@ -38,29 +38,26 @@ Verify the integration points with external systems and services for data exchan
 ## Execution and Verification Process
 Follow the steps mentioned below to perform Orchestration testing in Cobalt:
 
-**1. Prepare Test Data**: Define test data and payloads in [Events](https://docs.gocobalt.io/guides/developer-settings/events) to simulate different scenarios.
-
-**2. Execute Orchestration Tests**: Trigger the workflow with predefined test data through the Try API section to observe the behavior.
-
-**3. Monitor and Analyze**: Monitor the workflow execution, data flow, and system responses for anomalies.
-
-**4. Verify Results**: Compare the actual response with expected results to ensure the workflow functions as intended. To check the status of Workflow, navigate to `Logs` > `Executions` in Cobalt and check the workflow status.
-<Tip>
-Learn more about Workflow logs [here](https://docs.gocobalt.io/guides/platform/workflow-logs).
-</Tip>
-
-**5. Iterate and Optimize**: Identify areas for improvement, optimize performance, and refine the workflow based on Logs obtained.
-
-## Benefits of Orchestration Testing
-By performing Orchestration testing, you can ensure that the workflow has:
-
-- Comprehensive Validation: Ensure the seamless integration and interaction of nodes within the workflow.
-
-- Error Resilience: Validate error handling mechanisms and recovery processes for robust workflows.
-
-- Performance Optimization: Identify bottlenecks, optimize resource utilization, and enhance workflow efficiency.
-
-- End-to-End Reliability: Confirm the reliability and consistency of data processing and system interactions across the entire workflow.
+<Steps>
+  <Step title="Prepare Test Data">
+    Define test data and payloads in [Events](https://docs.gocobalt.io/build/basics/events) to simulate different scenarios.
+  </Step>
+  <Step title="Execute Workflow Tests">
+    Trigger the workflow with predefined test data through the Try API section to observe the behavior.
+  </Step>
+  <Step title="Monitor and Analyze">
+    Monitor the workflow execution, data flow, and system responses for anomalies.
+  </Step>
+    <Step title="Verify Results">
+    Compare the actual response with expected results to ensure the workflow functions as intended. To check the status of Workflow, navigate to `Logs` > `Executions` in Cobalt and check the workflow status.
+    <Tip>
+    Learn more about Workflow logs [here](https://docs.gocobalt.io/maintain/logs).
+    </Tip>
+  </Step>
+    <Step title="Iterate and Optimize">
+    Identify areas for improvement, optimize performance, and refine the workflow based on Logs obtained.
+  </Step>
+</Steps>
 
 
 ## Checkpoint + Next Step 

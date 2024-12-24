@@ -45,7 +45,7 @@ Once your credentials are configured, you can also check the demo workflows alre
 In most integrations where you want to fetch some data, you'll need to setup API proxy to capture workflow's final response during testing. It's not necessary that every workflow will have an API Proxy present, in that case you can skip this step.
 
 <Tip>
-Learn more about API Proxy [here](https://docs.gocobalt.io/guides/developer-settings/api_proxy).
+Learn more about API Proxy [here](https://docs.gocobalt.io/build/basics/proxies).
 </Tip>
 
 Follow the steps given below to setup your own URL where you can receive the response: 
@@ -62,7 +62,7 @@ For eg: In the image above, the name of the API Proxy or Action present is **Bul
 
 Next step is to perform authentication of a Linked Account to the integration, to link it to the workflow.
 
-[Linked Accounts](https://docs.gocobalt.io/guides/platform/linked-account/general) refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform.
+[Linked Accounts](https://docs.gocobalt.io/build/basics/linked_account) refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform.
 
 Go to `Linked Accounts` section in Cobalt and open any Linked Account present.
 <Note>
@@ -74,7 +74,7 @@ Click on `Get Hosted URL` button > `Generate Hosted URL` > Copy the URL shown an
 
 Hosted Portal is a no-code solution built by Cobalt so that you don’t need to build your own UI to handle the integration authentication and configuration which we will now use for testing purposes.
 <Info>
-You can also build your own UI for end-users using our SDKs or APIs and [Auth Flows](https://docs.gocobalt.io/concepts/auth-flows).
+You can also build your own UI for end-users using our SDKs or APIs and [Auth Flows](https://docs.gocobalt.io/ship/auth_flows/flows).
 </Info>
 
 In the Hosted portal, navigate to the integration for which you want to perform authentication. If it's **OAuth** simply click on `Connect` or provide credentials if it's **Key-based** and click on `Connect`. If the authentication is successful you should see a **Connected** tag displayed beside the integration name.
@@ -92,10 +92,10 @@ Trigger of a Workflow can either be:
 1. **Native App Trigger** which triggers when a certain action is performed in the application. For eg: If the `Contact Created` trigger of HubSpot is present in the **Start Node** of your workflow, then it triggers when a new contact is added to your HubSpot account.
 2. **Event based triggers** which triggers when an event is called on Cobalt. You can check which Event is added to the workflow by checking the **Start Node** of the workflow.
 
-    - To start the workflow execution, go to [**Try API**](https://docs.gocobalt.io/guides/platform/tryapi) section in Cobalt, provide the required details and click on `Fire Event`.
+    - To start the workflow execution, go to [**Try API**](https://docs.gocobalt.io/ship/tryapi) section in Cobalt, provide the required details and click on `Fire Event`.
     <img height="200" src="/images/Guides/Platform/try-api.png" alt="Try API Section in Cobalt"/>
 
-Once the Event is fired, you can see the Event and Execution logs of your workflow by navigating to [**Logs**](https://docs.gocobalt.io/guides/platform/workflow-logs) section.
+Once the Event is fired, you can see the Event and Execution logs of your workflow by navigating to [**Logs**](https://docs.gocobalt.io/maintain/logs) section.
 
 Also, if the workflow executed successfully, you can check the final response received on your [webhook.site](https://webhook.site/).
 

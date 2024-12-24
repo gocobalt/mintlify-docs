@@ -6,7 +6,7 @@ description: Workflows connect data between your users' apps and your applicatio
 ## About Workflows
 
 Once your users have connected their third-party app accounts, you can then connect data between your application and your users' apps using Workflows.
-Workflows consist of [Triggers](/concepts/workflow/overview#triggers) and [Actions](/concepts/workflow/overview#actions), allowing for seamless automation and data flow between applications.
+Workflows consist of [Triggers](/build/workflow/triggering_workflow) and [Actions](/build/workflow/overview#actions), allowing for seamless automation and data flow between applications.
 
 With Workflows, users can easily implement common integration use cases such as pushing data from their application to users' apps, receiving real-time updates through webhooks, and enabling non-technical teams to configure integrations without coding.
 
@@ -44,7 +44,7 @@ In general, App Events are useful for triggering workflows that map data from yo
 An App Event can be used to trigger multiple workflows.  This is useful in cases where you may want the same event to trigger similar workflows across different integrations.
 </Info>
 
-Learn more about **Events** in our guide [here](/guides/developer-settings/events).
+Learn more about **Events** in our guide [here](/build/basics/events).
 </Accordion>
 
 <Accordion title="Default App Triggers">
@@ -73,7 +73,7 @@ Once deployed, the workflow will run automatically at the designated time for al
   The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
 
   <Tip>
-Know more about Workflow API [here](https://docs.gocobalt.io/guides/workflow/workflow_api).
+Know more about Workflow API [here](https://docs.gocobalt.io/build/workflow/workflow_api).
 </Tip>
 </Accordion>
 
@@ -85,51 +85,55 @@ and configure them to achieve required flow. These actions can be broadly catego
 <Accordion title="Cobalt's Native actions">
   These actions do not make any API calls themselves but help as utility tools for making workflows.
 
-There are various nodes currently provided by Cobalt. You can learn more about any of the node by clicking on its card below.
+There are various utility nodes currently provided by Cobalt. You can learn more about any of the node by clicking on its card below.
 <CardGroup cols={2}>
 
-  <Card title="Custom Code" icon="code" href="https://docs.gocobalt.io/concepts/workflow/custom-code">
+  <Card title="Custom Code" icon="code" href="https://docs.gocobalt.io/build/workflow/custom-code">
     This action takes input parameters and uses them to manipulate the data using custom code.
   </Card>
 
-  <Card title="Delay" icon="stopwatch" href="https://docs.gocobalt.io/concepts/workflow/delay">
+  <Card title="Delay" icon="stopwatch" href="https://docs.gocobalt.io/build/workflow/delay">
    Delay allows you to pause the execution of next step till a certain time. 
   </Card>
 
-    <Card title="Group" icon="object-ungroup" href="https://docs.gocobalt.io/concepts/workflow/group">
+  <Card title="Loop" icon="object-ungroup" href="https://docs.gocobalt.io/build/workflow/group">
     This action is used to loop over an entity or a flow for a number of iterations.
   </Card>
 
-    <Card title="HTTP" icon="globe" href="https://docs.gocobalt.io/concepts/workflow/httpnode">
+    <Card title="HTTP" icon="globe" href="https://docs.gocobalt.io/build/workflow/httpnode">
     HTTP Node allows you to create an HTTP Request to any API of the integration.
   </Card>
 
-  <Card title="Merge" icon="object-group" href="https://docs.gocobalt.io/concepts/workflow/merge">
+  <Card title="Internal Functions" icon="florin-sign" href="https://docs.gocobalt.io/build/workflow/internal_functions">
+    This action is used to create re-usable functions or use pre-defined library functions in the workflow.
+  </Card>
+
+  <Card title="Merge" icon="object-group" href="https://docs.gocobalt.io/build/workflow/merge">
     The Merge Node allows you to merge multiple branches of a workflow into a single flow. 
   </Card>
 
-    <Card title="PDF" icon="file-pdf" href="https://docs.gocobalt.io/concepts/workflow/pdf">
+    <Card title="PDF" icon="file-pdf" href="https://docs.gocobalt.io/build/workflow/pdf">
     PDF node helps you to convert HTML to a PDF.
     </Card>
 
 
-    <Card title="Response" icon="note-sticky" href="https://docs.gocobalt.io/concepts/workflow/response">
+    <Card title="Response" icon="note-sticky" href="https://docs.gocobalt.io/build/workflow/response">
     Response node lets you notify you about the Subscribed Webhook events and define the data that needs to be sent to you along with the notification.
   </Card>
 
-    <Card title="Rule" icon="bolt" href="https://docs.gocobalt.io/concepts/workflow/rule">
+    <Card title="Rule" icon="bolt" href="https://docs.gocobalt.io/build/workflow/rule">
     You can add conditional logic to workflows using our rule node.
   </Card>
 
-      <Card title="Send Email" icon="envelope-circle-check" href="https://docs.gocobalt.io/concepts/workflow/email">
+      <Card title="Send Email" icon="envelope-circle-check" href="https://docs.gocobalt.io/build/workflow/email">
     Send Email node lets you send an email through the workflow.
     </Card>
 
-    <Card title="Tables" icon="table" href="https://docs.gocobalt.io/concepts/workflow/datastore">
+    <Card title="Tables" icon="table" href="https://docs.gocobalt.io/build/workflow/datastore">
     Tables node helps you create variables at runtime and add values to them.
     </Card>
 
-    <Card title="Transform" icon="shuffle" href="https://docs.gocobalt.io/concepts/workflow/transform">
+    <Card title="Transform" icon="shuffle" href="https://docs.gocobalt.io/build/workflow/transform">
     This node lets you transform complex JSON into an easily accessible format.
     </Card>
 
@@ -137,7 +141,7 @@ There are various nodes currently provided by Cobalt. You can learn more about a
 </Accordion>
 
 <Accordion title="Cobalt's custom actions">
-  You can create [Custom actions](https://docs.gocobalt.io/guides/developer-settings/api_proxy) or **API Proxies** of your organization to use, in the Developer settings.
+  You can create [API Proxies](https://docs.gocobalt.io/build/basics/proxies) of your organization to use, in the Developer settings.
 </Accordion>
 
 <Accordion title="Third party application actions">

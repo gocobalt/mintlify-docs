@@ -3,7 +3,7 @@ title: Templating in Workflows
 ---
 ## Overview
 
-Cobalt supports **templating (dynamic variables)** in creating workflows. This essentially means that users can use these variables in their application workflows and [API Proxies](https://docs.gocobalt.io/guides/developer-settings/api_proxy) and [authorization settings](https://docs.gocobalt.io/guides/developer-settings/overview). 
+Cobalt supports **templating (dynamic variables)** in creating workflows. This essentially means that users can use these variables in their application workflows and [API Proxies](https://docs.gocobalt.io/build/basics/proxies) and [authorization settings](https://docs.gocobalt.io/build/basics/developer_settings). 
 
 Using these templates, users can access data from previous nodes in workflows and end-users **UDF**.
 
@@ -24,15 +24,15 @@ Data from a node can be accessed either directly from the response object using 
 
 The following template is used within Cobalt to access the response object of any other node in the workflow:
 
-  `{{node.<node number>.response:<Response object property>}}`
+  `{{node.<node number>.body.<Response object property>}}`
 
 OR
 
-`{{node.<node number>.response}}`,  if one wishes to access the complete response object.
+`{{node.<node number>.body}}`,  if one wishes to access the complete response object.
 
 For example, one can access the first item of response from node 15.
 
-It can be accessed as: `{{node.15.response:0}}`.
+It can be accessed as: `{{node.15.body.0}}`.
 
 <img height="200" src="/images/Guides/Workflow/templating_example.png" alt="Sample for Templating example"/>
 Or if one wants to access the "name" field of the item, it can be accessed as `{{node.15.response:0.name}}`.
@@ -40,13 +40,13 @@ Or if one wants to access the "name" field of the item, it can be accessed as `{
 
 <Accordion title="Access using Test Run variables">
 
-  In Cobalt workflows, you can use variables generated from tested node responses to access data dynamically.
+In Cobalt workflows, you can use variables generated from tested node responses to access data dynamically.
 
-  To use variables generated from node test runs, ensure that the workflow testing pre-requisites are satisfied and you have run a test execution on the node whose response you want to access.
+To use variables generated from node test runs, ensure that the workflow testing pre-requisites are satisfied and you have run a test execution on the node whose response you want to access.
 
-  <Tip>
-Learn more about Workflow Testing and it's pre-requisites [here](https://docs.gocobalt.io/concepts/workflow/workflow_testing).
-  </Tip>
+<Tip>
+Learn more about Workflow Testing and it's pre-requisites [here](https://docs.gocobalt.io/build/workflow/workflow_testing).
+</Tip>
 
 Now follow the steps given below to use these variables:
 <Steps>
