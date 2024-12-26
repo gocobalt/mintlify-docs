@@ -3,6 +3,17 @@ title: Loop Node
 ---
 The Loop Node in Cobalt allows users to iterate over entities or execute a series of actions for a fixed number of iterations.
 
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/embed/ba715b1b5d95436b970071cb8dc01cd0?sid=c3e1cfb2-57cf-4e58-89d5-e0b2a80ba332&hideEmbedTopBar=true&hide_speed=true"
+  title="Loop Node"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
 To incorporate repetitive actions or iterate over arrays within a workflow, users simply place the desired action nodes inside the Loop Node and provide values for the input fields based on their requirements.
 <img height="200" src="/images/Guides/Workflow/group-node.png" alt="Loop Node in Cobalt"/>
 ## Actions
@@ -25,4 +36,4 @@ In case of `Iterating Array`, you need to provide the array which will determine
 
 To access the array item that is being passed in the Loop Node, within any node for each iteration, it can be done so by calling `array_item` object.
 
-Consider you want to access an `Id` that is unique within each array item that is being passed in the Loop Node. To do so, call the Loop Node as a Variable under `Nodes` and write it as `{{group:array_item.Id}}`.
+Consider you want to access an `Id` that is unique within each array item that is being passed in the Loop Node. To do so, do the following templating `{{node.<node_no.>.body.array_item.Id}}`.

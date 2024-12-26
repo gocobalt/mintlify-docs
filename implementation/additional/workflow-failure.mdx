@@ -35,35 +35,46 @@ Retry can be performed only one time each for the workflow and the node.
 Users can subscribe to Cobalt Webhooks to receive real-time notifications about errored workflows. This will allow users to proactively address issues as they occur.
 
 <Tip>
-To learn more about the Cobalt Webhooks, you can refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
+To learn more about the Cobalt Webhooks, you can refer to our guide [here](https://docs.gocobalt.io/build/basics/webhooks).
 </Tip>
 
-Cobalt Webhook Subscription can be done either through the dashboard or the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+Cobalt Webhook Subscription can be done either through the dashboard or the [Create Webhook](https://docs.gocobalt.io/api-reference/webhooks/create-webhook) API.
 
 1. **Subscription via Dashboard**: Navigate to the `Webhooks` section in the Cobalt dashboard, enter the `Webhook URL`, choose the Webhook Payload as either `Default` or `Slack` and select the `Workflow Errored` event for which the notifications will be sent.
 <img height="200" src="/images/implementation/webhook-subscribe.png" alt="Subscribe to Webhooks in Cobalt"/>
 
-2. **Subscription via API**: Users can subscribe to Cobalt Webhooks using the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+2. **Subscription via API**: Users can subscribe to Cobalt Webhooks using the [Create Webhook](https://docs.gocobalt.io/api-reference/webhooks/create-webhook) API.
  - **Request** - Make a POST request to the `/webhook/subscribe` endpoint with the webhook event as `workflow-errored`.
  ``` JavaScript cURL
- curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/webhook/subscribe \
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/webhook \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
+  "webhook_url": "<string>",
   "webhook_events": [
-    "workflow-errored"
-  ]
+    "<string>"
+  ],
+  "is_enabled": true,
+  "webhook_type": "<string>"
 }'
 ```
  - **Response** - The request will respond with a JSON object containing the Webhook URL and the Event which was subscribed.
 ``` JavaScript 200
-{
-    "webhook_url": "https://mysite.com/cobalt/webhook",
-    "webhook_events": [
-        "workflow-errored"
-    ]
-}
+    {
+        "is_enabled": false,
+        "webhook_events": [
+            "Connection Created",
+            "Connection Deleted",
+            "Workflow Completed",
+            "Workflow Errored",
+            "Connection Expired"
+        ],
+        "webhook_url": "https://webhookurl.com",
+        "_id": "66e31564c0287b4136f77ef8",
+        "createdAt": "2024-09-12T16:23:00.587Z",
+        "webhook_type": "slack"
+    }
 ```
 You will now receive a notification on your registered URL whenever a Workflow errors.
 
