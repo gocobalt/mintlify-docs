@@ -1,7 +1,230 @@
 ---
 title: Azure
-description: Learn about Azure deployment and how its done in Cobalt
+description: This guide helps you install and deploy Cobalt’s on-prem solution on your Kubernetes cluster in Azure. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on Azure. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts.
 ---
-<Tip>
-Coming Soon!
-</Tip>
+
+## Prerequisites
+
+- An Azure account
+- Docker credentials (you will receive a Personal Access Token (PAT) from the Cobalt team)
+- Redis (managed or self-hosted)
+- MongoDB (managed or self-hosted, recommended: MongoDB Atlas)
+
+
+## 1. Setting Up Azure CLI on Your Local Machine
+
+To interact with Azure services and your AKS (Azure Kubernetes Service) cluster, you need to set up the Azure CLI on your local machine.
+
+### Step 1: Install Azure CLI
+
+1. Download and install the Azure CLI by following the instructions provided in the [official Azure documentation](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli):
+
+- Install the Azure CLI.
+
+2. Verify the installation by running:
+
+```bash
+az --version
+```
+
+### Step 2: Sign in and Configure Azure CLI
+
+After installation, sign in to your Azure account:
+
+1. Run the command:
+```bash
+az login
+```
+
+2. Follow the prompts to authenticate.
+
+
+## 2. Redis Setup
+
+You can either use a managed Redis instance (via Azure Cache for Redis) or host Redis yourself.
+
+### Option 1: Managed Redis (Azure Cache for Redis)
+
+1. Navigate to the [Azure Portal](https://portal.azure.com/).
+2. Search for **Azure Cache for Redis** and create a new cache instance.
+3. Configure the following settings:
+   - **DNS name**: Choose a unique name for your Redis instance.
+   - **Pricing tier**: Select the appropriate tier based on your requirements.
+   - **Eviction policy**: Configure to `noeviction` to ensure Redis works properly with BullMQ.
+4. After creating the instance, note down the **hostname** and **primary key** for configuration.
+5. Ensure your AKS cluster has network access to the Redis instance. You may need to configure **virtual network (VNet) integration** and **firewall rules**.
+
+### Option 2: Self-Hosted Redis Installation
+
+1. Install Redis using Helm on your Kubernetes cluster:
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install redis bitnami/redis --set redis.configuration="maxmemory-policy noeviction"
+```
+
+2. Verify Redis installation:
+
+```bash
+kubectl exec -it $(kubectl get pods -l app.kubernetes.io/name=redis -o jsonpath="{.items[0].metadata.name}") -- redis-cli ping
+```
+
+
+## 3. MongoDB Setup
+
+You can either use a managed MongoDB instance with MongoDB Atlas or host MongoDB yourself.
+
+### Option 1: Managed MongoDB (MongoDB Atlas)
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create an account or log in.
+2. Create a new cluster:
+    - Choose the appropriate region based on your workload and proximity to your Kubernetes cluster.
+    - Select the cluster tier (e.g., M10, M20, etc.) depending on your usage needs.
+3. Once the cluster is created, set up access:
+    - Add your Kubernetes cluster's IP address (or CIDR) to the **IP Whitelist** to allow access.
+    - Create a database user with proper permissions (e.g., `readWrite`).
+4. Get the connection string:
+    - Navigate to your cluster, click **Connect**, and copy the connection string. Use this connection string in your configuration files to connect your services to MongoDB.
+
+### Option 2: Self-Hosted MongoDB Installation
+
+1. Install MongoDB using Helm:
+    ```bash
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm install mongodb bitnami/mongodb --set auth.rootPassword=<password>,auth.username=<user>,auth.password=<password>,auth.database=<db_name>
+    ```
+2. Verify MongoDB installation:
+    ```bash
+    kubectl exec -it $(kubectl get pods -l app.kubernetes.io/name=mongodb -o jsonpath="{.items[0].metadata.name}") -- mongo --eval "db.stats()"
+    ```
+
+
+## 4. Setting Up Kubernetes Cluster on Azure (AKS)
+
+### Step 1: Creating an AKS Cluster
+
+To set up a Kubernetes cluster on Azure, you can use **Azure Kubernetes Service (AKS)**.
+
+1. Navigate to the **[Azure Portal](https://portal.azure.com/)**.
+2. Search for **Kubernetes services** and click **Create**.
+3. Configure the following details:
+   - **Resource group**: Create a new one or select an existing one.
+   - **Kubernetes cluster name**: Name your cluster (e.g., `cobalt-cluster`).
+   - **Region**: Select the appropriate region.
+   - **Node size**: Choose a node size (e.g., `Standard_DS2_v2`).
+   - **Node count**: Set the initial node count as needed.
+4. Click **Review + create** and then **Create**.
+
+### Step 2: Connect to Your AKS Cluster
+
+After your cluster is created, connect to it using the **Azure CLI**:
+
+Run the following command to configure `kubectl`:
+
+```bash
+az aks get-credentials --resource-group <resource-group-name> --name cobalt-cluster
+```
+
+### 5. Creating Docker Registry Credentials
+
+Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a **Personal Access Token (PAT)** from the Cobalt team.
+
+Run the following command to create the secret:
+
+    ```bash
+    kubectl create secret docker-registry regcred \
+    --docker-server=https://ghcr.io \
+    --docker-username=<user-name> \
+    --docker-password=<PAT> \
+    --docker-email=<email> \
+    -n services
+    ```
+
+<Info>
+This command creates a secret named regcred in the services namespace that will allow Kubernetes to authenticate and pull images from the private repository.
+</Info>
+
+
+## 6. Applying ConfigMaps and Secrets Provided by Cobalt
+
+As part of the Cobalt setup, you'll receive **ConfigMaps** and **Secrets** from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
+
+### Option 1: Manually Applying ConfigMaps and Secrets
+
+1. **Update the YAML Files**:
+   - Modify the received ConfigMap and Secret YAML files with your environment-specific values.
+   - For example, update `REDIS_HOST`, `MONGODB_URI`, and other configurations to match your setup.
+
+2. **Apply the Files**:
+   - Use the following commands to apply the ConfigMaps and Secrets to your Kubernetes cluster:
+
+     ```bash
+     kubectl apply -f <configmap.yaml> -n services
+     kubectl apply -f <secret.yaml> -n services
+     ```
+
+3. **Replace and Repeat for All Files**:
+   - Replace `<configmap.yaml>` and `<secret.yaml>` with the actual file names you received.
+   - Apply this process for each ConfigMap and Secret file provided by Cobalt.
+
+<Info>
+Notes:
+- Ensure you are in the correct namespace (`services`) when applying these configurations.
+- Double-check all values in the files to avoid misconfigurations.
+</Info>
+
+### Option 2: Using `apply_all.sh` Script
+
+Alternatively, you can use the provided `apply_all.sh` script to apply all ConfigMap and Secret files at once after updating the values.
+
+1. **Update the YAML Files**:
+   - Ensure you have updated all necessary values (e.g., `REDIS_HOST`, `MONGODB_URI`, etc.) in the provided YAML files.
+
+2. **Run the Script**:
+   - Execute the script using the following command:
+
+     ```bash
+     ./apply_all.sh
+     ```
+
+   - The script will automatically apply all the updated YAML files (ConfigMaps and Secrets) to your Kubernetes cluster, simplifying the process.
+
+<Info> 
+Notes:
+- Verify that all YAML files are updated correctly before running the script.
+- Ensure the script has the necessary execution permissions. If not, grant permissions using:
+
+  ```bash
+  chmod +x apply_all.sh
+</Info>
+
+
+## 7. Installing Cobalt Services via Helm
+
+After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Cobalt services.
+
+### To Install Cobalt Services
+
+1. Use the provided `install_all.sh` script to install all necessary services:
+
+   ```bash
+   ./install_all.sh
+
+2. This script will handle the installation of all Cobalt services on your Kubernetes cluster, streamlining the deployment process.
+
+<Info> 
+Notes:
+- Ensure the script has the necessary execution permissions. If not, grant permissions using:
+
+  ```bash
+  chmod +x install_all.sh
+</Info>
+
+### To Uninstall Cobalt Services
+
+If you need to uninstall the services, use the provided `uninstall_all.sh` script:
+
+```bash
+./uninstall_all.sh
+```
+This script will cleanly uninstall all Cobalt services from your cluster.
