@@ -1,0 +1,78 @@
+---
+title: Setup
+description: Connect to your Wrike app for OAuth.
+---
+To setup your Wrike app in Cobalt for OAuth, you will need the following credentials from your [Wrike Developer account](https://www.wrike.com/frontend/apps/index.html#/api):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Wrike Developer account. You can create one [here](https://www.wrike.com/free-trial-vaf/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Default
+
+<Info>If you haven't already created an app in Wrike, you'd need to create one.</Info>
+
+### Creating an app in Wrike
+
+To create a Wrike app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Wrike Developer account](https://www.wrike.com/frontend/apps/index.html#/api).
+2. In the `API Apps` section, provide an **App name** and click on `Create new` button.
+<img height="200" src="/images/Wrike/wrike_navigation.png" alt="Navigation for App setup"/>
+3. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Wrike` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Paste the copied Callback Url in the `Redirect URI` field of the app and click on `Save`.
+5. From the **OAuth** section, copy the **Client ID** and **Client Secret** displayed.
+<img height="200" src="/images/Wrike/wrike_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Wrike/wrike_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Wrike actions and triggers. Following are the set of Wrike actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Accounts">
+     1. **List Accounts** - List all accounts in Wrike.
+     2. **Update Account** - Update an account in Wrike.
+     </Accordion>
+     <Accordion title="Folders">
+     3. **Create Folder** - Create a new folder in Wrike.
+     4. **List Folders** - List all folders in Wrike.
+     5. **Update Folders** - Modify a folder in Wrike.
+      </Accordion>
+     <Accordion title="Space">
+     6. **Create Space** - Create a new space in Wrike.
+     7. **List Space** - List all space in Wrike.
+      </Accordion>
+     <Accordion title="Tasks">
+     8. **List Tasks** - List all tasks in Wrike.
+     9. **Update Task** - Update a task in Wrike.
+     10. **Create Task** - Create a new Task in Wrike.
+      </Accordion>
+     <Accordion title="Others">
+     11. **HTTP Request** - Make HTTP API calls to any Wrike documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **Task Created** - Triggers when a task is created on Wrike.
+         2. **Task Status Changed** - Triggers when a task's status is changed on Wrike.
+         3. **Folder Created** - Triggers when a folder is created on Wrike.
+  </Tab>
+</Tabs>
