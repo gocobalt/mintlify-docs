@@ -76,20 +76,20 @@
   ],
   "navigation": [
     {
+      "group": "Getting Started",
+      "version": "v2",
+      "pages": [
+        "overview",
+        "quickstart"
+      ]
+    },
+    {
       "group": "Documentation",
       "version": "v1",
       "pages": [
         "introduction",
         "quickstart",
         "glossary"
-      ]
-    },
-    {
-      "group": "Getting Started",
-      "version": "v2",
-      "pages": [
-        "overview",
-        "quickstart"
       ]
     },
     {
@@ -241,6 +241,9 @@
           "group":"Auth Flows",
           "pages": [
             "ship/auth_flows/flows",
+            "ship/auth_flows/hosted",
+            "ship/auth_flows/embedded",
+            "ship/auth_flows/build_your_own",
             "ship/auth_flows/re-auth-flow"
           ]
         },
@@ -449,23 +452,41 @@
       "group": "Implementation Guide",
       "version": "v2",
       "pages": [
-        "implementation/overview",
         {
-          "group": "Integrate",
+          "group": "Get Started",
           "pages":[
+            "implementation/overview",
             "implementation/integrate/cobalt-account",
             "implementation/integrate/setup-linked-account",
-            "implementation/integrate/get-access-token",
-            "implementation/integrate/display-apps",
-            "implementation/integrate/manage-connection",
+            "implementation/integrate/get-access-token"
+          ]
+        },
+        {
+          "group": "Read & Write Data",
+          "pages":[
+            "implementation/communicate/get-data",
+            "implementation/communicate/write-data"
+          ]
+        },
+        {
+          "group": "Workflow",
+          "pages":[
+            "implementation/workflow/overview",
+            "implementation/workflow/sync_using_proxy",
+            "implementation/workflow/create_using_event"
+          ]
+        },
+        {
+          "group": "Configuration",
+          "pages":[
             "implementation/integrate/end-user-config"
           ]
         },
         {
-          "group": "Communicate",
+          "group": "Frontend",
           "pages":[
-            "implementation/communicate/write-data",
-            "implementation/communicate/get-data"
+            "implementation/integrate/display-apps",
+            "implementation/integrate/manage-connection"
           ]
         },
         {
@@ -485,7 +506,7 @@
           ]
         },
         {
-          "group": "Deploy",
+          "group": "Go Live",
           "pages":[
             "implementation/deploy/live-checklist"
           ]

@@ -1,3 +1,152 @@
 ---
 title: Build your own Frontend
+description: Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.
 ---
+
+
+Cobalt provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
+
+## Pre-requisites
+Below are a few pre-requisites that you need to do before moving forward:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/build/basics/linked_account).
+</Note>
+
+<Tip>
+We recommend you create a linked account at the same time as your customer signs up within your app.
+</Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
+
+## Steps to implement
+
+The general steps to build your own flow are:
+<AccordionGroup>
+  <Accordion title="Display a list of integrations for your users to select">
+Retrieve a list of all integrations available to connect using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications) or [.getApplications()](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#getapplications) method and display them in your UI.
+<CodeGroup>
+
+``` JavaScript cURL
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/application \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>'
+```
+```JavaScript NodeJS
+try{
+    const data = await Client.getApplications("<linked_account_id>", {
+        page:5,
+        limit:10
+    })
+}catch(error){
+    //Catch any error
+}
+```
+</CodeGroup>
+
+With the above call you can get all the details related to an appliction for a user.
+
+<Tip>
+We recommend using the assets provided by Cobalt as they meet the requirements of the supported integrations. For example QuickBooks 
+Online require the specific use of QuickBooks branded buttons, including specific hover states.
+</Tip>
+</Accordion>
+
+  <Accordion title="Install and Initialise SDK">
+
+  Install the Cobalt Frontend SDK for JavaScript that you want to use. You can install by either using `npm package manager` or directly in browser by using the `script` tag.
+
+```html
+<!-- use a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0.1"></script>
+
+<!-- use a version range instead of a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@3.0"></script>
+
+<!-- omit the version completely to use the latest one -->
+<!-- you should NOT use this in production -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+```
+
+Initialize the javascript SDK using the Session token.
+
+<Tip>
+Learn more about Cobalt’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
+</Tip>
+
+  </Accordion>
+
+  <Accordion title="Manage Connections">
+Cobalt provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
+lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
+
+```Javascript
+cobalt.connect("slack") // opens a new tab for oauth apps
+cobalt.connect("twilio", {
+  number: <"Registered number">,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for key based apps
+```
+
+The [`.disconnect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#disconnect) method similarly, lets the user to disconnect from the application platform, revoking
+the authorization and deleting any and all configurations of the Linked account saved for that particular application.
+
+```Javascript
+cobalt.disconnect("slack")
+```
+  </Accordion>
+
+  <Accordion title="Allow users to configure the connection">
+Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the [`.config()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) method to find an 
+exisiting config or creating a new config for the linked account. 
+
+``` Javascript
+cobalt.config({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  labels: {}, // optional dynamic labels
+})
+```
+  </Accordion>
+
+  <Accordion title="Save/Update the configuration">
+The `.config()` method provides you with all the published workflows and settings input for the user. The user can now enable the workflows,
+enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig) method.
+
+```Javascript
+cobalt.updateConfig({
+  slug: "slack",
+  config_id: "OPTIONAL_ID_FOR_THIS_CONFIG",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+
+    }
+  ]
+})
+```
+  </Accordion>
+
+</AccordionGroup>
+
+<Check>
+By completing these steps, you have successfully implemented your own frontend for authentication with apps.
+</Check>
