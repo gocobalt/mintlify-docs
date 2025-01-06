@@ -1,28 +1,21 @@
 ---
 title: Display Apps on the Client-side
-description: To diplay the apps to your end-users in the frontend, you can develop your own custom UI or redirect your users to Cobalt Connect, which is securely hosted by Cobalt.
+description: To diplay the apps to your end-users in the frontend, you can develop your own custom UI or redirect your users to Cobalt Connect.
 ---
+
+By using the response that you will receive from either the Applications API or the SDK method, you can now render and display your apps on the frontend. 
+
+See a sample implementation of how we displayed the apps using the response.
+
+<img height="200" src="/images/implementation/display.png" alt="Display Apps on the Frontend"/>
 
 Cobalt connect lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf (linked account in Cobalt).
 <img height="200" src="/images/implementation/display_apps_sequence.png" alt="Sequence Diagram for Displaying Apps on Frontend"/>
 
-## Enable & Configure Apps
-
-To enable the apps that you want to use in Cobalt, go to the Apps page in the Cobalt dashboard. You will see a list of the available apps. Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
-<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
-
-**Key-based** apps do not require any additional configuration.
-
-**OAuth** apps by default use Cobalt credentials. This makes it easy to get started and connect integrations right away. However, once you’re ready to ship your integrations with Cobalt, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Cobalt when they connect integrations.
-
-<Note>
-You can find the App Setup instructions for some of the popular integrations that we support [here](https://docs.gocobalt.io/resources/integration-providers/overview).
-</Note>
-
 ## Building Custom UI
-If you want to build a custom UI for your integrations, you can do so by using the Cobalt APIs or the Cobalt Connect SDK available in JavaScript and React. 
-<AccordionGroup>
-  <Accordion title="Cobalt API for UI">
+To build a custom UI for your integrations, you can do so by using the Cobalt APIs or the Cobalt Connect SDK methods.
+
+<Accordion title="Cobalt API for UI">
 If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications).
 
 1. **Request**: This API will list all the apps that were enabled above. Make a GET request to the `/application` endpoint with the `linked_account_id` of the user.
@@ -34,23 +27,9 @@ curl --request GET \
 ```
 
 2. **Handle Response** : The `/application` endpoint will respond with an array containing the List of Applications that were enabled for the end-user. You can find information about the applications like name, slug, icon URL, the app was connected by user or not etc which can be used to build the Custom UI of your app.
-``` JavaScript 200 Response
+<Accordion title="200 Response">
+```
 [
-    {
-        "name": "Drive",
-        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/google_drive/logo.png",
-        "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices.",
-        "auth_type": "oauth2",
-        "tags": [
-            "Office"
-        ],
-        "version": {
-            "_v": "1.0.0",
-            "description": "Google Drive is Google's file sync app that lets you store all of your files online alongside your Google Docs documents, and keep them synced with all of your devices."
-        },
-        "slug": "google_drive",
-        "reauth_required": false
-    },
     {
         "name": "Docusign",
         "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/docusign/logo.png",
@@ -104,12 +83,13 @@ curl --request GET \
     }
 ]
 ```
+</Accordion>
 
 You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/integration-meta/get-application).
 
-  </Accordion>
+</Accordion>
 
-  <Accordion title="Cobalt SDK for UI">
+<Accordion title="Cobalt SDK for UI">
 If you prefer to develop using the SDKs provided by Cobalt, then the **.getApp()** method will get you the list of applications enabled in Cobalt. It returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
 
 1. **Method Call**: Call the **.getapp()** method provided in the SDK and pass the slug of the application for which information needs to be fetched. If no slug is provided, you will get a list of apps.
@@ -141,17 +121,9 @@ cobalt.getApp("slack")  // to get details of a single app, e.g. slack
 <Note>
 Learn more about the Embedded and Seamless flow of Cobalt Connect [here](https://docs.gocobalt.io/ship/auth_flows/flows).
 </Note>
-  </Accordion>
-</AccordionGroup>
+</Accordion>
 
-
-## Render Application on your Frontend
-
-By using the Response that you received from either the API or the SDK, you can now render and display your apps on the frontend. 
-
-See a sample implementation of how we displayed the apps using the response.
-
-<img height="200" src="/images/implementation/display.png" alt="Display Apps on the Frontend"/>
+You have successfully received the response and can now render the applications on your frontend using it.
 
 
 ## Checkpoint + Next Step

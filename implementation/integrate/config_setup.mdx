@@ -1,0 +1,47 @@
+---
+title: Setup
+---
+Config is a customization that you store for each integration of all your end-customers.
+
+These customizations can then be used in the workflows for various use-cases. 
+<Tip>
+Learn more about Config and its types [here](https://docs.gocobalt.io/build/connectors/config/config).
+</Tip>
+
+Consider an example where you want to sync all the contacts from Salesforce and your users provide you the mapping for the contact fields. Provided below is an example of how a mapping config dataslot appears to users.
+<img height="200" src="/images/implementation/config_sample.png" alt=" Example of User Config"/>
+
+Your users can perform the mapping of the fields which you can use in the workflow while syncing contacts.
+
+Let's add a Static Mapping of contact fields in Salesforce.
+<Tip>
+Learn more about Field Mapping [here](https://docs.gocobalt.io/build/connectors/config/mapping).
+</Tip>
+
+Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields.
+
+<Steps>
+  <Step title="Add Dataslot in Config Portal">
+    Click on the `Config Portal` in Salesforce and click on `Add Field` button.
+  </Step>
+  <Step title="Provide details">
+    Provide a name to the dataslot and select `Type` as **Map v2**. Click on `Add Field`.
+  </Step>
+  <Step title="Edit Dataslot">
+    Click on `Edit` for the dataslot >  In the **Source** provide a name and add all the fields as Options that you want the user to map.
+    <img height="200" src="/images/implementation/map_setup.png" alt=" Mapping Config Setup"/>
+  </Step>
+<Step title="Map Salesforce fields in Destination">
+    Provide a name for `Destination` and choose type as `Contact Fields`. This will load all the fields from the Salesforce contact object.
+</Step>
+<Step title="Save">
+    Click on `Save Field` and the dataslot is now added for your users to map in config.
+</Step>
+</Steps>
+
+You can get this Config of your users whenever they perform mapping by using the Config API or SDK Method.
+
+<Info>
+Navigate [here](/implementation/integrate/end-user-config) to learn how you can manage Configs for your end users.
+</Info>
+

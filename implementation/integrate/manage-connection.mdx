@@ -31,3 +31,19 @@ The **.disconnect()** method disconnects the specified application and remove an
 cobalt.disconnect("slack")
 ```
 The .disconnect() method requires the application slug for which the disconnection needs to be done.
+
+## Handle App ReAuth
+
+Once the end customer goes through the auth flow, Cobalt saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
+of the created workflows.
+
+However, there are certain conditions where Cobalt can no longer authenticate the API on behalf of your end customers.
+1. The provided API credentials for eg: API keys, Refresh token has expired.
+2. The access token or refresh token of the end customer has been revoked.
+3. The end customer uninstalls the application.
+4. The user deletes the application being used by their customer.
+
+When any of the above conditions occur, Cobalt helps you handle the reauthenication for the integration.
+<Info>
+Checkout this documentation to understand how you can handle it [here](https://docs.gocobalt.io/ship/auth_flows/re-auth-flow).
+</Info>
