@@ -1,13 +1,15 @@
 ---
-title: Manager End-user configurations
+title: Manage End-user configs
 ---
-Now, since the user has successfully connected with the enabled application, he is now redirected back to your integrations page. You can now use the Cobalt API or SDK to find an existing config or create a new config for the Linked Account.
+Once the user has successfully connected with the enabled application, he is now redirected back to your integrations page. You can now use the Cobalt API or SDK to find an existing config or create a new config for the Linked Account.
 
 <Tip>
 Learn more about Config and what functionalities it provides [here](https://docs.gocobalt.io/build/connectors/config/config).
 </Tip>
 
 <img height="200" src="/images/implementation/config_sequence.png" alt="Sequence Diagram for User Config"/>
+
+
 
 
 ## Create Config
@@ -38,7 +40,8 @@ curl --request POST \
 ```
 </CodeGroup>
 2. **Response** - The method will return a JSON Object as response containing the information about config of the application for the Linked Account and provides you with all the published workflows and settings input for the user required to execute the orchestration.
-``` JavaScript Response
+<Accordion title="Response">
+```
 {
 	"slug": "slack",
 	"config_id": "OPTIONAL_ID_FOR_THIS_CONFIG",
@@ -83,7 +86,7 @@ curl --request POST \
 	"field_errors": []
 }
 ```
-
+</Accordion>
 ## Update Config
 
 The user can now enable the workflows, enter data for the settings and map fields. These updates to the config can be made using the SDK or the APIs.
@@ -136,7 +139,8 @@ curl --request PUT \
 <Info>You can learn in detail about the method in our JS SDK Doc [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig).</Info>
 
 2. **Response** - In response, you get the updated config information for the application.
-``` JavaScript Response
+<Accordion title="Response">
+```
 {
     "slug": "mailerlite",
     "config_id": "config_4",
@@ -207,7 +211,7 @@ curl --request PUT \
     ]
 }
 ```
-
+</Accordion>
 ## Checkpoint + Next Step
 
 <Check>
