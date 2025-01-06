@@ -1,0 +1,108 @@
+---
+title: Sync Using API Proxies
+description: Create a sample workflow to sync data from Salesforce and API Proxy
+---
+
+Consider a use-case where you want to sync all the opportunities present in Salesforce to your system.
+
+In the Salesforce integration, go to `Workflows` and create a new workflow by clicking on `+Add Workflow` button and name it as `Sync Opportunities`.
+
+
+
+Follow the steps given to build the workflow:
+<Steps>
+  <Step title="Add Trigger in Start Node">
+
+    All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
+   For this workflow we will use the Event Based trigger.
+  <Tip>
+  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  </Tip>
+    Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
+<img height="200" src="/images/Examples/salesforce/event_salesforce.png" alt="Event for workflow"/>
+
+Give a name to your event and keep the payload as an empty object.
+  </Step>
+
+  <Step title="Add Salesforce Node">
+
+    Now to fetch all the opportunities present in your user's account, we need to call Salesforce API.
+
+    Click on `Nodes` option in the top right and drag the Salesforce Node from **Native Apps** section to the workflow builder. Connect this node with Start Node.
+  <img height="200" src="/images/Examples/salesforce/action_salesforce.png" alt="Choose Node"/>
+  </Step>
+  <Step title="Fetch Opportunities from Salesforce using Action">
+    Click on the Salesforce Node and select `Get Entity with SOQL` action.
+    <img height="200" src="/images/Examples/salesforce/soql_salesforce.png" alt="SOQL Action for workflow"/>
+   Add the following under `SOQL query` field and click on `Save`.
+   ```
+   SELECT Id,Amount,AccountId, CloseDate,ContactId,Description,ExpectedRevenue,LeadSource, Name, OwnerId, Probability,StageName,Type FROM Opportunity
+   ```
+   <Info>
+  You can provide any additonal fields that you want to fetch about opportunities from Salesforce by adding it to this query.
+   </Info>
+
+  </Step>
+<Step title="Add Custom Code node">
+  We have fetched all the opportunities, but you might require to structure it as a payload which your platform can receive. Let's do this using **Custom Code** node.
+
+  Drag the Custom Code from the Utility Nodes section onto the workflow builder and connect it with Salesforce node.
+
+</Step>
+
+<Step title="Mapping Opportunity fields">
+
+  Click on `+ Map Fields` under Input Parameters, add key name as `deals` and in value we will provide the response received through Salesforce node which will be restructured.
+
+  In `Value`, select **Nodes** tab under Insert Variable and click on `+` of the Salesforce Node.
+    <img height="200" src="/images/Examples/salesforce/map_salesforce.png" alt="Mapping API Response for workflow"/>
+
+  You can now do mapping using JavaScript code. Try the sample code provided below:
+  ```
+  function yourFunction(params) {
+const res = params.deals.map(ele=>{
+        const output =  {
+            id: ele.Id,
+            title: ele.Name,
+            description: ele.Description || 'Description not available',
+            close_date: ele.CloseDate,
+            amount: ele.Amount,
+            expected_revenue: ele.ExpectedRevenue,
+            status: ele.StageName
+
+        }
+        return output
+    })
+    return {"result": res || [] }
+}
+```
+</Step>
+
+<Step title="API Proxy in Workflow">
+You have successfully fetched all opportunities and structured the payload. Now to receive it in your server, you need to configure an API Proxy.
+
+In Cobalt Dashboard, navigate to `Developer` > `API Proxies` and click on `New Action`. Configure an API endpoint, where you want to receive the response.
+
+If you want to test, go to [webhook.site](https://webhook.site/) and copy `Your unique URL` and configure this as a POST Request and `Save`.
+    <img height="200" src="/images/Examples/salesforce/proxy_salesforce.png" alt="Configuring API Proxy workflow"/>
+
+<Tip>Learn more about API Proxies [here](https://docs.gocobalt.io/build/basics/proxies).</Tip>
+</Step>
+
+<Step title="Use API Proxy in Workflow">
+From Native Apps nodes, add your org's Node and connect it with Custom Code.
+
+Click on the node and select the API Proxy that you created from the Actions. Add the response from Custom Code node in data field and click on `Save`.
+<Note>
+Ensure that you add a field in the API Proxy where you can pass the JSON data and then added it to the API Call body as well in the POST request.
+</Note>
+    <img height="200" src="/images/Examples/salesforce/proxy_workflow.png" alt="Configuring API Proxy in the workflow"/>
+</Step>
+
+</Steps>
+
+<Check>
+Hurray!!
+
+You have successfully created a Salesforce workflow to sync all the opportunities to your system.
+</Check>

@@ -1,6 +1,77 @@
 ---
 title: Hosted Flow
+description: It is a no-code solution, so you don't need to build your own UI to handle the integration authentication
 ---
+
+## Pre-requisites
+Below are a few pre-requisites that you need to do before moving forward:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/build/basics/linked_account).
+</Note>
+
 <Tip>
-Coming Soon!
+We recommend you create a linked account at the same time as your customer signs up within your app.
 </Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
+
+## Steps to Implement
+
+It redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io` and handles the following features:
+
+- List all enabled applications
+- Handle the Auth flow
+- Manage integration configuration for your end user.
+
+
+To get started, follow these 2 steps:
+<Steps>
+
+  <Step title="Generate Hosted URL">
+    To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a `POST` request to the `Create Hosted URL` API by using the Session Token.
+```JavaScript cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "color": "<string>",
+  "bgColor": "<string>",
+  "name": "<string>"
+}'
+```
+<Tip>
+Check out the [Cobalt's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
+</Tip>
+  </Step>
+
+  <Step title="Redirect to Hosted portal">
+  The generated URL can be then used to redirect the user to the Hosted UI, or can be embedded within your UI. Your user can select the application they want to connect and perform authentication.
+  <img height="200" src="/images/Guides/hosted-portal.png" alt="Hosted Portal in Cobalt"/>
+  </Step>
+
+</Steps>
+
+
+You can also modify the UI of Hosted Portal using the [Hosted_properties API](https://docs.gocobalt.io/api-reference/cobalt-connect/get-hosted-properties).
+
+
+| Property | Description |
+|--------------|---------------------|
+| color | Modify the theme color of Cobalt connect|
+| name | Display name of your end customer |
+| bgColor | Background Colour of your end customer |
+
+<Check>
+By completing these steps, you have successfully implemented Hosted Portal for authentication with apps.
+</Check>

@@ -1,0 +1,45 @@
+---
+title: Overview
+description: Workflows connect data between your users' apps and your application
+---
+
+## About Workflows
+
+Once your users have connected their third-party app accounts, you can then connect data between your application and your users' apps using Workflows.
+Workflows consist of [Triggers](/build/workflow/triggering_workflow) and [Actions](/build/workflow/overview#actions), allowing for seamless automation and data flow between applications.
+
+With Workflows, users can easily implement common integration use cases such as pushing data from their application to users' apps, receiving real-time updates through webhooks, and enabling non-technical teams to configure integrations without coding.
+
+The Workflow Builder simplifies the integration process, empowering developers to create seamless and efficient data flows between applications with ease.
+
+<Tip>
+Learn more about Workflows [here](https://docs.gocobalt.io/build/workflow/overview).
+</Tip>
+
+In the following docs, we will create two workflows with a different use-case, one to Sync Data from Salesforce and other to Create data in Salesforce.
+
+To get started, first you need to enable the Salesforce integration in your account:
+
+## Enable the Salesforce App
+
+<Note>Apps cannot be enabled using the API. You will need to enable the app through the UI.</Note>
+
+To enable the Salesforce app:
+
+Navigate to `Apps` in Cobalt and search for **Salesforce** and enable the app by clicking on the `Go Live` button in the top right corner.
+<img height="200" src="/images/Examples/salesforce/enable_salesforce.png" alt="Enable Salesforce App"/>
+
+Now, go to `Settings` and provide the **Client ID** and **Client Secret** of your Salesforce OAuth app and click on `Save`.
+<Tip>
+Follow the steps given [here](https://docs.gocobalt.io/resources/integration-providers/salesforce) to get your credentials.
+</Tip>
+
+Once the app is enabled, you can proceed to create and manage workflows and linked accounts associated with Salesforce.
+
+## Sample Workflows
+
+Now, navigate to the following documentation for your use-case
+
+- [Sync Opportunities from Salesforce](/implementation/workflow/sync_using_proxy)
+
+- [Create Contact in Salesforce](/implementation/workflow/create_using_event)

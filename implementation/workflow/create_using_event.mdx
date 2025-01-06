@@ -1,0 +1,52 @@
+---
+title: Create Using Events
+description: Create a sample workflow to create new data in Salesforce using Events
+---
+
+Consider a use-case where you want to create a contact present in your system to Salesforce.
+
+This workflow will be fired when you send an Event with the payload of the contact to be added.
+
+In the Salesforce integration, go to `Workflows` and create a new workflow by clicking on `+Add Workflow` button and name it as `Create New Contact`.
+
+
+Follow the steps given to build the workflow:
+<Steps>
+  <Step title="Add Trigger in Start Node">
+
+    All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
+   For this workflow we will use the Event Based trigger.
+  <Tip>
+  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  </Tip>
+    Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
+<img height="200" src="/images/Examples/salesforce/event_salesforce_add.png" alt="Event for workflow"/>
+
+Give a name to your event and provide all the data related to the contact in the payload.
+  </Step>
+  <Step title="Add Salesforce Node">
+  Now to create a new contact in Salesforce, we need to call Salesforce API.
+
+  Click on `Nodes` option in the top right and drag the Salesforce Node from **Native Apps** section to the workflow builder. Connect this node with Start Node.
+  </Step>
+  <Step title="Add Action in node">
+    Click on Salesforce Node and add the `Create Contact` action.
+    To provide the data in all the fields from your Event payload, just click on a field and from the **Event** tab under Insert Variable, select the fields from the body that you sent as payload.
+    <img height="200" src="/images/Examples/salesforce/create_salesforce.png" alt="Create Contact action"/>
+<Warning>
+Ensure that all the mandatory fields in the action are filled, else the Salesforce API will give error.
+</Warning>
+  </Step>
+</Steps>
+
+And done, you can now successfully create a contact in Salesforce whenever the event is triggered. 
+<Tip>
+Refer to the Trigger Event API [here](https://docs.gocobalt.io/api-reference/event/trigger-event) to fire the event and workflow.
+</Tip>
+<Check>
+Hurray!!
+
+You have successfully created a Salesforce workflow to create a new contact.
+</Check>
+
+
