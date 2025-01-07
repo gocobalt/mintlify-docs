@@ -1,0 +1,101 @@
+---
+title: Events & API Proxies
+description: In this, you'll setup the Events and API Proxies required for the integrations
+---
+
+**API Proxies** and **Events** allows your organization to integrate your services better with the workflows in Cobalt. 
+
+**API Proxies** help you to setup your own APIs to be used in workflows which can be used to fetch data to your system;
+
+While you can send data from your apps to other apps by using Cobalt **Events**. These Events contain the payload of any object that you want to write to the third party application.
+
+
+Let's look in detail how you can setup both of these in Cobalt.
+
+## API Proxy
+
+<Info>
+You can learn in detail about API Proxies in our guide [here](https://docs.gocobalt.io/build/basics/proxies).
+</Info>
+
+#### Create API Proxy
+
+Follow these steps to create an API Proxy:
+<Steps>
+  <Step title="Create Action">
+    Navigate to `Developer` in Cobalt > `API Proxies` > Click on the `New Action` button > provide a `Name` and `Description` for the API Proxy > Click on the `Create Action` button.
+  </Step>
+  <Step title="Configure the Fields">
+    Click on the `Fields` tab > Click `Edit` > And add Custom fields for your action.
+  </Step>
+  <Step title="Configure the API Call">
+    Click on the `API Call` tab > Click `Edit` > Configure the API call to be executed upon triggering the action by defining HTTP Method, Path Params etc.
+   <img height="200" src="/images/Developer/call_proxy.png" alt="Create an API Call for Custom Action"/> 
+  </Step>
+</Steps>
+
+These API Proxies can now be added as a node in the workflow and you can send any data that you want through it.
+
+<Info>
+To learn more about how you can create a sample workflow with an API Proxy, refer to our guide [here](https://docs.gocobalt.io/implementation/workflow/sync_using_proxy).
+</Info>
+
+## Events
+An event model contains name of the event and the trigger payload. The trigger payload contains sample data schema that can be used as data variables and are used inside a workflow as placeholders while defining the workflow.
+
+<Info>
+To learn more about Cobalt Events, you can refer to our guide [here](https://docs.gocobalt.io/build/basics/events).
+</Info>
+
+#### Create Event
+
+Follow these steps to create an Event in Cobalt:
+
+Navigate to `Developer` in Cobalt > `Events` > Click on `New Event` > Select a `Model` > Update the sample Payload to your requirements > Click on `Create Event`.
+<img height="200" src="/images/Developer/create-event.png" alt="Creating an event"/>
+
+<Tip>
+It is expected that you pass on the data as the Sample Payload while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow.
+</Tip>
+
+#### Trigger an Event
+
+You can trigger an event that was created in Cobalt by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application).
+
+Make a POST request to the `/event/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.
+``` JavaScript Request
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/event/:slug \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "event": "<string>",
+  "payload": {
+    "first_name": "Mark",
+    "last_name": "wood",
+    "employee_id": 221,
+    "is_new": false,
+    "address":{
+      "house_no":"221",
+      "street": "lorem ipsum",
+      "pincode":560103
+      }
+}'
+```
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|event| Mandatory | String | Name of the event|
+|payload| Optional | Object | Event payload with user data required for the workflow.|
+
+On a successful request, you will get a message that the event was triggered successfully.
+
+<Info>
+To learn more about how you can create a sample workflow with an Event, refer to our guide [here](https://docs.gocobalt.io/implementation/workflow/create_using_event).
+</Info>
+
+## Checkpoint
+<Check>
+Congratulations!! You have created an API Proxy & Event successfully which can be used to read and write data from the workflows.
+</Check>

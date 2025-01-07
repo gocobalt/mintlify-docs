@@ -33,13 +33,13 @@ Following steps are recommended to build a resilient integration using the API o
 
 **Handle Errors**
 - Your application should be able to handle errors you may receive from API Call or SDK Method call.
-- [Handle Re-Authentication](https://docs.gocobalt.io/implementation/additional/reauth) of users if required for any application.
+- [Handle Re-Authentication](https://docs.gocobalt.io/ship/auth_flows/re-auth-flow) of users if required for any application.
 
 ## Workflows implementation
 It is necessary to ensure that the Workflows created for your users are logically optimal and are able to provide the required functionality.
 - Ensure that the Workflow created is optimized and can provide the required functionality covering all the cases with minimum no. of nodes.
-- [Workflow Failures](https://docs.gocobalt.io/implementation/additional/workflow-failure) are properly handled on your platform.
-- Check if the access of a workflow is provided to the required Linked accounts or not using the [Access Control](https://docs.gocobalt.io/implementation/additional/workflow-access).
+- **Workflow Failures** and error cases are properly handled on your platform.
+- Check if the access of a workflow is provided to the required Linked accounts or not using the **Access Control**.
 
 **Actions and Triggers of the Workflow**
 For a workflow, it is essential that the correct information is read and write.
@@ -48,7 +48,7 @@ For a workflow, it is essential that the correct information is read and write.
 
 **Testing Workflows**
 - All the [nodes of a workflow](https://docs.gocobalt.io/implementation/Test-Integration/node-test) should be tested and the errors should be handled.
-- [Orchestration testing](https://docs.gocobalt.io/implementation/Test-Integration/orchestration-test) will make sure that the Workflow is able to provide the required functionality.
+- [Workflow testing](https://docs.gocobalt.io/build/workflow/workflow_testing) will make sure that the Workflow is able to provide the required functionality.
 
 ## Test the integration and go live
 Before going live, it is valuable to know the test scenarios for your Cobalt integration.
