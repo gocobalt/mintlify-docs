@@ -7,7 +7,7 @@ Consider a use-case where you want to sync all the opportunities present in Sale
 
 In the Salesforce integration, go to `Workflows` and create a new workflow by clicking on `+Add Workflow` button and name it as `Sync Opportunities`.
 
-
+## Build Workflow
 
 Follow the steps given to build the workflow:
 <Steps>
@@ -101,8 +101,49 @@ Ensure that you add a field in the API Proxy where you can pass the JSON data an
 
 </Steps>
 
+## Test Workflow
+
+Once your workflow is built, you can perform both node level and workflow level testing to check it.
+
+Before testing a workflow, ensure the following pre-requisites are completed:
+- Linked Account configured with authentication completed with the integration.
+- Sample Payload for testing is available & configured.
+
+<Tip>
+Learn in depth how you can configure the pre-requisites in our Workflow Testing guide [here](https://docs.gocobalt.io/build/workflow/workflow_testing#pre-requisites-for-workflow-testing).
+</Tip>
+
+Based on the type of testing that you want to perform, follow the steps below:
+
+
+#### Testing Node
+<Steps>
+  <Step title="Select Node">
+    Click on the node you want to test.
+  </Step>
+  <Step title="Run Node">
+    In the node, switch to `Input/Output` tab and click on `Run Node` button.
+<Warning>Testing for Group Node and Pagination is currently not supported.</Warning>
+    <img height="200" src="/images/implementation/node_output_sync.png" alt="Checking Input and Output of Test execution"/>
+  </Step>
+</Steps>
+
+<Check>Once the node executes successfully, a checkmark appears on the node, indicating it has been tested.</Check>
+
+
+#### Testing Entire Workflow
+
+
+Open the testing modal present at the bottom.
+
+Click on `Run Workflow` button to perform a test execution and a **Test Run** log is generated with output of each node.
+<Warning>Since testing for Group nodes is not supported currently, you might not receive the logs of the group node.</Warning>
+<img height="200" src="/images/implementation/workflow_output_sync.png" alt="Checking Output of Workflow Test run"/>
+
+Once you are satisfied with the testing results, you can close the testing modal and move to the next steps for implementation.
+
 <Check>
 Hurray!!
 
-You have successfully created a Salesforce workflow to sync all the opportunities to your system.
+You have successfully created and tested a Salesforce workflow to sync all the opportunities to your system.
 </Check>

@@ -4,9 +4,9 @@ description: In this integration guide, you will sign up for a Cobalt Developer 
 ---
 Follow these simple steps to implement Cobalt.
 
-1. [Sign up for a free account](https://docs.gocobalt.io/implementation/integrate/cobalt-account) to receive your credentials and API Keys and understand how Cobalt simplifies building integrations for you.
+1. [Sign up for a free account]() to receive your credentials and API Keys.
 
-2. [Read](https://docs.gocobalt.io/implementation/communicate/get-data) and [Write](https://docs.gocobalt.io/implementation/communicate/write-data) Data to Third-party Apps from Cobalt.
+2. Read or Write Data to Third-party Apps from Cobalt using [API Proxies & Events](/implementation/communicate/events_proxies).
 
 3. [Integrate the Cobalt API or SDK](https://docs.gocobalt.io/implementation/integrate/manage-connection) into your application’s backend.
 
@@ -16,11 +16,34 @@ Follow these simple steps to implement Cobalt.
 
 6. Once your integration has been tested thoroughly, [go live](https://docs.gocobalt.io/implementation/deploy/live-checklist) with all of your customers.
 
-<Info>
-So let's get started!!
+## Cobalt Developer Account
 
-[Create your account](https://www.gocobalt.io/signup) now.
+To get started, contact our Support team [here](mailto:devs@gocobalt.io?subject=Requesting%20Cobalt%20Developer%20Account) to get account of Cobalt to receive your test and production environment API Keys and use the Cobalt APIs.
+
+1. Once you have received your login credentials and logged into Cobalt, you can find your API Keys.
+2. Navigate to `Developer` in the side menu and under `Setup`, you can find you **Test** and **Production** API Key depending on the environment selected.
+<img height="200" src="/images/implementation/api.png" alt="API Keys for your Cobalt account"/>
+
+The Cobalt Dashboard is your centralized place to manage your Cobalt Applications, view Linked Accounts, review Logs, set up Workflows etc.
+
+
+## Pre-requisite: Linked Account
+
+[Linked Accounts](https://app.gocobalt.io/connections) refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform and each Linked Account has a unique `linked-account-id`.
+
+<Info> 
+To learn more about Linked Accounts, you can refer to the Linked Accounts Guide [here](https://docs.gocobalt.io/build/basics/linked_account).
 </Info>
+
+Auth tokens and User configurations will be stored against the Linked account id of each user.
+
+You will already have a few Sample Linked Accounts in Cobalt to build and test integrations.
+
+If you want to create a Linked Account, you can do so by using the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) or the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk).
+
+<Tip>
+To learn how you can setup this in your backend implementation, refer [here](https://docs.gocobalt.io/implementation/integrate/setup-linked-account).
+</Tip>
 
 ## Frontend + Backend
 
