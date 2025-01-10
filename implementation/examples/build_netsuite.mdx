@@ -169,36 +169,82 @@ Give a name to your event and keep the payload as an empty object.
   <img height="200" src="/images/Examples/netsuite/netsuite_action.png" alt="Choose Node"/>
   </Step>
 
-<Step title="Add Custom Code node">
+<Step title="Add Loop node">
   We fetched all the contacts data from NetSuite, but NetSuite API only sends the IDs of the contacts in the API response, so now we need to loop through all the IDs and get contact data.
 
-  Drag the Custom Code from the Utility Nodes section onto the workflow builder and connect it with Salesforce node.
+  Drag the Loop Code from the Utility Nodes section onto the workflow builder and connect it with NetSuite node.
 
 </Step>
+<Step title="Setup Loop Node">
+To setup how many iterations the loop node will do, click on it and select `Array Iteration` as action and provide the array of IDs that you received from the NetSuite node.
+<img height="200" src="/images/Examples/netsuite/netsuite_loop.png" alt="Setup Loop Node"/>
+<Tip>
+Learn more about Loop node [here](https://docs.gocobalt.io/build/workflow/group).
+</Tip>
 
+Inside the Loop node we will add the nodes that we want execute in loops. Add a NetSuite node inside the Loop node and select `Get Contact by ID` action where you provide a dynamic id based on array item by templating `{{node.<Loop_node_no.>.body.array_item.id}}`.
+</Step>
+<Step title="Table Node addition">
+We are looping through the NetSuite nodes, but we need to store that response in a temporary storage so that we can use it outside the loop. For this purpose, we will use the Table node.
+<Tip>
+Learn more about Table node [here](https://docs.gocobalt.io/build/workflow/tables).
+</Tip>
+
+Add a Table Node inside the Loop node and select action `Add Table Record` to create new rows of data in it.
+<img height="200" src="/images/Examples/netsuite/netsuite_table.png" alt="Setup Table Node"/>
+<Warning>
+Before you can add data to a Table, you need to create a Table in the workflow. You can do this step before executing the Loop node and selecting the action `Create Table`, which you will then use inside Loop.
+</Warning>
+</Step>
+<Step title="Fetch all records">
+Once the iterations are finished, you need to fetch all the records that were added to the Table.
+
+Add a Table node to the Loop node and select `Get Table Records` action and provide the ID of the table where you added records.
+<img height="200" src="/images/Examples/netsuite/netsuite_table_fetch.png" alt="Fetch Table records"/>
+</Step>
 <Step title="Mapping Contact fields">
 
-  Click on `+ Map Fields` under Input Parameters, add key name as `contacts` and in value we will provide the response received through NetSuite node which will be restructured.
+  Click on `+ Map Fields` under Input Parameters, add key name as `contacts` and in value we will provide the response received through Table node which will be restructured.
 
-  In `Value`, select **Nodes** tab under Insert Variable and click on `+` of the NetSuite Node.
-    <img height="200" src="/images/Examples/netsuite/map_netsuite.png" alt="Mapping API Response for workflow"/>
+  In `Value`, select **Nodes** tab under Insert Variable and click on `+` of the Table Node where you fetched all records.
+  <img height="200" src="/images/Examples/netsuite/map_netsuite.png" alt="Mapping API Response for workflow"/>
 
   You can now do mapping using JavaScript code. Try the sample code provided below:
-  ```
-  function yourFunction(params) {
-const res = params.contacts.map(ele=>{
-        const output =  {
-            id: ele.Id,
-            title: ele.Name,
-            description: ele.Description || 'Description not available',
-            amount: ele.Amount,
-            title: ele.Title,
-            status: ele.StageName
-
-        }
-        return output
+  ```JavaScript yourFunction
+function yourFunction(params) {
+  return params.contacts.records
+    .filter((record) => {
+      const { data } = record;
+      // Remove record if email is empty and either description or phone is empty
+      return !( 
+        (!data.email || data.email.trim() === "") &&
+        (!data.description || data.description.trim() === "" || !data.phone || data.phone.trim() === "")
+      );
     })
-    return {"result": res || [] }
+    .map((record) => {
+      const { data } = record;
+
+      // Extract company name from email if it's missing
+      if (!data.company_name || data.company_name.trim() === "") {
+        const emailDomain = data.email.split("@")[1];
+        if (emailDomain) {
+          let company = emailDomain.split(".")[0]; // Extract the part before the first dot
+          data.company_name = company.charAt(0).toUpperCase() + company.slice(1); // Capitalize first letter
+        }
+      }
+
+      // Set default value for description if it's missing or empty
+      if (!data.description || data.description.trim() === "") {
+        data.description = "No description available";
+      }
+
+      // Set default value for phone if it's missing or empty
+      if (!data.phone || data.phone.trim() === "") {
+        data.phone = "Not available";
+      }
+
+      return data;
+    });
 }
 ```
 </Step>
@@ -229,7 +275,7 @@ Ensure that you add a field in the API Proxy where you can pass the JSON data an
 <Check>
 Hurray!!
 
-You have successfully created a NetSuite workflow to sync all the opportunities to your system.
+You have successfully created a NetSuite workflow to sync all the contacts to your system.
 </Check>
 </Accordion>
 
