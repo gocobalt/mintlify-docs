@@ -1,0 +1,107 @@
+---
+title: Setup
+description: Connect to your Campaign Monitor app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Campaign Monitor. In this guide, we will look at the OAuth App setup process.
+
+To setup your Campaign Monitor app in Cobalt for OAuth, you will need the following credentials from your [Campaign Monitor account](https://login.createsend.com/l):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Campaign Monitor Developer account. You can create one [here](https://www.campaignmonitor.com/signup/).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. Administer Account
+
+<Info>If you haven't already created an app in Campaign Monitor, you'd need to create one.</Info>
+
+### Creating an app in Campaign Monitor
+
+To create a Campaign Monitor app and aquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Campaign Monitor account](https://login.createsend.com/l).
+2. Click on the `Profile` icon in the top right and select `Integrations` button.
+<img height="200" src="/images/Campaignmonitor/cm_navigation.png" alt="Navigation for App setup"/>
+3. Click on `OAuth Registration` button in the right sidebar.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Campaign Monitor` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. In the app registration in Campaign Monitor, provide your app `Name`, `Description` , `Logo`, `Home page URL` and paste the Callback URL that you copied in `Redirect URL` field. Click on `Register`.
+6. Click on `View` for the app that you created and copy the `Client ID` and `Client Secret` displayed.
+<img height="200" src="/images/Campaignmonitor/cm_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Campaignmonitor/cm_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Campaignmonitor/cm_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Campaign Monitor actions and triggers. Following are the set of Campaign Monitor actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Campaign">
+     1. **Create Draft Campaign** - Create a draft campaign in Campaign Monitor.
+     2. **Delete Campaign** - Delete a campaign in Campaign Monitor.
+     3. **Send Draft Campaign** - Send a draft campaign in Campaign Monitor.
+     4. **Get Campaign** - Get campaign summary in Campaign Monitor.
+     </Accordion>
+     <Accordion title="Client">
+     5. **Create Client** - Create a new client in Campaign Monitor.
+     6. **Get Client** - Get client details in Campaign Monitor.
+     7. **Get Client Segments** - Get all segments of a client in Campaign Monitor.
+      </Accordion>
+     <Accordion title="List">
+     8. **Create New List For Client** - Create a new list for subscribers in Campaign Monitor.
+     9. **Get Segments For List** - Get all segments for a specific list in Campaign Monitor.
+     10. **Delete Subscriber List** - Delete a subscriber list in Campaign Monitor.
+     11. **Update List** - Update a list in Campaign Monitor.
+     12. **Get Lists Of Client** - Get lists for an email address in Campaign Monitor.
+     13. **Get Suppression List** - Get client suppression list in Campaign Monitor.
+      </Accordion>
+     <Accordion title="Person">
+     14. **Add Person** - Add a person to the client in Campaign Monitor.
+     15. **Update Person** - Update a person in the client in Campaign Monitor.
+     16. **Get People** - Get a list of all people associated with a client in Campaign Monitor.
+      </Accordion>
+     <Accordion title="Segment">
+     17. **Create Segment** - Create a new segment for a specific list in Campaign Monitor.
+     18. **Update Segment** - Update an existing segment in Campaign Monitor.
+     19. **Get Segment Details** - Get details of a segment in Campaign Monitor.
+     20. **Add Segment Rule Group** - Add a new rule group to an existing segment in Campaign Monitor.
+    </Accordion>
+     <Accordion title="Others">
+     21. **HTTP Request** - Make HTTP API calls to any Campaign Monitor documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+         1. **List Subscribed** - Triggers when a list is subscribed to in Campaign Monitor.
+         2. **List Updated** - Triggers when a list is updated on Campaign Monitor.
+         3. **List Deactivated** - Triggers when a list is deactivated on Campaign Monitor.
+  </Tab>
+</Tabs>
