@@ -1,5 +1,5 @@
 ---
-title: End-User Config Setup
+title: Build End-User Config
 ---
 Config is a customization that you store for each integration of all your end-customers.
 
@@ -8,38 +8,35 @@ These customizations can then be used in the workflows for various use-cases.
 Learn more about Config and its types [here](https://docs.gocobalt.io/build/connectors/config/config).
 </Tip>
 
-Consider an example where you want to sync all the contacts from Salesforce and your users provide you the mapping for the contact fields. Provided below is an example of how a mapping config dataslot appears to users.
+Consider an example where you want to sync all the contacts of a particular list from Salesforce and your users provide you the list from which the contacts should be synced. Provided below is an example of how a select config dataslot appears to users.
 <img height="200" src="/images/implementation/config_sample.png" alt=" Example of User Config"/>
 
-Your users can perform the mapping of the fields which you can use in the workflow while syncing contacts.
-
-Let's add a Static Mapping of contact fields in Salesforce.
+Let's add a dataslot of Contact Lists in Salesforce.
 <Tip>
-Learn more about Field Mapping [here](https://docs.gocobalt.io/build/connectors/config/mapping).
+Learn more about Select Field Type [here](https://docs.gocobalt.io/build/connectors/config/field_type_intro#select-field-types).
 </Tip>
-
-Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields.
 
 <Steps>
   <Step title="Add Dataslot in Config Portal">
     Click on the `Config Portal` in Salesforce and click on `Add Field` button.
   </Step>
   <Step title="Provide details">
-    Provide a name to the dataslot and select `Type` as **Map v2**. Click on `Add Field`.
+    Provide a name to the dataslot and select `Type` as **List Contact List Values**. Click on `Add Field`.
+    <Tip>
+    Click on `Edit` for the dataslot and mark it as `Required` so that the workflow will not execute if this is not selected by the users.
+    </Tip>
+    <img height="200" src="/images/implementation/select_setup.png" alt=" Select Config Setup"/>
   </Step>
-  <Step title="Edit Dataslot">
-    Click on `Edit` for the dataslot >  In the **Source** provide a name and add all the fields as Options that you want the user to map.
-    <img height="200" src="/images/implementation/map_setup.png" alt=" Mapping Config Setup"/>
-  </Step>
-<Step title="Map Salesforce fields in Destination">
-    Provide a name for `Destination` and choose type as `Contact Fields`. This will load all the fields from the Salesforce contact object.
-</Step>
 <Step title="Save">
-    Click on `Save Field` and the dataslot is now added for your users to map in config.
+    Click on `Save Field` and the dataslot is now added for your users to select a list in config.
 </Step>
 </Steps>
 
-You can get this Config of your users whenever they perform mapping by using the Config API or SDK Method.
+<Note>
+To use this dataslot in the [Sync workflow](https://docs.gocobalt.io/implementation/workflow/sync_using_proxy), you would need to change the action in Node 2 to `Get Contacts Of A particular List` and provide this dataslot in **Enter List ID** field.
+</Note>
+
+You can get this Config of your users after they perform selection by using the Config API or SDK Method.
 
 <Info>
 Navigate [here](/implementation/integrate/end-user-config) to learn how you can manage Configs for your end users.

@@ -12,13 +12,11 @@ While you can send data from your apps to other apps by using Cobalt **Events**.
 
 Let's look in detail how you can setup both of these in Cobalt.
 
-## API Proxy
+## Create API Proxy
 
 <Info>
 You can learn in detail about API Proxies in our guide [here](https://docs.gocobalt.io/build/basics/proxies).
 </Info>
-
-#### Create API Proxy
 
 Follow these steps to create an API Proxy:
 <Steps>
@@ -40,14 +38,12 @@ These API Proxies can now be added as a node in the workflow and you can send an
 To learn more about how you can create a sample workflow with an API Proxy, refer to our guide [here](https://docs.gocobalt.io/implementation/workflow/sync_using_proxy).
 </Info>
 
-## Events
+## Create Event
 An event model contains name of the event and the trigger payload. The trigger payload contains sample data schema that can be used as data variables and are used inside a workflow as placeholders while defining the workflow.
 
 <Info>
 To learn more about Cobalt Events, you can refer to our guide [here](https://docs.gocobalt.io/build/basics/events).
 </Info>
-
-#### Create Event
 
 Follow these steps to create an Event in Cobalt:
 
@@ -58,10 +54,10 @@ Navigate to `Developer` in Cobalt > `Events` > Click on `New Event` > Select a `
 It is expected that you pass on the data as the Sample Payload while you are triggering this event. This is because, the properties defined in the sample payload can be used as trigger variables inside a workflow.
 </Tip>
 
-#### Trigger an Event
 
 You can trigger an event that was created in Cobalt by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application).
 
+<Accordion title="Trigger an Event">
 Make a POST request to the `/event/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.
 ``` JavaScript Request
 curl --request POST \
@@ -90,6 +86,8 @@ curl --request POST \
 |payload| Optional | Object | Event payload with user data required for the workflow.|
 
 On a successful request, you will get a message that the event was triggered successfully.
+</Accordion>
+
 
 <Info>
 To learn more about how you can create a sample workflow with an Event, refer to our guide [here](https://docs.gocobalt.io/implementation/workflow/create_using_event).

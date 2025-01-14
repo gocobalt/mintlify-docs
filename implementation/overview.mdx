@@ -18,16 +18,9 @@ Follow these simple steps to implement Cobalt.
 
 7. Once your integration has been tested thoroughly, [go live](https://docs.gocobalt.io/implementation/deploy/live-checklist) with all of your customers.
 
-## Cobalt Developer Account
-
+<Info>
 To get started, contact our Support team [here](mailto:devs@gocobalt.io?subject=Requesting%20Cobalt%20Developer%20Account) to get account of Cobalt to receive your test and production environment API Keys and use the Cobalt APIs.
-
-1. Once you have received your login credentials and logged into Cobalt, you can find your API Keys.
-2. Navigate to `Developer` in the side menu and under `Setup`, you can find you **Test** and **Production** API Key depending on the environment selected.
-<img height="200" src="/images/implementation/api.png" alt="API Keys for your Cobalt account"/>
-
-The Cobalt Dashboard is your centralized place to manage your Cobalt Applications, view Linked Accounts, review Logs, set up Workflows etc.
-
+</Info>
 
 ## Pre-requisite: Linked Account
 
@@ -47,21 +40,12 @@ If you want to create a Linked Account, you can do so by using the [Upsert Linke
 To learn how you can setup this in your backend implementation, refer [here](https://docs.gocobalt.io/implementation/integrate/setup-linked-account).
 </Tip>
 
-## Frontend + Backend
+## Implement Frontend & Backend
 
-For a full implementation, Cobalt requires both a frontend and a backend application to exist. The frontend application coordinates connecting the user with various integrations, and the backend server securely manages the requests and responses to and from Cobalt APIs.
+For a full implementation, Cobalt requires both a frontend and a backend application to exist. 
 
-### Frontend Development
+The [frontend application](https://docs.gocobalt.io/implementation/integrate/display-apps) coordinates connecting the user with various integrations, and the [backend](https://docs.gocobalt.io/implementation/integrate/setup-linked-account) server securely manages the requests and responses to and from Cobalt APIs.
 
+<Tip>
 Cobalt [Auth flows](https://docs.gocobalt.io/concepts/auth-flows/auth-flows) lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf (linked account in Cobalt).
-
-There are three ways to integrate Cobalt into your application’s frontend user interface.
-
-1. **Hosted flow**: In this method you can effortlessly redirect your users'  to Cobalt Connect, which is securely hosted by Cobalt.
-2. **Cobalt Modals (Embedded flow)**: It is a good option if you want your client team to be responsible for the integration of Cobalt Connect into your app. You can use the Cobalt Connect [JavaScript SDK](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) or the Cobalt Connect [React SDK](https://docs.gocobalt.io/sdks/client-side-sdks/react-sdk) to build your own custom UI for Cobalt Connect. Both SDKs make it easy to let your users authorize and manage integrations with just a few lines of code.
-3. **Build your own Frontend (Seamless flow)**: If you want your backend team to handle the integration, you can use the [Connect API](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) directly to create your own integration experience inside your app.
-
-
-### Backend Development
-
-Once the connection has been created via Cobalt frontend, you can now implement **.connect()** and **.disconnect()** function of Cobalt Client-side SDK to allow your end-users to make or break a connection with the integrations. We offer NodeJS [backend SDKs](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to make the backend integration smoother.
+</Tip>
