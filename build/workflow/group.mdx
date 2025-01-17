@@ -3,6 +3,16 @@ title: Loop Node
 ---
 The Loop Node in Cobalt allows users to iterate over entities or execute a series of actions for a fixed number of iterations.
 
+## Node Functionality
+
+Loop node is like a repetitive steps executor within the workflow. It can:
+
+- Wrap around other nodes and execute them repetitively;
+- Execute nodes for fixed number of times using [Fixed Iteration](/build/workflow/group#actions);
+- Execute as many times as there are items in an array using [Array Iteration](/build/workflow/group#actions); &
+- Execute nodes repetitively based on case and break conditions using [Do While](/build/workflow/group#actions);
+
+
 <iframe
   width="560"
   height="315"
@@ -21,16 +31,76 @@ To incorporate repetitive actions or iterate over arrays within a workflow, user
 
 The Loop Node offers three distinct actions to choose from:
 
+#### Iterating Array
 <Accordion title="Iterating Array" defaultOpen="true">
 Select this action when iterating over an array. When using this action, the user specifies the array to iterate over.
 </Accordion>
 
+
+#### Fixed Iteration
 <Accordion title="Fixed Iteration" defaultOpen="true">
 Choose this action when you want to iterate a fixed number of times. With this action, users define the number of iterations.
 </Accordion>
 
+#### Do While
 <Accordion title="Do While" defaultOpen="true">
 Choose this action when you want to iterate until a particular condition is satisfied or break condition occurs.
+
+It follows the same logic as regular Do While where the loop will be executed atleast once and then based on the conditions, it will either execute more iterations or break out of the loop.
+
+<Info>
+The iteration count of the loop during execution can be templated as `{{node.<no. of loop node>.body.iteration_count}}`.
+</Info>
+
+In `Do While` action, you need to provide a minimum of 2 conditions:
+- **Loop Condition**: This is the condition in which the loop would execute.
+- **Break Condition** : This is the condition which once satisfied will break the execution out of the loop.
+<Tip>
+In Break Condition, by using `+ Add Condition`, you can add multiple **AND** or **OR** conditions of a break case. And multiple break cases can be added by clicking on `+ Add Break Case`.
+</Tip>
+
+### Sample Workflow for Do While
+
+Let's consider a simple example to understand Do While by creating a [workflow](https://docs.gocobalt.io/build/workflow/overview). In this, we will execute the loop with the condition that it will be executed until the iteration count is 5 and will break out of loop if iteration count is greater than or equal to 3.
+<Steps>
+<Step title= "Create workflow">
+Create a new workflow, add an event to the Start Node and connect it with a Loop Node and choose `Do While` action. 
+</Step>
+<Step title="Add other nodes">
+Add a [Custom Code](https://docs.gocobalt.io/build/workflow/custom-code) and a [Response node](https://docs.gocobalt.io/build/workflow/response) inside the Loop Node.
+</Step>
+<Step title="Configure the nodes">
+In the Custom Node, add the iteration count of the loop as a parameter and simply return it. We will use this output to set conditions for Loop Node.
+<img height="200" src="/images/Guides/Workflow/do_action.png" alt="Do While"/>
+</Step>
+<Step title="Configure Response node">
+In the Response node, simply add the output of the Custom Code node in `Data` field.
+<Info>
+This Response Node acts as a check and will be skipped in case of a break condition.
+</Info>
+</Step>
+<Step title="Add Loop and Break Conditions">
+Click on the Loop Node and add the **Loop condition** and **Break case** for Do While as shown below.
+<img height="200" src="/images/Guides/Workflow/do_condition.png" alt="Do While conditions"/>
+Here we are providing that the Loop should work until the iteration count returned by Custom Code is less than 5.
+
+But the execution will break out of the loop when it is greater than or equal to 3.
+
+<Warning>
+Ensure that while templating for the conditions, you are not adding the iteration count of the Loop Node as a condition within itself. Its recommended to get that iteration count in some step within loop node and use it to setup the conditions.
+</Warning>
+</Step>
+<Step title="Output of execution">
+Once the workflow is executed, you will see a similar log for its execution.
+<img height="200" src="/images/Guides/Workflow/do_log.png" alt="Do While conditions workflow log"/>
+In this the batches got created for iteration counts 0 to 3 but in the case of 3, the response node got skipped due to break case.
+<img height="200" src="/images/Guides/Workflow/do_log_skip.png" alt="Do While conditions workflow log skipped"/>
+</Step>
+</Steps>
+<Check>
+You have now successfully tested the Do While action functionality of the Loop Node.
+</Check>
+
 </Accordion>
 
 
@@ -40,8 +110,14 @@ In case of `Iterating Array`, you need to provide the array which will determine
 
 <img height="200" src="/images/Guides/Workflow/iterating.png" alt="Iterating Array Action in Cobalt"/>
 
-## Accessing Array Item inside Loop Node
+## Templating items inside Loop Node
 
-To access the array item that is being passed in the Loop Node, within any node for each iteration, it can be done so by calling `array_item` object.
+To access the array item that is being passed in the Loop Node, within any node for each iteration, it can be done so by calling `array_item` object. Consider you want to access an `Id` that is unique within each array item that is being passed in the Loop Node. To do so, do the following templating 
+```
+{{node.<node_no.>.body.array_item.Id}}
+```
 
-Consider you want to access an `Id` that is unique within each array item that is being passed in the Loop Node. To do so, do the following templating `{{node.<node_no.>.body.array_item.Id}}`.
+When using **Do While** action, you might need to access the iteration count of the loop within the workflow. This can be accessed as 
+```
+{{node.<no. of loop node>.body.iteration_count}}
+```
