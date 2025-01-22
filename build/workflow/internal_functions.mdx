@@ -32,11 +32,59 @@ To create your own function, follow these steps:
   <Step title="Write function">
     Write your function and also define the input and output parameters that you require.
     Once done, click on `Create`.
+    <Info>
+    You can also use JavaScript Libraries supported by Cobalt in the function code. Refer [here](/build/workflow/internal_functions#supported-javascript-libraries-and-usage) to check the list of supported libraries.
+    </Info>
   </Step>
 </Steps>
 <Tip>
 Once a function is created, you can also edit it as required by selecting that function from `Functions`.
 </Tip>
+
+## Supported JavaScript Libraries & Usage
+
+The full list for the supported npm modules that can be used to write your own internal function is below. If you don't see the module that you want, [contact us](mailto:integrations@gocobalt.io) and we will get that added.
+
+- [axios](https://www.npmjs.com/package/axios)
+- [cheerio](https://www.npmjs.com/package/cheerio)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
+- [fuse.js](https://www.npmjs.com/package/fuse.js)
+- [lodash](https://www.npmjs.com/package/lodash)
+- [mime](https://www.npmjs.com/package/mime/v/3.0.0)
+- [number-to-words](https://www.npmjs.com/package/number-to-words)
+- [url](https://www.npmjs.com/package/url)
+- [uuid](https://www.npmjs.com/package/uuid)
+
+
+**How to use Libraries**
+
+To know how you can use these external libraries in your Internal Code function, refer to the examples below for axios and lodash.
+<CodeGroup>
+```JavaScript axios
+const axios = require('axios');
+
+async function yourFunction(params) {
+    const res = await axios.get("https://genshin-impact.up.railway.app/characters");
+
+    return{
+        data: res.data
+    }
+}
+```
+``` JavaScript lodash
+const _ = require('lodash');
+
+function yourFunction(params) {
+    const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+    const sortedData = _.sortBy(array, "id");
+
+    return {
+        data: sortedData
+    };
+}
+```
+</CodeGroup>
 
 
 ## Pre-defined Library functions

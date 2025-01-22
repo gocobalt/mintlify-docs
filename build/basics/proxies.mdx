@@ -4,7 +4,7 @@ description: Learn how to setup an API Proxy in Cobalt
 ---
 **API Proxies** allows your organization to integrate services better with the workflows in Cobalt by configuring your API Endpoints. These API endpoints will receive the response from a workflow in Cobalt.
 
-### Creating an API Proxy
+## Creating an API Proxy
 To create an API Proxy in Cobalt, the user needs to provide specific information detailing the desired behavior of the action. This includes the following steps:
 
     ### 1. Create Action
@@ -33,9 +33,48 @@ To create an API Proxy in Cobalt, the user needs to provide specific information
         API Request or endpoint can also have variables in it which can be added to the URL by using curly brackets. 
         </Tip>
         - Also provide other details for the API like **Path** or **Query Params**, **Headers** and any **pre-request scripts** and click on `Save API Call`.
-        - You can add variables or the fields created by you in API Proxy in the **Body** by clicking on the `(x)` icon
+        - You can add variables or the fields created by you in API Proxy in the **Body** by clicking on the `(x)` icon.
+        <Tip>
+        Cobalt offers a few additional settings during API Call setup to configure how you want the response. Learn about [here](/build/basics/proxies#settings-to-configure-response).
+        </Tip>
         <img height="200" src="/images/Developer/call_proxy.png" alt="Create an API Call for Custom Action"/> 
 
-### Utilizing the API Proxy in Workflows
+### Settings to Configure Response
+
+In the `API Call` section of your API Proxy setup, Cobalt offers options to change how you want to handle the response. Following are the settings available to you:
+
+<Accordion title="Response Format">
+  Cobalt offers two options for the format : **Default** and **Stream**. 
+
+  **Default** is how an API generally gives response and is available by default in all API Proxies.
+
+  **Stream** format is used when you want to stream responses in chunks from the API.
+</Accordion>
+<Accordion title="Save Response to Bucket">
+  By turning the Toggle On, instead of saving response, you can store the response of API in a S3 Bucket provided by Cobalt.
+
+  This is generally used when you want to retrieve like PDFs or in a non-JSON format.
+</Accordion>
+<Accordion title="Use Public URL">
+  <Warning>
+    For `Use Public URL` to work **Save Response to Bucket** toggle should be On, else it is ignored.
+  </Warning>
+  Generally the S3 URL generated using `Save Response to Bucket` will be a private bucket and can only be accessed by the same AWS org. Also, this URL can be used in Cobalt nodes as well like PDF Node.
+
+  But if you want to share the bucket to public, turn on `Use Public URL` toggle and you can share it easily.
+</Accordion>
+<Accordion title="Pagination">
+  If the API supports pagination, then you can add it to your API Proxy. Go to the **API Call** section and enable the `Pagination` toggle.
+
+In the `Type` field, select the pagination type and provide the required fields and click on `Save API Call`.
+<img height="200" src="/images/Developer/proxy_pagination.png" alt="Pagination in the API Proxy"/>
+</Accordion>
+
+
+
+
+
+
+## Utilizing the API Proxy in Workflows
 Once created, API Proxies can be used in workflows within Cobalt by using your Custom App present within **Native Apps**. This means that one Custom Action can be executed in several workflows. Users can define trigger conditions that initiate the execution of these actions, enabling automated responses to specific events and facilitating end-to-end process automation.
 <img height="200" src="/images/Developer/proxy_workflow.png" alt="Executing Action in a Workflow"/> 
