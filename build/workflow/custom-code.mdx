@@ -9,7 +9,11 @@ Custom Code node is like a code executor within workflows. It can:
 
 - Modify structure of the data received;
 - Perform operations on data;
-- Filter data; & 
+- Filter data;
+- Use supported external JS libraries in code;
+<Tip>
+To know more about all the libraries supported, refer [here](/build/workflow/custom-code#supported-javascript-libraries). 
+</Tip>
 - Any other operation that you want to using code;
 
 
@@ -20,11 +24,46 @@ In the Code section, the user can write their own custom code which they want to
 
 <img height="200" src="/images/Guides/Workflow/custom-node.png" alt="Custom Code Node in Cobalt"/>
 
-**Define Node Rule Conditions**
+## Supported JavaScript Libraries & Usage
 
-Optionally, add **Node Rule Conditions** to the Custom Code node to specify conditions under which the custom code will be executed. Configure the conditions using the same approach as a Rule node, specifying **variables**, **operators**, and **values**.
-<Tip>
-Learn more about Rule Node [here](https://docs.gocobalt.io/build/workflow/rule).
-</Tip>
+The full list for the supported npm modules can be found below. If you don't see the module that you want, [contact us](mailto:integrations@gocobalt.io) and we will get that added.
 
-These conditions can be configured to `Match Any Conditions` or `Match All Conditions`, depending on the workflow requirements.
+- [axios](https://www.npmjs.com/package/axios)
+- [cheerio](https://www.npmjs.com/package/cheerio)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
+- [fuse.js](https://www.npmjs.com/package/fuse.js)
+- [lodash](https://www.npmjs.com/package/lodash)
+- [mime](https://www.npmjs.com/package/mime/v/3.0.0)
+- [number-to-words](https://www.npmjs.com/package/number-to-words)
+- [url](https://www.npmjs.com/package/url)
+- [uuid](https://www.npmjs.com/package/uuid)
+
+
+#### How to use Libraries
+To know how you can use these external libraries in your Custom Code function, refer to the examples below for axios and lodash.
+<CodeGroup>
+```JavaScript axios
+const axios = require('axios');
+
+async function yourFunction(params) {
+    const res = await axios.get("https://genshin-impact.up.railway.app/characters");
+
+    return{
+        data: res.data
+    }
+}
+```
+``` JavaScript lodash
+const _ = require('lodash');
+
+function yourFunction(params) {
+    const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+    const sortedData = _.sortBy(array, "id");
+
+    return {
+        data: sortedData
+    };
+}
+```
+</CodeGroup>
