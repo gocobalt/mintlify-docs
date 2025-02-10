@@ -1,0 +1,75 @@
+---
+title: Connect
+description: Connect with the Linked Account's AppDirect account.
+---
+<Note>
+AppDirect is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **AppDirect** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Domain URL
+2. Client ID
+3. Client Secret
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of AppDirect
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Appdirect/appdirect_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [AppDirect account](https://marketplace.appdirect.com/openid/login). Copy the Base URL of your account which will be in format `https://marketplace.example.com`. This is `Domain URL`.
+2. Click on the `Gear` icon in the top menu and click on `All Settings` option.
+<img height="200" src="/images/Appdirect/appdirect_navigation.png" alt="Navigation in AppDirect"/>
+
+3. Navigate to `API Clients` under **Navigation** in the side menu and click on `+ Create API Client`.
+4. Provide a `Name`, choose `Client Type` as **Non-interactive application**, select `System-level scopes` as **Read only** or **Read Write** depending on your use case and click on `Save Settings.
+5. Copy the `Secret` displayed and the `Client ID` will be the **Consumer Key** of the API Client that you created.
+<Info>
+Copy the Secret as it won't be visible again.
+</Info>
+<img height="200" src="/images/Appdirect/appdirect_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with AppDirect.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using AppDirect actions and triggers. Following are the set of AppDirect actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Company">
+     1. **Create Company** - Create company in AppDirect.
+     2. **List Companies** - List all companies in AppDirect.
+     3. **Update Company** - Update a company in AppDirect.
+    </Accordion>
+    <Accordion title="Company Membership">
+     4. **Create Company Membership** - Create company membership in AppDirect.
+     5. **Update Company Membership** - Update company membership in AppDirect.
+     6. **Delete Company Membership** - Delete company membership in AppDirect.
+     </Accordion>
+    <Accordion title="User">
+     7. **Update User** - Update a user in AppDirect.
+     8. **Get User By Id** - Get a user By Id in AppDirect.
+     9. **List Users** - List all users in AppDirect.
+     10. **Activate User** - Activate a user in AppDirect.
+     </Accordion>
+    <Accordion title="Others">
+     11. **HTTP Request** - Make HTTP API calls to any AppDirect documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    1. **User Created** - Triggers when a new user is created in AppDirect.
+    2. **Subscription Created** - Triggers when a subscription is created in AppDirect.
+    3. **Subscription Updated** - Triggers when a subscription is updated in AppDirect.
+  </Tab>
+</Tabs>
