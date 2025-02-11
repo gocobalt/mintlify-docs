@@ -1,0 +1,62 @@
+---
+title: CSV/Excel by Cobalt
+---
+<Info>
+If your file size is greater than 5MB, then it's recommended to use [File Handler](https://docs.gocobalt.io/build/workflow/file_handler) node.
+</Info>
+
+## Node Functionality
+
+CSV/Excel node allows you to perform changes related to CSV in the workflows. It can:
+
+- Convert a CSV file to a JSON file or vice versa.
+- Parse a CSV into an array
+- Convert a JSON file/data to an Excel file.
+- Convert CSV files to Excel
+- Merge multiple Excel files into one. 
+
+<img height="200" src="/images/Guides/Workflow/csv-node.png" alt="CSV/Excel Node in Cobalt"/>
+
+## Available Actions
+
+The node offers following actions for your use-cases:
+
+<Accordion title="CSV <-> JSON">
+  For this, Cobalt offers 2 actions **CSV to JSON file** or **JSON to CSV file** in which you provide the public URL of the file which needs to be converted.
+</Accordion>
+
+<Accordion title="Parse CSV to Array">
+  Using this action, simply provide the CSV input which will be converted to a JSON object and returned by the node.
+</Accordion>
+
+<Accordion title="Array of rows to CSV">
+  Using this action, provide the array of rows which will be converted to CSV and returned by the node.
+<img height="200" src="/images/Guides/Workflow/csv-array.png" alt="Array of Rows to CSV Action"/>
+</Accordion>
+
+<Accordion title="JSON file to Excel file">
+  This action will convert the JSON file that you provide as a Public URL into an Excel file.
+  <Tip>
+    If your Excel file will have formulas, you could also convert them from your CSV by enabling the `Has Formulas` toggle of the node. It will consider the strings starting with **=** as formulas.
+  </Tip>
+</Accordion>
+
+<Accordion title="JSON data to Excel file">
+  This action will convert the JSON data that you provide into an Excel file.
+  <Tip>
+    If your Excel file will have formulas, you could also convert them from your CSV by enabling the `Has Formulas` toggle of the node. It will consider the strings starting with **=** as formulas.
+  </Tip>
+</Accordion>
+
+<Accordion title="CSV to Excel file">
+  In this, simply provide the public URL of the CSV file that you want to convert to Excel. 
+  <Tip>
+    If your Excel file will have formulas, you could also convert them from your CSV by enabling the `Has Formulas` toggle of the node. It will consider the strings starting with **=** as formulas.
+  </Tip>
+</Accordion>
+
+<Accordion title="Merge Excel files">
+  This action will merge multiple Excel files into a single Excel. You simply need to provide the Public URLs of all the Excel files as array items in the input.
+</Accordion>
+
+
