@@ -1,0 +1,19 @@
+---
+title: Wait for Webhook Node
+---
+A webhook is an HTTP-based callback function that facilitates communication between the Cobalt Workflows and third-party systems. It can be used to receive data from other sources and then continue executing the workflow and use the data received.
+
+## Node Functionality
+It acts as a way to pause the workflow execution until a webhook payload is received. It can:
+
+- Keeps the workflow execution in Running state until payload is received.
+- Match the security headers of webhook.
+
+## Configuring Node
+
+In the node, the `Webhook URL` that is available should be configured in the third party application webhook setup to receive the payload in Cobalt.
+<img height="200" src="/images/Guides/Workflow/wait-node.png" alt="Wait for Webhook Node in Cobalt"/>
+
+Optionally, you could also setup `Security Headers` which will be matched with the headers received in the Webhook. If the headers match, Cobalt will successfully continue executing the workflow, else the node errors and the workflow stops.
+
+
