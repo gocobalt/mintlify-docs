@@ -1,20 +1,23 @@
 ---
-title: Custom App Setup
-description: Create and integrate your custom applications
+title: Using OpenAPI Spec doc
+description: Create a custom app by using the OpenAPI Spec doc link
 ---
-Any integration can be setup as Custom App and they function similarly to other pre-built integrations available in Cobalt.
 
-## Creating Custom Apps
-
-To create a custom app, click on `+ Add App` in the **Apps** section and specify **Name**, **Description** and **Slug** to identify the app within the Cobalt platform and click on `Create`
-
-<Tip>
-You can also generate Actions for the custom app by providing the OpenAPI Spec.
-</Tip>
+To create a custom app using OpenAPI, click on `+ Add App` in the **Custom Apps** section of Cobalt, choose `Create using OpenAPI Spec`.
 
 <img height="200" src="/images/Guides/Platform/custom-app.png" alt="Custom App in the Apps list in Cobalt"/>
 
-## Authentication Methods
+Provide the **Name**, **Description** and **OpenAPI Spec URL** and click on `Create`.
+<Note>
+If the OpenAPI Spec URL is not valid, the app creation will not be performed.
+</Note>
+
+Once done, this has created a Custom App for you and all the actions of API Endpoints by using the OpenAPI Spec documentation.
+
+But you still need to configure the **Authorization** of your app.
+
+## Configure Authorization
+
 Custom Apps support multiple authentication methods. To setup the Authorization for the Custom App, navigate to `Authorization` in the App and choose the desired method.
 
 The methods of **Authorization** are: 
@@ -79,17 +82,17 @@ You can find both the URLs from the Authentication documentation of the custom a
     In the `API Setup` section, provide the **Base URL** for the APIs and appropriate code i.e. **Expired Access Token Codes** which is received on token expiry for the Refresh mechanism to work.
     <img height="200" src="/images/Guides/Platform/oauth_refresh.png" alt="OAuth 2.0 Refresh mechanism"/>
   </Step>
-    <Step title="Setup Identifier and Validation">
-    Optionally, you can also provide an endpoint which will be called to perform validation of the provided credentials.
-    <Tip>
-    Its recommended to provide a GET API endpoint to perform validation, so as to avoid modifying any data using the credentials.
-    </Tip>
-  </Step>
   <Step title="Extract Access Token & Refresh Token">
   In the `Auth Tokens Data` section, you will provide the mapping using which the tokens can be extracted once received on callback on successful authorization.
 
   Usually an object is received after authorization which will be saved as `access_token_response` on Cobalt's end and you need to provide the key mapping of the required fields from the object.
-  <img height="200" src="/images/Guides/Platform/oauth_tokens.png" alt="Extract Access Token"/>
+  </Step>
+    <Step title="Setup Identifier">
+    Optionally, you can also provide an endpoint which will be called and used to set a field from the API response to use as an identifier for the user.
+    <Tip>
+    Its recommended to provide a GET API endpoint to perform validation, so as to avoid modifying any data using the credentials.
+    </Tip>
+  <img height="200" src="/images/Guides/Platform/oauth_tokens.png" alt="Setup an Identifier of your users"/>
   </Step>
 </Steps>
 <Check>
@@ -104,21 +107,26 @@ You have successfully setup a OAuth 2.0 Custom Application in Cobalt.
 Select this option if no authentication is required for accessing the custom app.
 </Accordion>
 
-## Custom Actions for App
-Custom Apps support the addition of Actions of APIs.
+## Configure Actions
 
-#### Create Custom Action
+By using the OpenAPI Spec doc, actions were created in your integration. You can check all the actions that were created by navigating to **Custom Actions** tab of the app.
 
-Select `Custom Actions`, click on the `New Action` button and provide a **Name** and **Description**.
+  <img height="200" src="/images/Guides/Platform/custom_app_actions.png" alt="Custom Actions created in Custom App"/>
+
+You can also edit an existing action or add a new action if required from this tab. 
+
+To create an action, click on the `New Action` button and provide a **Name** and **Description**.
 
 Add any required or optional **Fields** for the API and add the API under `API Call` section.
 <Note>
 Provide the API by breaking it into 2 parts i.e. Base URL and the Endpoint.
 </Note>
-<img height="200" src="/images/Guides/Platform/actions.png" alt="Actions in the Custom App"/>
 
-#### Enable Pagination for Custom Action
-If the Action's API supports pagination, then you can add it to the custom action. Go to the **API Call** section and enable the `Pagination` toggle.
+<Tip>
+Adding a new action is similar process to how you add an API Proxy in Cobalt. Refer [here](https://docs.gocobalt.io/build/basics/proxies).
+</Tip>
 
-In the `Type` field, select the pagination type and provide the required fields and click on `Save API Call`.
-<img height="200" src="/images/Guides/Platform/action_pagination.png" alt="Actions Pagination in the Custom App"/>
+<Check>
+You have successfully created a Custom App in Cobalt using the OpenAPI Spec documentation.
+</Check>
+

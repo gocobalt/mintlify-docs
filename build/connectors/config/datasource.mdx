@@ -1,0 +1,111 @@
+---
+title: DataSource
+description: DataSource allows you to create options for config select fields using a workflow.
+---
+
+There might arise conditions where you want your end customers to select in the config from a list by using the **Select** field type, like `List of Stages` or `List of Vendors` which are platform specific.
+
+If a list option is not available to add in Select, you can do so by using DataSource using which you fetch the fields from another workflow in a name-value pair format.
+
+The users can then select from the options defined for the field which is fetched from the platform in real time.
+
+Refer to this video to get a brief overview about Data Source.
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/embed/0bd7b164e73e4cf38c7facd684aeac5f?sid=ba2e9d22-c82a-43a4-89a7-4a88b8a646ef&hide_owner=true&hide_speed=true"
+  title="Customizing Data Source for User Config"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
+## Creating Select field using DataSource
+
+Let's consider an example of Quickbooks where you want your user to select the Vendor name and then use that Vendor ID in a workflow.
+
+For this, you simply need to create a workflow which fetches all the Vendors from QuickBooks and then displays them as a name value pair to the user during runtime where the name will be the display name of the Vendor and the value will be its Vendor ID.
+
+#### Step 1: Setup of Data Source Config Field
+
+<Steps>
+  <Step title="Create Select Field Config">
+    Navigate to the QuickBooks integration in Cobalt and go to **Config Portal**. Click on `+ Add Field`, provide a name and choose the type as `Select`. Click on `Add Field`.
+    <img height="200" src="/images/Config/datasource_setup.png" alt="Setup of Datasource Config"/>
+
+  </Step>
+  <Step title="Use DataSource in Select Field">
+    Click on `Edit` button for the field you just created and check the `Use Data Source` checkbox.
+    <img height="200" src="/images/Config/datasource_setting.png" alt="Setup of Datasource Config"/>
+    You will notice that you are now asked to select a workflow to get the options from.
+
+    Let's create the workflow to get Vendors list.
+  </Step>
+</Steps>
+
+#### Step 2: Create the Data Source workflow
+
+<Steps>
+  <Step title="Create Workflow for Data Source">
+    In QuickBooks, add a new workflow and name is as **Get Vendors (DataSource)** so that it is easy to identify.
+  </Step>
+  <Step title="Get Vendors from QuickBooks">
+    Connect a QuickBooks node to the Start Node in the workflow and either use the action to get list of vendors or configure the API using the HTTP Request action.
+    <Note>
+    As the workflow will be used as Data Source, no trigger needs to be added to the Start Node of the workflow.
+    </Note>
+    <img height="200" src="/images/Config/datasource_workflow_setup.png" alt="Setup of Datasource Workflow"/>
+  </Step>
+  <Step title="Convert Vendor data into a Key Value pair">
+    Once you have fetched all the vendor data, you now need to convert that in a name value pair where the name is usually a display name for the end users so that it is easier for them to select option, while the value is the ID of the vendor or any other field that you want to use in your workflow.
+
+    We can do this either by [Transform Node](https://docs.gocobalt.io/build/workflow/transform) or [Custom Code](https://docs.gocobalt.io/build/workflow/custom-code) node.
+  </Step>
+  <Step title="Transform Node to convert data in required format">
+    Connect a Transform node to QuickBooks and based on the response received, we map fields into a name value pair.
+        <img height="200" src="/images/Config/datasource_workflow_transform.png" alt="Transform data in Datasource Workflow"/>
+    This is a sample code we used to perform mapping.
+    ``` JavaScript Transform Query
+    {
+    "vendors":  $map(records, function($k){    
+    {     
+        "name": $k.DisplayName,
+        "value": $k.Id       
+        }
+        })
+}
+    ```
+    <Warning>
+    Ensure that you do mapping only as `name` and `value` pair, otherwise the options will not work correctly.
+    </Warning>
+
+  </Step>
+  <Step title="Send transformed data in Response node">
+    As a final step of every DataSource workflow, you need to send that data in a [Response node](https://docs.gocobalt.io/build/workflow/response) so that it's visible to your users as options in Config.
+    <Info>
+    Ensure that no other node is connected after Response node and it is the last node of the workflow.
+    </Info>
+    Connect a Response node and add the response received from transform node here in the `Data` field.
+        <img height="200" src="/images/Config/datasource_workflow_response.png" alt="Get response data"/>  
+  </Step>
+</Steps>
+
+<Tip>
+This is just a simple workflow to create options for users in the config. You can create workflows as per your requirement and simply send them as options in the Response node at the end.
+</Tip>
+
+#### Step 3: Publish Workflow and add to Config
+
+Once the workflow is completed, **Publish** it for your users.
+<Note>
+If the Data Source workflow is not published, it will not execute for your users and not display any options.
+</Note>
+
+Now go back to the Config Portal and in the field, select the workflow that you created and click on `Save`.
+
+<Check>
+You have now successfully created a config using DataSource.
+</Check>
+
+
