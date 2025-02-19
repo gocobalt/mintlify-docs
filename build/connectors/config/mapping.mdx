@@ -1,5 +1,5 @@
 ---
-title: Field Mapping
+title: Field Mapping (Map V2)
 ---
 Field mapping comes as a crucial feature when you want your users to map their application platform's fields to your fields in order to make sure the correct data is being
 synced from the platform and vice versa.
@@ -11,13 +11,52 @@ configuration settings in Cobalt.
 
 A `Map V2` type dataslot is a type of user config that allows your users to define a mapping between an object in **your application (Source Column)** and an object in their **connected integration account (Destination Column)**.
 
+### Mapping Setup using Map V2
+
+Based on the use-case whether you want to create mapping on an application or a workflow level, navigate to the **Config Portal** of the app in Cobalt.
+
+Follow these steps to setup a Map V2 Config
+<Steps>
+  <Step title="Create Config field">
+    In the Config Portal, click on `+ Add Field`, provide a name and select the `Type` as `Map V2` and click on `Add field`.
+    <img height="200" src="/images/Config/mapping-create.png" alt="Create Mapping"/>
+  </Step>
+  <Step title="Configure Source fields">
+    Click on edit for the mapping created and let's configure the Source column.
+
+    Provide a **Name** for the column, select `Type` as **Select** and then add the options.
+
+    For mapping, you can either provide [Static](/build/connectors/config/mapping#static-mapping) or [Dynamic](/build/connectors/config/mapping#dynamic-mapping) mapping based on your usecase.
+
+    For Static mapping, simply add the fields as options and if you want to add Dynamic Mapping here, then `Use DataSource` and select the workflow from which you are fetching fields.
+        <img height="200" src="/images/Config/static-mapping.png" alt="Static Mapping"/>
+  </Step>
+  <Step title="Configure Destination fields">
+    In Destination, you usually configure the fields from third party application which the user will map with the Source fields.
+
+    Provide **Name** for Destination and select the object fields which you want from `Type`.
+        <img height="200" src="/images/Config/destination-mapping.png" alt="Destination fields configure in Mapping"/>
+    <Tip>
+    If a particular object's fields are not present as Type, you can create a DataSource workflow in which you fetch the fields from third party application and then use that Data Source workflow here.
+    </Tip>
+  </Step>
+  <Step title="Save the mapping">
+    Once both Source and Destination column are configured, click on `Save field` and the mapping will be available to all your Linked Accounts.
+  </Step>
+</Steps>
+
 ### Static mapping 
-Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields. User can create the required labels by choosing `Select` as the type and entering the `Options`.
+Static mapping essentially means that you have a set of pre-defined fields for which you want your users to map the respective application fields. User can create the required labels by choosing `Select` as the type and entering the `Options` under the **Source** column.
 
 <img height="200" src="/images/Config/static-mapping.png" alt="Static Mapping of fields"/>
 
-On setting the static map type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated
-static value. This `value` is mapped to the application platform fields. 
+In the **Destination** column, under `Type`, choose the object properties which you want the user to map.
+
+<Tip>
+If an object fields are not present under Type, you can check the `Use Data Source` option and get the fields using Data Source. Learn more about DataSource [here](https://docs.gocobalt.io/build/connectors/config/datasourc).
+</Tip>
+
+On setting the static map type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated static value. This `value` is mapped to the application platform fields. 
 
 ```JavaScript
 "fields": [
@@ -66,13 +105,11 @@ the system generated `value`.
 
 
 ### Dynamic mapping
-Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Cobalt provides a feature to
-map your labels dynamically while creating your config. To do so, instead of creating the labels in the configuration pages specific to a workflow or the application,
-simply toggle the `Dynamic` option of the data slot and provide the `Labels Object Name`.
+Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Cobalt provides a feature to load your fields dynamically using [DataSource](https://docs.gocobalt.io/build/connectors/config/datasource). 
+
+To do so, instead of creating the options in the config specific to a workflow or the application, simply toggle the `Use Data Source` option under **Source** column and select the workflow from which you will fetch fields dynamically during run time.
 
 <img height="200" src="/images/Config/dynamic-mapping.png" alt="Dynamic Mapping of fields"/>
-
-Now while creating the config using `.config()` method, pass on the required dynamic labels under the created `Labels Object Name`. Check out this [documentation](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#config) for more details.
 
 ```JavaScript
 cobalt.config({
@@ -93,7 +130,7 @@ cobalt.config({
 })
 ```
 <Info>
-Note here that unlike static mapping, the label value here is not system generated but defined by the user.
+Note here that unlike static mapping, the source field values here are not system generated but defined by the user in the DataSource workflow.
 </Info>
 
 ### Getting map-type config from frontend SDK
