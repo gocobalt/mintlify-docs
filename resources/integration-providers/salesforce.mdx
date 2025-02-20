@@ -64,3 +64,27 @@ Navigate to  `Apps` > `App Manager` > Select the OAuth App created for Cobalt > 
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
 identical to the ones selected in the platform.
 </Warning>
+
+#### Salesforce Webhooks
+
+To use Salesforce webhooks as triggers in your workflows, your end-users need to add the API base URL of Cobalt as a Remote Site in Salesforce to receive the events successfully.
+
+Follow these steps to add as Remote Site:
+<Steps>
+  <Step title="Navigation">
+    Login to your Salesforce and in **Setup**, search for `Remote Site Settings` which will be present under **Security** and select it.
+    <img height="200" src="/images/Salesforce/Salesforce_remote.png" alt="Remote Site Settings in Salesforce"/>
+  </Step>
+  <Step title="Add Remote Site">
+    Click on `New Remote Site` button.
+  </Step>
+  <Step title="Add URL">
+    Provide a **Name** of the Remote Site, add `https://api.gocobalt.io` under **Remote Site URL** and click on `Save`.
+        <img height="200" src="/images/Salesforce/Salesforce_remote_2.png" alt="Remote Site Settings in Salesforce"/>
+  </Step>
+</Steps>
+
+<Check>
+You have successfully added the API base URL of Cobalt in Salesforce for the triggers.
+</Check>
+
