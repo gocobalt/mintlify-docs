@@ -1,7 +1,66 @@
 ---
 title: Data Mapper
 ---
-<Info>
 
-Coming Soon!
+## Node Functionality
+
+Data Mapper works as mapping resolver in the workflow. It can:
+- Resolve data and fields from third party application based on the mapping provided.
+- Resolve data and fields to be sent from your platform to third party app by using mapping.
+- Eliminate the need to write a Custom Code to resolve config field mapping.
+
+<Tip>
+Learn more about Field Mapping [here](https://docs.gocobalt.io/build/connectors/config/mapping).
+</Tip>
+
+## Node Fields
+
+To resolve mapping, following fields need to be configured in the node:
+
+- **Input**: In this field, you need to pass the data on which the mapping will be performed.
+
+- **Mapping**: Using [Templating](https://docs.gocobalt.io/build/workflow/templating), you pass the config mapping which will be used to map fields in this node.
+
+- **Direction**: In Mapping, there is `Source`, which is usually fields on your platform and `Destination`, which are the name of fields in the third party integration.
+
+    So you could have two cases: One where you are sending data from source to destination or one where you are receiving data from destination to source. Based on this, you need to resolve the mapping and select the direction.
+
+<Info>
+Input, Mapping and Direction are mandatory fields to be configured in the node.
 </Info>
+
+## Example Usage of Data Mapper
+
+Consider a use-case where you are syncing contact data from HubSpot to your platform and your users have the capability to perform mapping. So let's use Data Mapper node to perform correct mapping of the data from HubSpot.
+
+<Steps>
+  <Step title="Setup HubSpot Workflow">
+    Create a new workflow for Syncing Contact, fetch Contacts from HubSpot and then add a Data Mapper Node.
+  </Step>
+  <Step title="Configure the Data Mapper Node">
+    In the node, provide `Input` as the data you are receiving from HubSpot.
+    <Note>
+    Make sure that the Input provided has the fields that you are mapping. If the fields to be mapped are nested in another object, provide that as the Input. 
+    </Note>
+    In `Mapping`, provide the config mapping using Templating.
+    <img height="200" src="/images/Guides/Workflow/data-mapper.png" alt="Configuring Data Mapper in Cobalt"/> 
+  </Step>
+  <Step title="Provide the Direction">
+    Since in this use-case we are syncing data from Destination, we will provide the `Direction` as **Destination to Source** to denote that fields from Destination will be converted to Source field names based on mapping.
+
+    If the use-case had been to create a new contact in HubSpot, the direction would be **Source to Destination** as data will be sent from your platform which needs to be changes to field names required by HubSpot.
+
+    Once done, click on `Save`.
+  </Step>
+  <Step title="Response from Data Mapper">
+    Once the Data Mapper node is executed, you will receive a JSON object with the correctly mapped data.
+    <Warning>
+    Before testing make sure that you have performed the mapping in the integration for the linked account. 
+    </Warning>
+    Here is a sample execution of the node with the input and the mapping provided and the output of the node.
+    <img height="200" src="/images/Guides/Workflow/data-mapper-response.png" alt="Data Mapper node response in Cobalt"/> 
+    <Check>
+    You have successfully created a workflow using the Data Mapper node and can perform further operations in the workflow based on your use-case.
+    </Check>
+  </Step>
+</Steps>
