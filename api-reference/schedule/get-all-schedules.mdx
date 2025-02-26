@@ -1,0 +1,134 @@
+---
+title: 'Get all Scheduled Jobs'
+api: get /api/v1/workflow/public/scheduled
+---
+
+This API fetches all the scheduled jobs.
+
+## Request description
+#### Query Params
+<ParamField path="linked_account_id" type="string">
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+<ParamField path="limit" type="string">
+  Limit number of results in a page.
+</ParamField>
+
+<ParamField path="page" type="string">
+  Page number of the response.
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+    ID of the registered cron
+    </ResponseField>
+    <ResponseField name="event_id" type="string">
+    Event ID
+    </ResponseField>
+    <ResponseField name="workflow" type="object">
+    Information about the workflow with schedule
+    </ResponseField>
+    <ResponseField name="confg_id" type="string">
+    Config ID for which cron is registered.
+    </ResponseField>
+     <ResponseField name="linked_account_id" type="string">
+    Linked Account ID for which cron is registered
+    </ResponseField>
+    <ResponseField name="environment" type="string">
+    Environment in which cron registered
+    </ResponseField>
+    <ResponseField name="org_id" type="string">
+    Organization id
+    </ResponseField>
+    <ResponseField name="cron_pattern" type="string">
+    Cron Pattern used for schedule register.
+    </ResponseField>
+    <ResponseField name="inactive" type="boolean">
+    The schedule is inactive or not.
+    </ResponseField>
+    <ResponseField name="triggered_instances" type="array">
+     Array of the instances triggered using this schedule.
+    </ResponseField>
+    <ResponseField name="schedule_added_at" type="string">
+    Timestamp when schedule was added
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+    Timestamp of schedule updation.
+    </ResponseField>
+    <ResponseField name="inactive_from" type="string">
+    Timestamp since which the schedule is inactive.
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Code for the Error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "docs": [
+        {
+            "_id": "65e1b187a9feec935ab46c31",
+            "event_id": "65e1b187a9feec935ab46c30",
+            "workflow": {
+                "_id": "65e1b122a9feec935ab40a2e",
+                "name": "Schedule",
+                "description": "",
+                "associated_application": {
+                    "_id": "65c9ef72af613b7828322831",
+                    "name": "Slack",
+                    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+                    "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams."
+                }
+            },
+            "config_id": "3",
+            "linked_account_id": "3",
+            "environment": "test",
+            "org_id": "65c9ef72f4b95fce32e8ccf8",
+            "cron_patten": "*/6 * * * *",
+            "inactive": true,
+            "schedule_added_at": "2024-03-01T10:44:23.336Z",
+            "updatedAt": "2024-03-01T11:06:39.308Z",
+            "inactive_from": "2024-03-01T11:06:39.308Z",
+            "id": "65e1b187a9feec935ab46c31",
+            "triggered_instances": []
+        }
+    ],
+    "totalDocs": 5,
+    "limit": 10,
+    "totalPages": 5,
+    "page": 1,
+    "pagingCounter": 1,
+    "hasPrevPage": false,
+    "hasNextPage": true,
+    "prevPage": null,
+    "nextPage": 2
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>
