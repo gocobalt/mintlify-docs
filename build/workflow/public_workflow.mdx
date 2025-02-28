@@ -1,0 +1,76 @@
+---
+title: Public Workflows
+description: Public workflows in Cobalt allow linked accounts to create and execute their own workflows.
+---
+
+## Overview
+
+Public workflows operate in the production environment, enabling real-time automation and execution.
+
+Below is a sample implementation of public workflows once you have embedded it into your platform.
+<img height="200" src="/images/Concepts/add-public-workflow.png" alt="Creating a Public Workflow"/>
+
+Since public workflows are designed to be live, any modifications are made in draft mode before being published. Users can:
+
+- Edit the workflow in draft mode.
+- Test changes using Workflow Testing.
+- Publish the draft to update the live workflow.
+
+Once published, the new workflow state becomes live, ensuring seamless execution.
+
+## Public Workflow Types
+
+Public workflows can be created at two levels:
+
+<Accordion title="App-Level Public Workflows">
+Created when a user authenticates with an integration (e.g., Salesforce, HubSpot).
+
+These workflows are tied to the specific app’s linked account.
+<img height="200" src="/images/Concepts/app-public-workflow.png" alt="Public App Workflows"/>
+
+</Accordion>
+
+<Accordion title="Account-Level Public Workflows (Internal Conductor Workflows)">
+These are not linked to any specific integration and are used for internal automation on Cobalt account level.
+<img height="200" src="/images/Concepts/internal-public-workflow.png" alt="Public Internal Conductor Workflows"/>
+
+</Accordion>
+
+## Embed Public Workflows 
+
+To embed the public workflow into your platform, use the following iframe:
+```bash
+<iframe
+    src={ `https://app.gocobalt.io/workflows/${ workflowId }?token=${ cobaltSessionToken }` }
+    height="100%"
+    width="100%"
+    style={{
+        border: "none",
+    }}
+/>
+```
+You need to provide the [Workflow Id](https://docs.gocobalt.io/api-reference/config/get-all-config) and [Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account).
+
+## Editing and Publishing Public Workflows
+
+To modify a public workflow, follow these steps:
+<Steps>
+  <Step title="Navigate to Edit mode">
+    Click on the `+ Edit Workflow` button.
+    <img height="200" src="/images/Concepts/internal-public-workflow.png" alt="Edit a Public Workflow"/>
+  </Step>
+  <Step title="Update and Publish">
+    Make the required changes in the workflow while you are in Edit mode  and click `Publish` to make the workflow live.
+    <Note>User config is not available in Public workflows, so dataslots or mapping selected by the user cannot be used in workflows.</Note>
+  </Step>
+  <Step title="Save as Draft">
+    If you do not wish to publish the changes, click `Cancel`, and the live workflow remains unchanged, while your changes are saved as draft.
+    <Info>Draft workflows persist until they are published, allowing users to return and modify them anytime before finalizing.</Info>
+  </Step>
+</Steps>
+
+
+## Executing Public Workflows
+
+Public workflows are triggered just like regular workflows in Cobalt. The execution depends on the event selected in the Start node.
+Once live, the workflow runs based on its configured triggers, ensuring seamless automation.
