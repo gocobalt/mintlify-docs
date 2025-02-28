@@ -42,7 +42,8 @@ You can also fetch information about a single application by providing the app s
 In the response, you will receive an array containing the List of Applications that were enabled for the end-user. You can find information about the applications like name, slug, icon URL, the app was connected by user or not etc which can be used to build the Custom UI of your app.
 
 ``` JavaScript Response
-{
+[
+	{
 	"name": "Salesforce",
 	"icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/salesforce/logo.png",
 	"description": "Salesforce is a leading enterprise customer relationship manager (CRM) applications.",
@@ -51,14 +52,46 @@ In the response, you will receive an array containing the List of Applications t
 	"app_id": "669e0767d6c828b822c4f650",
 	"tags": [
 		"CRM"
-	],
+	        ],
 	"version": {
 		"_v": "1.0.0",
 		"description": "Salesforce is a leading enterprise customer relationship manager (CRM) applications."
-	},
+	            },
 	"slug": "salesforce",
     "reauth_required": false
-}
+    },
+    {
+        "name": "Copper",
+        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/copper/logo.png",
+        "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace.",
+        "auth_type": "keybased",
+        "tags": [
+            "CRM"
+        ],
+        "auth_input_map": [
+            {
+                "name": "api_token",
+                "label": "API Key",
+                "placeholder": "Please enter the API key",
+                "required": true,
+                "type": "text"
+            },
+            {
+                "name": "email",
+                "label": "Email Address",
+                "placeholder": "Please enter the email of the token owner",
+                "required": true,
+                "type": "text"
+            }
+        ],
+        "version": {
+            "_v": "1.0.0",
+            "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity. It is built for businesses that use Google Workspace."
+        },
+        "slug": "copper",
+        "reauth_required": false
+    }
+]
 ```
 <Note>
 Learn more about the Embedded and Seamless flow of Cobalt Connect [here](https://docs.gocobalt.io/ship/auth_flows/flows).
