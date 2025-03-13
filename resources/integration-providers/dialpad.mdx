@@ -1,0 +1,108 @@
+---
+title: Setup
+description: Connect to your Dialpad app for OAuth.
+---
+Cobalt offers both **Key Based** and **OAuth 2.0** integration for Dialpad. In this guide, we will look at the OAuth App setup process.
+
+To setup your Dialpad app in Cobalt for OAuth, you will need the following credentials from your Dialpad Support team:
+- Client ID
+- Client Secret
+- Scopes
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. offline access
+
+<Info>If you haven't already created an app in Dialpad, you'd need to create one.</Info>
+
+### Creating an app in Dialpad
+
+Currently Dialpad doesn’t support app registrations through platform, so you’ll need to fill the following [form](https://airtable.com/appROW6mZJwsnGidA/shrju5b3Sqebrmn96) to request an OAuth app that includes the following details:
+- **App name**: A short name for your app. Your customers will see this when they authorize your connection to their data.
+- **Deverloper Name and Email**: The email which will receive updates about the app.
+- **Developer Type**: Choose `Independent Software Vendor' if none of the other fits.
+- **App Type**: Select `App Type` as **This App is for my customers..**
+- **App Description**: Provide the description of what your product does and the features of Dialpad integration on your platform.
+- **App Environment**: Select app environment based on your usecase. Recommened option is `Both`.
+- **Scopes**: Provide the mandatory scopes and additional scopes required by you in the app.
+- **Redirect URIs**: Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Dialpad` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Provide this URL to Dialpad in the form.
+
+Dialpad will issue secure keys to you, including a **Client ID** and **Client Secret**. It may take a number of working days to receive these details.
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Dialpad/dialpad_cobalt.png" alt="Setting up application client credentials"/>
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials`. Provide the aquired Client Id and Client secret and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Dialpad/dialpad_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Dialpad actions and triggers. Following are the set of Dialpad actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Calls">
+     1. **List Calls** - List all calls in Dialpad.
+     2. **Get Call By Id** - Get call By Id in Dialpad.
+     3. **Add Participant** - Add participant to call in Dialpad.
+     4. **Transfer Call** - Transfer Call to another Number/Target in Dialpad.
+     5. **Hangup Call** - Hang Up ongoing Call in Dialpad.
+    </Accordion>
+
+     <Accordion title="Channels">
+     6. **List Channels** - Lists all channels in the company in Dialpad.
+     7. **Create Channel** - Create a new channel in Dialpad.
+     8. **Get Channel** - Get a channel by id in Dialpad.
+     9. **Delete Channel** - Deletes a channel by id in Dialpad.
+     </Accordion>
+    
+     <Accordion title="Contacts">
+     10. **List Contacts** - List all contacts in Dialpad.
+     11. **Create Contact** - Create a contact in Dialpad.
+     12. **Get Contact By Id** - Get a contact by ID in Dialpad.
+     13. **Update Contact** - Updates the provided fields for an existing contact in Dialpad.
+     14. **Delete Contact** - Delete a contact in Dialpad.
+      </Accordion>
+     <Accordion title="SMS">
+     15. **Send SMS** - Send a SMS in Dialpad.
+      </Accordion>
+    <Accordion title="Users">
+     16. **List Users** - List all users in Dialpad.
+     17. **Create User** - Creates a new user in Dialpad.
+     18. **Update User** - Update the provided fields for an existing user in Dialpad.
+      </Accordion>
+     <Accordion title="Others">
+     19. **HTTP Request** - Make HTTP API calls to any Dialpad documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+    1. **Outbound call started** - Triggers when a outbound call has started calling in Dialpad.
+    2. **Inbound call ringing** - Triggers when inbound call is ringing in Dialpad.
+    3. **Call connected** - Triggers when a call is connected between parties in Dialpad.
+    4. **Voicemail recording started** - Triggers when voicemail recording is started in Dialpad. 
+    5. **Call hangup** - Triggers when a call is ended in Dialpad.
+    6. **Voicemail transcribed** - Triggers when a voicemail is transcribed in Dialpad.
+    7. **Call recording processed** - Triggers when a call recording is processed in Dialpad.
+  </Tab>
+</Tabs>

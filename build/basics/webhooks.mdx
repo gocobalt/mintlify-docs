@@ -6,9 +6,9 @@ description: Learn how to setup Webhooks in Cobalt
 
 ## What are webhooks?
 
-A webhook is a method to provide external applications with real-time information about data changes in a platform.
+Cobalt webhooks is a method to provide your external applications with real-time information about events in the platform such as Workflow errored or Connection created.
 
-A webhook delivers data to the application at the moment that there is a change, resulting in data being pushed. Unlike REST APIs where the application polls the API at regular intervals in order to get the changed data. This makes webhooks much more efficient and friendly.
+A webhook delivers data to the application at the moment that there is a change, resulting in data being pushed, unlike REST APIs where your application needs to poll the API at regular intervals in order to get the changed data. This makes webhooks much more efficient and friendly.
 
 ## Event Types
 Currently Cobalt 5 webhook event types:
@@ -107,6 +107,112 @@ After you clicked **Add Webhook**, you are subscribed to the Webhook events.
 
 ### Via the Webhook subscription 
 You can manage the webhook subscription using our webhooks API. Visit the [API reference](/api-reference/webhooks/create-webhook) 
+
+
+## Verify HMAC Signature
+
+For security purposes, if you require to verify HMAC signature of the Cobalt webhooks you receive, you can easily do so.
+<Info>
+It is not necessary to verify the HMAC signature if you do not have a requirement.
+</Info>
+
+Following are the sample codes to verify HMAC signature of Cobalt Webhooks
+<CodeGroup>
+
+```typescript .TS
+import * as crypto from 'crypto';
+
+// your Cobalt API key based on environment
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '<Cobalt-API-key>';
+// payload is the data that you receive from the webhook
+const payload = {
+    "linked_account_id": "dev",
+    "instance_id": "67d22c4330d75f3a3fa29056",
+    "workflow_id": "67af37ad1d0bb61005439eaf",
+    "event": "Workflow Completed",
+    "workflow_name": "Get Response",
+    "status": "COMPLETED",
+    "environment": "test"
+}
+
+/**
+ * Verifies the HMAC signature from a webhook received from Cobalt
+ * @param payload The raw request body as a string (JSON.stringify(payload))
+ * @param signature The signature from the webhook header (Header is, 'x-cobalt-signature')
+ * @returns boolean indicating if the signature is valid
+ */
+function verifyWebhookSignature(payload: string, signature: string): boolean {
+    try {
+        const expectedSignature = crypto
+            .createHmac('sha256', WEBHOOK_SECRET)
+            .update(payload)
+            .digest('hex');
+
+        return crypto.timingSafeEqual(
+            Buffer.from(signature, 'hex'),
+            Buffer.from(expectedSignature, 'hex')
+        );
+    } catch (error) {
+        console.error('Error verifying webhook signature:', error);
+        return false;
+    }
+}
+
+const examplePayload = JSON.stringify(payload);
+const exampleSignature = '42799d46dfd9a8acf35c14e6b7c300cc3734d06a0ce129268f1b54096750a44f'; // This would be from the webhook header x-cobalt-signature
+
+const isValid = verifyWebhookSignature(examplePayload, exampleSignature);
+console.log('Signature is valid:', isValid);
+```
+
+```python .py
+import hashlib
+import os
+import hmac
+import json
+
+# your Cobalt API key based on environment
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "<Cobalt-API-key>")
+
+# Payload received from the webhook
+payload = {
+    "linked_account_id": "dev",
+    "instance_id": "67d22c4330d75f3a3fa29056",
+    "workflow_id": "67af37ad1d0bb61005439eaf",
+    "event": "Workflow Completed",
+    "workflow_name": "Get Response",
+    "status": "COMPLETED",
+    "environment": "test"
+}
+
+def verify_webhook_signature(payload: str, signature: str) -> bool:
+    """
+    Verifies the HMAC signature from a webhook received from Cobalt.
+    :param payload: The raw request body as a string (json.dumps(payload))
+    :param signature: The signature from the webhook header (x-cobalt-signature)
+    :return: Boolean indicating if the signature is valid
+    """
+    try:
+        expected_signature = hmac.new(
+            key=WEBHOOK_SECRET.encode(),
+            msg=payload.encode(),
+            digestmod=hashlib.sha256
+        ).hexdigest()
+        
+        return hmac.compare_digest(signature, expected_signature)
+    except Exception as e:
+        print("Error verifying webhook signature:", e)
+        return False
+
+example_payload = json.dumps(payload, separators=(',', ':'), ensure_ascii=False)
+example_signature = "42799d46dfd9a8acf35c14e6b7c300cc3734d06a0ce129268f1b54096750a44f"  # From the webhook header x-cobalt-signature
+
+is_valid = verify_webhook_signature(example_payload, example_signature)
+print("Signature is valid:", is_valid)
+```
+
+
+</CodeGroup>
 
 
 ## Receive events
