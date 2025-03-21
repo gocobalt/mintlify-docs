@@ -8,11 +8,22 @@ Returns the connection URL in format: `https://connect.gocobalt.io/{TOKEN}`
 ## Request description
 #### Headers
 <ParamField header="Authorization" type="string">
-Unlike other API's in this documentation. This API requires the session token as a bearer token. Please ommit the `x-api-key` from the header of this API.
-  ```bash Header for Generate Connect URL API
-  Authorization:  Bearer {SESSION TOKEN}
-  ```
+Unlike other API's in this documentation, this API requires the [Session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) as a bearer token for authentication.
 </ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {Session_token}' \
+  --data '{
+  "color": "<string>",
+  "bgColor": "<string>",
+  "name": "<string>"
+}'
+```
+</RequestExample>
 
 #### Query Parameters
 <ParamField query="config_id" type="string">
