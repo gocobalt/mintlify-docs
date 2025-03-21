@@ -49,7 +49,36 @@ To embed the public workflow into your platform, use the following iframe:
     }}
 />
 ```
-You need to provide the [Workflow Id](https://docs.gocobalt.io/api-reference/config/get-all-config) and [Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account).
+You need to provide the [Workflow Id](https://docs.gocobalt.io/api-reference/public_workflows/get_public_workflows) and [Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account).
+
+## Creating Public Workflows
+
+To create a Public workflow, simply use Cobalt's API
+```bash Create Public Workflow
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/workflow \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {Session_token}' \
+  --data '{
+  "name": "<string>",
+  "slug": "<string>",
+  "description": "<string>"
+}'
+```
+<Tip>
+Learn more about the Create Public Workflow API [here](https://docs.gocobalt.io/api-reference/public_workflows/create_public_workflow).
+</Tip>
+
+To create a draft or editable version of the workflow, use the following cURL:
+```bash Create Draft version
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/workflow/:workflow_id/edit \
+  --header 'Authorization: Bearer {Session_token}' \
+```
+<Tip>
+Learn more about the Create Draft of Public Workflow API [here](https://docs.gocobalt.io/api-reference/public_workflows/get_draft).
+</Tip>
+
 
 ## Editing and Publishing Public Workflows
 

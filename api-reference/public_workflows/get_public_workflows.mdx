@@ -1,0 +1,274 @@
+---
+title: 'Get all Public Workflows'
+api: get /api/v2/public/workflow
+---
+
+This API fetches a list of all public workflows of a linked account using Session Token.
+
+## Request description
+#### Headers
+<ParamField header="Authorization" type="string">
+Unlike other API's in this documentation, this API requires the [Session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) as a bearer token for authentication.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/workflow \
+  --header 'Authorization: Bearer {Session_token}' \
+```
+</RequestExample>
+
+#### Query Parameters
+<ParamField body="slug" type="string">
+  Application slug to filter public workflows. For eg: hubspot
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+    ID of the workflow
+    </ResponseField>
+    <ResponseField name="created_at" type="string">
+    Timestamp when workflow was created
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+    Timestamp of workflow updation.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+    Workflow name
+    </ResponseField>
+    <ResponseField name="org_id" type="string">
+    ID of the org in which workflow is created
+    </ResponseField>
+   <ResponseField name="nodes" type="array">
+    An array of object of nodes of the workflow.
+     <Expandable title="properties">
+        <ResponseField name="id" type="string">
+            Id of the node in workflow
+        </ResponseField>
+        <ResponseField name="data" type="string">
+            Data in the node
+        </ResponseField>
+        <ResponseField name="type" type="string">
+           Type of node. Eg: start, ai_code_executor and more.
+        </ResponseField>
+        <ResponseField name="position" type="object">
+            x and y coordinates of the node.
+        </ResponseField>
+         <ResponseField name="name" type="string">
+            Name of the node
+        </ResponseField>
+        <ResponseField name="status" type="string">
+            Current status of the node.
+        </ResponseField>
+        <ResponseField name="is_batch" type="boolean">
+           The node is a batch node or not.
+        </ResponseField>
+         <ResponseField name="triggers" type="array">
+            Information about the triggers of the workflow. Only available in node of `type=start`.
+        </ResponseField>
+        <ResponseField name="action" type="string">
+           The action added in the node.
+           <Info>
+         This will not be available in field of `type = start`, which will rather have the trigger information.
+           </Info>
+        </ResponseField>
+         <ResponseField name="incoming_nodes" type="array">
+            Array of ids of incoming nodes to the node.
+        </ResponseField>
+        <ResponseField name="outgoing_nodes" type="array">
+            Array of ids of outgoing nodes to the node.
+        </ResponseField>
+     </Expandable>
+    </ResponseField>
+     <ResponseField name="published" type="boolean">
+    The workflow is published or not.
+    </ResponseField>
+    <ResponseField name="associated_application" type="string">
+    Id of the application associated with workflow
+    </ResponseField>
+    <ResponseField name="index_order" type="string">
+    Indexing order in which workflows are shown.
+    </ResponseField>
+   <ResponseField name="data_slots" type="array">
+    Array of dataslots added to the workflow.
+    </ResponseField>
+    <ResponseField name="description" type="string">
+    Description of the workflow.
+    </ResponseField>
+    <ResponseField name="icon" type="string">
+    Icon url for the workflow
+    </ResponseField>
+   <ResponseField name="edges" type="array">
+   Array of the edges of the workflow.
+   <Expandable title="properties">
+   <ResponseField name="source" type="string">
+   Id of the source node of the edge
+   </ResponseField>
+   <ResponseField name="target" type="string">
+   Id of the target/connected node of the edge.
+   </ResponseField>
+   <ResponseField name="id" type="string">
+   Id of the edge.
+   </ResponseField>
+   </Expandable>
+   </ResponseField>
+    <ResponseField name="autoEnable" type="boolean">
+    Whether auto enable for workflow is enabled or not
+    </ResponseField>
+   <ResponseField name="hide_in_config" type="boolean">
+    Whether workflow should be hidden or not
+    </ResponseField>
+   <ResponseField name="is_v2" type="boolean">
+    Whether workflow version is v2 or not.
+    </ResponseField>
+    <ResponseField name="linked_account_id" type="string">
+    Linked Account ID
+    </ResponseField>
+   <ResponseField name="public_access_workflow" type="boolean">
+    The workflow is a public workflow or not.
+    </ResponseField>
+   <ResponseField name="workflow_environment" type="array">
+    The Cobalt environments in which workflow is available
+    </ResponseField>
+   <ResponseField name="associated_public_worklfow" type="string">
+   Id of the public workflow which is converted to draft mode.
+    </ResponseField>
+  </Tab>
+  <Tab title="404">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+   "workflows":[
+      {
+         "_id":"67dd309c8a29c6f92d8bb45e",
+         "name":"My API Workflow",
+         "org_id":"669e076623c652d7aff25eb9",
+        "nodes": [
+                {
+                    "id": "1",
+                    "data": null,
+                    "type": "start",
+                    "position": {
+                        "x": 396,
+                        "y": 112
+                    },
+                    "name": "Start",
+                    "status": "Ready",
+                    "configurable": false,
+                    "maximum_attempts": 1,
+                    "attempts_made": 0,
+                    "is_batch": false,
+                    "triggers": [
+                        {
+                            "application": "Cobalt",
+                            "event": "API Call",
+                            "_id": "67dd309c8a29c6f92d8bb45d"
+                        }
+                    ],
+                    "trigger_cron": null,
+                    "incoming_nodes": [],
+                    "outgoing_nodes": [],
+                    "parsed_response": {},
+                    "request": {},
+                    "input_data": {},
+                    "style": {},
+                    "event_to_dynamic_var_map": []
+                },
+                {
+                    "id": "2",
+                    "data": null,
+                    "type": "ai_code_executor",
+                    "position": {
+                        "x": 396,
+                        "y": 272
+                    },
+                    "name": "Step 1",
+                    "status": "Ready",
+                    "configurable": false,
+                    "maximum_attempts": 1,
+                    "attempts_made": 0,
+                    "is_batch": false,
+                    "action": "no_action",
+                    "incoming_nodes": [],
+                    "outgoing_nodes": [],
+                    "parsed_response": {},
+                    "request": {},
+                    "input_data": {},
+                    "style": {}
+                }
+            ],
+         "published":false,
+         "associated_application":{
+            "_id":"669e0767d6c828b822c4f656",
+            "name":"Hubspot",
+            "slug":"hubspot"
+         },
+         "index_order":33,
+         "test_instance_meta_data":{
+            "trigger":{
+               "application":"Cobalt",
+               "event":"API Call",
+               "_id":"67dd309c8a29c6f92d8bb45d"
+            },
+            "environment":"test",
+            "linked_account_id":"cobalt_test_user"
+         },
+         "description":"<string>",
+         "icon":"",
+         "edges":[
+            {
+               "source":"1",
+               "target":"2",
+               "sourceHandle":null,
+               "targetHandle":null,
+               "type":"smoothstep",
+               "id":"1efef0cc-b4aa-4a04-804f-55abdccd8db3"
+            }
+         ],
+         "autoEnable":false,
+         "hide_in_config":false,
+         "is_v2":true,
+         "linked_account_id":"dhananjay",
+         "public_access_workflow":true,
+         "workflow_environment":[
+            "test",
+            "production"
+         ],
+         "data_slots":[],
+         "createdAt":"2025-03-21T09:25:48.384Z",
+         "updatedAt":"2025-03-21T09:25:48.384Z",
+         "__v":0
+      }
+   ],
+   "totalDocs":1,
+   "limit":10,
+   "totalPages":1,
+   "page":1,
+   "pagingCounter":1,
+   "hasPrevPage":false,
+   "hasNextPage":false,
+   "prevPage":null,
+   "nextPage":null
+}
+```
+
+</ ResponseExample>
