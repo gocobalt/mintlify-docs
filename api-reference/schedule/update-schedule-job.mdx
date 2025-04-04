@@ -57,6 +57,15 @@ Based on the trigger_type provided, Request Body differs.
                     <ResponseField name="year" type="string" required>
                         Year of the date. Eg: 2025
                     </ResponseField>
+                    <ResponseField name="hour" type="string" required>
+                        Hour of the timestamp Eg: 21
+                    </ResponseField>
+                  <ResponseField name="minute" type="string" required>
+                        Year of the date. Eg: 45
+                    </ResponseField>
+                  <ResponseField name="second" type="string" required>
+                        Seconds of the timestamp. Eg: 30
+                    </ResponseField>
                 </Expandable>
         </ResponseField>
         <ResponseField name="tz" type="string" required>
@@ -65,7 +74,36 @@ Based on the trigger_type provided, Request Body differs.
      </Expandable>
 </ParamField>
 
-
+<RequestExample>
+```bash cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v1/workflow/public/scheduled/:schedule_id \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "trigger_type": "<string>",
+  "payload": {},
+  "regex": "*/6 * * * *",
+  "currentDate": "YYYY-MM-DD",
+  "tz": "Asia/Kolkata",
+  "endDate": "YYYY-MM-DD",
+  "startDate": "YYYY-MM-DD",
+  "interval_dates": [
+        {
+            "date": {
+                "day": 23,
+                "month": 1,
+                "year": 2025
+                "hour": 22,
+                "minute": 22,
+                "second": 22
+            },
+            "tz": "Asia/Kolkata"
+        }
+    ]
+}'
+```
+</RequestExample>
 
 ## Response description
 
