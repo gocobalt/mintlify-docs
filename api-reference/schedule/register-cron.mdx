@@ -55,6 +55,15 @@ Based on the trigger_type provided, Request Body differs.
         <ResponseField name="date" type="object" required>
             Date for the schedule.
                 <Expandable title="properties">
+                  <ResponseField name="hour" type="string" required>
+                        Hour of the timestamp Eg: 21
+                    </ResponseField>
+                  <ResponseField name="minute" type="string" required>
+                        Year of the date. Eg: 45
+                    </ResponseField>
+                  <ResponseField name="second" type="string" required>
+                        Seconds of the timestamp. Eg: 30
+                    </ResponseField>
                     <ResponseField name="day" type="string" required>
                         Date of the object. Eg: 25
                     </ResponseField>
@@ -95,6 +104,9 @@ curl --request POST \
                 "day": 23,
                 "month": 1,
                 "year": 2025
+                "hour": 22,
+                "minute": 22,
+                "second": 22
             },
             "tz": "Asia/Kolkata"
         }

@@ -13,13 +13,39 @@ First, install `@cobaltio/cobalt-js`  and via the terminal.
 npm install --save  @cobaltio/cobalt-js
 ```
 
+#### Browser
+```html
+<!-- use this if you get an error saying `exports` is not defined. -->
+<script>var exports = {};</script>
+<!-- use a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@8.0.0"></script>
+<!-- use a version range instead of a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@8"></script>
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@8.0"></script>
+<!-- omit the version completely to use the latest one -->
+<!-- you should NOT use this in production -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+```
+
 #### Initialise
 Import `Cobalt` and initialise it.
 
 ```JavaScript
 import { Cobalt } from "@cobaltio/cobalt-js";
 
-const cobalt = new Cobalt({ token: "COBALT_SESSION_TOKEN" });
+// or, if you're using CommonJS
+const { Cobalt } = require("@cobaltio/cobalt-js");
+
+// initialize with token
+const cobalt = new Cobalt({
+    // the token you generate for linked accounts using the cobalt backend SDK
+    token: "COBALT_SESSION_TOKEN",
+});
+
+// Or, initialize without token
+const cobalt = new Cobalt();
+// and you can set the token later.
+cobalt.token = "COBALT_SESSION_TOKEN";
 ```
 
 #### .getApp()
