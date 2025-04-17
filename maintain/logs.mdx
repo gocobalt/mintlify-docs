@@ -5,9 +5,9 @@ description: Logs in Cobalt allow you to monitor workflows, troubleshoot errors 
 
 There are various types of Logs that you can see in Cobalt:
 
-## Workflow Logs
+## Execution Logs
 
-**Workflow Logs** or **Executions** is able to provide various details about a workflow that was executed.
+**Execution Logs** is able to provide various details about a workflow that was executed.
 
 
 With features such as detailed execution details and request/response data, workflow logs enable users to gain deeper insights into the execution process and ensure optimal performance.
@@ -26,7 +26,22 @@ To test a workflow in Cobalt, user can also execute a workflow through the **Try
 To learn more about Try API and how it can be used, refer to our guide [here](https://docs.gocobalt.io/ship/tryapi).
 </Info>
 Some of the key functionalities of Workflow logs are described in details below:
-<AccordionGroup>
+
+
+#### Logs Views
+<Accordion title="Logs views">
+
+For your Execution Logs, you can also create your own Custom Views with a set of filters already applied to it.
+
+To create a View, click on `+New View` button in the top right corner of Execution Logs screen.
+<img height="200" src="/images/Guides/Platform/workflow-logs-view.png" alt="Views of Workflow logs in Cobalt"/>
+
+Now apply any filter that you want and click on `Save` in the top right corner.
+
+</Accordion>
+
+
+#### Node Activity Details
 
 <Accordion title="Node Activity Details">
 By clicking on a workflow log, users can view the activity of individual nodes present in the workflow. 
@@ -35,14 +50,16 @@ This includes information about the status or errors encountered by each node, r
 <img height="200" src="/images/Guides/Platform/workflow-logs-node.png" alt="Execution details of Workflow nodes in Cobalt"/>
 </Accordion>
 
-<Accordion title="Retry Functionality">
+#### Replay & Retry Functionality
 
-For workflows that encounter errors, users have the option to retry execution by clicking on the `Retry` button in the top right corner of the Workflow details. 
+<Accordion title="Replay & Retry Functionality">
 
-<Note>The retry functionality is limited to a single attempt.</Note>
+For workflows that encounter errors, users have the option to retry complete execution by clicking on the `Replay` button in the top right corner or individually running an errored node again by clicking on `Retry`.
+
+<Note>The Replay functionality is limited to a single attempt.</Note>
 <img height="200" src="/images/Guides/Platform/workflow-logs-retry.png" alt="Retry an errored Workflow in Cobalt"/>
   </Accordion>
-</AccordionGroup>
+
 
 ## Event Logs
 
