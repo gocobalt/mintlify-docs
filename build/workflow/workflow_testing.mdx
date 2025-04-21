@@ -29,7 +29,7 @@ Before testing a workflow, ensure the following steps are completed:
 
 
 <Accordion title="Configure a Linked Account" defaultOpen="true">
-Click the `Configuration` button in the workflow editor and select a **[Linked Account](https://docs.gocobalt.io/build/basics/linked_account)** under `Prerequisites` for the workflow.
+Click the `Testing` button in the workflow editor side menu and select a **[Linked Account](https://docs.gocobalt.io/build/basics/linked_account)** under `Prerequisites` section.
 
 If the Linked Account is not authenticated with the integration or if its authentication has expired, a warning will appear.
 
@@ -37,21 +37,26 @@ Click the **Authorize Application** button to reauthenticate or establish a conn
 <img height="200" src="/images/Guides/Workflow/testing_linked_account.png" alt="Authenticating Linked Account for testing"/>
 Once authentication is complete, a **Connected**  status will be displayed.
 
-<Check>Click `Next` to proceed.</Check>
+<Check>Click on the next section to proceed.</Check>
 </Accordion>
 
 
 
 
 <Accordion title="Provide a Sample Payload" defaultOpen="true">
+
 Enter a payload with data to be used during workflow testing.
 A sample payload will automatically load based on the event trigger defined in the workflow.
-Modify the sample payload if necessary to suit your testing requirements.
+Modify the sample payload whenever required to suit your testing requirements.
 <img height="200" src="/images/Guides/Workflow/testing_payload.png" alt="Setting Payload for testing"/>
+
+<Tip>
+If you want to reset your payload, simply click on the `Reset` button.
+</Tip>
 </Accordion>
 
 
-After completing these steps, click the `Save Configuration` button. 
+After completing these steps, click on the `Save` button above. 
 
 <Check>Your workflow is now ready for testing.</Check>
 
@@ -78,9 +83,11 @@ Cobalt provides options for testing both ndividual nodes or the entire workflow.
 #### Testing Entire Workflow
 
 
-Open the testing modal present at the bottom.
+Open the testing modal present in the side menu.
 
-Click on `Run Workflow` button to perform a test execution and a **Test Run** log is generated with output of each node.
+Click on `Execute Workflow` button to perform a test execution and a **Run** log is generated with input and output of each node.
+
+You can easily switch between the run logs to see the execution history.
 <Warning>Since testing for Group nodes is not supported currently, you might not receive the logs of the group node.</Warning>
 <img height="200" src="/images/Guides/Workflow/workflow_output.png" alt="Checking Output of Workflow Test run"/>
 

@@ -1,0 +1,61 @@
+---
+title: Schedule Trigger
+description: Run workflows automatically in a schedule.
+---
+
+The Schedule trigger is used for workflows that should run automatically at predefined times or intervals — without any external event.
+
+This trigger is ideal for use cases such as sending regular reports or periodically syncing data.
+
+## Trigger Types
+
+Cobalt supports two types of schedule triggers in the Start Node.
+
+#### 1. CRON Expression
+Use this when you want precise control over when your workflow runs. You provide a standard CRON expression, which determines the run schedule based on UTC.
+
+Example CRON values:
+
+*/30 * * * * → Every 30 minutes
+
+15 * * * * → At 15 minutes past every hour
+
+0 9 * * * → At 9:00 AM every day
+
+<img height="200" src="/images/Guides/Workflow/schedule_trigger.png" alt="Schedule Trigger"/>
+
+#### 2. Date/Time Intervals
+This mode lets you specify exact date-time values for when the workflow should run.
+
+You can define multiple run times by selecting:
+
+- Date - Month - Year
+- Hour - Minute - Second
+
+- Timezone
+
+And then click on `Add Date`.
+<img height="200" src="/images/Guides/Workflow/schedule_trigger_interval.png" alt="Schedule Trigger Date/Time"/>
+
+Once you've added all the required intervals, click `Save`. When a user enables the workflow, it will execute at each configured time.
+
+
+## Managing Schedules via API
+
+Cobalt provides public APIs to let you manage scheduled jobs programmatically. You can register and control schedules for each linked account as needed.
+
+Available APIs include:
+
+- [Register Cron Schedule](https://docs.gocobalt.io/api-reference/schedule/register-cron)
+
+- [Get All Scheduled Jobs](https://docs.gocobalt.io/api-reference/schedule/get-all-schedules)
+
+- [Pause a Schedule](https://docs.gocobalt.io/api-reference/schedule/pause-schedule)
+
+- [Resume a Schedule](https://docs.gocobalt.io/api-reference/schedule/resume-schedule)
+
+- [Update a Schedule](https://docs.gocobalt.io/api-reference/schedule/update-schedule-job)
+
+- [Delete a Schedule](https://docs.gocobalt.io/api-reference/schedule/delete-schedule)
+
+These APIs make it easy to integrate and manage schedule-based workflows dynamically for your users.
