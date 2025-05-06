@@ -1,0 +1,70 @@
+---
+title: Connect
+description: Connect with the Linked Account's FedEx account.
+---
+<Note>
+FedEx is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **FedEx** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Client ID
+2. Client Secret
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+### Getting Credentials of FedEx
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Fedex/fedex_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [FedEx Developer account](https://developer.fedex.com/api/en-us/home.html).
+<Note>
+Your users need to create a FedEx Developer Account to acquire the required credentials.
+</Note>
+2. From the top navigation bar, click on `My Projects` and then click on `+ Create API Project`.
+<img height="200" src="/images/Fedex/fedex_navigation.png" alt="Navigation in FedEx"/>
+
+4. Choose the appropriate company type for the API from the dropdown menu > Click on `Next` > and provide a unique `Name`. Select the required API from the `Select API(s)` section and click on `Next`.
+<img height="200" src="/images/Fedex/create_fedex.png" alt="Selecting API"/>
+5. Provide **Project Name** > Click on `Next` > Accept the terms and click `Confirm`.
+6. Copy the **Client ID** from `API Key` field and **Client Secret** from `Secret Key` field.
+<img height="200" src="/images/Fedex/fedex_credentials.png" alt="Getting Credentials"/>
+
+<Note>
+If you require your production FedEx credentials, simply switch to the `Production Key` tab in FedEx Developer Portal and create credentials.
+</Note>
+
+The Linked Account or end-user now have all the credentials required to connect with FedEx.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using FedEx actions and triggers. Following are the set of FedEx actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Shipping">
+     1. **Create Shipment** - Create a new shipment in FedEx.
+     2. **Cancel Shipment** - Cancel a shipment in FedEx.
+     3. **Create Tag** - Create a shipping tag in FedEx.
+    </Accordion>
+    <Accordion title="Tracking">
+     4. **Track Shipment** - Track a shipment by tracking number in FedEx.
+     5. **Track Multiple Piece Shipment** - Track multiple pieces of a shipment in FedEx.
+     6. **Track by Reference** - Track a shipment by reference number in FedEx.
+    </Accordion>
+    <Accordion title="Others">
+     7. **HTTP Request** - Make HTTP API calls to any FedEx documented REST APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

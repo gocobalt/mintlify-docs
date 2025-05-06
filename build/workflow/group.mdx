@@ -8,6 +8,7 @@ The Loop Node in Cobalt allows users to iterate over entities or execute a serie
 Loop node is like a repetitive steps executor within the workflow. It can:
 
 - Wrap around other nodes and execute them repetitively;
+- Use the data received from all iterations of the Loop node in other nodes of workflow. Refer [here](/build/workflow/group#group-node-output);
 - Execute nodes for fixed number of times using [Fixed Iteration](/build/workflow/group#actions);
 - Execute as many times as there are items in an array using [Array Iteration](/build/workflow/group#actions); &
 - Execute nodes repetitively based on case and break conditions using [Do While](/build/workflow/group#actions);
@@ -106,9 +107,28 @@ You have now successfully tested the Do While action functionality of the Loop N
 
 ## Input Fields
 The input fields for the Loop Node vary based on the selected action.
-In case of `Iterating Array`, you need to provide the array which will determine the no. of times the loop will be executed while in `Fixed iteration`, you simply provide the **Number of Iterations**.
+In case of `Array Iteration `, you need to provide the array which will determine the no. of times the loop will be executed while in `Fixed iteration`, you simply provide the **Number of Iterations**.
 
 <img height="200" src="/images/Guides/Workflow/iterating.png" alt="Iterating Array Action in Cobalt"/>
+
+#### Group Node output
+
+<Info>
+This is only available in `Array Iteration` and `Fixed Iteration` action of the Loop Node.
+</Info>
+The Output Data field lets you store specific data from each iteration and use it outside the loop once all iterations are complete.
+
+This field is optional and supports templating, allowing you to reference data from any node inside the loop.
+
+For example, in the picture above, we are calling NetSuite API to get Contact by ID in a loop and adding the response that we receive in each iteration in the Loop node by templating the response of that node.
+
+At the end of all iterations, the node outputs an array containing the values from each loop cycle and can be accessed in other nodes using the templating:
+
+`{{node.<loop_node_number>.body}}`.
+
+In the picture below, we are using the data that we received from the Loop node by templating it.
+<img height="200" src="/images/Guides/Workflow/output.png" alt="Output of Loop Node in Cobalt"/>
+
 
 ## Templating items inside Loop Node
 
@@ -121,3 +141,6 @@ When using **Do While** action, you might need to access the iteration count of 
 ```
 {{node.<no. of loop node>.body.iteration_count}}
 ```
+<Tip>
+To know more about Templating in Cobalt, refer to our doc [here](https://docs.gocobalt.io/build/workflow/templating).
+</Tip>

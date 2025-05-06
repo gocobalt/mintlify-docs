@@ -1,0 +1,71 @@
+---
+title: Setup
+description: Connect to your UPS app for OAuth.
+---
+To setup your UPS app in Cobalt for OAuth, you will need the following credentials from your [UPS Developer account](https://developer.ups.com/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. UPS Developer account. You can create one [here](https://wwwapps.ups.com/doapp/signup).
+
+<Info>If you haven't already created an app in UPS, you'd need to create one.</Info>
+
+### Creating an app in UPS
+
+To create a UPS app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [UPS Developer account](https://developer.ups.com/).
+2. Click on the `My Apps` button in the top right and select `Add Apps` button.
+<img height="200" src="/images/Ups/ups_navigation.png" alt="Navigation for App setup"/>
+3. Provide the answer to the required questions. Select `I want to integrate with UPS technology to represent many users.` for the reason. Under `Choose an account`, select your existing UPS account or create a new account to add > Accept the agreement and click on `Next`.
+<Info>
+The Shipper Account is a unique ID tied to your UPS account that will be used for billing if premium APIs are used. Any Shipper Account associated to your UPS profile will be valid with the OAuth credentials that you are creating. If you do not have a Shipper Account, you can create one by selecting the "Create a new account" option.
+</Info>
+<img height="200" src="/images/Ups/ups_navigation2.png" alt="Navigation for App setup"/>
+4. Enter your contact information and its recommended to use group inbox that is accessible to others on your development team.
+<Warning>
+You are unable to change this email once the credentials are created or you will lose access to your application.
+</Warning>
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `UPS` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. In UPS `App Details` section. provide the **App Name**, paste the **Callback URL** that you copied and add the **Products** you will be using and click on `Save`.
+<img height="200" src="/images/Ups/ups_config.avif" alt="Setting up Developer app"/>
+
+7. Copy the **Client ID** and **Client Secret** displayed on the screen.
+<img height="200" src="/images/Ups/ups_credentials.avif" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Ups/ups_cobalt.png" alt="Setting up application client credentials"/>
+
+Select `Use your own credentials` and provide the acquired Client Id and Client secret and save it.
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using UPS actions and triggers. Following are the set of UPS actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Shipment">
+     1. **Create Shipment** - Create a new shipment in UPS.
+     2. **Cancel Shipment** - Cancel a shipment in UPS.
+     </Accordion>
+     <Accordion title="Tracking">
+     3. **Track by Inquiry Number** - Get tracking details for a shipment by inquiry number in UPS.
+     4. **Track by Reference Number** - Get tracking details by reference number in UPS.
+    </Accordion>
+     <Accordion title="Others">
+     5. **HTTP Request** - Make HTTP API calls to any UPS documented REST APIs.
+     6. [Incremental Sync](/build/workflow/overview#third-party-application-actions) - Check for new data in any GET endpoint of UPS documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>

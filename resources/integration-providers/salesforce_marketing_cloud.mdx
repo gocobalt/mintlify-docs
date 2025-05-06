@@ -1,0 +1,117 @@
+---
+title: Setup
+description: Access to your users' Salesforce Marketing Cloud records through OAuth.
+---
+To setup your Salesforce Marketing Cloud app in Cobalt for OAuth, you will need the following credentials from your Salesforce Marketing Cloud account:
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Salesforce Marketing Cloud account with API Access.
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. offline_access
+
+<Info>If you haven't already created an app in Salesforce Marketing Cloud, you'd need to create one.</Info>
+
+### Creating an app in Salesforce Marketing Cloud
+
+To create a Salesforce Marketing Cloud app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Salesforce Marketing Cloud account.
+2. Click on the `Profile` icon in the top right and select `Setup` button.
+<img height="200" src="/images/Salesforce_mc/sfmc_navigation.png" alt="Navigation for App setup"/>
+3. Navigate to `Installed packages` under **Apps** in the left side menu and click on `New` button.
+4. Enter a unique Name for your application and click on `Save`.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Salesforce Marketing Cloud` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. In your app on Salesforce, click on `Add Component` button > Choose `API integration`> Click on `Next` > Select **Web App** as `Integration Type` and click on `Next`
+7. Paste the Callback Url that you copied from Cobalt under `Redirect URIs` and select the **mandatory scope** i.e offline_access in the **Scope** section, and click on the `Save` button.
+<img height="200" src="/images/Salesforce_mc/sfmc_config.png" alt="Setting up Developer app"/>
+<Tip>
+You can extend the lifetime of your Refresh token as required so that expired access token can be refreshed by Cobalt automatically for a longer period of time for the user.
+</Tip>
+
+8. Copy the **Client Secret** displayed on the screen and click on `Finish`.
+<Warning>
+Save the Client Secret with you as it will be displayed only once.
+</Warning>
+<img height="200" src="/images/Salesforce_mc/sfmc_credentials.png" alt="Getting Credentials"/>
+9. Copy the `Client ID` displayed under the **API Integration** section.
+<img height="200" src="/images/Salesforce_mc/sfmc_credentials_2.png" alt="Getting Client ID"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Salesforce_mc/sfmc_cobalt.png" alt="Setting up application client credentials"/>
+
+Provide the acquired Client Id and Client secret under Settings of the app and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Salesforce_mc/sfmc_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your Salesforce Marketing Cloud account and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Click on `Edit` under **API Integration** section > Select the scopes as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Salesforce Marketing Cloud actions and triggers. Following are the set of Salesforce Marketing Cloud actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Asset">
+     1. **Create Asset** - Create a new content asset in Salesforce Marketing Cloud.
+     2. **Update Asset** - Update an existing content asset in Salesforce Marketing Cloud.
+     3. **Partially Update Asset** - Partially update an existing content asset in Salesforce Marketing Cloud.
+     4. **Delete Asset** - Delete a content asset in Salesforce Marketing Cloud.
+     5. **Restore Asset** - Restore a deleted content asset in Salesforce Marketing Cloud.
+     6. **Query Assets** - Query content assets in Salesforce Marketing Cloud.
+     </Accordion>
+     <Accordion title="Campaign">
+     7. **Get Campaigns** - Retrieve a list of campaigns with pagination and sorting in Salesforce Marketing Cloud.
+     8. **Create Campaign** - Create a new campaign in Salesforce Marketing Cloud.
+     9. **Get Campaign By ID** - Retrieve a specific campaign by ID in Salesforce Marketing Cloud.
+     10. **Update Campaign** - Update an existing campaign in Salesforce Marketing Cloud.
+     11. **Get Campaign Assets** - Retrieve assets associated with a campaign in Salesforce Marketing Cloud.
+     12. **Add Campaign Asset** - Add an asset to a campaign in Salesforce Marketing Cloud.
+     13. **Get Campaign Asset** - Retrieve a specific asset from a campaign in Salesforce Marketing Cloud.
+     14. **Remove Campaign Asset** - Remove an asset from a campaign in Salesforce Marketing Cloud.
+      </Accordion>
+     <Accordion title="Contact">
+     15. **Get Contacts** - Get all contacts in Salesforce Marketing Cloud.
+     16. **Create Contact** - Create a new contact in Salesforce Marketing Cloud.
+     17. **Update Contact** - Update existing contact in Salesforce Marketing Cloud.
+      </Accordion>
+     <Accordion title="Custom Object">
+     18. **Get All Custom Objects** - Retrieve custom objects in Salesforce Marketing Cloud.
+     19. **Create Custom Object** - Create a new custom object in Salesforce Marketing Cloud.
+     20. **Update Custom Object** - Update an existing custom object in Salesforce Marketing Cloud.
+      </Accordion>
+
+     <Accordion title="Others">
+     21. **HTTP Request** - Make HTTP API calls to any Salesforce Marketing Cloud documented REST APIs.
+     22. [Incremental Sync](/build/workflow/overview#third-party-application-actions) - Check for new data in any GET endpoint of Salesforce Marketing Cloud documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+        There are no triggers in this application.
+  </Tab>
+</Tabs>
