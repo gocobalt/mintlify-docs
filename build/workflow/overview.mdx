@@ -35,8 +35,10 @@ The Workflow Builder simplifies the integration process, empowering developers t
 
 **All workflows start with a trigger**, which determines when the workflow will run and how data is passed into the workflow. Triggers are setup in the `Start Node` of workflow. Available workflow trigger types include:
 
+#### App Events
+
 <Accordion title="App Events">
-  App Events are custom events that are sent from your application via the Cobalt SDK or API to trigger Workflows. 
+App Events are custom events that are sent from your application via the Cobalt SDK or API to trigger Workflows. 
 
 In general, App Events are useful for triggering workflows that map data from your application to your users' apps. For example, you might send a `Contact Created` App Event from your application to trigger a Workflow that creates a matching contact in your users' Salesforce CRM.
 
@@ -47,11 +49,16 @@ An App Event can be used to trigger multiple workflows.  This is useful in cases
 Learn more about **Events** in our guide [here](/build/basics/events).
 </Accordion>
 
+#### Default App Triggers
+
 <Accordion title="Default App Triggers">
   
 Default App triggers can be used to run workflows based on events in your users' apps. For example, you might want to trigger a workflow whenever new contacts 
 are created in your users' Salesforce account, to sync contacts to your application in real-time.
 </Accordion>
+
+#### Schedule Trigger
+
 <Accordion title="Schedule">
   The Scheduler trigger is used for workflows that should run automatically at a scheduled time or interval. 
 
@@ -69,6 +76,8 @@ The minimum time that can be set in scheduler should be greater than 5 minutes.
 Once deployed, the workflow will run automatically at the designated time for all users who have activated the workflow.
 </Accordion>
 
+#### Workflow API
+
 <Accordion title="Workflow API">
   The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
 
@@ -81,6 +90,8 @@ Know more about Workflow API [here](https://docs.gocobalt.io/build/workflow/work
 
 Workflow actions helps you to create complex workflows. You can drag and drop them on the workflow canvas as `nodes` of a workflow, inter-connect
 and configure them to achieve required flow. These actions can be broadly categorized as:
+
+#### Cobalt's Native actions
 
 <Accordion title="Cobalt's Native actions">
   These actions do not make any API calls themselves but help as utility tools for making workflows.
@@ -119,55 +130,77 @@ There are various utility nodes currently provided by Cobalt. You can learn more
     The Merge Node allows you to merge multiple branches of a workflow into a single flow. 
   </Card>
 
-    <Card title="PDF" icon="file-pdf" href="https://docs.gocobalt.io/build/workflow/pdf">
+  <Card title="PDF" icon="file-pdf" href="https://docs.gocobalt.io/build/workflow/pdf">
     PDF node helps you to convert HTML to a PDF.
-    </Card>
+  </Card>
 
-
-    <Card title="Response" icon="note-sticky" href="https://docs.gocobalt.io/build/workflow/response">
+  <Card title="Response" icon="note-sticky" href="https://docs.gocobalt.io/build/workflow/response">
     Response node lets you notify you about the Subscribed Webhook events and define the data that needs to be sent to you along with the notification.
   </Card>
 
-    <Card title="Rule" icon="bolt" href="https://docs.gocobalt.io/build/workflow/rule">
+  <Card title="Rule" icon="bolt" href="https://docs.gocobalt.io/build/workflow/rule">
     You can add conditional logic to workflows using our rule node.
   </Card>
 
-    <Card title="Send Email" icon="envelope-circle-check" href="https://docs.gocobalt.io/build/workflow/email">
+  <Card title="Send Email" icon="envelope-circle-check" href="https://docs.gocobalt.io/build/workflow/email">
     Send Email node lets you send an email through the workflow.
-    </Card>
+  </Card>
   
-    <Card title="Sub Flows" icon="code-branch" href="https://docs.gocobalt.io/build/workflow/sub_flows">
+  <Card title="Sub Flows" icon="code-branch" href="https://docs.gocobalt.io/build/workflow/sub_flows">
     This node allows you to use another workflows within a workflow.
    </Card>
 
-    <Card title="Tables" icon="table" href="https://docs.gocobalt.io/build/workflow/datastore">
+  <Card title="Tables" icon="table" href="https://docs.gocobalt.io/build/workflow/datastore">
     Tables node helps you create variables at runtime and add values to them.
-    </Card>
+  </Card>
 
-    <Card title="Transform" icon="shuffle" href="https://docs.gocobalt.io/build/workflow/transform">
+  <Card title="Transform" icon="shuffle" href="https://docs.gocobalt.io/build/workflow/transform">
     This node lets you transform complex JSON into an easily accessible format.
-    </Card>
+  </Card>
 
-    <Card title="Wait for Webhook" icon="webhook" href="https://docs.gocobalt.io/build/workflow/wait_for_webhook">
+  <Card title="Wait for Webhook" icon="webhook" href="https://docs.gocobalt.io/build/workflow/wait_for_webhook">
     Pause the workflow execution until a webhook is received.
-    </Card>
+  </Card>
 
 </CardGroup>
 </Accordion>
 
+#### Cobalt's custom actions
+
 <Accordion title="Cobalt's custom actions">
   You can create [API Proxies](https://docs.gocobalt.io/build/basics/proxies) of your organization to use, in the Developer settings.
 </Accordion>
+
+#### Third party application actions
 
 <Accordion title="Third party application actions">
   Cobalt supports 100+ third party applications on its platform. Users can connect to these applications through Cobalt to make use of their APIs. 
 
 When you select an application from the `Apps` list to create a workflow, you can find it's Native node in the right panel along with the other actions. Drag and drop it on the  workflow canvas to make use of the the application's APIs supported by Cobalt.
 
-#### HTTP Request
+## HTTP Request
 Users can also make any custom API call to the selected application that is not available with Cobalt as an action using the HTTP request.
 Simply setup the API in the node with all the required params like `Method`, `URL`, `Request Body` etc. and you are good to go.
-    <img height="200" src="/images/Concepts/http-request-action.png" alt="HTTP Request Action in App Native node"/>
+<img height="200" src="/images/Concepts/http-request-action.png" alt="HTTP Request Action in App Native node"/>
+
+## Incremental Sync action
+
+Cobalt provides a default **Incremental Sync** action in all integrations. It lets you fetch new records added since the last sync, using a timestamp-based filter.
+
+
+#### How It Works
+
+- Configure an **HTTP request** to the integration's API to get the list of items of  the required object.
+- In the HTTP Request, also configure the timestamp filter based on the API’s requirement either in query params, headers or body, as required by the API of third party application.
+- You can schedule the workflow using a [Schedule trigger](https://docs.gocobalt.io/build/workflow/triggers/schedule) depending on the frequency you want to sync records.
+<img height="200" src="/images/Concepts/incremental-sync-action.png" alt="Incremental Sync Action in App Native node"/>
+Based on the API Requirements, you are also required to select the **Time Format** of the `timestamp` that will be used as templating for filtering records. Following formats are available:
+
+- **ISO** (`2025-04-17T10:30:00Z`)
+- **Unix** (`1681726200`)
+- **RFC** (`Thu, 17 Apr 2025 10:30:00 GMT`)
+
+
 </Accordion>
 
 
