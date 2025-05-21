@@ -113,7 +113,7 @@ You can manage the webhook subscription using our webhooks API. Visit the [API r
 
 In Cobalt webhooks, you can configure advanced settings such as any headers or body that you want to send to the Webhook URL.
 
-One of the use-cases is: You want to fire the [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api) of Cobalt to execute a workflow when some event occurs in Cobalt. You will simply add the headers and Body too if required.
+For example, to fire the [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api) of Cobalt to execute a workflow when some event occurs in Cobalt. You will simply add the headers and Body too if required.
 
 <Tip>
 To use Advanced Settings, remember to choose `Custom` as the Webhook template while registering.
@@ -123,7 +123,7 @@ To use Advanced Settings, remember to choose `Custom` as the Webhook template wh
 ### Templating Webhook Payload variables
 
 You can also use the payload data of a webhook by templating it in your body or headers of Webhooks.
-Also, if a workflow with [Response node](https://docs.gocobalt.io/build/workflow/response) in it got executed successfully and you want to use it's response data during Webhook firing, you can also template that in Webhook.
+If a workflow with [Response node](https://docs.gocobalt.io/build/workflow/response) in it has executed successfully and you want to use its response data during webhook firing, you can template that in your headers or body.
 
 The format to template is:
 ```javascript
