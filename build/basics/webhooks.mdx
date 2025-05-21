@@ -95,7 +95,7 @@ There are 2 ways to subscribe to Cobalt events:
 - via the Webhook subscription API
 
 ### Via Cobalt's platform
-Go to Dashboard > Developer > Webhooks tab
+Go to Dashboard > Developer > Webhooks
 
 ![Webhooks](/images/Developer/webhooks.png)
 
@@ -108,6 +108,31 @@ After you clicked **Add Webhook**, you are subscribed to the Webhook events.
 ### Via the Webhook subscription 
 You can manage the webhook subscription using our webhooks API. Visit the [API reference](/api-reference/webhooks/create-webhook) 
 
+
+## Advanced Webhook Settings
+
+In Cobalt webhooks, you can configure advanced settings such as any headers or body that you want to send to the Webhook URL.
+
+One of the use-cases is: You want to fire the [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api) of Cobalt to execute a workflow when some event occurs in Cobalt. You will simply add the headers and Body too if required.
+
+<Tip>
+To use Advanced Settings, remember to choose `Custom` as the Webhook template while registering.
+</Tip>
+<img height="200" src="/images/Developer/advanced_webhooks.png" alt="Advanced Settings in Webhooks"/>
+
+### Templating Webhook Payload variables
+
+You can also use the payload data of a webhook by templating it in your body or headers of Webhooks.
+Also, if a workflow with [Response node](https://docs.gocobalt.io/build/workflow/response) in it got executed successfully and you want to use it's response data during Webhook firing, you can also template that in Webhook.
+
+The format to template is:
+```javascript
+{{event.<payload_key_name>}}  // When you want to use a variable from the payload
+{{event.instance_id}} // Example of using Instance ID from Workflow Errored payload
+
+{{workflow_response}}  // In case you want to access complete Response Node payload
+{{workflow_response.<key_name>}} // To access any key inside the response node payload
+```
 
 ## Verify HMAC Signature
 

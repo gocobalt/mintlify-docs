@@ -1,0 +1,75 @@
+---
+title: Connect
+description: Connect with the Linked Account's USPS account.
+---
+<Note>
+USPS is an **API Key** based integration and does not require the setup of an app by Cobalt user.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **USPS** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Client ID
+2. Client Secret
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+### Getting Credentials of USPS
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/USPS/Usps_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [USPS Developer account](https://developers.usps.com/).
+<Note>
+Your users need to create a USPS Developer Account to acquire the required credentials.
+</Note>
+2. From the top navigation bar, click on `Apps` and then click on `Add App` button.
+<img height="200" src="/images/USPS/Usps_navigation.png" alt="Navigation in USPS"/>
+
+3. Provide an `App Name` > Select the `Public Access` checkbox and click on `Add App`.
+<img height="200" src="/images/USPS/create_usps.png" alt="Creating the app"/>
+4. Once the app is created, click on it and copy the `Consumer Key`(Client ID) and `Consumer Secret`(Client Secret) for authentication.
+<img height="200" src="/images/USPS/Usps_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with USPS.
+
+### Getting USPS API Access
+
+To get access of APIs such as Tracking, you need to request USPS for approval.
+
+You can request for the access by using the support form provided by USPS [here](https://emailus.usps.com/s/web-tools-inquiry).
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using USPS actions and triggers. Following are the set of USPS actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Locations">
+     1. **List Post Office Locations** - Find post office locations based on various criteria in USPS.
+    </Accordion>
+    <Accordion title="Subscriptions">
+     2. **List Subscriptions** - List tracking subscriptions in USPS.
+     3. **Create Subscription** - Create a new tracking subscription in USPS.
+     4. **Get Subscription by ID** - Get details of a specific tracking subscription in USPS.
+     5. **Update Subscription** - Update an existing tracking subscription in USPS.
+     6. **Delete Subscription** - Delete an existing tracking subscription in USPS.
+    </Accordion>
+    <Accordion title="Tracking">
+     7. **Get Tracking Details** - Get tracking details for a package in USPS.
+     8. **Register for Tracking Notification** - Register for tracking notifications for a package in USPS.
+    </Accordion>
+    <Accordion title="Others">
+     9. **HTTP Request** - Make HTTP API calls to any USPS documented REST APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

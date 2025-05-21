@@ -98,7 +98,7 @@ Example response:
 
 #### .upsertLinkedAccount()
 
-The "Upsert Linked Account" function allows you to create or update a linked account for your customer within Cobalt's platform. Linked accounts represent your end-users or customers, and they are essential for enabling connections with third-party applications. The API will either create a new linked account if it does not exist or update the existing linked account if it is already present.
+The **Upsert Linked Account** function allows you to create or update a linked account for your customer within Cobalt's platform. Linked accounts represent your end-users or customers, and they are essential for enabling connections with third-party applications. The API will either create a new linked account if it does not exist or update the existing linked account if it is already present.
 
 | Param | Required | Type | Description |
 |-------|----------|------|-------------|
@@ -416,6 +416,85 @@ Example response:
 		}
 	],
 	"field_errors": []
+}
+```
+
+#### .updateConfig()
+This function updates the specified config.
+
+| Param | Required | Type | Description |
+|-------|----------|------|-------------|
+|linked_account_id| Mandatory | String | Unique customer identifier|
+|slug| Mandatory | String | Application slug|
+|config_id| Optional | String | Unique id|
+|fields| Optional | Object | Global input fields of the app described by slug|
+|workflows| Optional | Array | Published worflows of the app.|
+
+```JavaScript
+try{
+    const data = await Client.updateConfig({
+            slug: "hubspot",
+            linked_account_id: "user@example.com",
+            config_id: "config_1",
+            fields: {
+                "670fcb9e023ebc1f370c5139": "John Doe",
+            },
+            workflows: [
+                {
+                    id: "67fbc1ec954bde0dcae218c8",
+                    enabled: true,
+                    fields: {},
+                }
+            ],
+        });
+}catch(error){
+    //Catch any error
+}
+```
+
+Example response:
+
+```JSON
+{
+    "slug": "hubspot",
+    "config_id": "config_1",
+    "fields": [
+        {
+            "required": false,
+            "id": "670fcb9e023ebc1f370c5139",
+            "name": "MailerLite Field Mapping",
+            "field_type": "map",
+            "options": [
+                {
+                    "name": "City",
+                    "value": "city"
+                },
+                {
+                    "name": "Company",
+                    "value": "company"
+                }
+            ],
+            "labels": [
+                {
+                    "name": "Customer Name",
+                    "value": "name"
+                },
+                {
+                    "name": "Customer Last Name",
+                    "value": "last_name"
+                }
+            ]
+        }
+    ],
+    "workflows": [
+        {
+            "id": "649d230c2ce6b9b07b163e61",
+            "name": "Add a Contact to HubSpot",
+            "description": "",
+            "enabled": false,
+            "fields": []
+        }
+    ]
 }
 ```
 
