@@ -1,0 +1,127 @@
+---
+title: 'Get Options For Rule Engine'
+api: post /api/v2/public/config/rule-engine/:fieldId
+---
+
+This API gets Options for a Rule Engine.
+## Request description
+
+#### Path Parameters
+<ParamField path="fieldId" type="string" required>
+  Unique id of field. For Eg: 67231c960f8ac1513443c75
+</ParamField>
+
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+<ParamField header="slug" type="string" required>
+  Application Slug. Eg: `docusign`
+</ParamField>
+
+#### Query Parameters
+<ParamField query="workflow_id" type="string">
+  Workflow Id to filter field values. For Eg: 67fbc1ec954bde0dcae218c8
+</ParamField>
+<ParamField query="config_id" type="string">
+  Config Id to filter field values. For Eg: 67231c960f8ac1513443c75
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="rule_column" type="object">
+    Object containing rule configuration fields
+        <Expandable title="properties">
+        <ResponseField name="rhs" type="object">
+            Display name
+         <Expandable>
+            <ResponseField name="name" type="string">
+            Name of the RHS field
+            </ResponseField>
+           <ResponseField name="type" type="string">
+            Type of the field
+            </ResponseField>
+            <ResponseField name="options" type="array">
+            Valid options in RHS
+            </ResponseField>
+         </Expandable>
+        </ResponseField>
+        <ResponseField name="operator" type="object">
+            Operator of the rule
+         <Expandable>
+            <ResponseField name="name" type="string">
+            Name of the RHS operator
+            </ResponseField>
+           <ResponseField name="type" type="string">
+            Type of the field
+            </ResponseField>
+            <ResponseField name="options" type="array">
+            Valid options in RHS
+            </ResponseField>
+         </Expandable>
+        </ResponseField>
+        </Expandable>
+    </ResponseField>
+    <ResponseField name="conditional_code_stdout" type="array">
+    Array containing the standard output results of conditional code execution
+    </ResponseField>
+  </Tab>
+
+  <Tab title="Error response">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "rule_column": {
+        "rhs": {
+            "name": "RHS",
+            "type": "text",
+            "options": []
+        },
+        "operator": {
+            "name": "Operator",
+            "type": "select",
+            "options": []
+        }
+    },
+    "conditional_code_stdout": []
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id is required",
+    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ ResponseExample>

@@ -1,0 +1,131 @@
+---
+title: 'Delete Field Value by ID In Config'
+api: delete /api/v2/public/config/field/:fieldId
+---
+
+This API delete the specified config field for given Linked account.
+
+## Request description
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+<ParamField header="slug" type="string" required>
+  Application Slug. Eg: `docusign`
+</ParamField>
+
+#### Path Parameters
+<ParamField path="fieldId" type="string" required>
+  Unique id of field. For Eg: 67231c960f8ac1513443c75
+</ParamField>
+
+#### Query Parameters
+<ParamField query="workflow_id" type="string">
+  Workflow Id to filter field values. For Eg: 67fbc1ec954bde0dcae218c8
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="required" type="boolean">
+        If the field is a required field.
+    </ResponseField>
+    <ResponseField name="id" type="string">
+        Unique ID of the field
+    </ResponseField>
+    <ResponseField name="name" type="string">
+        Field display name
+    </ResponseField>
+    <ResponseField name="has_dynamic_map_fields" type="boolean">
+        Dynamic map fields available or not
+    </ResponseField>
+    <ResponseField name="field_type" type="string">
+        Field input type. Expected values: `text`, `number`, `select`, `map`
+    </ResponseField>
+    <ResponseField name="options" type="array">
+        Options array for the select field, or map field.
+            <Expandable title="properties">
+                <ResponseField name="name" type="string">
+                Display name
+                </ResponseField>
+                <ResponseField name="value" type="string">
+                Value
+                </ResponseField>
+            </Expandable>
+    </ResponseField>
+    <ResponseField name="dynamic_slot_identifier" type="string">
+      Identifier for the dynamic slot.
+    </ResponseField>
+    <ResponseField name="hidden" type="boolean">
+      Whether the field is hidden or not.
+    </ResponseField>
+  </Tab>
+  
+  <Tab title="Error response">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "required": false,
+    "id": "670fcb9e023ebc1f370c5139",
+    "name": "YourName",
+    "has_dynamic_map_fields": false,
+    "field_type": "text",
+    "options": [],
+    "dynamic_slot_identifier": "text",
+    "hidden": false
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id is required",
+    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "No workflow with id 65ef0af306c60dee0970ec61 exists on config"
+}```
+```JSON 500
+{
+    "status_code": 500,
+    "http_error_type": "INTERNAL_SERVER_ERROR",
+    "error_code": "SERVER_ERROR",
+    "message": "Application with id 3asdasdasd768768asd does not exist for org Cobalt or is not enabled",
+    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+</ ResponseExample>
