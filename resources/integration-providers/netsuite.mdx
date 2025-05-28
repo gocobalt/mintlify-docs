@@ -8,7 +8,11 @@ NetSuite is an **API Key** based integration and does not require the setup of a
 
 ### Pre-requisites
 
-1. NetSuite account.
+1. NetSuite account with `REST Web Services` enabled.
+<Tip>
+To enable REST Web Services, navigate to `Setup`> `Company` > `Enable Features` and tick the **REST Web Services** checkbox under `SuiteCloud` tab.
+</Tip>
+<img height="200" src="/images/Netsuite/netsuite_enable_rest.png" alt="Enabling REST Web Services in Netsuite"/>
 2. Token Based Auth Enabled in Linked Account's Netsuite.
 
 ### Required Credentials of a Linked Account
@@ -47,7 +51,7 @@ To acquire the required credentials and connect a Linked Account, please follow 
 5. Click on `Save` and copy the `Consumer Key` and `Consumer Secret` displayed under **Client Credentials** section.
 <img height="200" src="/images/Netsuite/netsuite_credentials2.png" alt="Getting Consumer Key and Secret"/>
 
-6. Navigate to **Dashboard** and click on `Manage Access Tokens` under **Settings** in the side menu.
+6. Navigate to **Setup**> **Users/Roles** > **Access Tokens** and click on `New`.
 <img height="200" src="/images/Netsuite/netsuite_navigate_token.png" alt="Navigation for Token Credentials"/>
 
 7. Click on `New My Access Token` > Select the Integration created above from the `Application Name` drop-down > Provide a `Token Name` and click on `Save`.
