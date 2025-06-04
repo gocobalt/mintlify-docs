@@ -1,0 +1,209 @@
+---
+title: Setup
+description: Connect to your Zoho Recruit app for OAuth.
+---
+To setup your Zoho Recruit app in Cobalt for OAuth, you will need the following credentials from your [Zoho Developer Console](https://api-console.zoho.com/):
+- Client ID
+- Client Secret
+
+## Pre-requisites
+
+1. Zoho Developer Console. You can create one [here](https://accounts.zoho.com/register).
+
+## Required Settings
+
+* **Mandatory Scopes** 
+1. ZohoRecruit.users.READ
+
+<Info>If you haven't already created an app in Zoho Recruit, you'd need to create one.</Info>
+
+## Creating an app in Zoho Recruit
+
+To create a Zoho Recruit app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Zoho Developer Console](https://api-console.zoho.com/).
+2. Click on the `+ Add Client` button in the right and select `Server-based Applications` button.
+<img height="200" src="/images/Zohocrm/Zohocrm_navigation.png" alt="Navigation for App setup"/>
+3. Enter the **Client Name** for your application and add a **Homepage URL**.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zoho Recruit` > `Settings` > `Callback Url` > Copy it.
+5. Paste the Callback URL under `Authorized Redirect URIs` and click on the `Create` button.
+
+<img height="200" src="/images/Zohocrm/Zohocrm_config.png" alt="Setting up Zoho Recruit Developer app"/>
+6. Navigate to the `Client Secret` tab in the app and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Zohocrm/Zohocrm_credentials.png" alt="Getting Credentials"/>
+
+## Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Zoho_recruit/ZohoRecruit_cobalt.png" alt="Setting up application client credentials"/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+## Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Zoho_recruit/ZohoRecruit_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+## Zoho Recruit Single Webhook URL
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Zoho Recruit, you'd need to create a Zoho Recruit's Webhook and add it as a Rule. 
+
+Cobalt provides a single webhook URL to manage such event triggers. The steps given below needs to be followed by all of your customers to setup webhooks in their account.
+
+Let's setup the **Candidate Status changed** webhook in Zoho Recruit. For this you need to do two steps:
+
+#### 1. Create Webhook Action
+
+1. Select **Zoho Recruit** from the application list in **Cobalt** > select `Settings` and copy the `Single Webhook URL`.
+2. In Zoho Recruit, click on `Setup`(Gear icon) in the top bar and select `Actions` present under **Automation**.
+<Note>
+Your customers' accounts should be on Zoho Recruit Standard or a higher plan to use webhooks.
+</Note>
+<img height="200" src="/images/Zoho_recruit/Zohorecruit_webhook.png" alt="Setting up Zoho Recruit Webhook Action"/>
+3. Switch to the `Webhooks` tab and click on `Configure Webhook`.
+4. Provide a **Name** > Paste the `Single Webhook URL` that you copied under **URL to Notify** and select the **Module** as `Candidates`.
+5. Under `Append Entity Parameters`, go to **Parameters in the User Defined Format**, give the `Parameter Name` as **data** and copy the JSON provided below in `Value Description` field.
+<CodeGroup>
+```javascript candidate_state_changed
+{
+  "candidate_id": "${Candidates.Candidate Id}",
+  "owner_id": "${Candidates.ownerId}",
+  "associated_tags": "${Candidates.Associated Tags}",
+  "candidate_stage": "${Candidates.Candidate Stage}",
+  "candidate_status": "${Candidates.Candidate Status}",
+  "city": "${Candidates.City}",
+  "country": "${Candidates.Country}",
+  "created_by": "${Candidates.Created By}",
+  "current_employer": "${Candidates.Current Employer}",
+  "current_job_title": "${Candidates.Current Job Title}",
+  "current_salary": "${Candidates.Current Salary}",
+  "email": "${Candidates.Email}",
+  "email_opt_out": "${Candidates.Email Opt Out}",
+  "expected_salary": "${Candidates.Expected Salary}",
+  "experience_in_years": "${Candidates.Experience in Years}",
+  "first_name": "${Candidates.First Name}",
+  "fresh_candidate": "${Candidates.Fresh Candidate}",
+  "highest_qualification_held": "${Candidates.Highest Qualification Held}",
+  "is_unqualified": "${Candidates.Is Unqualified}",
+  "last_name": "${Candidates.Last Name}",
+  "linkedin": "${Candidates.LinkedIn}",
+  "mobile": "${Candidates.Mobile}",
+  "phone": "${Candidates.Phone}",
+  "postal_code": "${Candidates.Postal Code}",
+  "rating": "${Candidates.Rating}",
+  "salutation": "${Candidates.Salutation}",
+  "skill_set": "${Candidates.Skill Set}",
+  "street": "${Candidates.Street}",
+  "website": "${Candidates.Website}"
+}
+```
+```javascript candidate_created
+{
+  "candidate_id": "${Candidates.Candidate Id}",
+  "owner_id": "${Candidates.ownerId}",
+  "associated_tags": "${Candidates.Associated Tags}",
+  "candidate_stage": "${Candidates.Candidate Stage}",
+  "candidate_status": "${Candidates.Candidate Status}",
+  "city": "${Candidates.City}",
+  "country": "${Candidates.Country}",
+  "created_by": "${Candidates.Created By}",
+  "current_employer": "${Candidates.Current Employer}",
+  "current_job_title": "${Candidates.Current Job Title}",
+  "current_salary": "${Candidates.Current Salary}",
+  "email": "${Candidates.Email}",
+  "email_opt_out": "${Candidates.Email Opt Out}",
+  "expected_salary": "${Candidates.Expected Salary}",
+  "experience_in_years": "${Candidates.Experience in Years}",
+  "first_name": "${Candidates.First Name}",
+  "fresh_candidate": "${Candidates.Fresh Candidate}",
+  "highest_qualification_held": "${Candidates.Highest Qualification Held}",
+  "is_unqualified": "${Candidates.Is Unqualified}",
+  "last_name": "${Candidates.Last Name}",
+  "linkedin": "${Candidates.LinkedIn}",
+  "mobile": "${Candidates.Mobile}",
+  "phone": "${Candidates.Phone}",
+  "postal_code": "${Candidates.Postal Code}",
+  "rating": "${Candidates.Rating}",
+  "salutation": "${Candidates.Salutation}",
+  "skill_set": "${Candidates.Skill Set}",
+  "street": "${Candidates.Street}",
+  "website": "${Candidates.Website}"
+}
+```
+</CodeGroup>
+5. Under `Append Custom Parameters`, you need to add two parameters:
+- First parameter name is `event` whose value will be `candidate_state_changed`.
+<Info>The value of event will change based on the trigger that you are trying to setup.</Info>
+- Second parameter name is `identifier` whose value will be the email id of Zoho Recruit account that is being used.
+<img height="200" src="/images/Zoho_recruit/Zohorecruit_action.png" alt="Set up Zoho Recruit Action"/>
+
+6. Click on `Save` to add the webhook.
+
+#### 2. Create Workflow Rule in Zoho Recruit
+
+Once the user has created a webhook, they now need to add it as a Rule in Recruit so that it fires Cobalt event.
+
+1. Navigate to `Workflow Rules` under **Automation** and click on `+ Create Rule` button.
+2. Select **Module** as `Candidates`, add a **Rule Name** and click on `Next`.
+3. In the Rule, select `On a record action` > Choose `Candidate Stage` radio button for the Candidate Status Changed trigger and click on `Next`.
+<Tip>
+Based on the trigger that you are using, you would select different action. For example in Candidate Created, you would choose the `Create` radio button.
+</Tip>
+4. Select `All Candidates` as the **Condition 1** and click on `Next`.
+5. Select `Instant Actions` and click on `Webhooks`. Select the Webhook that you created and click on `Associate`.
+<img height="200" src="/images/Zoho_recruit/Zohorecruit_rule.png" alt="Set up Zoho Recruit Rule with webhook"/>
+6. Click on `Save` and your webhook is now completely setup for use.
+
+## Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Zoho Recruit actions and triggers. Following are the set of Zoho Recruit actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Application">
+     1. **List Applications** - List all applications in Zoho Recruit.
+    </Accordion>
+    <Accordion title="Candidate">
+     2. **Create Candidate** - Create a new candidate in Zoho Recruit.
+     3. **List Candidates** - List all candidates in Zoho Recruit.
+     4. **Upsert Candidate** - Upsert a candidate in Zoho Recruit.
+     5. **Change Candidate Status** - Change candidate status in Zoho Recruit.
+     6. **Associate candidates with job openings** - Associate candidates with job openings in Zoho Recruit.
+    </Accordion>
+    <Accordion title="Job">
+     7. **List Job Openings** - List all job openings in Zoho Recruit.
+     8. **Create Job Opening** - Create a new job opening in Zoho Recruit.
+     9. **Update Job Opening** - Update a job opening in Zoho Recruit.
+    </Accordion>
+    <Accordion title="Note">
+     10. **Create Note** - Create a new note in Zoho Recruit.
+     11. **List Notes** - List all notes in Zoho Recruit.
+     12. **Update Note** - Update an existing note in Zoho Recruit.
+    </Accordion>
+    <Accordion title="Tag">
+     13. **Create Tag** - Create a new tag in Zoho Recruit.
+     14. **Add Tag** - Add tags to a record in Zoho Recruit.
+    </Accordion>
+    <Accordion title="Others">
+     15. **HTTP Request** - Make HTTP API calls to any Zoho Recruit documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+         1. **Candidate stage changed** - Triggers when a candidate stage is changed in Zoho Recruit.
+         2. **Candidate created** - Triggers when a candidate is created in Zoho Recruit.
+         3. **Application created** - Triggers when an application is created in Zoho Recruit.
+         4. **Job opening status changed** - Triggers when a job opening status is changed in Zoho Recruit.
+  </Tab>
+</Tabs>
