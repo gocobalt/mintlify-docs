@@ -1,0 +1,72 @@
+---
+title: Connect
+description: Connect with the Linked Account's Segment account.
+---
+<Note>
+Segment is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Segment** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Token
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Segment
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Segment/segment_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Segment account](https://app.segment.com/).
+2. In the side menu, navigate to `Settings` > `Workspace Settings` and switch to the `Access Management` tab.
+<img height="200" src="/images/Segment/segment_navigation.png" alt="Navigation for Key"/>
+
+3. Switch to the `Tokens` tab and click on `+ Create Token` button.
+<img height="200" src="/images/Segment/segment_create.png" alt="Creating Credentials"/>
+<Warning>
+The **Tokens** tab will not be available to you if you are either not on the appropriate plan or provided Credit Card details.
+</Warning>
+4. Provide a **Description** > **Assign Access** to the token based on your requirements and click on `Create`.
+5. Copy the Token displayed on your screen.
+<Note>
+Copy and store your token somewhere safe as it will be visible only once.
+</Note>
+<img height="200" src="/images/Segment/segment_credentials.png" alt="Getting API Token"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Segment.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Segment actions and triggers. Following are the set of Segment actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Card">
+     1. **Create Card** - Create a new card in Segment.
+     2. **Update Card** - Update a card in Segment.
+     3. **Delete Card** - Delete a card in Segment.
+     4. **Add Comment to Card** - Add a comment to a card in Segment.
+     5. **Update Comment on Card** - Update a comment on a card in Segment.
+    </Accordion>
+    <Accordion title="Board">
+     6. **Create Board** - Create a board in Segment.
+     7. **Add Member to Board** - Add a member to a board in Segment.
+     </Accordion>
+    <Accordion title="Others">
+     8. **HTTP Request** - Make HTTP API calls to any Segment documented REST APIs.
+     9. **Create List** - Create a new list in Segment.
+     10. **Get Members of an Organization** - Get members of an organization in Segment.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    No triggers available for this application.
+  </Tab>
+</Tabs>
