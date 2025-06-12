@@ -1,0 +1,120 @@
+---
+title: Setup
+description: Connect to your Webex app for OAuth.
+---
+To setup your Webex app in Cobalt for OAuth, you will need the following credentials from your [Webex Developer account](https://developer.webex.com/):
+
+- Client ID
+- Client Secret
+- Scopes
+
+
+### Pre-requisites
+
+1. Webex Developer account. You can create one [here](https://developer.webex.com/signup).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. openid
+2. email
+3. profile
+4. spark:people_read
+
+
+<Info>If you haven't already created an app in Webex, you'd need to create one.</Info>
+
+### Creating an app in Webex
+
+To create a Webex app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Webex Developer account](https://developers.webex.com/).
+2. Click on the `Profile` icon in the top right and select `My Webex Apps` button.
+<img height="200" src="/images/Webex/Webex_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create a New App` button and click on `Create an Integration` under **Integration** card.
+<Warning>
+Do not select Bot or Guest Issuer as these do not support OAuth 2.0
+</Warning>
+<img height="200" src="/images/Webex/Webex_app_type.png" alt="App type selection"/>
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Webex` > `Settings` > `Callback Url` > Copy it. 
+5. Enter the **Integration Name**, **Icon** and **Description** for your application. Paste the Callback URL that you copied under **Redirect URI(s)** field.
+6. Select the **mandatory scopes** in the **Scopes** section, as provided in your Cobalt Webex settings page and click on the `Add Integration` button at the bottom.
+<Note>
+Openid, email and profile will be added automatically to your auth request. So it is not required to add them in OAuth app.
+</Note>
+<img height="200" src="/images/Webex/Webex_config.png" alt="Setting up Developer app"/>
+
+7. Copy the **Client ID** and **Client Secret** displayed on your screen.
+<img height="200" src="/images/Webex/Webex_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Cobalt
+App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Webex/Webex_cobalt.png" alt="Setting up application client credentials"/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Webex/Webex_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Cobalt, go to your [Webex developer account](https://developers.webex.com/) and update the scopes as added on Cobalt.
+
+Select the OAuth App created for Cobalt > Navigate to `Scopes` section > Add the scopes as added in Cobalt > Click on `Save`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Webex actions and triggers. Following are the set of Webex actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Messages">
+     1. **List Messages** - Lists messages in a room in Webex.
+     2. **Create Message** - Creates a new message in Webex.
+     3. **List Direct Messages** - Lists direct messages in Webex.
+     4. **Get Message** - Gets a message by ID in Webex.
+     5. **Edit Message** - Edits a message in Webex.
+     </Accordion>
+     <Accordion title="People">
+     6. **List People** - Lists people in Webex.
+     7. **Create Person** - Creates a new person in Webex.
+     8. **Update Person** - Update a person in Webex.
+      </Accordion>
+     <Accordion title="Rooms">
+     9. **List Rooms** - Lists rooms in Webex.
+     10. **Create Room** - Creates a new room in Webex.
+     11. **Get Room** - Gets a room by ID in Webex.
+     12. **Update Room** - Updates a room's information in Webex.
+      </Accordion>
+     <Accordion title="Teams">
+     13. **List Teams** - Lists teams in Webex.
+     14. **Create Team** - Create a new team in Webex.
+     15. **Update Team** - Updates a team's information in Webex.
+      </Accordion>
+
+     <Accordion title="Others">
+     30. **HTTP Request** - Make HTTP API calls to any Webex documented REST APIs.
+     31. [Incremental Sync](/build/workflow/overview#third-party-application-actions) - Check for new data in any GET endpoint of Webex documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Triggers">
+    1. **DataSource Created** - Triggers when a data source is created on Webex.
+    2. **DataSource Updated** - Triggers when a data source is updated on Webex.
+    3. **Message Created** - Triggers when a message is created on Webex.
+    4. **Message Deleted** - Triggers when a message is deleted on Webex.
+    5. **Room Created** - Triggers when a room is created on Webex.
+  </Tab>
+</Tabs>

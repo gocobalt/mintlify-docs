@@ -1,0 +1,74 @@
+---
+title: Connect
+description: Connect with the Linked Account's Auth0 account.
+---
+<Note>
+Auth0 is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Auth0** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Client ID
+2. Client Secret
+3. Domain
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of Auth0
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/Auth0/Auth0_config.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [Auth0 account](https://manage.auth0.com/).
+2. In the side menu, under **Applications**, click on the `Application` button.
+<img height="200" src="/images/Auth0/Auth0_navigation.png" alt="Navigation for Key"/>
+
+3. Click on `+ Create Applicatoon` > Enter the `Name`, select `Machine to Machine Applications`, and click on `Create`.
+4. Select `Auth0 Management API` in the dropdown > Select the scopes required for your use-case and click on `Authorize`.
+<img height="200" src="/images/Auth0/Auth0_navigation2.png" alt="Selecting API Scopes"/>
+
+5. Switch to the `Settings` tab and copy the **Domain**, **Client ID** and **Client Secret** displayed and click on `Save`.
+<img height="200" src="/images/Auth0/Auth0_credentials.png" alt="Getting Credentials"/>
+
+The Linked Account or end-user now have all the credentials required to connect with Auth0.
+
+#### Actions and triggers
+In Cobalt, you can create orchestrations of your use-cases using Auth0 actions and triggers. Following are the set of Auth0 actions and triggers
+supported by Cobalt.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Organizations">
+     1. **List Organizations** - Retrieve a list of organizations with optional filtering and pagination in Auth0.
+     2. **Create Organization** - Create a new organization in Auth0.
+     3. **Update Organization** - Update an organization's information by ID in Auth0.
+     4. **Add Organization Member** - Add a user as a member to an organization in Auth0.
+    </Accordion>
+    <Accordion title="Roles">
+     5. **List Roles** - Retrieve a list of roles with optional filtering and pagination in Auth0.
+     6. **Create Role** - Create a new role in Auth0.
+     7. **Update Role** - Update a role's information by ID in Auth0.
+     8. **Assign Role to Users** - Assign a role to one or more users in Auth0.
+     </Accordion>
+    <Accordion title="Users">
+     9. **List Users** - List/Search users with optional filtering and pagination in Auth0.
+     10. **Create User** - Create a new user in Auth0.
+     11. **Update User** - Update a user's information by ID in Auth0.
+     12. **Delete User** - Delete a user by ID in Auth0.
+     </Accordion>
+    <Accordion title="Others">
+     13. **HTTP Request** - Make HTTP API calls to any Auth0 documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
