@@ -73,7 +73,7 @@ Your customers' accounts should be on Zoho Recruit Standard or a higher plan to 
 4. Provide a **Name** > Paste the `Single Webhook URL` that you copied under **URL to Notify** and select the **Module** as `Candidates`.
 5. Under `Append Entity Parameters`, go to **Parameters in the User Defined Format**, give the `Parameter Name` as **data** and copy the JSON provided below in `Value Description` field.
 <CodeGroup>
-```javascript candidate_state_changed
+```javascript candidate_stage_changed
 {
   "candidate_id": "${Candidates.Candidate Id}",
   "owner_id": "${Candidates.ownerId}",
@@ -141,7 +141,7 @@ Your customers' accounts should be on Zoho Recruit Standard or a higher plan to 
 ```
 </CodeGroup>
 5. Under `Append Custom Parameters`, you need to add two parameters:
-- First parameter name is `event` whose value will be `candidate_state_changed`.
+- First parameter name is `event` whose value will be `candidate_stage_changed`.
 <Info>The value of event will change based on the trigger that you are trying to setup.</Info>
 - Second parameter name is `identifier` whose value will be the email id of Zoho Recruit account that is being used.
 <img height="200" src="/images/Zoho_recruit/Zohorecruit_action.png" alt="Set up Zoho Recruit Action"/>
