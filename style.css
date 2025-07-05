@@ -1,0 +1,174 @@
+/* Custom CSS for Cobalt Documentation */
+
+/* Welcome Page Styling - Anthropic Inspired Design */
+.welcome-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Hero Section Styling */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  margin: 4rem 0 6rem 0;
+  min-height: 400px;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.dark .hero-title {
+  color: #f9fafb;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.dark .hero-subtitle {
+  color: #d1d5db;
+}
+
+.hero-image {
+  flex: 0 0 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+}
+
+/* Search Input Styling */
+.hero-search {
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.hero-search input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.dark .hero-search input {
+  background: #1f2937;
+  border-color: #374151;
+  color: #f9fafb;
+}
+
+.hero-search input:focus {
+  outline: none;
+  border-color: #9563ff;
+  box-shadow: 0 0 0 3px rgba(149, 99, 255, 0.1);
+}
+
+.hero-search input::placeholder {
+  color: #9ca3af;
+}
+
+.dark .hero-search input::placeholder {
+  color: #6b7280;
+}
+
+/* Cards Section Styling */
+.cards-section {
+  margin: 4rem 0;
+}
+
+/* Override Mintlify CardGroup styling for better integration */
+.cards-section .card-group {
+  gap: 1.5rem;
+}
+
+.cards-section .card {
+  transition: all 0.2s ease;
+}
+
+.cards-section .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(149, 99, 255, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-section {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+    margin: 2rem 0 4rem 0;
+  }
+  
+  .hero-image {
+    flex: none;
+    max-width: 300px;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-container {
+    padding: 0 1rem;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.125rem;
+  }
+}
+
+/* Content Area Adjustments for Welcome Page */
+.is-custom #content-area {
+  max-width: none;
+  padding: 0;
+}
+
+.is-custom .mdx-content {
+  max-width: none;
+  padding: 0;
+}
+
+/* Override default page margins for welcome page */
+[data-page="welcome"] #content-area,
+[data-page="welcome"] .mdx-content {
+  max-width: none;
+  padding: 2rem 0;
+}
+
+/* Ensure proper spacing in custom mode */
+.is-custom .welcome-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+} 

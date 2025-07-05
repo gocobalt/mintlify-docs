@@ -1,0 +1,603 @@
+---
+title: "Salesforce Integration"
+description: "Complete guide to integrating Salesforce CRM with Cobalt for seamless data synchronization"
+---
+
+# Salesforce Integration Guide
+
+<img className="block dark:hidden" src="/images/integrations/salesforce/salesforce-hero-light.png" alt="Salesforce Integration" />
+<img className="hidden dark:block" src="/images/integrations/salesforce/salesforce-hero-dark.png" alt="Salesforce Integration" />
+
+Integrate your application with Salesforce CRM to synchronize contacts, leads, opportunities, and custom objects seamlessly.
+
+## Quick Start
+
+<CardGroup cols={2}>
+  <Card title="5-Minute Setup" icon="clock" href="#setup-guide">
+    Get Salesforce integration running in minutes
+  </Card>
+  <Card title="Live Demo" icon="play" href="#interactive-demo">
+    See the integration in action
+  </Card>
+  <Card title="Sample Code" icon="code" href="#code-examples">
+    Ready-to-use implementation examples
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="#troubleshooting">
+    Common issues and solutions
+  </Card>
+</CardGroup>
+
+## Overview
+
+The Salesforce integration enables you to:
+
+- **Sync CRM Data**: Automatically synchronize contacts, leads, accounts, and opportunities
+- **Real-time Updates**: Get instant notifications when data changes in Salesforce
+- **Custom Objects**: Support for custom Salesforce objects and fields
+- **Bulk Operations**: Efficiently handle large datasets with batch processing
+- **Advanced Querying**: Use SOQL queries for complex data retrieval
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+<Accordion title="Salesforce Requirements">
+- Salesforce org with API access enabled
+- System Administrator or Custom Admin permissions
+- Valid Salesforce edition (Professional, Enterprise, or Developer)
+- API request limits sufficient for your use case
+</Accordion>
+
+<Accordion title="Cobalt Requirements">
+- Active Cobalt account
+- API key with integration permissions
+- Webhook endpoint configured (for real-time sync)
+</Accordion>
+
+## Setup Guide
+
+### Step 1: Configure Salesforce Connected App
+
+1. **Navigate to Setup** in your Salesforce org
+2. **Search for "App Manager"** in the Quick Find box
+3. **Click "New Connected App"**
+
+<img src="/images/integrations/salesforce/connected-app-setup.png" alt="Salesforce Connected App Setup" />
+
+4. **Fill in the basic information**:
+   ```
+   Connected App Name: Cobalt Integration
+   API Name: Cobalt_Integration
+   Contact Email: your-email@company.com
+   ```
+
+5. **Enable OAuth Settings**:
+   ```
+   Callback URL: https://api.gocobalt.io/api/v1/oauth/callback
+   Selected OAuth Scopes:
+   - Access and manage your data (api)
+   - Perform requests on your behalf at any time (refresh_token, offline_access)
+   - Access your basic information (id, profile, email, address, phone)
+   ```
+
+### Step 2: Set Up Cobalt Integration
+
+1. **Log into your Cobalt dashboard**
+2. **Navigate to Integrations** ’ **Add Integration**
+3. **Select Salesforce** from the CRM category
+
+<img src="/images/integrations/salesforce/cobalt-setup.png" alt="Cobalt Salesforce Setup" />
+
+4. **Enter your Salesforce credentials**:
+   ```json
+   {
+     "client_id": "your_salesforce_consumer_key",
+     "client_secret": "your_salesforce_consumer_secret",
+     "sandbox": false,
+     "api_version": "v58.0"
+   }
+   ```
+
+### Step 3: Configure Field Mapping
+
+Set up field mapping to determine how data flows between your application and Salesforce:
+
+<Tabs>
+  <Tab title="Contact Mapping">
+    ```json
+    {
+      "contact_mapping": {
+        "FirstName": "first_name",
+        "LastName": "last_name", 
+        "Email": "email",
+        "Phone": "phone",
+        "Title": "job_title",
+        "Company": "company_name",
+        "LeadSource": "lead_source",
+        "Description": "notes"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Lead Mapping">
+    ```json
+    {
+      "lead_mapping": {
+        "FirstName": "first_name",
+        "LastName": "last_name",
+        "Email": "email", 
+        "Phone": "phone",
+        "Company": "company_name",
+        "Title": "job_title",
+        "LeadSource": "source",
+        "Status": "lead_status",
+        "Rating": "lead_score"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Opportunity Mapping">
+    ```json
+    {
+      "opportunity_mapping": {
+        "Name": "opportunity_name",
+        "Amount": "deal_value",
+        "StageName": "stage",
+        "CloseDate": "close_date",
+        "Probability": "probability",
+        "LeadSource": "source",
+        "Description": "description"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Code Examples
+
+### Initialize the Integration
+
+<CodeGroup>
+```javascript Node.js
+const { CobaltSDK } = require('@cobalt-io/sdk');
+
+const cobalt = new CobaltSDK({
+  apiKey: 'your_cobalt_api_key',
+  environment: 'production' // or 'sandbox'
+});
+
+// Initialize Salesforce integration
+const salesforce = cobalt.integration('salesforce');
+```
+
+```python Python
+from cobalt_sdk import CobaltSDK
+
+cobalt = CobaltSDK(
+    api_key='your_cobalt_api_key',
+    environment='production'
+)
+
+# Initialize Salesforce integration
+salesforce = cobalt.integration('salesforce')
+```
+
+```typescript TypeScript
+import { CobaltSDK } from '@cobalt-io/sdk';
+
+const cobalt = new CobaltSDK({
+  apiKey: 'your_cobalt_api_key',
+  environment: 'production'
+});
+
+const salesforce = cobalt.integration('salesforce');
+```
+</CodeGroup>
+
+### Sync Contacts
+
+<CodeGroup>
+```javascript Create Contact
+// Create a new contact in Salesforce
+const newContact = await salesforce.contacts.create({
+  linked_account_id: 'user_123',
+  data: {
+    FirstName: 'John',
+    LastName: 'Doe',
+    Email: 'john.doe@example.com',
+    Phone: '+1-555-123-4567',
+    Title: 'Software Engineer',
+    Company: 'Tech Corp'
+  }
+});
+
+console.log('Contact created:', newContact.id);
+```
+
+```javascript Get Contacts
+// Retrieve contacts with filtering
+const contacts = await salesforce.contacts.list({
+  linked_account_id: 'user_123',
+  filters: {
+    email_contains: '@example.com',
+    created_after: '2024-01-01'
+  },
+  limit: 50,
+  cursor: 'next_page_token'
+});
+
+console.log(`Found ${contacts.data.length} contacts`);
+```
+
+```javascript Update Contact
+// Update an existing contact
+const updatedContact = await salesforce.contacts.update({
+  linked_account_id: 'user_123',
+  contact_id: 'sf_contact_id',
+  data: {
+    Title: 'Senior Software Engineer',
+    Phone: '+1-555-987-6543'
+  }
+});
+```
+</CodeGroup>
+
+### Handle Leads
+
+<CodeGroup>
+```javascript Create Lead
+// Create a new lead
+const newLead = await salesforce.leads.create({
+  linked_account_id: 'user_123',
+  data: {
+    FirstName: 'Jane',
+    LastName: 'Smith',
+    Email: 'jane.smith@prospect.com',
+    Company: 'Prospect Inc',
+    LeadSource: 'Website',
+    Status: 'Open - Not Contacted'
+  }
+});
+```
+
+```javascript Convert Lead
+// Convert lead to contact and opportunity
+const conversion = await salesforce.leads.convert({
+  linked_account_id: 'user_123',
+  lead_id: 'sf_lead_id',
+  conversion_data: {
+    create_opportunity: true,
+    opportunity_name: 'New Business Opportunity',
+    converted_status: 'Qualified'
+  }
+});
+
+console.log('Lead converted:', conversion);
+```
+</CodeGroup>
+
+### Manage Opportunities
+
+<CodeGroup>
+```javascript Create Opportunity
+// Create a new opportunity
+const opportunity = await salesforce.opportunities.create({
+  linked_account_id: 'user_123',
+  data: {
+    Name: 'Q3 Enterprise Deal',
+    Amount: 50000,
+    StageName: 'Prospecting',
+    CloseDate: '2024-09-30',
+    Probability: 25,
+    LeadSource: 'Referral'
+  }
+});
+```
+
+```javascript Update Opportunity Stage
+// Move opportunity through sales pipeline
+const stageUpdate = await salesforce.opportunities.update({
+  linked_account_id: 'user_123',
+  opportunity_id: 'sf_opp_id',
+  data: {
+    StageName: 'Proposal/Price Quote',
+    Probability: 75,
+    Amount: 55000
+  }
+});
+```
+</CodeGroup>
+
+### Real-time Webhooks
+
+<CodeGroup>
+```javascript Webhook Handler
+// Handle Salesforce webhook events
+app.post('/webhooks/salesforce', async (req, res) => {
+  const event = req.body;
+  
+  switch (event.type) {
+    case 'contact.created':
+      console.log('New contact created:', event.data);
+      // Sync to your application
+      await syncContactToApp(event.data);
+      break;
+      
+    case 'opportunity.updated':
+      console.log('Opportunity updated:', event.data);
+      // Update deal in your system
+      await updateDealInApp(event.data);
+      break;
+      
+    case 'lead.converted':
+      console.log('Lead converted:', event.data);
+      // Handle lead conversion
+      await handleLeadConversion(event.data);
+      break;
+  }
+  
+  res.status(200).send('OK');
+});
+```
+
+```javascript Event Subscription
+// Subscribe to specific Salesforce events
+await cobalt.webhooks.subscribe({
+  integration: 'salesforce',
+  events: [
+    'contact.created',
+    'contact.updated', 
+    'lead.created',
+    'lead.converted',
+    'opportunity.created',
+    'opportunity.updated'
+  ],
+  webhook_url: 'https://your-app.com/webhooks/salesforce'
+});
+```
+</CodeGroup>
+
+## Advanced Features
+
+### Custom Objects
+
+Work with custom Salesforce objects:
+
+```javascript
+// Query custom objects
+const customRecords = await salesforce.query({
+  linked_account_id: 'user_123',
+  soql: `
+    SELECT Id, Name, Custom_Field__c, Created_Date__c 
+    FROM Custom_Object__c 
+    WHERE Status__c = 'Active'
+    ORDER BY Created_Date__c DESC
+    LIMIT 100
+  `
+});
+
+// Create custom object record
+const customRecord = await salesforce.sobjects.create({
+  linked_account_id: 'user_123',
+  object_type: 'Custom_Object__c',
+  data: {
+    Name: 'Custom Record',
+    Custom_Field__c: 'Custom Value',
+    Status__c: 'Active'
+  }
+});
+```
+
+### Bulk Data Operations
+
+Handle large datasets efficiently:
+
+```javascript
+// Bulk create contacts
+const bulkJob = await salesforce.bulk.create({
+  linked_account_id: 'user_123',
+  object_type: 'Contact',
+  operation: 'insert',
+  data: [
+    { FirstName: 'Contact 1', LastName: 'Last 1', Email: 'contact1@example.com' },
+    { FirstName: 'Contact 2', LastName: 'Last 2', Email: 'contact2@example.com' },
+    // ... up to 10,000 records
+  ]
+});
+
+// Monitor bulk job status
+const jobStatus = await salesforce.bulk.status({
+  linked_account_id: 'user_123',
+  job_id: bulkJob.id
+});
+
+console.log('Bulk job status:', jobStatus.state);
+```
+
+### Error Handling
+
+Implement robust error handling:
+
+```javascript
+try {
+  const contact = await salesforce.contacts.create({
+    linked_account_id: 'user_123',
+    data: contactData
+  });
+} catch (error) {
+  if (error.code === 'DUPLICATE_VALUE') {
+    console.log('Contact already exists');
+    // Handle duplicate
+  } else if (error.code === 'REQUIRED_FIELD_MISSING') {
+    console.log('Missing required field:', error.details);
+    // Handle validation error
+  } else if (error.code === 'API_LIMIT_EXCEEDED') {
+    console.log('API limit exceeded, retrying later');
+    // Implement retry logic
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+## Field Reference
+
+### Standard Objects
+
+<Accordion title="Contact Fields">
+| Salesforce Field | Description | Type | Required |
+|------------------|-------------|------|----------|
+| `FirstName` | Contact's first name | String | No |
+| `LastName` | Contact's last name | String | Yes |
+| `Email` | Primary email address | Email | No |
+| `Phone` | Primary phone number | Phone | No |
+| `Title` | Job title | String | No |
+| `AccountId` | Associated account ID | Reference | No |
+| `LeadSource` | Lead source | Picklist | No |
+| `Description` | Contact description | Textarea | No |
+</Accordion>
+
+<Accordion title="Lead Fields">
+| Salesforce Field | Description | Type | Required |
+|------------------|-------------|------|----------|
+| `FirstName` | Lead's first name | String | No |
+| `LastName` | Lead's last name | String | Yes |
+| `Email` | Email address | Email | No |
+| `Company` | Company name | String | Yes |
+| `Status` | Lead status | Picklist | Yes |
+| `LeadSource` | Lead source | Picklist | No |
+| `Rating` | Lead rating | Picklist | No |
+| `Industry` | Industry | Picklist | No |
+</Accordion>
+
+<Accordion title="Opportunity Fields">
+| Salesforce Field | Description | Type | Required |
+|------------------|-------------|------|----------|
+| `Name` | Opportunity name | String | Yes |
+| `Amount` | Opportunity amount | Currency | No |
+| `StageName` | Sales stage | Picklist | Yes |
+| `CloseDate` | Expected close date | Date | Yes |
+| `Probability` | Probability percentage | Percent | No |
+| `Type` | Opportunity type | Picklist | No |
+| `LeadSource` | Lead source | Picklist | No |
+| `AccountId` | Associated account | Reference | No |
+</Accordion>
+
+## Rate Limits & Best Practices
+
+### API Limits
+
+Salesforce enforces the following API limits:
+
+<Callout type="warning">
+**Daily API Limits**: Varies by Salesforce edition
+- **Developer**: 5,000 requests per day
+- **Professional**: 1,000 requests per day
+- **Enterprise**: 1,000 requests per user per day
+- **Unlimited**: 5,000 requests per user per day
+</Callout>
+
+### Best Practices
+
+1. **Use Bulk APIs** for large data operations (>200 records)
+2. **Implement exponential backoff** for rate limit handling
+3. **Cache frequently accessed data** to reduce API calls
+4. **Use selective queries** with specific field lists
+5. **Monitor API usage** in Salesforce Setup
+
+```javascript
+// Example: Efficient data retrieval with selective fields
+const contacts = await salesforce.query({
+  linked_account_id: 'user_123',
+  soql: `
+    SELECT Id, FirstName, LastName, Email, Phone 
+    FROM Contact 
+    WHERE LastModifiedDate > YESTERDAY
+  `
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<Accordion title="Authentication Failures">
+**Symptoms**: OAuth errors, invalid credentials
+
+**Solutions**:
+- Verify Connected App configuration
+- Check OAuth scopes and permissions
+- Ensure callback URL is correct
+- Regenerate consumer key/secret if needed
+</Accordion>
+
+<Accordion title="API Limit Exceeded">
+**Symptoms**: Rate limit error responses
+
+**Solutions**:
+- Implement request queuing and retry logic
+- Use bulk APIs for large operations
+- Optimize queries to reduce API calls
+- Monitor usage in Salesforce Setup
+</Accordion>
+
+<Accordion title="Field Validation Errors">
+**Symptoms**: Required field missing, invalid values
+
+**Solutions**:
+- Review field requirements and validation rules
+- Check picklist values and dependencies
+- Ensure proper data types and formats
+- Validate required fields before submission
+</Accordion>
+
+<Accordion title="Permission Errors">
+**Symptoms**: Insufficient privileges, object access denied
+
+**Solutions**:
+- Verify user permissions and profiles
+- Check object-level and field-level security
+- Ensure Connected App has proper OAuth scopes
+- Review sharing rules and restrictions
+</Accordion>
+
+### Debug Mode
+
+Enable debug logging for detailed troubleshooting:
+
+```javascript
+const cobalt = new CobaltSDK({
+  apiKey: 'your_api_key',
+  debug: true, // Enable debug logging
+  environment: 'production'
+});
+
+// Debug logs will show detailed API requests/responses
+```
+
+## Interactive Demo
+
+<Callout type="info">
+Try our interactive demo to see the Salesforce integration in action without any setup required.
+</Callout>
+
+<Card title="Live Demo Environment" icon="play" href="https://demo.gocobalt.io/salesforce">
+  Experience the full Salesforce integration with sample data
+</Card>
+
+## Support & Resources
+
+<CardGroup cols={2}>
+  <Card title="Salesforce Developer Docs" icon="book" href="https://developer.salesforce.com/docs">
+    Official Salesforce API documentation
+  </Card>
+  <Card title="Cobalt Community" icon="users" href="https://community.gocobalt.io">
+    Join our community for help and discussions
+  </Card>
+  <Card title="Integration Support" icon="life-ring" href="https://gocobalt.io/contact-us">
+    Get help with your Salesforce integration
+  </Card>
+  <Card title="GitHub Examples" icon="code" href="https://github.com/gocobalt/salesforce-examples">
+    Sample code and implementation examples
+  </Card>
+</CardGroup>

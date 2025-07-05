@@ -1,0 +1,690 @@
+---
+alwaysApply: true
+---
+
+# Mintlify Cursor Rules - Comprehensive Documentation Guide
+
+## Overview
+
+This guide provides a complete reference for building documentation with Mintlify, including all core components, writing principles, and best practices for creating exceptional technical documentation.
+
+## Core Writing Principles
+
+### Language and Style Requirements
+- Use clear, direct language appropriate for technical audiences
+- Write in second person ("you") for instructions and procedures
+- Use active voice over passive voice
+- Employ present tense for current states, future tense for outcomes
+- Maintain consistent terminology throughout all documentation
+- Keep sentences concise while providing necessary context
+- Use parallel structure in lists, headings, and procedures
+
+### Content Organization Standards
+- Lead with the most important information (inverted pyramid structure)
+- Use progressive disclosure: basic concepts before advanced ones
+- Break complex procedures into numbered steps
+- Include prerequisites and context before instructions
+- Provide expected outcomes for each major step
+- End sections with next steps or related information
+- Use descriptive, keyword-rich headings for navigation and SEO
+
+### User-Centered Approach
+- Focus on user goals and outcomes rather than system features
+- Anticipate common questions and address them proactively
+- Include troubleshooting for likely failure points
+- Provide multiple pathways when appropriate (beginner vs advanced)
+- Offer an opinionated path to avoid overwhelming with options
+
+## Essential File Structure
+
+### Required Files
+```
+docs/
+├── docs.json (main configuration file)
+├── introduction.mdx (homepage content)
+└── [your-page-files].mdx
+```
+
+### Page Structure Template
+```yaml
+---
+title: "Clear, specific, keyword-rich title"
+description: "Concise description explaining page purpose and value"
+icon: "icon-name" # optional
+sidebarTitle: "Short Nav Title" # optional
+mode: "wide" | "custom" | "center" # optional
+---
+
+# Your Content Here
+```
+
+## Core Mintlify Components
+
+### 1. Callout Components
+
+#### Note - Additional helpful information
+```jsx
+<Note>
+Supplementary information that supports the main content without interrupting flow
+</Note>
+```
+
+#### Tip - Best practices and pro tips
+```jsx
+<Tip>
+Expert advice, shortcuts, or best practices that enhance user success
+</Tip>
+```
+
+#### Warning - Important cautions
+```jsx
+<Warning>
+Critical information about potential issues, breaking changes, or destructive actions
+</Warning>
+```
+
+#### Info - Neutral contextual information
+```jsx
+<Info>
+Background information, context, or neutral announcements
+</Info>
+```
+
+#### Check - Success confirmations
+```jsx
+<Check>
+Positive confirmations, successful completions, or achievement indicators
+</Check>
+```
+
+### 2. Code Components
+
+#### Single Code Block
+```javascript
+```javascript config.js
+const apiConfig = {
+  baseURL: 'https://api.example.com',
+  timeout: 5000,
+  headers: {
+    'Authorization': `Bearer ${process.env.API_TOKEN}`
+  }
+};
+```
+```
+
+#### Code Group with Multiple Languages
+```jsx
+<CodeGroup>
+```javascript Node.js
+const response = await fetch('/api/endpoint', {
+  headers: { Authorization: `Bearer ${apiKey}` }
+});
+```
+
+```python Python
+import requests
+response = requests.get('/api/endpoint', 
+  headers={'Authorization': f'Bearer {api_key}'})
+```
+
+```curl cURL
+curl -X GET '/api/endpoint' \
+  -H 'Authorization: Bearer YOUR_API_KEY'
+```
+</CodeGroup>
+```
+
+#### Request/Response Examples
+```jsx
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/users' \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "John Doe", "email": "john@example.com"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success
+{
+  "id": "user_123",
+  "name": "John Doe", 
+  "email": "john@example.com",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+</ResponseExample>
+```
+
+### 3. Structural Components
+
+#### Steps for Procedures
+```jsx
+<Steps>
+<Step title="First Step">
+  These are instructions or content that only pertain to the first step.
+  
+  <Check>
+  Verify installation by running `npm list`.
+  </Check>
+</Step>
+
+<Step title="Second Step">
+  These are instructions or content that only pertain to the second step.
+  
+  <Warning>
+  Never commit API keys to version control.
+  </Warning>
+</Step>
+</Steps>
+```
+
+#### Tabs for Alternative Content
+```jsx
+<Tabs>
+<Tab title="macOS">
+  ```bash
+  brew install node
+  npm install -g package-name
+  ```
+</Tab>
+
+<Tab title="Windows">
+  ```powershell
+  choco install nodejs
+  npm install -g package-name
+  ```
+</Tab>
+
+<Tab title="Linux">
+  ```bash
+  sudo apt install nodejs npm
+  npm install -g package-name
+  ```
+</Tab>
+</Tabs>
+```
+
+#### Accordions for Collapsible Content
+```jsx
+<AccordionGroup>
+<Accordion title="Troubleshooting connection issues">
+  - **Firewall blocking**: Ensure ports 80 and 443 are open
+  - **Proxy configuration**: Set HTTP_PROXY environment variable
+  - **DNS resolution**: Try using 8.8.8.8 as DNS server
+</Accordion>
+
+<Accordion title="Advanced configuration">
+  ```javascript
+  const config = {
+    performance: { cache: true, timeout: 30000 },
+    security: { encryption: 'AES-256' }
+  };
+  ```
+</Accordion>
+</AccordionGroup>
+```
+
+### 4. API Documentation Components
+
+#### Parameter Fields
+```jsx
+<ParamField path="user_id" type="string" required>
+Unique identifier for the user. Must be a valid UUID v4 format.
+</ParamField>
+
+<ParamField body="email" type="string" required>
+User's email address. Must be valid and unique within the system.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+Maximum number of results to return. Range: 1-100.
+</ParamField>
+
+<ParamField header="Authorization" type="string" required>
+Bearer token for API authentication. Format: `Bearer YOUR_API_KEY`
+</ParamField>
+```
+
+#### Response Fields
+```jsx
+<ResponseField name="user_id" type="string" required>
+Unique identifier assigned to the newly created user.
+</ResponseField>
+
+<ResponseField name="created_at" type="timestamp">
+ISO 8601 formatted timestamp of when the user was created.
+</ResponseField>
+
+<ResponseField name="permissions" type="array">
+List of permission strings assigned to this user.
+</ResponseField>
+```
+
+#### Expandable Nested Fields
+```jsx
+<ResponseField name="user" type="object">
+Complete user object with all associated data.
+
+<Expandable title="User properties">
+  <ResponseField name="profile" type="object">
+  User profile information including personal details.
+  
+  <Expandable title="Profile details">
+    <ResponseField name="first_name" type="string">
+    User's first name as entered during registration.
+    </ResponseField>
+    
+    <ResponseField name="avatar_url" type="string | null">
+    URL to user's profile picture. Returns null if no avatar is set.
+    </ResponseField>
+  </Expandable>
+  </ResponseField>
+</Expandable>
+</ResponseField>
+```
+
+### 5. Interactive Components
+
+#### Cards for Navigation
+```jsx
+<Card title="Getting started guide" icon="rocket" href="/quickstart">
+Complete walkthrough from installation to your first API call in under 10 minutes.
+</Card>
+
+<CardGroup cols={2}>
+<Card title="Authentication" icon="key" href="/auth">
+  Learn how to authenticate requests using API keys or JWT tokens.
+</Card>
+
+<Card title="Rate limiting" icon="clock" href="/rate-limits">
+  Understand rate limits and best practices for high-volume usage.
+</Card>
+</CardGroup>
+```
+
+### 6. Media and Advanced Components
+
+#### Frames for Images
+```jsx
+<Frame>
+<img src="/images/dashboard.png" alt="Main dashboard showing analytics overview" />
+</Frame>
+
+<Frame caption="The analytics dashboard provides real-time insights">
+<img src="/images/analytics.png" alt="Analytics dashboard with charts" />
+</Frame>
+```
+
+#### Tooltips and Updates
+```jsx
+<Tooltip tip="Application Programming Interface - protocols for building software">
+API
+</Tooltip>
+
+<Update label="Version 2.1.0" description="Released March 15, 2024">
+## New features
+- Added bulk user import functionality
+- Improved error messages with actionable suggestions
+
+## Bug fixes
+- Fixed pagination issue with large datasets
+- Resolved authentication timeout problems
+</Update>
+```
+
+## Configuration (docs.json)
+
+### Basic Structure
+```json
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Your Project Name",
+  "description": "Brief description for SEO",
+  "theme": "mint",
+  "colors": {
+    "primary": "#0D9373"
+  },
+  "logo": {
+    "light": "/logo.png",
+    "dark": "/logo-dark.png"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    // Navigation structure goes here
+  }
+}
+```
+
+### Navigation Patterns
+
+#### Simple Pages
+```json
+{
+  "navigation": {
+    "pages": [
+      "introduction",
+      "quickstart", 
+      "advanced/setup"
+    ]
+  }
+}
+```
+
+#### Groups
+```json
+{
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          "quickstart",
+          "installation"
+        ]
+      },
+      {
+        "group": "API Reference", 
+        "pages": [
+          "api/authentication",
+          "api/users"
+        ]
+      }
+    ]
+  }
+}
+```
+
+#### Tabs
+```json
+{
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": ["intro", "setup"]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "/openapi.json"
+      }
+    ]
+  }
+}
+```
+
+### API Configuration
+```json
+{
+  "api": {
+    "openapi": "/openapi.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "mdx": {
+      "auth": {
+        "method": "bearer"
+      },
+      "server": "https://api.example.com"
+    }
+  }
+}
+```
+
+## Content Quality Standards
+
+### Code Examples Requirements
+- Always include complete, runnable examples
+- Show proper error handling and edge case management
+- Use realistic data instead of placeholder values
+- Include expected outputs and results for verification
+- Test all code examples thoroughly before publishing
+- Specify language and include filename when relevant
+- Add explanatory comments for complex logic
+
+### API Documentation Requirements
+- Document all parameters including optional ones
+- Show both success and error response examples
+- Include rate limiting information with specific limits
+- Provide authentication examples showing proper format
+- Explain all HTTP status codes and error handling
+- Cover complete request/response cycles
+
+### Accessibility Requirements
+- Include descriptive alt text for all images
+- Use specific, actionable link text instead of "click here"
+- Ensure proper heading hierarchy starting with H2
+- Provide keyboard navigation considerations
+- Use sufficient color contrast in examples
+- Structure content for easy scanning
+
+## Component Selection Logic
+
+### When to Use Each Component
+
+#### Steps
+- Procedures and tutorials
+- Setup guides and installations
+- Sequential instructions
+- Multi-step processes
+
+#### Tabs
+- Platform-specific content
+- Alternative approaches to same task
+- Different programming languages
+- Operating system variations
+
+#### CodeGroup
+- Same concept in multiple languages
+- Related code examples
+- Before/after comparisons
+
+#### Accordions
+- Supplementary information
+- FAQ sections
+- Optional advanced content
+- Troubleshooting guides
+
+#### Cards and CardGroup
+- Navigation and overviews
+- Feature highlights
+- Related resources
+- Getting started paths
+
+#### RequestExample/ResponseExample
+- API endpoint documentation
+- HTTP request/response pairs
+- Authentication examples
+
+## Quality Assurance Checklist
+
+### Before Publishing
+- [ ] All code examples are syntactically correct and executable
+- [ ] Links are functional and lead to relevant content
+- [ ] Mintlify component syntax is valid with required properties
+- [ ] Proper heading hierarchy (H2 for main sections, H3 for subsections)
+- [ ] Content flows logically from basic to advanced topics
+- [ ] Consistent terminology, formatting, and component usage
+- [ ] Realistic error handling in code examples
+- [ ] Appropriate warnings for destructive actions
+- [ ] Prerequisites clearly explained before instructions
+
+### Error Prevention Strategies
+- Include dedicated troubleshooting sections
+- Provide verification steps with expected outcomes
+- Add warnings for security-sensitive actions
+- Test all technical information before publication
+- Use consistent naming conventions
+- Validate all external links regularly
+
+## Advanced Features
+
+### Authentication & Personalization
+```jsx
+// Using user data in content
+Hello, {user.name ?? 'reader'}!
+
+// Conditional content based on user plan
+{user.org?.plan === 'enterprise' 
+  ? "You have access to enterprise features"
+  : "Upgrade to access enterprise features"
+}
+```
+
+### Custom CSS & JavaScript
+```css
+/* style.css */
+#navbar {
+  background: "#fffff2";
+  padding: 1rem;
+}
+
+footer {
+  margin-top: 2rem;
+}
+```
+
+### Analytics Integration
+```json
+{
+  "integrations": {
+    "ga4": {
+      "measurementId": "G-XXXXXXX"
+    },
+    "posthog": {
+      "apiKey": "phc_xxxxxxx"
+    }
+  }
+}
+```
+
+### SEO Configuration
+```json
+{
+  "seo": {
+    "metatags": {
+      "og:image": "/og-image.jpg",
+      "twitter:card": "summary_large_image"
+    },
+    "indexing": "navigable"
+  }
+}
+```
+
+## Common Patterns & Templates
+
+### Getting Started Page Template
+```markdown
+---
+title: "Getting Started"
+description: "Get up and running with [Product] in under 5 minutes"
+---
+
+# Getting Started with [Product]
+
+[Brief introduction paragraph]
+
+<Card title="Quick Start" icon="rocket" href="/quickstart">
+  Jump straight into using [Product] with our 5-minute tutorial.
+</Card>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+- [Requirement 1]
+- [Requirement 2]
+
+## Installation
+
+<Tabs>
+<Tab title="npm">
+  ```bash
+  npm install [package-name]
+  ```
+</Tab>
+
+<Tab title="yarn">
+  ```bash
+  yarn add [package-name]
+  ```
+</Tab>
+</Tabs>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="Authentication" href="/auth">
+  Set up API authentication
+</Card>
+
+<Card title="Examples" href="/examples">
+  Explore code examples
+</Card>
+</CardGroup>
+```
+
+### API Reference Page Template
+```markdown
+---
+title: "Create User"
+api: "POST /api/v1/users"
+---
+
+Creates a new user in the system.
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  The user's full name.
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  The user's email address. Must be unique.
+</ParamField>
+
+<ParamField body="role" type="string" default="user">
+  The user's role. Can be `admin`, `user`, or `viewer`.
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for the created user.
+</ResponseField>
+
+<ResponseField name="created_at" type="timestamp">
+  When the user was created.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.example.com/v1/users' \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "user"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201 Created
+{
+  "id": "user_123",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "user",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+</ResponseExample>
+```
+
+This comprehensive guide provides everything needed to create exceptional documentation with Mintlify, following industry best practices and leveraging all available components effectively.

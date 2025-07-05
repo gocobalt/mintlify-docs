@@ -1,0 +1,535 @@
+---
+title: "Variables"
+description: "Manage environment variables and dynamic configuration in Cobalt workflows"
+icon: "code"
+---
+
+# Variables
+
+Learn how to use variables to make your Cobalt workflows dynamic and configurable across different environments.
+
+## Overview
+
+Variables in Cobalt allow you to store and reuse values throughout your workflows, making them more flexible and maintainable. You can use variables for API endpoints, authentication tokens, configuration values, and dynamic data processing.
+
+## Types of Variables
+
+### Environment Variables
+
+Environment variables are set at the organization level and are available across all workflows and integrations.
+
+<Tabs>
+  <Tab title="Global Variables">
+    - **Organization-wide**: Available to all workflows and integrations
+    - **Environment-specific**: Different values for dev, staging, and production
+    - **Secure storage**: Sensitive values are encrypted at rest
+    - **Access control**: Permissions can be managed per variable
+  </Tab>
+  
+  <Tab title="Integration Variables">
+    - **Integration-specific**: Scoped to specific integrations
+    - **User-specific**: Can vary per linked account
+    - **Configuration values**: API endpoints, custom settings
+    - **Dynamic content**: User preferences and customizations
+  </Tab>
+  
+  <Tab title="Workflow Variables">
+    - **Workflow-scoped**: Available only within specific workflows
+    - **Execution context**: Values that change per execution
+    - **Temporary data**: Intermediate processing results
+    - **Control flow**: Variables that affect workflow logic
+  </Tab>
+</Tabs>
+
+## Managing Environment Variables
+
+### Setting Variables
+
+<Steps>
+  <Step title="Navigate to Variables">
+    Go to **Settings** → **Variables** in your Cobalt dashboard
+  </Step>
+  
+  <Step title="Create New Variable">
+    Click **Add Variable** and provide a name and value
+  </Step>
+  
+  <Step title="Configure Scope">
+    Select the scope (global, integration-specific, or workflow-specific)
+  </Step>
+  
+  <Step title="Set Security Level">
+    Mark sensitive variables as secure to encrypt their values
+  </Step>
+</Steps>
+
+### Variable Naming Conventions
+
+<Tip>
+Use clear, descriptive names with consistent formatting. Consider using prefixes to organize variables by category or environment.
+</Tip>
+
+```javascript
+// Good variable names
+API_BASE_URL
+SALESFORCE_CLIENT_ID
+WEBHOOK_SECRET_KEY
+MAX_RETRY_ATTEMPTS
+DEFAULT_TIMEOUT_MS
+
+// Environment-specific variables
+PROD_DATABASE_URL
+DEV_DATABASE_URL
+STAGING_API_KEY
+```
+
+### Variable Security
+
+<Warning>
+Always mark sensitive variables (API keys, passwords, tokens) as secure. Secure variables are encrypted and not visible in logs or the UI.
+</Warning>
+
+```javascript
+// Secure variables (encrypted)
+SALESFORCE_CLIENT_SECRET
+DATABASE_PASSWORD
+WEBHOOK_SIGNING_KEY
+OAUTH_CLIENT_SECRET
+
+// Non-secure variables (visible)
+API_BASE_URL
+DEFAULT_TIMEOUT
+MAX_RETRIES
+ENVIRONMENT_NAME
+```
+
+## Using Variables in Workflows
+
+### Variable Syntax
+
+Use double curly braces to reference variables in workflows:
+
+```javascript
+// Basic variable reference
+{{API_BASE_URL}}
+
+// With fallback value
+{{API_BASE_URL || 'https://api.example.com'}}
+
+// Environment-specific variable
+{{ENVIRONMENT}}_API_KEY
+
+// Nested object access
+{{user.profile.email}}
+```
+
+### HTTP Request Node
+
+<CodeGroup>
+```json URL Configuration
+{
+  "url": "{{API_BASE_URL}}/api/v1/users",
+  "method": "GET",
+  "headers": {
+    "Authorization": "Bearer {{ACCESS_TOKEN}}",
+    "Content-Type": "application/json"
+  }
+}
+```
+
+```json Dynamic Headers
+{
+  "url": "https://api.salesforce.com/services/data/v{{API_VERSION}}/sobjects/Contact",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer {{SALESFORCE_ACCESS_TOKEN}}",
+    "Content-Type": "application/json",
+    "X-Client-Id": "{{SALESFORCE_CLIENT_ID}}"
+  }
+}
+```
+</CodeGroup>
+
+### Transform Node
+
+```javascript
+// Transform data using variables
+const transformedData = {
+  id: input.id,
+  name: input.name,
+  email: input.email,
+  source: '{{LEAD_SOURCE}}',
+  environment: '{{ENVIRONMENT}}',
+  created_at: new Date().toISOString(),
+  api_version: '{{API_VERSION}}'
+};
+
+return transformedData;
+```
+
+### Conditional Logic
+
+```javascript
+// Use variables in conditional statements
+if (input.amount > {{LARGE_DEAL_THRESHOLD}}) {
+  // Handle large deals differently
+  return {
+    priority: 'high',
+    notify_manager: true,
+    approval_required: true
+  };
+}
+
+// Environment-specific logic
+if ('{{ENVIRONMENT}}' === 'production') {
+  // Production-specific handling
+  return await processProductionData(input);
+} else {
+  // Development/staging handling
+  return await processTestData(input);
+}
+```
+
+## Dynamic Variables
+
+### Runtime Variables
+
+Variables that are calculated or retrieved during workflow execution:
+
+<CodeGroup>
+```javascript Current Timestamp
+// Use built-in functions for dynamic values
+const currentTime = new Date().toISOString();
+const unixTimestamp = Math.floor(Date.now() / 1000);
+
+// Store in workflow variable for reuse
+workflow.setVariable('execution_time', currentTime);
+workflow.setVariable('unix_timestamp', unixTimestamp);
+```
+
+```javascript User Context
+// Access user-specific variables
+const userId = workflow.getVariable('linked_account_id');
+const userEmail = workflow.getVariable('user.email');
+const userPreferences = workflow.getVariable('user.preferences');
+
+// Dynamic API endpoint based on user
+const apiEndpoint = `{{API_BASE_URL}}/users/${userId}/data`;
+```
+</CodeGroup>
+
+### Calculated Variables
+
+Create variables based on other variables or data:
+
+```javascript
+// Calculate derived values
+const baseUrl = workflow.getVariable('API_BASE_URL');
+const version = workflow.getVariable('API_VERSION');
+const fullEndpoint = `${baseUrl}/v${version}/contacts`;
+
+// Store calculated variable
+workflow.setVariable('CONTACTS_ENDPOINT', fullEndpoint);
+
+// Use in subsequent nodes
+const response = await fetch('{{CONTACTS_ENDPOINT}}');
+```
+
+## Variable Scoping
+
+### Global Scope
+
+Variables available across all workflows and integrations:
+
+```javascript
+// Global configuration
+{{COMPANY_NAME}}
+{{SUPPORT_EMAIL}}
+{{API_BASE_URL}}
+{{DEFAULT_TIMEZONE}}
+```
+
+### Integration Scope
+
+Variables specific to an integration:
+
+```javascript
+// Salesforce integration variables
+{{SALESFORCE_API_VERSION}}
+{{SALESFORCE_SANDBOX_MODE}}
+{{SALESFORCE_BULK_API_ENABLED}}
+
+// HubSpot integration variables
+{{HUBSPOT_PORTAL_ID}}
+{{HUBSPOT_API_VERSION}}
+{{HUBSPOT_TRACKING_CODE}}
+```
+
+### Workflow Scope
+
+Variables that exist only within a specific workflow execution:
+
+```javascript
+// Workflow execution context
+{{execution_id}}
+{{start_time}}
+{{triggered_by}}
+{{input_data}}
+
+// Intermediate results
+{{processed_count}}
+{{error_count}}
+{{last_sync_time}}
+```
+
+## Advanced Variable Usage
+
+### Variable Arrays and Objects
+
+<CodeGroup>
+```javascript Array Variables
+// Define array variables
+const supportedCountries = ['US', 'CA', 'UK', 'AU'];
+workflow.setVariable('SUPPORTED_COUNTRIES', supportedCountries);
+
+// Use in conditions
+if ({{SUPPORTED_COUNTRIES}}.includes(input.country)) {
+  // Process supported country
+}
+```
+
+```javascript Object Variables
+// Define object variables
+const apiConfig = {
+  baseUrl: '{{API_BASE_URL}}',
+  version: '{{API_VERSION}}',
+  timeout: {{API_TIMEOUT}},
+  retries: {{MAX_RETRIES}}
+};
+
+workflow.setVariable('API_CONFIG', apiConfig);
+
+// Access object properties
+const endpoint = `{{API_CONFIG.baseUrl}}/v{{API_CONFIG.version}}/data`;
+```
+</CodeGroup>
+
+### Variable Validation
+
+Implement validation for critical variables:
+
+```javascript
+// Validate required variables
+const requiredVars = ['API_KEY', 'BASE_URL', 'CLIENT_ID'];
+const missingVars = requiredVars.filter(varName => !workflow.getVariable(varName));
+
+if (missingVars.length > 0) {
+  throw new Error(`Missing required variables: ${missingVars.join(', ')}`);
+}
+
+// Validate variable formats
+const apiKey = workflow.getVariable('API_KEY');
+if (!apiKey || !apiKey.startsWith('pk_')) {
+  throw new Error('Invalid API key format');
+}
+```
+
+## Environment-Specific Configuration
+
+### Multi-Environment Setup
+
+<Tabs>
+  <Tab title="Development">
+    ```javascript
+    // Development environment variables
+    DEV_API_BASE_URL=https://dev-api.example.com
+    DEV_DATABASE_URL=postgresql://dev-db:5432/cobalt_dev
+    DEV_LOG_LEVEL=debug
+    DEV_WEBHOOK_URL=https://dev-webhook.example.com
+    ```
+  </Tab>
+  
+  <Tab title="Staging">
+    ```javascript
+    // Staging environment variables
+    STAGING_API_BASE_URL=https://staging-api.example.com
+    STAGING_DATABASE_URL=postgresql://staging-db:5432/cobalt_staging
+    STAGING_LOG_LEVEL=info
+    STAGING_WEBHOOK_URL=https://staging-webhook.example.com
+    ```
+  </Tab>
+  
+  <Tab title="Production">
+    ```javascript
+    // Production environment variables
+    PROD_API_BASE_URL=https://api.example.com
+    PROD_DATABASE_URL=postgresql://prod-db:5432/cobalt_prod
+    PROD_LOG_LEVEL=error
+    PROD_WEBHOOK_URL=https://webhook.example.com
+    ```
+  </Tab>
+</Tabs>
+
+### Environment Detection
+
+```javascript
+// Detect current environment
+const environment = workflow.getVariable('ENVIRONMENT') || 'development';
+
+// Use environment-specific variables
+const apiUrl = workflow.getVariable(`${environment.toUpperCase()}_API_BASE_URL`);
+const dbUrl = workflow.getVariable(`${environment.toUpperCase()}_DATABASE_URL`);
+const logLevel = workflow.getVariable(`${environment.toUpperCase()}_LOG_LEVEL`);
+
+// Configure based on environment
+const config = {
+  apiUrl,
+  dbUrl,
+  logLevel,
+  debug: environment !== 'production'
+};
+```
+
+## Variable Security and Compliance
+
+### Encryption
+
+<Callout type="info">
+Secure variables are automatically encrypted using AES-256 encryption and are never stored in plain text.
+</Callout>
+
+```javascript
+// Secure variables (automatically encrypted)
+SALESFORCE_CLIENT_SECRET
+DATABASE_PASSWORD
+WEBHOOK_SIGNING_KEY
+OAUTH_REFRESH_TOKEN
+
+// These values are encrypted at rest and in transit
+```
+
+### Access Control
+
+Control who can view and modify variables:
+
+- **Admin**: Full access to all variables
+- **Developer**: Can view and modify non-secure variables
+- **Viewer**: Read-only access to non-secure variables
+
+### Audit Logging
+
+All variable access and modifications are logged:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "event": "variable.accessed",
+  "user_id": "user_123",
+  "variable_name": "API_BASE_URL",
+  "workflow_id": "workflow_456",
+  "execution_id": "exec_789"
+}
+```
+
+## Best Practices
+
+### Organization
+
+<Tip>
+Use consistent naming conventions and group related variables with prefixes to maintain organization as your variable count grows.
+</Tip>
+
+```javascript
+// Good organization
+AUTH_SALESFORCE_CLIENT_ID
+AUTH_SALESFORCE_CLIENT_SECRET
+AUTH_HUBSPOT_API_KEY
+AUTH_HUBSPOT_PORTAL_ID
+
+API_SALESFORCE_BASE_URL
+API_SALESFORCE_VERSION
+API_HUBSPOT_BASE_URL
+API_HUBSPOT_VERSION
+
+CONFIG_MAX_RETRIES
+CONFIG_TIMEOUT_MS
+CONFIG_BATCH_SIZE
+```
+
+### Documentation
+
+Document your variables for team collaboration:
+
+```javascript
+// Variable documentation in workflow comments
+/*
+ * Variables used in this workflow:
+ * - SALESFORCE_API_VERSION: Salesforce API version (e.g., "58.0")
+ * - MAX_BATCH_SIZE: Maximum records per batch operation (default: 200)
+ * - RETRY_ATTEMPTS: Number of retry attempts for failed requests (default: 3)
+ * - WEBHOOK_SECRET: Secret key for webhook signature validation
+ */
+```
+
+### Testing
+
+Test workflows with different variable values:
+
+```javascript
+// Test with different environments
+const testConfigs = [
+  { ENVIRONMENT: 'development', API_BASE_URL: 'https://dev-api.example.com' },
+  { ENVIRONMENT: 'staging', API_BASE_URL: 'https://staging-api.example.com' },
+  { ENVIRONMENT: 'production', API_BASE_URL: 'https://api.example.com' }
+];
+
+testConfigs.forEach(config => {
+  // Test workflow with each configuration
+  testWorkflow(config);
+});
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<Accordion title="Variable Not Found">
+**Symptoms**: Workflow fails with "Variable not found" error
+
+**Solutions**:
+- Check variable name spelling and case sensitivity
+- Verify variable scope (global vs integration-specific)
+- Ensure variable is defined in the correct environment
+- Check variable permissions and access rights
+</Accordion>
+
+<Accordion title="Variable Value Not Updating">
+**Symptoms**: Old variable values persist in workflows
+
+**Solutions**:
+- Clear workflow cache if variables were recently updated
+- Check if variable is being overridden at a more specific scope
+- Verify variable is not being set within the workflow itself
+- Restart workflow execution to pick up new values
+</Accordion>
+
+<Accordion title="Secure Variable Access Denied">
+**Symptoms**: Cannot access or view secure variable values
+
+**Solutions**:
+- Check user permissions for secure variable access
+- Verify API key has appropriate scopes
+- Ensure variable is correctly marked as secure
+- Contact administrator for access if needed
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Webhooks Configuration" icon="webhook" href="/v3/developer-guide/platform/webhooks">
+    Set up webhooks for real-time event handling
+  </Card>
+  <Card title="Workflow Variables" icon="sitemap" href="/v3/developer-guide/workflows/fundamentals/workflow-variables">
+    Learn about workflow-specific variables
+  </Card>
+</CardGroup> 

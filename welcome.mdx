@@ -1,0 +1,271 @@
+---
+title: "Welcome to Cobalt"
+description: "Build native integrations in minutes with the developer-first integration platform"
+mode: "wide"
+---
+
+<div className="flex flex-col items-center justify-center text-center py-12 px-4">
+  <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+    Build Native Integrations in Minutes
+  </h1>
+  <p className="text-xl text-gray-300 mb-4 max-w-3xl">
+    The developer-first integration platform that eliminates months of custom development.
+  </p>
+  <p className="text-lg text-gray-400 mb-12 max-w-2xl">
+    Add 200+ integrations to your SaaS with a single API call. Reduce development time by 90% and maintenance overhead by 95%.
+  </p>
+</div>
+
+## Get started with tools and guides
+
+<CardGroup cols={3}>
+  <Card 
+    title="Getting Started" 
+    icon="play" 
+    href="/developer-guide/getting-started/quick-start"
+  >
+    Build your first integration in 5 minutes with our quick start guide
+  </Card>
+  <Card 
+    title="Developer Guide" 
+    icon="book-open" 
+    href="/developer-guide"
+  >
+    Complete implementation documentation from setup to production
+  </Card>
+  <Card 
+    title="MCPs" 
+    icon="building-office" 
+    href="/mcps"
+  >
+    Multi-tenant enterprise solutions for agencies and platforms
+  </Card>
+  <Card 
+    title="API Reference" 
+    icon="code" 
+    href="/api-reference"
+  >
+    Complete API documentation, SDKs, and technical references
+  </Card>
+  <Card 
+    title="Integration Catalog" 
+    icon="grid-3x3" 
+    href="/integrations"
+  >
+    200+ pre-built platform integrations with setup guides
+  </Card>
+  <Card 
+    title="Release Notes" 
+    icon="clock" 
+    href="/releases"
+  >
+    Latest updates, new features, and breaking changes
+  </Card>
+</CardGroup>
+
+---
+
+## Why Choose Cobalt?
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-8 my-12">
+  <div className="text-center">
+    <div className="text-4xl mb-4">⚡</div>
+    <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
+    <p className="text-gray-400">Deploy integrations in hours, not months. Single API call to connect any platform.</p>
+  </div>
+  <div className="text-center">
+    <div className="text-4xl mb-4">🔧</div>
+    <h3 className="text-xl font-semibold mb-2">Developer First</h3>
+    <p className="text-gray-400">Built by developers, for developers. Clean APIs, comprehensive SDKs, and excellent DX.</p>
+  </div>
+  <div className="text-center">
+    <div className="text-4xl mb-4">🏢</div>
+    <h3 className="text-xl font-semibold mb-2">Enterprise Ready</h3>
+    <p className="text-gray-400">SOC 2 compliant, multi-tenant architecture, and white-label solutions.</p>
+  </div>
+</div>
+
+---
+
+## Popular Integrations
+
+<CardGroup cols={4}>
+  <Card 
+    title="Salesforce" 
+    icon="users" 
+    href="/integrations/crm/salesforce"
+  >
+    Complete CRM integration with real-time sync
+  </Card>
+  <Card 
+    title="HubSpot" 
+    icon="megaphone" 
+    href="/integrations/crm/hubspot"
+  >
+    Marketing and sales automation workflows
+  </Card>
+  <Card 
+    title="Slack" 
+    icon="comments" 
+    href="/integrations/communication/slack"
+  >
+    Team collaboration and notification workflows
+  </Card>
+  <Card 
+    title="QuickBooks" 
+    icon="dollar-sign" 
+    href="/integrations/finance/quickbooks"
+  >
+    Financial data synchronization and reporting
+  </Card>
+</CardGroup>
+
+<div className="text-center mt-8">
+  <a href="/integrations" className="inline-flex items-center text-purple-400 hover:text-purple-300 font-medium">
+    View all 200+ integrations
+    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </a>
+</div>
+
+---
+
+## Quick Start Examples
+
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    import { Cobalt } from '@cobaltio/cobalt-js';
+
+    const cobalt = new Cobalt({
+      apiKey: 'your-api-key'
+    });
+
+    // Create a linked account for your user
+    const linkedAccount = await cobalt.linkedAccounts.create({
+      customerId: 'user-123',
+      name: 'John Doe'
+    });
+
+    // Enable Salesforce integration
+    const integration = await cobalt.integrations.enable({
+      linkedAccountId: linkedAccount.id,
+      slug: 'salesforce'
+    });
+
+    console.log('Integration ready:', integration.status);
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    from cobalt import Cobalt
+
+    cobalt = Cobalt(api_key='your-api-key')
+
+    # Create a linked account for your user
+    linked_account = cobalt.linked_accounts.create(
+        customer_id='user-123',
+        name='John Doe'
+    )
+
+    # Enable Salesforce integration
+    integration = cobalt.integrations.enable(
+        linked_account_id=linked_account.id,
+        slug='salesforce'
+    )
+
+    print(f'Integration ready: {integration.status}')
+    ```
+  </Tab>
+  <Tab title="cURL">
+    ```bash
+    # Create a linked account
+    curl -X POST https://api.gocobalt.io/v1/linked-accounts \
+      -H "Authorization: Bearer your-api-key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "customer_id": "user-123",
+        "name": "John Doe"
+      }'
+
+    # Enable Salesforce integration
+    curl -X POST https://api.gocobalt.io/v1/integrations \
+      -H "Authorization: Bearer your-api-key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "linked_account_id": "la_123",
+        "slug": "salesforce"
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Developer Resources
+
+<CardGroup cols={2}>
+  <Card 
+    title="Cobalt Console" 
+    icon="computer-desktop" 
+    href="https://app.gocobalt.io"
+  >
+    Manage integrations, view logs, and test workflows in your browser
+  </Card>
+  <Card 
+    title="Cobalt Examples" 
+    icon="code" 
+    href="https://github.com/gocobalt/cobalt-examples"
+  >
+    Production-ready code examples and implementation templates
+  </Card>
+  <Card 
+    title="Postman Collection" 
+    icon="bolt" 
+    href="https://www.postman.com/orange-meteor-40853/workspace/cobalt"
+  >
+    Test all Cobalt APIs directly in Postman with pre-configured requests
+  </Card>
+  <Card 
+    title="Developer Community" 
+    icon="users" 
+    href="https://discord.gg/cobalt"
+  >
+    Join our Discord community for support, discussions, and updates
+  </Card>
+</CardGroup>
+
+---
+
+## Success Stories
+
+<div className="bg-gray-900 rounded-lg p-8 my-12">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="text-center">
+      <div className="text-3xl font-bold text-purple-400 mb-2">90%</div>
+      <p className="text-sm text-gray-400">Reduction in development time</p>
+    </div>
+    <div className="text-center">
+      <div className="text-3xl font-bold text-purple-400 mb-2">95%</div>
+      <p className="text-sm text-gray-400">Less maintenance overhead</p>
+    </div>
+    <div className="text-center">
+      <div className="text-3xl font-bold text-purple-400 mb-2">200+</div>
+      <p className="text-sm text-gray-400">Pre-built integrations</p>
+    </div>
+  </div>
+</div>
+
+<Callout type="info" icon="lightbulb">
+  **Ready to get started?** Create your free Cobalt account and build your first integration in under 5 minutes. No credit card required.
+</Callout>
+
+<div className="text-center mt-12">
+  <a href="https://app.gocobalt.io/signup" className="inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-lg transition-colors">
+    Start Building for Free
+    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+    </svg>
+  </a>
+</div>

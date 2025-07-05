@@ -1,0 +1,303 @@
+---
+title: "Managing Users"
+description: "User management and permissions in the Cobalt platform"
+icon: "users"
+---
+
+# Managing Users
+
+Learn how to manage users, roles, and permissions within your Cobalt organization.
+
+## Overview
+
+Cobalt provides comprehensive user management capabilities that allow you to control access to your integration platform, manage team permissions, and maintain security across your organization.
+
+## User Types
+
+### Organization Admin
+- Full access to all platform features
+- Can manage users, billing, and organization settings
+- Can create and modify integrations and workflows
+- Access to all logs and analytics
+
+### Developer
+- Can create and modify integrations and workflows
+- Access to development tools and testing environments
+- Can view logs and execution history
+- Limited access to organization settings
+
+### Viewer
+- Read-only access to integrations and workflows
+- Can view logs and execution history
+- Cannot modify configurations or settings
+- Suitable for stakeholders and auditors
+
+## Adding Users
+
+<Steps>
+  <Step title="Navigate to User Management">
+    Go to **Settings** → **Users** in your Cobalt dashboard
+  </Step>
+  
+  <Step title="Invite New User">
+    Click **Invite User** and enter the email address of the person you want to invite
+  </Step>
+  
+  <Step title="Assign Role">
+    Select the appropriate role based on the user's responsibilities and required access level
+  </Step>
+  
+  <Step title="Send Invitation">
+    Click **Send Invitation** to email the user with setup instructions
+  </Step>
+</Steps>
+
+## Managing Permissions
+
+### Role-Based Access Control (RBAC)
+
+Cobalt uses role-based access control to manage what users can see and do within the platform.
+
+<Tabs>
+  <Tab title="Admin Permissions">
+    - Create, edit, and delete integrations
+    - Manage workflows and configurations
+    - Access all logs and analytics
+    - Manage users and permissions
+    - Configure organization settings
+    - Manage billing and subscriptions
+  </Tab>
+  
+  <Tab title="Developer Permissions">
+    - Create, edit, and delete integrations
+    - Manage workflows and configurations
+    - Access development logs and testing tools
+    - View execution history and debugging information
+    - Limited access to user management
+  </Tab>
+  
+  <Tab title="Viewer Permissions">
+    - View integrations and workflows (read-only)
+    - Access logs and execution history
+    - View analytics and reports
+    - Cannot modify any configurations
+    - Cannot access sensitive settings
+  </Tab>
+</Tabs>
+
+### Custom Permissions
+
+For enterprise customers, Cobalt supports custom permission sets that can be tailored to your organization's specific needs.
+
+## User Lifecycle Management
+
+### User Onboarding
+
+<Callout type="info">
+New users receive an email invitation with instructions to set up their account and access the platform.
+</Callout>
+
+1. **Email Invitation**: Users receive a secure invitation link
+2. **Account Setup**: Users create their password and complete profile
+3. **Role Assignment**: Automatic role assignment based on invitation
+4. **Initial Access**: Users can immediately access permitted features
+
+### Modifying User Access
+
+<Steps>
+  <Step title="Select User">
+    Navigate to **Settings** → **Users** and select the user you want to modify
+  </Step>
+  
+  <Step title="Edit Role">
+    Click **Edit** next to the user's current role
+  </Step>
+  
+  <Step title="Update Permissions">
+    Select the new role or modify custom permissions as needed
+  </Step>
+  
+  <Step title="Save Changes">
+    Click **Save** to apply the new permissions immediately
+  </Step>
+</Steps>
+
+### Removing Users
+
+<Warning>
+Removing a user will immediately revoke their access to the platform. This action cannot be undone.
+</Warning>
+
+To remove a user:
+1. Navigate to **Settings** → **Users**
+2. Find the user you want to remove
+3. Click the **Remove** button
+4. Confirm the action in the dialog box
+
+## Single Sign-On (SSO)
+
+<Callout type="info">
+SSO is available for Enterprise customers and provides seamless authentication through your organization's identity provider.
+</Callout>
+
+### Supported Identity Providers
+
+- **Active Directory / Azure AD**
+- **Google Workspace**
+- **Okta**
+- **OneLogin**
+- **Auth0**
+- **Custom SAML 2.0 providers**
+
+### SSO Configuration
+
+<Steps>
+  <Step title="Contact Support">
+    Reach out to Cobalt support to initiate SSO setup for your organization
+  </Step>
+  
+  <Step title="Provide Configuration">
+    Share your identity provider configuration details with our team
+  </Step>
+  
+  <Step title="Testing">
+    Work with our team to test the SSO integration in a staging environment
+  </Step>
+  
+  <Step title="Go Live">
+    Once testing is complete, SSO will be enabled for your organization
+  </Step>
+</Steps>
+
+## API Access Management
+
+### API Keys
+
+Users with appropriate permissions can generate and manage API keys for programmatic access to the Cobalt platform.
+
+<CodeGroup>
+```javascript Node.js
+// Initialize Cobalt SDK with user-specific API key
+const { CobaltSDK } = require('@cobalt-io/sdk');
+
+const cobalt = new CobaltSDK({
+  apiKey: process.env.COBALT_API_KEY,
+  environment: 'production'
+});
+```
+
+```python Python
+from cobalt_sdk import CobaltSDK
+
+# Initialize with user-specific API key
+cobalt = CobaltSDK(
+    api_key=os.getenv('COBALT_API_KEY'),
+    environment='production'
+)
+```
+</CodeGroup>
+
+### API Key Management
+
+- **Generation**: Users can generate multiple API keys for different purposes
+- **Rotation**: Regular key rotation is recommended for security
+- **Scoping**: Keys can be scoped to specific resources or actions
+- **Monitoring**: API key usage is logged and can be monitored
+
+## Security Best Practices
+
+### Access Control
+
+<Tip>
+Follow the principle of least privilege - grant users only the minimum access required for their role.
+</Tip>
+
+- **Regular Reviews**: Conduct periodic access reviews to ensure permissions remain appropriate
+- **Temporary Access**: Use time-limited access for contractors or temporary team members
+- **Audit Trails**: Monitor user activity through comprehensive audit logs
+
+### Password Policies
+
+For organizations not using SSO, Cobalt enforces strong password policies:
+
+- Minimum 12 characters
+- Must include uppercase, lowercase, numbers, and special characters
+- Password history prevents reuse of last 12 passwords
+- Mandatory password changes every 90 days
+
+## Monitoring and Auditing
+
+### User Activity Logs
+
+Track all user activities within the platform:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "user_id": "user_123",
+  "action": "integration.created",
+  "resource": "salesforce_integration",
+  "ip_address": "192.168.1.100",
+  "user_agent": "Mozilla/5.0..."
+}
+```
+
+### Access Reports
+
+Generate reports on user access patterns:
+
+- **Login Frequency**: Track how often users access the platform
+- **Feature Usage**: Monitor which features are being used by whom
+- **Permission Changes**: Log all permission modifications
+- **Failed Access Attempts**: Track and alert on suspicious activity
+
+## Troubleshooting
+
+### Common Issues
+
+<Accordion title="User Cannot Access Platform">
+**Possible Causes:**
+- User invitation not sent or expired
+- Incorrect role assignment
+- SSO configuration issues
+
+**Solutions:**
+- Resend invitation or create new one
+- Verify role permissions
+- Check SSO provider configuration
+</Accordion>
+
+<Accordion title="API Key Not Working">
+**Possible Causes:**
+- Key expired or revoked
+- Insufficient permissions
+- Incorrect environment configuration
+
+**Solutions:**
+- Generate new API key
+- Verify key permissions and scoping
+- Check environment settings
+</Accordion>
+
+<Accordion title="SSO Login Failures">
+**Possible Causes:**
+- Identity provider configuration issues
+- User not provisioned in identity provider
+- SAML assertion problems
+
+**Solutions:**
+- Verify identity provider settings
+- Check user provisioning status
+- Review SAML configuration and logs
+</Accordion>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication Setup" icon="key" href="/v3/developer-guide/platform/authentication">
+    Configure authentication methods for your platform
+  </Card>
+  <Card title="Events Configuration" icon="bell" href="/v3/developer-guide/platform/events">
+    Set up event handling and notifications
+  </Card>
+</CardGroup> 
