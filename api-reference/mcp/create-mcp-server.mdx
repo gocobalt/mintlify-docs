@@ -107,10 +107,24 @@ This API supports two authentication methods. You can use either Session Token a
 </ResponseExample>
 
 <RequestExample>
-```JSON
-{
-    "name": "MCP Server Dhananjay",
-    "description": "This is a Dummy MCP Server"
-}
+```bash Session Token Authentication
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production MCP Server",
+    "description": "MCP server for production customer integration workflows"
+  }'
+```
+
+```bash API Key Authentication  
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: customer@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production MCP Server", 
+    "description": "MCP server for production customer integration workflows"
+  }'
 ```
 </RequestExample> 

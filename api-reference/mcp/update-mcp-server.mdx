@@ -258,46 +258,96 @@ This API supports two authentication methods. You can use either Session Token a
 </ResponseExample>
 
 <RequestExample>
-```JSON
-{
-    "name": "New Updated Name for MCP",
-    "description": "Updated Suggestion",
+```bash Session Token Authentication
+curl -X PUT "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Enterprise MCP Server",
+    "description": "Updated MCP server configuration for enterprise customers",
     "suggestions": [
         {
-            "name": "Hello",
-            "prompt": "Prompt Test1"
+            "name": "Customer Onboarding",
+            "prompt": "Create a new customer account with complete profile setup"
         }
     ],
     "chains": [
         {
-            "name": "STep 1 ",
-            "goals": "This shoud. be Goal",
-            "steps": "Step 1 \nStep 2 \nStep 3",
-            "precheck": "",
-            "successCondition": "",
-            "responseFormat": "",
-            "onError": ""
+            "name": "Lead Processing Chain",
+            "goals": "Qualify and process incoming leads through CRM workflow",
+            "steps": "Step 1: Validate lead data\nStep 2: Create contact in CRM\nStep 3: Assign to sales representative",
+            "precheck": "Verify required fields are present",
+            "successCondition": "Lead successfully created and assigned",
+            "responseFormat": "JSON with contact ID and assignment details",
+            "onError": "Log error and retry with manual intervention"
         }
     ],
     "associated_apps": [
         {
-            "slug": "pipedrive",
+            "slug": "hubspot",
             "workflows": [
                 {
                     "id": "67fbc1e4954bde0dcae1d51c",
-                    "name": "SETUP WRITEBACK",
-                    "description": "Setup Writeback on Application"
+                    "name": "Contact Sync Workflow",
+                    "description": "Synchronize contacts between systems"
                 }
             ],
             "actions": [
                 {
-                    "id": "delete_lead",
-                    "name": "Delete Lead",
-                    "description": "To delete a lead"
+                    "id": "create_contact",
+                    "name": "Create Contact",
+                    "description": "Create a new contact in HubSpot"
                 }
             ]
         }
     ]
-}
+  }'
+```
+
+```bash API Key Authentication
+curl -X PUT "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: customer@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Enterprise MCP Server",
+    "description": "Updated MCP server configuration for enterprise customers",
+    "suggestions": [
+        {
+            "name": "Customer Onboarding",
+            "prompt": "Create a new customer account with complete profile setup"
+        }
+    ],
+    "chains": [
+        {
+            "name": "Lead Processing Chain",
+            "goals": "Qualify and process incoming leads through CRM workflow",
+            "steps": "Step 1: Validate lead data\nStep 2: Create contact in CRM\nStep 3: Assign to sales representative",
+            "precheck": "Verify required fields are present",
+            "successCondition": "Lead successfully created and assigned",
+            "responseFormat": "JSON with contact ID and assignment details",
+            "onError": "Log error and retry with manual intervention"
+        }
+    ],
+    "associated_apps": [
+        {
+            "slug": "hubspot",
+            "workflows": [
+                {
+                    "id": "67fbc1e4954bde0dcae1d51c",
+                    "name": "Contact Sync Workflow",
+                    "description": "Synchronize contacts between systems"
+                }
+            ],
+            "actions": [
+                {
+                    "id": "create_contact",
+                    "name": "Create Contact",
+                    "description": "Create a new contact in HubSpot"
+                }
+            ]
+        }
+    ]
+  }'
 ```
 </RequestExample> 
