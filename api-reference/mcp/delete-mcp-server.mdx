@@ -10,6 +10,27 @@ This action is irreversible. Once deleted, the MCP server and all its configurat
 </Warning>
 
 ## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
 #### Path Parameters
 <ParamField path="mcp_server_id" type="string" required>
   Unique identifier for the MCP server to delete
