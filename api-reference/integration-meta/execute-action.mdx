@@ -1,0 +1,154 @@
+---
+title: 'Execute Action by Action ID'
+api: post /api/v2/integration-schema/:slug/actions/:action_id/execute
+---
+
+This API executes a specific action within an integration application. The request body should contain the parameters required for the action as defined by the action's parameter schema.
+
+## Request description
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  The unique identifier for the integration application (e.g., "hubspot", "salesforce")
+</ParamField>
+
+<ParamField path="action_id" type="string" required>
+  The unique identifier for the specific action to execute (e.g., "create_contact", "create_deal")
+</ParamField>
+
+#### Body Parameters
+<ParamField body="*" type="object" required>
+  Dynamic parameters based on the action's schema. Use the "Get Action Parameters" endpoint to retrieve the required and optional parameters for the specific action.
+  <Tip>
+    The body structure varies depending on the action being executed. Each action has its own set of required and optional parameters.
+  </Tip>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="data" type="object">
+      The response data from the integration application
+      <Expandable title="Data Object">
+        <ResponseField name="id" type="string">
+          ID of the created/updated resource (when applicable)
+        </ResponseField>
+        <ResponseField name="properties" type="object">
+          Properties of the created/updated resource
+        </ResponseField>
+        <ResponseField name="createdAt" type="date">
+          Creation timestamp (when applicable)
+        </ResponseField>
+        <ResponseField name="updatedAt" type="date">
+          Last update timestamp (when applicable)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="node_status" type="string">
+      Execution status of the action (Success, Failed, etc.)
+    </ResponseField>
+    <ResponseField name="http_status" type="integer">
+      HTTP status code from the integration application
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200 - HubSpot Create Contact Success
+{
+    "data": {
+        "id": "118448752960",
+        "properties": {
+            "createdate": "2025-05-01T09:27:51.177Z",
+            "email": "dhananjay+2@gocobalt.io",
+            "firstname": "Dhananjay",
+            "lastname": "Senday",
+            "hs_all_contact_vids": "118448752960",
+            "hs_email_domain": "gocobalt.io",
+            "hs_full_name_or_email": "Dhananjay Senday",
+            "hs_is_contact": "true",
+            "hs_object_id": "118448752960",
+            "hs_object_source": "INTEGRATION",
+            "hs_object_source_id": "3630854",
+            "hs_object_source_label": "INTEGRATION",
+            "hs_pipeline": "contacts-lifecycle-pipeline",
+            "lastmodifieddate": "2025-05-01T09:27:51.177Z",
+            "lifecyclestage": "lead",
+            "num_notes": "0"
+        },
+        "createdAt": "2025-05-01T09:27:51.177Z",
+        "updatedAt": "2025-05-01T09:27:51.177Z",
+        "archived": false
+    },
+    "node_status": "Success",
+    "http_status": 200
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "VALIDATION_ERROR",
+    "message": "Required parameter 'email' is missing",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid session token",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "Action not found for the specified slug and action_id",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```JSON HubSpot Create Contact
+{
+    "email": "dhananjay+2@gocobalt.io",
+    "lastname": "Senday",
+    "firstname": "Dhananjay"
+}
+```
+```JSON Salesforce Create Account
+{
+    "Name": "Acme Corporation",
+    "Type": "Customer",
+    "Industry": "Technology",
+    "Website": "https://acme.com",
+    "BillingStreet": "123 Main St",
+    "BillingCity": "San Francisco",
+    "BillingState": "CA",
+    "BillingPostalCode": "94105",
+    "BillingCountry": "USA"
+}
+```
+</RequestExample> 

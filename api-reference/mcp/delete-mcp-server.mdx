@@ -1,0 +1,76 @@
+---
+title: 'Delete MCP Server'
+api: delete /api/v2/public/mcp-servers/:mcp_server_id
+---
+
+This API allows you to delete an existing MCP server from your organization.
+
+<Warning>
+This action is irreversible. Once deleted, the MCP server and all its configurations will be permanently removed.
+</Warning>
+
+## Request description
+#### Path Parameters
+<ParamField path="mcp_server_id" type="string" required>
+  Unique identifier for the MCP server to delete
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="204">
+    <ResponseField name="response" type="null">
+      No content returned on successful deletion
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 204
+No content returned
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "MCP Server not found",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 403
+{
+    "status_code": 403,
+    "http_error_type": "FORBIDDEN",
+    "error_code": "SERVER_ERROR",
+    "message": "Insufficient permissions to delete this MCP server",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample> 
