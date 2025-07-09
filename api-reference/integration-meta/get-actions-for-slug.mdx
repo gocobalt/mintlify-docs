@@ -6,6 +6,27 @@ api: get /api/v2/integration-schema/:slug/actions
 This API retrieves all available actions for a specific integration application using its slug identifier.
 
 ## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
 #### Path Parameters
 <ParamField path="slug" type="string" required>
   The unique identifier for the integration application (e.g., "hubspot", "salesforce")
