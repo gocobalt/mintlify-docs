@@ -1,0 +1,282 @@
+---
+title: 'Update MCP Server'
+api: put /api/v2/public/mcp-servers/:mcp_server_id
+---
+
+This API allows you to update an existing MCP server with new configurations, suggestions, chains, and associated applications.
+
+## Request description
+#### Path Parameters
+<ParamField path="mcp_server_id" type="string" required>
+  Unique identifier for the MCP server to update
+</ParamField>
+
+#### Body Parameters
+<ParamField body="name" type="string">
+  Name of the MCP server
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the MCP server
+</ParamField>
+
+<ParamField body="suggestions" type="array">
+  Array of suggestion objects for the MCP server
+  <Expandable title="Suggestion Object">
+    <ResponseField name="name" type="string">
+      Name of the suggestion
+    </ResponseField>
+    <ResponseField name="prompt" type="string">
+      Prompt text for the suggestion
+    </ResponseField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="chains" type="array">
+  Array of chain objects to configure for the MCP server
+  <Expandable title="Chain Object">
+    <ResponseField name="name" type="string">
+      Name of the chain
+    </ResponseField>
+    <ResponseField name="goals" type="string">
+      Goals for the chain execution
+    </ResponseField>
+    <ResponseField name="steps" type="string">
+      Steps to execute in the chain (newline separated)
+    </ResponseField>
+    <ResponseField name="precheck" type="string">
+      Pre-execution checks
+    </ResponseField>
+    <ResponseField name="successCondition" type="string">
+      Success condition for the chain
+    </ResponseField>
+    <ResponseField name="responseFormat" type="string">
+      Response format configuration
+    </ResponseField>
+    <ResponseField name="onError" type="string">
+      Error handling configuration
+    </ResponseField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="associated_apps" type="array">
+  Array of applications to associate with the MCP server
+  <Expandable title="Associated App Object">
+    <ResponseField name="slug" type="string">
+      Application identifier slug
+    </ResponseField>
+    <ResponseField name="workflows" type="array">
+      Array of workflow objects
+      <Expandable title="Workflow Object">
+        <ResponseField name="id" type="string">
+          Workflow identifier
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Workflow name
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Workflow description
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="actions" type="array">
+      Array of action objects
+      <Expandable title="Action Object">
+        <ResponseField name="id" type="string">
+          Action identifier
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Action name
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Action description
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+      Unique identifier for the MCP server
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the MCP server
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the MCP server
+    </ResponseField>
+    <ResponseField name="associated_org_id" type="string">
+      Organization ID associated with the MCP server
+    </ResponseField>
+    <ResponseField name="environment" type="string">
+      Environment (test/production) where the MCP server is running
+    </ResponseField>
+    <ResponseField name="suggestions" type="array">
+      Array of suggestion objects for the MCP server
+    </ResponseField>
+    <ResponseField name="associated_apps" type="array">
+      Array of applications associated with the MCP server
+    </ResponseField>
+    <ResponseField name="chains" type="array">
+      Array of chain objects configured for the MCP server
+    </ResponseField>
+    <ResponseField name="resources" type="array">
+      Array of resources associated with the MCP server
+    </ResponseField>
+    <ResponseField name="createdAt" type="date">
+      Creation timestamp
+    </ResponseField>
+    <ResponseField name="updatedAt" type="date">
+      Last update timestamp
+    </ResponseField>
+    <ResponseField name="__v" type="integer">
+      Version key
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "_id": "686e2393750d509493c6d87c",
+    "name": "New Updated Name for MCP",
+    "description": "Updated Suggestion",
+    "associated_org_id": "6698b77a733c5ebd8908189e",
+    "environment": "test",
+    "suggestions": [
+        {
+            "name": "Hello",
+            "prompt": "Prompt Test1"
+        }
+    ],
+    "associated_apps": [
+        {
+            "slug": "pipedrive",
+            "workflows": [
+                {
+                    "id": "67fbc1e4954bde0dcae1d51c",
+                    "name": "SETUP WRITEBACK",
+                    "description": "Setup Writeback on Application"
+                }
+            ],
+            "actions": [
+                {
+                    "id": "delete_lead",
+                    "name": "Delete Lead",
+                    "description": "To delete a lead"
+                }
+            ]
+        }
+    ],
+    "resources": [],
+    "createdAt": "2025-07-09T08:08:51.177Z",
+    "updatedAt": "2025-07-09T08:37:19.407Z",
+    "__v": 0,
+    "chains": [
+        {
+            "name": "STep 1 ",
+            "goals": "This shoud. be Goal",
+            "steps": "Step 1 \nStep 2 \nStep 3",
+            "precheck": "",
+            "successCondition": "",
+            "responseFormat": "",
+            "onError": "",
+            "_id": "686e2a3f7e7cb9099d06ca40"
+        }
+    ]
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "VALIDATION_ERROR",
+    "message": "Invalid request body",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "MCP Server not found",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```JSON
+{
+    "name": "New Updated Name for MCP",
+    "description": "Updated Suggestion",
+    "suggestions": [
+        {
+            "name": "Hello",
+            "prompt": "Prompt Test1"
+        }
+    ],
+    "chains": [
+        {
+            "name": "STep 1 ",
+            "goals": "This shoud. be Goal",
+            "steps": "Step 1 \nStep 2 \nStep 3",
+            "precheck": "",
+            "successCondition": "",
+            "responseFormat": "",
+            "onError": ""
+        }
+    ],
+    "associated_apps": [
+        {
+            "slug": "pipedrive",
+            "workflows": [
+                {
+                    "id": "67fbc1e4954bde0dcae1d51c",
+                    "name": "SETUP WRITEBACK",
+                    "description": "Setup Writeback on Application"
+                }
+            ],
+            "actions": [
+                {
+                    "id": "delete_lead",
+                    "name": "Delete Lead",
+                    "description": "To delete a lead"
+                }
+            ]
+        }
+    ]
+}
+```
+</RequestExample> 

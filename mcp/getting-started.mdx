@@ -1,0 +1,94 @@
+---
+title: "Getting Started"
+description: "Configure MCP on Cobalt platform and use it in your MCP client"
+---
+
+## Pre-requisites
+
+<Warning>
+Ensure you have the following before proceeding:
+</Warning>
+
+- **Cobalt account** - You have an active account on Cobalt
+- **Linked account** - You have created a linked account in Cobalt ([refer to guide](https://docs.gocobalt.io/build/basics/linked_account))
+
+<Info>
+Linked account is required to test the MCP connection.
+</Info>
+
+## Creating MCP Servers
+
+<Steps>
+  <Step title="Configure Application">
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-step1-configure-app-light.png"
+      alt="Configure application authentication and scopes"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-step1-configure-app-light.png"
+      alt="Configure application authentication and scopes"
+    />
+    
+    **Setup authentication:**
+    - Use the setup guide of each application
+    - Define the **scopes required** for the application
+    - This ensures your MCP server has the right level of access
+    
+    <Card title="Connector Setup Guide" icon="plug" href="https://docs.gocobalt.io/build/connectors/overview">
+      Complete guide for setting up connectors
+    </Card>
+  </Step>
+
+  <Step title="Create and Configure MCP Server">
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-step2-create-server-light.png"
+      alt="Create and configure MCP server in Cobalt dashboard"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-step2-create-server-light.png"
+      alt="Create and configure MCP server in Cobalt dashboard"
+    />
+    
+    **Server configuration:**
+    - Go to **MCP tab** and add a new MCP server
+    - Add your **name** and **description**
+    - Add the **application** and **workflow** to the MCP server
+    - **Save changes**
+  </Step>
+
+  <Step title="Use in the Client">
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-step3-use-client-light.png"
+      alt="Generate token and use in MCP client"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-step3-use-client-light.png"
+      alt="Generate token and use in MCP client"
+    />
+    
+    **Client setup:**
+    - Generate a **token specific** for your end customer for your MCP server
+    - Copy the **URL** and use it in any client (Cursor, Claude)
+    - **Embed Playground** - Use Cobalt embed to try out the client agent or embed it in your application
+  </Step>
+</Steps>
+
+## Configuring Authentication
+
+<Tip>
+Your users need to authenticate against an app to use its MCP server through Cobalt.
+</Tip>
+
+**Authentication setup:**
+- Follow the authentication flow guide for your users
+- Ensure proper user permissions and access levels
+
+<Card title="Auth Flows Guide" icon="shield" href="https://docs.gocobalt.io/ship/auth_flows/flows">
+  Complete guide for setting up authentication flows for your users
+</Card> 

@@ -1,0 +1,196 @@
+---
+title: "Chains"
+description: "Predefined API sequences with conditional logic that provide dynamic context for intelligent agent execution"
+---
+
+<Callout type="info" emoji="🔗">
+**Smart Sequencing**: Chains guide agents through logical API call sequences based on business context.
+</Callout>
+
+## Setup
+
+### Adding a Chain to Your MCP Server
+
+<Steps>
+  <Step title="Navigate to MCP Server Configuration">
+    Go to your MCP server configuration where you have already added APIs and Workflows.
+    
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-server-config-light.png"
+      alt="MCP server configuration with APIs and workflows"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-server-config-dark.png"
+      alt="MCP server configuration with APIs and workflows"
+    />
+  </Step>
+  
+  <Step title="Add New Chain">
+    Click "Add Chain" to create a new business process sequence.
+    
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-add-chain-light.png"
+      alt="Add new chain to MCP server"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-add-chain-dark.png"
+      alt="Add new chain to MCP server"
+    />
+  </Step>
+  
+  <Step title="Configure Chain Details">
+    Define your chain configuration with business goals and execution logic.
+    
+    <img
+      className="block dark:hidden"
+      src="/images/mcp-configure-chain-light.png"
+      alt="Configure chain details and business logic"
+    />
+    <img
+      className="hidden dark:block"
+      src="/images/mcp-configure-chain-dark.png"
+      alt="Configure chain details and business logic"
+    />
+  </Step>
+</Steps>
+
+### Chain Configuration Fields
+
+<AccordionGroup>
+  <Accordion title="Name">
+    **Chain Name**
+    
+    Provide a clear, descriptive name for your chain that reflects the business process.
+    
+    **Examples:**
+    - "Salesforce Lead Qualification Process"
+    - "Purchase Order Creation and Approval"
+    - "Customer Onboarding Workflow"
+  </Accordion>
+  
+  <Accordion title="Goals">
+    **Business Objectives**
+    
+    Define what business goal this chain achieves for the agent.
+    
+    **Examples:**
+    - "Qualify inbound leads and assign to appropriate sales rep"
+    - "Create purchase orders with proper approvals and vendor validation"
+    - "Onboard new customers across CRM and billing systems"
+  </Accordion>
+  
+  <Accordion title="Steps">
+    **API Sequence & Conditions**
+    
+    Define the sequence of APIs to call with any conditional logic.
+    
+    **Example Structure:**
+    - Step 1: Check if contact exists in CRM
+    - Step 2: If contact missing, create new contact
+    - Step 3: Create opportunity with contact validation
+    - Step 4: Assign to sales rep based on territory rules
+  </Accordion>
+  
+  <Accordion title="Pre-check">
+    **Prerequisites Validation**
+    
+    Define any validations to check before running this sequence.
+    
+    **Examples:**
+    - Verify user has permission to create opportunities
+    - Check if required fields are provided
+    - Validate data format and constraints
+  </Accordion>
+  
+  <Accordion title="Success Condition">
+    **Success Actions**
+    
+    Define what to do when the chain executes successfully.
+    
+    **Examples:**
+    - Return opportunity ID and details
+    - Send notification to sales rep
+    - Log successful execution for audit
+  </Accordion>
+  
+  <Accordion title="Error Handling">
+    **Failure Recovery**
+    
+    Define what to do when the chain fails or encounters errors.
+    
+    **Examples:**
+    - Retry with exponential backoff
+    - Rollback partial changes
+    - Escalate to manual review
+    - Return detailed error information
+  </Accordion>
+</AccordionGroup>
+
+## Chain vs Individual APIs
+
+<Tabs>
+  <Tab title="MCP Chains">
+    **Business Process Sequences**
+    
+    - Predefined logical API sequences
+    - Include conditional logic and context
+    - Guide agents through complex workflows
+    - Share context across all API calls
+    - Handle business rule validation
+    
+    <Check>
+    **Best for**: Complex business processes requiring multiple steps
+    </Check>
+  </Tab>
+  
+  <Tab title="Individual APIs">
+    **Atomic Operations**
+    
+    - Single-purpose API endpoints
+    - Direct system interactions
+    - Simple input/output operations
+    - Independent execution context
+    - Immediate response handling
+    
+    <Info>
+    **Best for**: Simple, standalone operations
+    </Info>
+  </Tab>
+</Tabs>
+
+
+
+
+
+## Agent Decision Process
+
+<Steps>
+  <Step title="Chain Search">
+    Agent analyzes user request:
+    - Searches available chains first
+    - Matches intent with chain capabilities
+    - Evaluates chain context requirements
+  </Step>
+  
+  <Step title="Execution Choice">
+    Agent selects execution method:
+    - **Chain found**: Execute predefined sequence
+    - **No chain match**: Use individual APIs
+    - **Partial match**: Execute relevant chain portions
+  </Step>
+  
+  <Step title="Dynamic Execution">
+    Agent follows chain guidance:
+    - Uses shared context for decisions
+    - Follows conditional logic paths
+    - Handles errors with retry mechanisms
+  </Step>
+</Steps>
+
+<Callout type="success" emoji="🎯">
+**Result**: Chains act as dynamic prompts that guide agents through complex business processes while maintaining flexibility for simple operations.
+</Callout>
