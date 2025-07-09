@@ -152,24 +152,30 @@ This API supports two authentication methods. You can use either Session Token a
 </ResponseExample>
 
 <RequestExample>
-```JSON HubSpot Create Contact
-{
-    "email": "dhananjay+2@gocobalt.io",
-    "lastname": "Senday",
-    "firstname": "Dhananjay"
-}
+```bash Session Token Authentication
+curl -X POST "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions/create_contact/execute" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "example@google.com",
+    "lastname": "Smith",
+    "firstname": "John",
+    "company": "Google Inc.",
+    "jobtitle": "Software Engineer"
+  }'
 ```
-```JSON Salesforce Create Account
-{
-    "Name": "Acme Corporation",
-    "Type": "Customer",
-    "Industry": "Technology",
-    "Website": "https://acme.com",
-    "BillingStreet": "123 Main St",
-    "BillingCity": "San Francisco",
-    "BillingState": "CA",
-    "BillingPostalCode": "94105",
-    "BillingCountry": "USA"
-}
+
+```bash API Key Authentication
+curl -X POST "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions/create_contact/execute" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: customer@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "example@google.com",
+    "lastname": "Smith",
+    "firstname": "John",
+    "company": "Google Inc.",
+    "jobtitle": "Software Engineer"
+  }'
 ```
 </RequestExample> 
