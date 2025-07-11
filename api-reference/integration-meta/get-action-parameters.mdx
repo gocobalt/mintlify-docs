@@ -1,0 +1,163 @@
+---
+title: 'Get Action Schema by ID'
+api: get /api/v2/integration-schema/:slug/actions/:action_id
+---
+
+This API retrieves the parameter schema for a specific action within an integration application. Use this to understand what parameters are required or optional for executing an action.
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  The unique identifier for the integration application (e.g., "hubspot", "salesforce")
+</ParamField>
+
+<ParamField path="action_id" type="string" required>
+  The unique identifier for the specific action (e.g., "create_contact", "create_deal")
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="parameters" type="array">
+      Array of parameter objects required for the action
+      <Expandable title="Parameter Object">
+        <ResponseField name="name" type="string">
+          Parameter name/field identifier
+        </ResponseField>
+        <ResponseField name="label" type="string">
+          Display label for the parameter
+        </ResponseField>
+        <ResponseField name="required" type="boolean">
+          Whether the parameter is required for action execution
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Data type of the parameter (text, json, number, etc.)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200 - HubSpot Create Contact Parameters
+[
+    {
+        "name": "firstname",
+        "label": "Enter First Name",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "lastname",
+        "label": "Enter Last Name",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "email",
+        "label": "Enter Email",
+        "required": true,
+        "type": "text"
+    },
+    {
+        "name": "phone",
+        "label": "Enter Phone Number",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "company",
+        "label": "Enter Company Name",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "website",
+        "label": "Enter Website URL",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "jobtitle",
+        "label": "Current job title",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "hubspot_owner_id",
+        "label": "Enter Owner Id",
+        "required": false,
+        "type": "text"
+    },
+    {
+        "name": "associations",
+        "label": "Associations",
+        "required": false,
+        "type": "json"
+    },
+    {
+        "name": "additional_fields",
+        "label": "Additional Fields",
+        "required": false,
+        "type": "json"
+    }
+]
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid session token",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "Action not found for the specified slug and action_id",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample> 

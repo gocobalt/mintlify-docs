@@ -1,0 +1,130 @@
+---
+title: 'Create MCP Server'
+api: post /api/v2/public/mcp-servers
+---
+
+This API allows you to create a new MCP server in your organization.
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
+#### Body Parameters
+<ParamField body="name" type="string" required>
+  Name of the MCP server
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Description of the MCP server
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="201">
+    <ResponseField name="_id" type="string">
+      Unique identifier for the created MCP server
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the MCP server
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Description of the MCP server
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 201
+{
+    "_id": "686e23c7397a76e76449bc14",
+    "name": "MCP Server Dhananjay",
+    "description": "This is a Dummy MCP Server"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "VALIDATION_ERROR",
+    "message": "Name and description are required",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 409
+{
+    "status_code": 409,
+    "http_error_type": "CONFLICT",
+    "error_code": "SERVER_ERROR",
+    "message": "MCP Server with this name already exists",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash Session Token Authentication
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production MCP Server",
+    "description": "MCP server for production customer integration workflows"
+  }'
+```
+
+```bash API Key Authentication  
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: customer@example.com" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production MCP Server", 
+    "description": "MCP server for production customer integration workflows"
+  }'
+```
+</RequestExample> 

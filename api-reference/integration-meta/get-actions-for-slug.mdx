@@ -1,0 +1,195 @@
+---
+title: 'Get Actions for an Application'
+api: get /api/v2/integration-schema/:slug/actions
+---
+
+This API retrieves all available actions for a specific integration application using its slug identifier.
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  The unique identifier for the integration application (e.g., "hubspot", "salesforce")
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="actions" type="array">
+      Array of action objects available for the integration
+      <Expandable title="Action Object">
+        <ResponseField name="name" type="string">
+          Display name of the action
+        </ResponseField>
+        <ResponseField name="action_id" type="string">
+          Unique identifier for the action
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Description of what the action does
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200 - HubSpot Actions
+[
+    {
+        "name": "HTTP Request",
+        "action_id": "httprequest",
+        "description": "Send an HTTP request to interact with the application's API. The action automatically handles authentication, so the end user does not need to include authentication-related fields such as tokens, API keys, or authentication headers in the request payload , keep base_url unset assume the Library ALWAYS set the base_url automatically internally , here are format of url_path /v1/some_endpoint"
+    },
+    {
+        "name": "Create Contact",
+        "action_id": "create_contact",
+        "description": "Creating a contact in Hubspot"
+    },
+    {
+        "name": "Create Task",
+        "action_id": "create_task",
+        "description": "Creating a contact in Hubspot"
+    },
+    {
+        "name": "Create Company",
+        "action_id": "create_company",
+        "description": "Creating a Company in Hubspot"
+    },
+    {
+        "name": "Create Deal",
+        "action_id": "create_deal",
+        "description": "Creating a Deal in Hubspot"
+    },
+    {
+        "name": "Update Contact",
+        "action_id": "update_contact",
+        "description": "Updating a contact in Hubspot"
+    },
+    {
+        "name": "Delete Contact",
+        "action_id": "delete_contact",
+        "description": "Deleting a contact in Hubspot"
+    },
+    {
+        "name": "Get Contact",
+        "action_id": "get_contact",
+        "description": "Get all contacts."
+    },
+    {
+        "name": "Get Contact By Id",
+        "action_id": "get_contact_by_id",
+        "description": "get a contact by id"
+    },
+    {
+        "name": "Search Contact",
+        "action_id": "search_contacts",
+        "description": "This action is used to search for a set of contacts matching a criteria"
+    }
+]
+```
+```JSON 200 - Salesforce Actions
+[
+    {
+        "name": "HTTP Request",
+        "action_id": "httprequest",
+        "description": "Send an HTTP request to interact with the application's API. The action automatically handles authentication, so the end user does not need to include authentication-related fields such as tokens, API keys, or authentication headers in the request payload , keep base_url unset assume the Library ALWAYS set the base_url automatically internally , here are format of url_path /v1/some_endpoint"
+    },
+    {
+        "name": "Get entity with SOQL",
+        "action_id": "get_entity_with_soql",
+        "description": "Use this action to execute a SOQL query to get data from Salesforce"
+    },
+    {
+        "name": "List Accounts",
+        "action_id": "get_accounts",
+        "description": "Get list of All Accounts"
+    },
+    {
+        "name": "Create Account",
+        "action_id": "create_account",
+        "description": "Create an account in Salesforce"
+    },
+    {
+        "name": "Update Account",
+        "action_id": "update_account",
+        "description": "Update an account in Salesforce"
+    },
+    {
+        "name": "Delete Account",
+        "action_id": "delete_account",
+        "description": "Delete an account in Salesforce"
+    },
+    {
+        "name": "Create Contact",
+        "action_id": "create_contact",
+        "description": "Create a contact in Salesforce"
+    },
+    {
+        "name": "Create Lead",
+        "action_id": "create_lead",
+        "description": "Create a lead in Salesforce"
+    },
+    {
+        "name": "Create Opportunity",
+        "action_id": "create_opportunity",
+        "description": "Create an opportunity in Salesforce"
+    }
+]
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid session token",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "SERVER_ERROR",
+    "message": "Integration slug not found",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample> 

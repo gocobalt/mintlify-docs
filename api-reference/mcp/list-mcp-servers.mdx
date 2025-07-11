@@ -1,0 +1,156 @@
+---
+title: 'List All MCP Servers'
+api: get /api/v2/public/mcp-servers
+---
+
+This API retrieves a paginated list of all MCP servers in your organization.
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either Session Token authentication OR the combination of API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication
+  
+  **Format**: `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+#### Authentication Option 2: API Key + Linked Account
+<ParamField header="x-api-key" type="string" required>
+  Your Cobalt API key
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account
+</ParamField>
+
+#### Query Parameters
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Number of records per page (maximum 100)
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="docs" type="array">
+      Array of MCP server objects
+      <Expandable title="MCP Server Object">
+        <ResponseField name="_id" type="string">
+          Unique identifier for the MCP server
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Name of the MCP server
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Description of the MCP server
+        </ResponseField>
+        <ResponseField name="createdAt" type="date">
+          Creation timestamp
+        </ResponseField>
+        <ResponseField name="updatedAt" type="date">
+          Last update timestamp
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">
+      Total number of MCP servers
+    </ResponseField>
+    <ResponseField name="limit" type="integer">
+      Number of records per page
+    </ResponseField>
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages
+    </ResponseField>
+    <ResponseField name="page" type="integer">
+      Current page number
+    </ResponseField>
+    <ResponseField name="pagingCounter" type="integer">
+      Paging counter
+    </ResponseField>
+    <ResponseField name="hasPrevPage" type="boolean">
+      Whether there is a previous page
+    </ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">
+      Whether there is a next page
+    </ResponseField>
+    <ResponseField name="prevPage" type="integer">
+      Previous page number (null if none)
+    </ResponseField>
+    <ResponseField name="nextPage" type="integer">
+      Next page number (null if none)
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+      System generated status code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "docs": [
+        {
+            "_id": "686e12889a52f0683c93b619",
+            "name": "MCP CONFIG",
+            "description": "This is SOmething",
+            "createdAt": "2025-07-09T06:56:08.507Z",
+            "updatedAt": "2025-07-09T07:51:08.859Z"
+        },
+        {
+            "_id": "686e231ddc5abb7e41501eae",
+            "name": "MCP Server Dhananjay",
+            "description": "This is a Dummy MCP Server",
+            "createdAt": "2025-07-09T08:06:53.272Z",
+            "updatedAt": "2025-07-09T08:06:53.272Z"
+        },
+        {
+            "_id": "686e2393750d509493c6d87c",
+            "name": "New Updated Name for MCP",
+            "description": "Updated Suggestion",
+            "createdAt": "2025-07-09T08:08:51.177Z",
+            "updatedAt": "2025-07-09T08:37:19.407Z"
+        }
+    ],
+    "totalDocs": 3,
+    "limit": 10,
+    "totalPages": 1,
+    "page": 1,
+    "pagingCounter": 1,
+    "hasPrevPage": false,
+    "hasNextPage": false,
+    "prevPage": null,
+    "nextPage": null
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample> 
