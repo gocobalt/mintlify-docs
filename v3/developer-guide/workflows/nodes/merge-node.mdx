@@ -1,0 +1,292 @@
+# Merge Node
+
+## What is it?
+
+The Merge Node combines multiple parallel branches into a single execution path, allowing you to synchronize and collect results from concurrent operations.
+
+## What does it do?
+
+The Merge Node waits for specified upstream branches to complete, fail, or be skipped before proceeding with the workflow. It's essential for workflows that split into parallel paths and need to reconvene later to process combined results.
+
+**Common use cases:**
+- Combining results from multiple nodes
+- Synchronizing data from multiple API calls
+- Waiting for parallel processing tasks to complete
+- Coordinating multi-step data validation workflows
+
+## Configuration
+
+<Steps>
+  <Step title="Drag Merge Node to canvas">
+    From the **Utility Nodes** section, drag the Merge Node to your workflow canvas and position it where parallel branches need to reconvene.
+  </Step>
+
+  <Step title="Configure merge mode">
+    The Merge Node automatically detects all upstream branches. Choose your merge strategy:
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-mode-selection.png" alt="Selecting merge mode in configuration"/>
+    
+    **Merge All** (Default): Waits for every upstream branch to finish
+    **Merge Conditional**: Waits only for branches you specify as mandatory
+  </Step>
+
+  <Step title="Select mandatory branches (Conditional mode only)">
+    If using Conditional mode, check the boxes for branches that must complete before proceeding. Other branches can finish, fail, or be skipped without blocking the merge.
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-mandatory-branches.png" alt="Selecting mandatory branches in conditional mode"/>
+  </Step>
+</Steps>
+
+### Input Parameters
+
+<ParamField path="Mode" type="dropdown" required>
+Select merge behavior: `mergeAll` or `mergeConditional`
+</ParamField>
+
+<ParamField path="Mandatory Branches" type="checkbox list">
+Available only in `mergeConditional` mode. Select which branches must complete.
+</ParamField>
+
+<Callout type="info">
+The Merge Node automatically detects all upstream branches—no manual configuration needed. Branch names are populated based on your workflow structure.
+</Callout>
+
+## Output
+
+The Merge Node outputs a map containing results from all upstream branches, regardless of whether they completed successfully, failed, or were skipped.
+
+### Output Structure
+
+```json
+{
+  "branch_name_1": {
+    "result": "Successful output data"
+  },
+  "branch_name_2": {
+    "error": "Error message if branch failed"
+  },
+  "branch_name_3": {
+    "skipped": true,
+    "reason": "Condition not met"
+  }
+}
+```
+
+### Status Handling
+
+- **Completed branches**: Include their full output under `result`
+- **Failed branches**: Include error details under `error` 
+- **Skipped branches**: Include `skipped: true` with skip reason
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Create parallel branches">
+    Build your workflow with parallel execution paths that need to be synchronized later.
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-parallel-setup.png" alt="Setting up parallel branches before merge"/>
+  </Step>
+
+  <Step title="Add Merge Node">
+    Drag the Merge Node from **Utility Nodes** and place it where branches should reconvene.
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-drag-drop.png" alt="Dragging Merge Node from utility nodes"/>
+  </Step>
+
+  <Step title="Connect all branches">
+    Connect each parallel branch to the Merge Node. The node will automatically detect all incoming connections.
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-connect-branches.png" alt="Connecting multiple branches to Merge Node"/>
+  </Step>
+
+  <Step title="Configure merge behavior">
+    Click the Merge Node and select your preferred mode:
+    - **Merge All**: Wait for every connected branch
+    - **Merge Conditional**: Wait only for specified mandatory branches
+    
+    <img height="200" src="/images/workflow/nodes/merge-node-configuration-panel.png" alt="Merge Node configuration options"/>
+  </Step>
+</Steps>
+
+## Examples
+
+### Example 1: Merge All Branches
+
+This example waits for both Salesforce contact creation and HubSpot contact sync to complete:
+
+```javascript
+// Workflow configuration
+{
+  "nodes": [
+    {
+      "name": "merge_task",
+      "taskReferenceName": "merge_contacts",
+      "type": "MERGE",
+      "mode": "mergeAll",
+      "inputParameters": {}
+    }
+  ]
+}
+```
+
+**Expected Output:**
+```json
+{
+  "salesforce_contact": {
+    "result": {
+      "id": "003xx000002ABC",
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  },
+  "hubspot_sync": {
+    "result": {
+      "vid": 12345,
+      "status": "synced"
+    }
+  }
+}
+```
+
+### Example 2: Conditional Merge
+
+This example waits only for critical data validation while allowing optional enrichment to fail:
+
+```javascript
+// Workflow configuration  
+{
+  "name": "merge_task",
+  "taskReferenceName": "merge_validation",
+  "type": "MERGE", 
+  "mode": "mergeConditional",
+  "mandatory": ["data_validation", "security_check"],
+  "inputParameters": {}
+}
+```
+
+**Expected Output:**
+```json
+{
+  "data_validation": {
+    "result": { "valid": true, "score": 95 }
+  },
+  "security_check": {
+    "result": { "passed": true, "risk_level": "low" }
+  },
+  "optional_enrichment": {
+    "error": "Service temporarily unavailable"
+  }
+}
+```
+
+### Example 3: cURL API Call
+
+Execute a workflow with Merge Node via API:
+
+```bash
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/workflow/execute \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "workflow_id": "workflow_123",
+    "input": {
+      "contact_data": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      }
+    }
+  }'
+```
+
+## Runtime Behavior
+
+<Callout type="warning">
+**Important**: The Merge Node will wait indefinitely for required branches to complete. Ensure your upstream nodes have proper timeout and error handling configured.
+</Callout>
+
+### Branch Status Requirements
+
+The Merge Node proceeds when required branches reach one of these terminal states:
+
+- **COMPLETED**: Branch finished successfully
+- **ERROR**: Branch failed after all retry attempts  
+- **SKIPPED_AND_COMPLETED**: Branch was skipped due to conditions
+
+### Merge Modes
+
+**Merge All Mode:**
+- Waits for every upstream branch to reach terminal status
+- Use when all parallel operations are equally important
+- Safest option for data consistency
+
+**Merge Conditional Mode:**  
+- Waits only for specified mandatory branches
+- Non-mandatory branches can fail without blocking workflow
+- Use when some operations are optional or non-critical
+
+## Common Use Cases
+
+### Data Synchronization
+
+Combine results from multiple nodes before processing:
+
+```javascript
+// Parallel nodes processing different data
+Node A: Fetch user from Salesforce
+Node B: Fetch preferences from internal API  
+Node C: Fetch usage data from analytics
+
+// Merge combines all data for processing
+Merge Node → Process combined user profile
+```
+
+### Validation Workflows
+
+Run parallel validation checks with conditional requirements:
+
+```javascript
+// Required validation nodes
+Node A: Email format validation (mandatory)
+Node B: Domain verification (mandatory)
+
+// Optional enhancement nodes  
+Node C: Spam score check (optional)
+Node D: Deliverability test (optional)
+
+// Conditional merge proceeds when A and B complete
+```
+
+## Troubleshooting
+
+### Merge Node Never Proceeds
+
+**Problem**: Workflow hangs at Merge Node
+**Solutions**: 
+- Check if upstream branches have infinite loops or missing error handling
+- Verify all connected branches can reach terminal states
+- Review retry configurations for failing branches
+
+### Missing Branch Data
+
+**Problem**: Expected branch output not in merge results
+**Solutions**:
+- Confirm branch is properly connected to Merge Node
+- Check branch status in workflow execution logs
+- Verify branch naming matches expected output keys
+
+### Conditional Merge Validation Error
+
+**Problem**: "No mandatory branches selected" error in UI
+**Solution**: Select at least one branch as mandatory when using `mergeConditional` mode
+
+<Callout type="info">
+Use the Debug Node after Merge to inspect the complete output structure and verify all expected branches are present.
+</Callout>
+
+## What's Next?
+
+- Learn about [Loop Node](/nodes/loop-node) for iterating over merged results
+- Explore [Conditional Node](/nodes/conditional-node) for branching logic based on merge output
+- Check out [Transform Node](/nodes/transform-node) to reshape merged data
+- Review [Error Handling](/advanced/error-handling) for robust parallel processing

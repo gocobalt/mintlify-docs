@@ -2,38 +2,20 @@
 alwaysApply: true
 ---
 
-# Mintlify Cursor Rules - Comprehensive Documentation Guide
+# Mintlify Rules - Comprehensive Documentation Guide
 
 ## Overview
 
 This guide provides a complete reference for building documentation with Mintlify, including all core components, writing principles, and best practices for creating exceptional technical documentation.
 
-## Core Writing Principles
-
-### Language and Style Requirements
-- Use clear, direct language appropriate for technical audiences
-- Write in second person ("you") for instructions and procedures
-- Use active voice over passive voice
-- Employ present tense for current states, future tense for outcomes
-- Maintain consistent terminology throughout all documentation
-- Keep sentences concise while providing necessary context
-- Use parallel structure in lists, headings, and procedures
-
-### Content Organization Standards
-- Lead with the most important information (inverted pyramid structure)
-- Use progressive disclosure: basic concepts before advanced ones
-- Break complex procedures into numbered steps
-- Include prerequisites and context before instructions
-- Provide expected outcomes for each major step
-- End sections with next steps or related information
-- Use descriptive, keyword-rich headings for navigation and SEO
-
-### User-Centered Approach
-- Focus on user goals and outcomes rather than system features
-- Anticipate common questions and address them proactively
-- Include troubleshooting for likely failure points
-- Provide multiple pathways when appropriate (beginner vs advanced)
-- Offer an opinionated path to avoid overwhelming with options
+## ✍️ Writing Guidelines
+- Use ## as the top-level heading inside content
+- Maintain proper heading hierarchy: ##, ###, ####, etc.
+- Use inline code for filenames, paths, or code (\example.js``)
+- Prefer active voice and short, clear sentences
+- Avoid placeholders like foo, bar, or your_api_key
+- Use real examples, expected outputs, and comments in code
+- Use clear link text — avoid “click here”
 
 ## Essential File Structure
 
@@ -56,51 +38,46 @@ mode: "wide" | "custom" | "center" # optional
 ---
 
 # Your Content Here
-```
+## Mintlify component reference
 
-## Core Mintlify Components
-
-### 1. Callout Components
+### Callout components
 
 #### Note - Additional helpful information
-```jsx
+
 <Note>
 Supplementary information that supports the main content without interrupting flow
 </Note>
-```
 
 #### Tip - Best practices and pro tips
-```jsx
+
 <Tip>
 Expert advice, shortcuts, or best practices that enhance user success
 </Tip>
-```
 
 #### Warning - Important cautions
-```jsx
+
 <Warning>
 Critical information about potential issues, breaking changes, or destructive actions
 </Warning>
-```
 
 #### Info - Neutral contextual information
-```jsx
+
 <Info>
 Background information, context, or neutral announcements
 </Info>
-```
 
 #### Check - Success confirmations
-```jsx
+
 <Check>
 Positive confirmations, successful completions, or achievement indicators
 </Check>
-```
 
-### 2. Code Components
+### Code components
 
-#### Single Code Block
-```javascript
+#### Single code block
+
+Example of a single code block:
+
 ```javascript config.js
 const apiConfig = {
   baseURL: 'https://api.example.com',
@@ -110,10 +87,11 @@ const apiConfig = {
   }
 };
 ```
-```
 
-#### Code Group with Multiple Languages
-```jsx
+#### Code group with multiple languages
+
+Example of a code group:
+
 <CodeGroup>
 ```javascript Node.js
 const response = await fetch('/api/endpoint', {
@@ -132,10 +110,11 @@ curl -X GET '/api/endpoint' \
   -H 'Authorization: Bearer YOUR_API_KEY'
 ```
 </CodeGroup>
-```
 
-#### Request/Response Examples
-```jsx
+#### Request/response examples
+
+Example of request/response documentation:
+
 <RequestExample>
 ```bash cURL
 curl -X POST 'https://api.example.com/users' \
@@ -154,33 +133,39 @@ curl -X POST 'https://api.example.com/users' \
 }
 ```
 </ResponseExample>
-```
 
-### 3. Structural Components
+### Structural components
 
-#### Steps for Procedures
-```jsx
+#### Steps for procedures
+
+Example of step-by-step instructions:
+
 <Steps>
-<Step title="First Step">
-  These are instructions or content that only pertain to the first step.
+<Step title="Install dependencies">
+  Run `npm install` to install required packages.
   
   <Check>
   Verify installation by running `npm list`.
   </Check>
 </Step>
 
-<Step title="Second Step">
-  These are instructions or content that only pertain to the second step.
+<Step title="Configure environment">
+  Create a `.env` file with your API credentials.
+  
+  ```bash
+  API_KEY=your_api_key_here
+  ```
   
   <Warning>
   Never commit API keys to version control.
   </Warning>
 </Step>
 </Steps>
-```
 
-#### Tabs for Alternative Content
-```jsx
+#### Tabs for alternative content
+
+Example of tabbed content:
+
 <Tabs>
 <Tab title="macOS">
   ```bash
@@ -203,10 +188,11 @@ curl -X POST 'https://api.example.com/users' \
   ```
 </Tab>
 </Tabs>
-```
 
-#### Accordions for Collapsible Content
-```jsx
+#### Accordions for collapsible content
+
+Example of accordion groups:
+
 <AccordionGroup>
 <Accordion title="Troubleshooting connection issues">
   - **Firewall blocking**: Ensure ports 80 and 443 are open
@@ -223,12 +209,31 @@ curl -X POST 'https://api.example.com/users' \
   ```
 </Accordion>
 </AccordionGroup>
-```
 
-### 4. API Documentation Components
+### Cards and columns for emphasizing information
 
-#### Parameter Fields
-```jsx
+Example of cards and card groups:
+
+<Card title="Getting started guide" icon="rocket" href="/quickstart">
+Complete walkthrough from installation to your first API call in under 10 minutes.
+</Card>
+
+<CardGroup cols={2}>
+<Card title="Authentication" icon="key" href="/auth">
+  Learn how to authenticate requests using API keys or JWT tokens.
+</Card>
+
+<Card title="Rate limiting" icon="clock" href="/rate-limits">
+  Understand rate limits and best practices for high-volume usage.
+</Card>
+</CardGroup>
+
+### API documentation components
+
+#### Parameter fields
+
+Example of parameter documentation:
+
 <ParamField path="user_id" type="string" required>
 Unique identifier for the user. Must be a valid UUID v4 format.
 </ParamField>
@@ -244,10 +249,11 @@ Maximum number of results to return. Range: 1-100.
 <ParamField header="Authorization" type="string" required>
 Bearer token for API authentication. Format: `Bearer YOUR_API_KEY`
 </ParamField>
-```
 
-#### Response Fields
-```jsx
+#### Response fields
+
+Example of response field documentation:
+
 <ResponseField name="user_id" type="string" required>
 Unique identifier assigned to the newly created user.
 </ResponseField>
@@ -259,10 +265,11 @@ ISO 8601 formatted timestamp of when the user was created.
 <ResponseField name="permissions" type="array">
 List of permission strings assigned to this user.
 </ResponseField>
-```
 
-#### Expandable Nested Fields
-```jsx
+#### Expandable nested fields
+
+Example of nested field documentation:
+
 <ResponseField name="user" type="object">
 Complete user object with all associated data.
 
@@ -282,31 +289,13 @@ Complete user object with all associated data.
   </ResponseField>
 </Expandable>
 </ResponseField>
-```
 
-### 5. Interactive Components
+### Media and advanced components
 
-#### Cards for Navigation
-```jsx
-<Card title="Getting started guide" icon="rocket" href="/quickstart">
-Complete walkthrough from installation to your first API call in under 10 minutes.
-</Card>
+#### Frames for images
 
-<CardGroup cols={2}>
-<Card title="Authentication" icon="key" href="/auth">
-  Learn how to authenticate requests using API keys or JWT tokens.
-</Card>
+Wrap all images in frames:
 
-<Card title="Rate limiting" icon="clock" href="/rate-limits">
-  Understand rate limits and best practices for high-volume usage.
-</Card>
-</CardGroup>
-```
-
-### 6. Media and Advanced Components
-
-#### Frames for Images
-```jsx
 <Frame>
 <img src="/images/dashboard.png" alt="Main dashboard showing analytics overview" />
 </Frame>
@@ -314,13 +303,39 @@ Complete walkthrough from installation to your first API call in under 10 minute
 <Frame caption="The analytics dashboard provides real-time insights">
 <img src="/images/analytics.png" alt="Analytics dashboard with charts" />
 </Frame>
-```
 
-#### Tooltips and Updates
-```jsx
+#### Videos
+
+Use the HTML video element for self-hosted video content:
+
+<video
+  controls
+  className="w-full aspect-video rounded-xl"
+  src="link-to-your-video.com"
+></video>
+
+Embed YouTube videos using iframe elements:
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/4KzFe50RQkQ"
+  title="YouTube video player"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+#### Tooltips
+
+Example of tooltip usage:
+
 <Tooltip tip="Application Programming Interface - protocols for building software">
 API
 </Tooltip>
+
+#### Updates
+
+Use updates for changelogs:
 
 <Update label="Version 2.1.0" description="Released March 15, 2024">
 ## New features
@@ -331,137 +346,60 @@ API
 - Fixed pagination issue with large datasets
 - Resolved authentication timeout problems
 </Update>
+
+## Required page structure
+
+Every documentation page must begin with YAML frontmatter:
+
+```yaml
+---
+title: "Clear, specific, keyword-rich title"
+description: "Concise description explaining page purpose and value"
+---
 ```
 
-## Configuration (docs.json)
+## Content quality standards
 
-### Basic Structure
-```json
-{
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "Your Project Name",
-  "description": "Brief description for SEO",
-  "theme": "mint",
-  "colors": {
-    "primary": "#0D9373"
-  },
-  "logo": {
-    "light": "/logo.png",
-    "dark": "/logo-dark.png"
-  },
-  "favicon": "/favicon.png",
-  "navigation": {
-    // Navigation structure goes here
-  }
-}
-```
+### Code examples requirements
 
-### Navigation Patterns
-
-#### Simple Pages
-```json
-{
-  "navigation": {
-    "pages": [
-      "introduction",
-      "quickstart", 
-      "advanced/setup"
-    ]
-  }
-}
-```
-
-#### Groups
-```json
-{
-  "navigation": {
-    "groups": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "quickstart",
-          "installation"
-        ]
-      },
-      {
-        "group": "API Reference", 
-        "pages": [
-          "api/authentication",
-          "api/users"
-        ]
-      }
-    ]
-  }
-}
-```
-
-#### Tabs
-```json
-{
-  "navigation": {
-    "tabs": [
-      {
-        "tab": "Documentation",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": ["intro", "setup"]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "openapi": "/openapi.json"
-      }
-    ]
-  }
-}
-```
-
-### API Configuration
-```json
-{
-  "api": {
-    "openapi": "/openapi.json",
-    "playground": {
-      "display": "interactive"
-    },
-    "mdx": {
-      "auth": {
-        "method": "bearer"
-      },
-      "server": "https://api.example.com"
-    }
-  }
-}
-```
-
-## Content Quality Standards
-
-### Code Examples Requirements
-- Always include complete, runnable examples
+- Always include complete, runnable examples that users can copy and execute
 - Show proper error handling and edge case management
 - Use realistic data instead of placeholder values
 - Include expected outputs and results for verification
 - Test all code examples thoroughly before publishing
 - Specify language and include filename when relevant
 - Add explanatory comments for complex logic
+- Never include real API keys or secrets in code examples
 
-### API Documentation Requirements
-- Document all parameters including optional ones
-- Show both success and error response examples
+### API documentation requirements
+
+- Document all parameters including optional ones with clear descriptions
+- Show both success and error response examples with realistic data
 - Include rate limiting information with specific limits
 - Provide authentication examples showing proper format
 - Explain all HTTP status codes and error handling
 - Cover complete request/response cycles
 
-### Accessibility Requirements
-- Include descriptive alt text for all images
+### Accessibility requirements
+
+- Include descriptive alt text for all images and diagrams
 - Use specific, actionable link text instead of "click here"
 - Ensure proper heading hierarchy starting with H2
 - Provide keyboard navigation considerations
-- Use sufficient color contrast in examples
-- Structure content for easy scanning
+- Use sufficient color contrast in examples and visuals
+- Structure content for easy scanning with headers and lists
+
+## Component selection logic
+
+- Use **Steps** for procedures and sequential instructions
+- Use **Tabs** for platform-specific content or alternative approaches
+- Use **CodeGroup** when showing the same concept in multiple programming languages
+- Use **Accordions** for progressive disclosure of information
+- Use **RequestExample/ResponseExample** specifically for API endpoint documentation
+- Use **ParamField** for API parameters, **ResponseField** for API responses
+- Use **Expandable** for nested object properties or hierarchical information
+
+
 
 ## Component Selection Logic
 
@@ -575,116 +513,3 @@ footer {
   }
 }
 ```
-
-## Common Patterns & Templates
-
-### Getting Started Page Template
-```markdown
----
-title: "Getting Started"
-description: "Get up and running with [Product] in under 5 minutes"
----
-
-# Getting Started with [Product]
-
-[Brief introduction paragraph]
-
-<Card title="Quick Start" icon="rocket" href="/quickstart">
-  Jump straight into using [Product] with our 5-minute tutorial.
-</Card>
-
-## Prerequisites
-
-Before you begin, ensure you have:
-- [Requirement 1]
-- [Requirement 2]
-
-## Installation
-
-<Tabs>
-<Tab title="npm">
-  ```bash
-  npm install [package-name]
-  ```
-</Tab>
-
-<Tab title="yarn">
-  ```bash
-  yarn add [package-name]
-  ```
-</Tab>
-</Tabs>
-
-## Next Steps
-
-<CardGroup cols={2}>
-<Card title="Authentication" href="/auth">
-  Set up API authentication
-</Card>
-
-<Card title="Examples" href="/examples">
-  Explore code examples
-</Card>
-</CardGroup>
-```
-
-### API Reference Page Template
-```markdown
----
-title: "Create User"
-api: "POST /api/v1/users"
----
-
-Creates a new user in the system.
-
-## Request Body
-
-<ParamField body="name" type="string" required>
-  The user's full name.
-</ParamField>
-
-<ParamField body="email" type="string" required>
-  The user's email address. Must be unique.
-</ParamField>
-
-<ParamField body="role" type="string" default="user">
-  The user's role. Can be `admin`, `user`, or `viewer`.
-</ParamField>
-
-## Response
-
-<ResponseField name="id" type="string">
-  Unique identifier for the created user.
-</ResponseField>
-
-<ResponseField name="created_at" type="timestamp">
-  When the user was created.
-</ResponseField>
-
-<RequestExample>
-```bash cURL
-curl -X POST 'https://api.example.com/v1/users' \
-  -H 'Authorization: Bearer YOUR_API_KEY' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "user"
-  }'
-```
-</RequestExample>
-
-<ResponseExample>
-```json 201 Created
-{
-  "id": "user_123",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "role": "user",
-  "created_at": "2024-01-15T10:30:00Z"
-}
-```
-</ResponseExample>
-```
-
-This comprehensive guide provides everything needed to create exceptional documentation with Mintlify, following industry best practices and leveraging all available components effectively.

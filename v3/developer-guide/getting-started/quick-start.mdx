@@ -3,3 +3,289 @@ title: "Quick Start"
 description: "Get your first integration running in 5 minutes"
 icon: "rocket"
 ---
+
+
+Get up and running with Cobalt in under 10 minutes. You'll test a complete integration workflow and see real data flowing between applications.
+
+## What You'll Accomplish
+
+By the end of this guide, you'll have:
+- ✅ Tested a live integration workflow
+- ✅ Seen data sync between your app and a third-party platform
+- ✅ Understanding of how Cobalt's core components work together
+
+<Info>
+**Before you start**: You'll need a Cobalt account. [Sign up here](https://app.gocobalt.io/) if you haven't already.
+</Info>
+
+---
+
+## Step 1: Choose Your Test Integration
+
+Navigate to your Cobalt dashboard and pick an integration to test.
+
+<Steps>
+<Step title="Go to Apps">
+In your Cobalt dashboard, click **Apps** in the sidebar. You'll see all available integrations.
+
+<img height="200" src="/images/quickstart/apps-sidebar.png" alt="Apps section in Cobalt sidebar navigation" />
+</Step>
+
+<Step title="Pick an Integration">
+Choose any integration you have credentials for (HubSpot, Salesforce, Slack, etc.). For this guide, we'll use **HubSpot** as an example.
+
+<img height="300" src="/images/quickstart/apps-catalog.png" alt="Apps catalog showing available integrations" />
+</Step>
+
+<Step title="Check Demo Workflows">
+Click on your chosen integration → **Workflows** tab. You'll see pre-built demo workflows ready to test.
+
+<img height="250" src="/images/quickstart/demo-workflows.png" alt="Demo workflows available in HubSpot integration" />
+</Step>
+</Steps>
+
+---
+
+## Step 2: Configure Integration Credentials
+
+You need to authenticate with the third-party app to test data flow.
+
+<Steps>
+<Step title="Check Authentication Type">
+Go to **Apps** → [Your Integration] → **Settings**. You'll see either:
+- **OAuth 2.0**: Requires app credentials (Client ID, Secret)
+- **Key-based**: Requires API keys
+
+<img height="200" src="/images/quickstart/auth-type-settings.png" alt="Integration settings showing authentication type" />
+</Step>
+
+<Step title="Set Up Credentials">
+
+<Tabs>
+<Tab title="OAuth 2.0 (Recommended)">
+```text
+1. Click "Use Our Credentials" for quick testing
+   OR
+2. Click "Read Documentation" to set up your own app
+3. Add Client ID and Client Secret in Settings
+4. Click Save
+```
+</Tab>
+
+<Tab title="Key-based">
+```text
+1. Click "Read Documentation" to get API keys
+2. Follow the setup guide for your integration
+3. Add API Key and other credentials in Settings
+4. Click Save
+```
+</Tab>
+</Tabs>
+
+<img height="250" src="/images/quickstart/oauth-credentials-setup.png" alt="OAuth credentials configuration in app settings" />
+</Step>
+</Steps>
+
+<Tip>
+**Quick tip**: Use "Our Credentials" for testing. You can switch to your own credentials later for production.
+</Tip>
+
+---
+
+## Step 3: Set Up Response Testing
+
+Configure where you'll receive the workflow response to see the integration working.
+
+<Steps>
+<Step title="Get Your Test URL">
+1. Go to [webhook.site](https://webhook.site)
+2. Copy **Your unique URL** (looks like: `https://webhook.site/abc123...`)
+
+<img height="200" src="/images/quickstart/webhook-site-url.png" alt="Webhook.site showing unique URL for testing" />
+</Step>
+
+<Step title="Find the API Proxy">
+1. In your chosen workflow, look for the **Native node** at the end
+2. Note the **Action name** (e.g., "Create Contact", "Send Message")
+
+<img height="250" src="/images/quickstart/workflow-native-node.png" alt="Workflow showing native node with API proxy action" />
+</Step>
+
+<Step title="Configure the Proxy">
+1. Go to **Developers** → **API Proxies**
+2. Search for your Action name
+3. Click on it and select **API Call** tab
+4. Paste your webhook.site URL in **Request URL**
+5. Click **Save API Call**
+
+<img height="300" src="/images/quickstart/api-proxy-configuration.png" alt="API Proxy configuration with webhook URL setup" />
+</Step>
+</Steps>
+
+---
+
+## Step 4: Connect a Test User
+
+Create a linked account to represent your end user and authenticate them.
+
+<Steps>
+<Step title="Create Linked Account">
+1. Go to **Linked Accounts** → **+ Add Account**
+2. Enter a test name (e.g., "Test User")
+3. Click **Create**
+
+<img height="200" src="/images/quickstart/create-linked-account.png" alt="Creating a new linked account" />
+</Step>
+
+<Step title="Generate Hosted URL">
+1. Open your test linked account
+2. Click **Get Hosted URL** → **Generate Hosted URL**
+3. Copy the URL and open it in a new tab
+
+<img height="250" src="/images/quickstart/generate-hosted-url.png" alt="Generating hosted URL for linked account" />
+</Step>
+
+<Step title="Connect Integration">
+1. In the hosted portal, find your integration
+2. Click **Connect** and complete authentication
+3. Enable the workflow you want to test
+4. Click **Save**
+
+<img height="300" src="/images/quickstart/hosted-portal-connect.png" alt="Hosted portal showing integration connection interface" />
+</Step>
+</Steps>
+
+<Info>
+The **Hosted Portal** is Cobalt's no-code authentication UI. Later, you can build your own UI using our SDKs.
+</Info>
+
+---
+
+## Step 5: Test Your Integration
+
+Now trigger the workflow and watch data flow.
+
+<Steps>
+<Step title="Trigger the Workflow">
+
+**For Event-Based Workflows:**
+1. Go to **Try API** in Cobalt
+2. Select your event (e.g., "Contact Created")
+3. Add test data:
+
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "company": "Test Company"
+}
+```
+
+4. Click **Fire Event**
+
+<img height="300" src="/images/quickstart/try-api-fire-event.png" alt="Try API section with event firing interface" />
+
+**For App-Based Triggers:**
+Create a test record directly in your connected app (e.g., add a contact in HubSpot)
+</Step>
+
+<Step title="Check Execution">
+1. Go to **Logs** in Cobalt
+2. Find your workflow execution
+3. Check the status and any error messages
+
+<img height="250" src="/images/quickstart/execution-logs.png" alt="Workflow execution logs showing successful run" />
+</Step>
+
+<Step title="Verify Results">
+1. Check your webhook.site for the API response
+2. Verify data was created/updated in the target app
+3. 🎉 **Success!** You've completed your first integration test
+
+<img height="200" src="/images/quickstart/webhook-response.png" alt="Webhook.site showing successful API response" />
+</Step>
+</Steps>
+
+---
+
+## See It in Action
+
+Here's what just happened behind the scenes:
+
+<CodeGroup>
+```javascript JavaScript
+// This is what Cobalt did when you fired the event
+const response = await fetch('https://api.gocobalt.io/api/v2/public/event/contact-created', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    linked_account_id: 'your-linked-account-id',
+    data: {
+      name: 'John Doe',
+      email: 'john@example.com',
+      company: 'Test Company'
+    }
+  })
+});
+
+console.log('Workflow triggered:', response.status);
+```
+
+```bash cURL
+curl -X POST https://api.gocobalt.io/api/v2/public/event/contact-created \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "linked_account_id": "your-linked-account-id",
+    "data": {
+      "name": "John Doe",
+      "email": "john@example.com", 
+      "company": "Test Company"
+    }
+  }'
+```
+</CodeGroup>
+
+---
+
+## Troubleshooting
+
+<Warning>
+**Common Issues:**
+
+- **Authentication failed**: Double-check your credentials in App Settings
+- **Workflow not triggering**: Ensure the workflow is enabled in the hosted portal
+- **No response at webhook.site**: Verify the API Proxy URL is configured correctly
+- **Missing scopes**: Add required permissions in App Settings → Permissions & Scopes
+</Warning>
+
+---
+
+## What's Next?
+
+You've successfully tested a Cobalt integration! Here's what to explore next:
+
+<CardGroup cols={2}>
+<Card title="Build Your First Integration" href="/getting-started/first-integration">
+Create a custom integration from scratch for your specific use case
+</Card>
+
+<Card title="Understanding Workflows" href="/workflows/fundamentals">
+Learn how to build complex workflows with triggers, actions, and data transformation
+</Card>
+
+<Card title="Authentication Guide" href="/platform/authentication">
+Set up OAuth apps and API keys for production use
+</Card>
+
+<Card title="Frontend SDK" href="/building-your-frontend/overview">
+Integrate Cobalt's auth flow directly into your application
+</Card>
+</CardGroup>
+
+---
+
+**Ready to build something real?** Continue to [First Integration](/getting-started/first-integration) where you'll create a production-ready integration from scratch.
