@@ -1,0 +1,421 @@
+---
+title: "Switch Case Node"
+description: "Route workflow execution to different paths based on condition evaluation with value comparison or custom code logic"
+sidebarTitle: "Switch Case"
+---
+
+# Switch Case Node
+
+## What does it do?
+
+The Switch Case Node enables conditional routing in workflows by evaluating input parameters against multiple cases and directing execution to different node paths based on the results. It acts like a traditional switch-case statement, allowing you to create branching logic with multiple possible outcomes.
+
+**Common use cases:**
+- Route Salesforce contacts based on their Status (New, Qualified, Closed Won, Closed Lost)
+- Direct leads to different processing workflows based on Lead Source
+- Handle different account types with specific automation paths
+- Create multi-path approval workflows based on criteria
+- Implement complex business logic with multiple conditional branches
+
+## Actions
+
+<ResponseField name="Action Name" type="string">
+  <Expandable title="Available Actions">
+    <ResponseField name="`Value Params`" type="action">
+      Directly evaluates a specified input parameter value against case statements.
+      
+      **Behavior:**
+      - Takes the value of a specified parameter key
+      - Compares against case values as strings
+      - Simple, no-code evaluation approach
+      - Best for straightforward value matching
+    </ResponseField>
+    <ResponseField name="`Code Evaluation`" type="action">
+      Uses custom JavaScript or Python code to evaluate conditions and return values for case comparison.
+      
+      **Behavior:**
+      - Executes custom code with input parameters
+      - Returns string value for case comparison
+      - Supports complex logic and data manipulation
+      - Access to external libraries for advanced processing
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Input Parameters
+
+### Value Params Configuration
+
+<ParamField path="Input Parameters" type="array" required="yes">
+  Key-value pairs of data to evaluate. Can include variables from previous nodes. Example: `[{"key": "status", "value": "{{salesforce_contact.Status}}"}]`
+</ParamField>
+
+<ParamField path="Value Param" type="string" required="yes">
+  The key name from input parameters to use for case evaluation. Must match a key in the input parameters array. Example: `"status"`
+</ParamField>
+
+### Code Evaluation Configuration
+
+<ParamField path="Input Parameters" type="array" required="yes">
+  Key-value pairs of data available in your custom code. Example: `[{"key": "contact", "value": "{{salesforce_contact}}"}, {"key": "threshold", "value": "80"}]`
+</ParamField>
+
+<ParamField path="Code Language" type="dropdown" required="yes">
+  Programming language for custom evaluation logic. Options: `JavaScript`, `Python`. Example: `JavaScript`
+</ParamField>
+
+<ParamField path="Code String" type="string" required="yes">
+  Custom code that processes input parameters and returns a string value for case comparison. Example: `return params.contact.Status.toLowerCase().replace(' ', '_');`
+</ParamField>
+
+### Case Configuration
+
+<ParamField path="Case Statements" type="array" required="yes">
+  Array of case conditions with their corresponding node execution paths. Each case has a value and associated nodes. Example: `[{"case_value": "qualified", "case_satisfied_nodes": ["node_5", "node_6"]}]`
+</ParamField>
+
+<ParamField path="Default Case Nodes" type="array" required="yes">
+  Nodes to execute when no case conditions are matched. Default case is mandatory and cannot be removed. Example: `["default_node_1"]`
+</ParamField>
+
+<Info>Case matching is case-sensitive and uses exact string comparison. The Switch Case Node always returns string values for comparison against case statements.</Info>
+
+## Supported Libraries
+
+### JavaScript Libraries
+- **axios**, **cheerio**, **date-fns**, **fast-xml-parser**, **fuse.js**, **lodash**, **mime**, **number-to-words**, **url**, **uuid**, **danfo**
+
+### Python Libraries  
+- **Standard libraries**, **pandas**, **numpy**
+
+## Output
+
+The Switch Case Node outputs evaluation results and routing information.
+
+### Output Structure
+
+```json
+{
+  "evaluated_value": "qualified",
+  "matched_case": {
+    "case_value": "qualified",
+    "case_satisfied_nodes": ["5", "6"]
+  },
+  "final_satisfied_nodes": ["5", "6"]
+}
+```
+
+### Error Output (Code Evaluation)
+
+```json
+{
+  "error": "ReferenceError: undefined_variable is not defined",
+  "evaluated_value": null,
+  "matched_case": null,
+  "final_satisfied_nodes": ["default_node_1"]
+}
+```
+
+### Output Components
+
+- **evaluated_value**: The string result from parameter value or code execution
+- **matched_case**: The case statement that matched the evaluated value
+- **final_satisfied_nodes**: Array of node IDs that will be executed next
+- **error**: Error message if code evaluation fails (routes to default case)
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Switch Case Node to canvas">
+    From the **Utility Nodes** section, drag the Switch Case Node to your workflow canvas where you need conditional routing.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/switch-case-node-drag-drop.png" alt="Dragging Switch Case Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select evaluation method">
+    Choose your evaluation approach:
+    - **Value Params**: Direct parameter value comparison
+    - **Code Evaluation**: Custom logic with JavaScript or Python
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/switch-case-node-evaluation-selection.png" alt="Selecting evaluation method" />
+    </Frame>
+  </Step>
+  <Step title="Configure input parameters">
+    Set up your input data:
+    - Add key-value pairs from previous nodes or static values
+    - For Value Params: specify which parameter key to evaluate
+    - For Code Evaluation: write your custom logic
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/switch-case-node-input-configuration.png" alt="Configuring input parameters" />
+    </Frame>
+  </Step>
+  <Step title="Define case statements">
+    Create your case conditions:
+    - Add case values that match possible evaluation results
+    - Connect nodes to execute for each case
+    - Configure default case for unmatched conditions
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/switch-case-node-case-configuration.png" alt="Defining case statements and node connections" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your switch logic with sample data to verify case routing works correctly.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/switch-case-node-test-execution.png" alt="Testing switch case node logic" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>The default case is mandatory and cannot be removed. Ensure all possible evaluation outcomes are covered by your case statements to avoid unexpected default routing.</Info>
+
+## Examples
+
+### Example 1: Value Params - Route Contacts by Status
+
+This example routes Salesforce contacts to different workflows based on their status:
+
+```javascript
+// Workflow configuration
+{
+  "name": "switch_case_task",
+  "taskReferenceName": "route_by_status",
+  "type": "SWITCH_CASE",
+  "action": "Value Params",
+  "inputParameters": {
+    "input_parameters": [
+      {
+        "key": "status",
+        "value": "{{salesforce_contact.Status}}"
+      }
+    ],
+    "evaluator_type": "value_params",
+    "value_param": "status",
+    "case_statements": [
+      {
+        "case_value": "New",
+        "case_satisfied_nodes": ["onboarding_flow"]
+      },
+      {
+        "case_value": "Qualified", 
+        "case_satisfied_nodes": ["nurture_sequence"]
+      },
+      {
+        "case_value": "Closed Won",
+        "case_satisfied_nodes": ["post_sale_workflow"]
+      },
+      {
+        "case_value": "Closed Lost",
+        "case_satisfied_nodes": ["re_engagement_flow"]
+      }
+    ],
+    "default_case_satisfied_nodes": ["manual_review"]
+  }
+}
+```
+
+**Expected Output (Status = "Qualified"):**
+```json
+{
+  "evaluated_value": "Qualified",
+  "matched_case": {
+    "case_value": "Qualified",
+    "case_satisfied_nodes": ["nurture_sequence"]
+  },
+  "final_satisfied_nodes": ["nurture_sequence"]
+}
+```
+
+### Example 2: Code Evaluation - Normalized Status Routing
+
+This example uses custom code to normalize status values before case matching:
+
+```javascript
+// Workflow configuration
+{
+  "name": "switch_case_task",
+  "taskReferenceName": "normalized_status_routing",
+  "type": "SWITCH_CASE", 
+  "action": "Code Evaluation",
+  "inputParameters": {
+    "input_parameters": [
+      {
+        "key": "contact",
+        "value": "{{salesforce_contact}}"
+      },
+      {
+        "key": "lead_score",
+        "value": "{{salesforce_contact.Lead_Score__c}}"
+      }
+    ],
+    "evaluator_type": "code_evaluation",
+    "code_language": "javascript",
+    "code_string": "const status = params.contact.Status?.trim()?.toLowerCase().replace(' ', '_'); const score = parseInt(params.lead_score) || 0; if (status === 'qualified' && score >= 80) return 'high_priority_qualified'; return status;",
+    "case_statements": [
+      {
+        "case_value": "new",
+        "case_satisfied_nodes": ["basic_onboarding"]
+      },
+      {
+        "case_value": "qualified",
+        "case_satisfied_nodes": ["standard_nurture"]
+      },
+      {
+        "case_value": "high_priority_qualified",
+        "case_satisfied_nodes": ["priority_nurture", "sales_notification"]
+      },
+      {
+        "case_value": "closed_won", 
+        "case_satisfied_nodes": ["success_workflow"]
+      }
+    ],
+    "default_case_satisfied_nodes": ["manual_review"]
+  }
+}
+```
+
+**Expected Output (Status = "Qualified", Score = 85):**
+```json
+{
+  "evaluated_value": "high_priority_qualified",
+  "matched_case": {
+    "case_value": "high_priority_qualified",
+    "case_satisfied_nodes": ["priority_nurture", "sales_notification"]
+  },
+  "final_satisfied_nodes": ["priority_nurture", "sales_notification"]
+}
+```
+
+### Example 3: Lead Source Based Routing with Python
+
+This example uses Python to categorize leads by source type:
+
+```python
+# Workflow configuration with Python code
+{
+  "name": "switch_case_task",
+  "taskReferenceName": "lead_source_categorization",
+  "type": "SWITCH_CASE",
+  "action": "Code Evaluation", 
+  "inputParameters": {
+    "input_parameters": [
+      {
+        "key": "lead_source",
+        "value": "{{salesforce_contact.LeadSource}}"
+      },
+      {
+        "key": "company_size",
+        "value": "{{salesforce_contact.NumberOfEmployees}}"
+      }
+    ],
+    "evaluator_type": "code_evaluation",
+    "code_language": "python",
+    "code_string": "source = params['lead_source'].lower() if params['lead_source'] else 'unknown'\nsize = int(params['company_size']) if params['company_size'] else 0\n\nif source in ['referral', 'partner']:\n    return 'high_trust'\nelif source in ['website', 'content'] and size > 100:\n    return 'enterprise_inbound'\nelif source in ['advertisement', 'social_media']:\n    return 'paid_acquisition'\nelse:\n    return 'standard_lead'",
+    "case_statements": [
+      {
+        "case_value": "high_trust",
+        "case_satisfied_nodes": ["fast_track_sales"]
+      },
+      {
+        "case_value": "enterprise_inbound",
+        "case_satisfied_nodes": ["enterprise_workflow", "account_research"]
+      },
+      {
+        "case_value": "paid_acquisition",
+        "case_satisfied_nodes": ["attribution_tracking", "nurture_sequence"]
+      },
+      {
+        "case_value": "standard_lead",
+        "case_satisfied_nodes": ["qualification_flow"]
+      }
+    ],
+    "default_case_satisfied_nodes": ["manual_classification"]
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "evaluated_value": "enterprise_inbound",
+  "matched_case": {
+    "case_value": "enterprise_inbound", 
+    "case_satisfied_nodes": ["enterprise_workflow", "account_research"]
+  },
+  "final_satisfied_nodes": ["enterprise_workflow", "account_research"]
+}
+```
+
+## Runtime Behavior
+
+<Warning>Case matching is case-sensitive and uses exact string comparison. Ensure your evaluation logic returns string values that exactly match your case statements.</Warning>
+
+### Evaluation Process
+
+The Switch Case Node processes conditions in the following order:
+
+1. **Parameter Resolution**: Resolves variables from previous nodes into input parameters
+2. **Evaluation Execution**: Runs value extraction or custom code evaluation  
+3. **String Conversion**: Converts evaluation result to string for case comparison
+4. **Case Matching**: Compares result against case statements (exact, case-sensitive match)
+5. **Node Routing**: Routes to matched case nodes or default case if no match
+6. **Error Handling**: Routes to default case if code evaluation fails
+
+### Code Execution Environment
+
+For Code Evaluation mode:
+- **Isolated Execution**: Code runs in secure containers with timeout limits
+- **Parameter Access**: Input parameters available via `params` object
+- **Library Support**: External libraries available via import/require
+- **Error Capture**: Runtime errors captured and logged, execution routes to default case
+- **Return Value**: Must return a value that can be converted to string
+
+## Troubleshooting
+
+### No Case Matches (Routes to Default)
+
+**Problem**: Evaluation result doesn't match any case and routes to default
+
+**Solutions**:
+- Check case-sensitive spelling and spacing in case values
+- Use Debug Node before Switch Case to inspect evaluation results
+- Add logging to code evaluation to see actual returned values
+- Consider normalizing values in code evaluation mode
+
+### Code Evaluation Errors
+
+**Problem**: Custom code throws runtime errors
+
+**Solutions**:
+- Add error handling with try-catch blocks in your code
+- Validate input parameters before processing
+- Check for null or undefined values in parameters
+- Test code logic with known good data first
+
+### Wrong Nodes Executing
+
+**Problem**: Unexpected nodes are triggered by case matching
+
+**Solutions**:
+- Verify case_satisfied_nodes contain correct node IDs
+- Check that referenced nodes exist in the workflow
+- Ensure only one case can match the evaluation result
+- Review case statement configuration for typos
+
+### Input Parameter Issues
+
+**Problem**: Parameters not resolving correctly from previous nodes
+
+**Solutions**:
+- Verify previous nodes completed successfully
+- Check variable syntax matches node output structure
+- Use correct key names in input parameters array
+- Test parameter resolution with Debug Node
+
+<Tip>Use console.log statements in Code Evaluation mode to debug your logic. Logs will appear in workflow execution details for troubleshooting.</Tip>
+
+## What's Next?
+
+- Learn about [Rule Node](/nodes/rule-node) for simpler conditional logic
+- Explore [Custom Code Node](/nodes/custom-code-node) for complex data processing
+- Check out [Merge Node](/nodes/merge-node) to combine multiple switch case paths
+- Review [Workflow Testing](/testing/workflow-testing) to test switch case routing

@@ -1,0 +1,356 @@
+---
+title: "File Handler Node"
+description: "Convert, merge, and process files between CSV, JSON, and Excel formats with data transformation capabilities"
+sidebarTitle: "File Handler"
+---
+
+# File Handler Node
+
+## What does it do?
+
+The File Handler Node provides comprehensive file processing capabilities, allowing you to convert between different data formats (CSV, JSON, Excel), merge multiple files, and generate new files from workflow data. All processed files are hosted on publicly accessible URLs for easy integration with external systems.
+
+**Common use cases:**
+- Convert Salesforce contact exports from CSV to JSON for API processing
+- Generate Excel reports from JSON contact data with formulas
+- Merge multiple contact data files into comprehensive reports
+- Parse CSV contact lists into arrays for workflow processing
+- Create downloadable files from workflow results
+
+## Actions
+
+<Expandable title="Available Actions">
+  <ResponseField name="CSV to JSON" type="action">
+    Converts a publicly hosted CSV file to JSON format and provides a hosted URL. Takes CSV URL as input, converts to JSON object structure, and returns a publicly hosted JSON file URL.
+  </ResponseField>
+  <ResponseField name="JSON to CSV" type="action">
+    Converts JSON data (URL or direct input) to CSV format and provides a hosted URL. Accepts JSON URL or direct JSON content, converts to comma-separated values format, and returns a publicly hosted CSV file URL.
+  </ResponseField>
+  <ResponseField name="Parse CSV to Array" type="action">
+    Parses CSV content into an array of objects for workflow processing. Takes CSV URL or direct CSV content, converts each row to object with column headers as keys, and returns array structure in node output.
+  </ResponseField>
+  <ResponseField name="Array to CSV" type="action">
+    Converts array of objects to CSV content format. Takes JSON array input, generates CSV with headers from object keys, and returns CSV content as string.
+  </ResponseField>
+  <ResponseField name="JSON File to Excel" type="action">
+    Converts a publicly hosted JSON file to Excel format with optional formula support. Takes JSON URL as input, converts to Excel format (.xlsx), supports formula detection for "=" prefixed values, and returns a publicly hosted Excel file URL.
+  </ResponseField>
+  <ResponseField name="JSON Data to Excel" type="action">
+    Converts direct JSON input to Excel format with optional formula support. Takes direct JSON content as input, converts to Excel format (.xlsx), supports formula detection for "=" prefixed values, and returns a publicly hosted Excel file URL.
+  </ResponseField>
+  <ResponseField name="CSV to Excel" type="action">
+    Converts a publicly hosted CSV file to Excel format with optional formula support. Takes CSV URL as input, converts to Excel format (.xlsx), supports formula detection for "=" prefixed values, and returns a publicly hosted Excel file URL.
+  </ResponseField>
+  <ResponseField name="Merge Excel Files" type="action">
+    Merges multiple Excel files into a single Excel file. Takes array of Excel file URLs, combines all sheets from all files, preserves original sheet names and structure, and returns a publicly hosted merged Excel file URL.
+  </ResponseField>
+  <ResponseField name="Write Data to File" type="action">
+    Creates a file from text content with customizable format and name. Takes any text content input, allows format selection (JSON, TXT, CSV, Excel), supports custom file naming, and returns a publicly hosted file URL.
+  </ResponseField>
+</Expandable>
+
+## Input Parameters
+
+<ParamField path="File URL" type="string" required="conditional">
+  Publicly accessible URL to source file. Required for URL-based actions. Example: `https://example.com/contacts.csv` or `{{previous_node.file_url}}`
+</ParamField>
+
+<ParamField path="File Content" type="string" required="conditional">
+  Direct file content input. Required for content-based actions. Example: `"name,email\nJohn,john@example.com"` or `{{salesforce_export.csv_data}}`
+</ParamField>
+
+<ParamField path="JSON Data" type="object" required="conditional">
+  Direct JSON data input for conversion actions. Example: `[{"name": "John", "email": "john@example.com"}]` or `{{contact_data.records}}`
+</ParamField>
+
+<ParamField path="Array Data" type="array" required="conditional">
+  Array of objects for Array to CSV conversion. Example: `[{"name": "John", "email": "john@example.com"}]` or `{{parsed_contacts}}`
+</ParamField>
+
+<ParamField path="File URLs Array" type="array" required="conditional">
+  Array of file URLs for merge operations. Example: `["https://example.com/file1.xlsx", "https://example.com/file2.xlsx"]`
+</ParamField>
+
+<ParamField path="Has Formulas" type="boolean" required="optional">
+  Enable Excel formula detection for entries starting with "=". Available for Excel conversion actions. Example: `true`
+</ParamField>
+
+<ParamField path="File Format" type="dropdown" required="conditional">
+  Output file format for Write Data to File action. Options: `JSON`, `TXT`, `CSV`, `Excel`. Example: `Excel`
+</ParamField>
+
+<ParamField path="File Name" type="string" required="conditional">
+  Custom file name for Write Data to File action. Example: `"contact-report"` or `{{event.report_name}}`
+</ParamField>
+
+<Info>All generated files are hosted on publicly accessible URLs. For actions that don't require custom naming, files are given randomly generated names automatically.</Info>
+
+## Output
+
+The File Handler Node outputs different structures based on the selected action.
+
+### URL Output Actions (Most Actions)
+
+```json
+{
+  "file_url": "https://storage.gocobalt.io/files/abc123/contacts.json",
+  "file_name": "contacts.json",
+  "file_size": 2048,
+  "format": "JSON",
+  "created_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Array Output Actions (Parse CSV to Array)
+
+```json
+{
+  "parsed_data": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1-555-123-4567"
+    },
+    {
+      "name": "Jane Smith", 
+      "email": "jane@example.com",
+      "phone": "+1-555-987-6543"
+    }
+  ],
+  "total_rows": 2,
+  "columns": ["name", "email", "phone"]
+}
+```
+
+### Content Output Actions (Array to CSV)
+
+```json
+{
+  "csv_content": "name,email,phone\nJohn Doe,john@example.com,+1-555-123-4567\nJane Smith,jane@example.com,+1-555-987-6543",
+  "row_count": 2,
+  "column_count": 3
+}
+```
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag File Handler Node to canvas">
+    From the **Utility Nodes** section, drag the File Handler Node to your workflow canvas where you need file processing.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-drag-drop.png" alt="Dragging File Handler Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select processing action">
+    Choose the file processing action that matches your needs:
+    - **Conversion actions** for format changes
+    - **Parse/Array actions** for data structure changes
+    - **Merge actions** for combining files
+    - **Write actions** for creating new files
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-action-selection.png" alt="Selecting file processing action" />
+    </Frame>
+  </Step>
+  <Step title="Configure input parameters">
+    Set up your file processing parameters:
+    - Provide file URLs or direct content as needed
+    - Configure format-specific options like formula detection
+    - Set custom file names where applicable
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-parameter-configuration.png" alt="Configuring file processing parameters" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your file processing configuration to verify the output format and accessibility work correctly.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-test-execution.png" alt="Testing file handler node configuration" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Generated file URLs are publicly accessible and can be used immediately in subsequent workflow steps or external integrations.</Info>
+
+## Examples
+
+### Example 1: Convert Salesforce CSV Export to JSON
+
+This example converts a CSV export from Salesforce to JSON format for API processing:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "csv_to_json_conversion",
+  "type": "FILE_HANDLER",
+  "action": "CSV to JSON",
+  "inputParameters": {
+    "fileUrl": "{{salesforce_export.csv_url}}"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "file_url": "https://storage.gocobalt.io/files/abc123/salesforce-contacts.json",
+  "file_name": "salesforce-contacts.json", 
+  "file_size": 15420,
+  "format": "JSON",
+  "created_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Example 2: Generate Excel Report with Formulas
+
+This example creates an Excel file from contact data with formula support:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "json_to_excel_report",
+  "type": "FILE_HANDLER",
+  "action": "JSON Data to Excel",
+  "inputParameters": {
+    "jsonData": [
+      {
+        "name": "John Doe",
+        "email": "john@example.com", 
+        "lead_score": 85,
+        "category": "=IF(C2>=80,\"High\",\"Medium\")"
+      },
+      {
+        "name": "Jane Smith",
+        "email": "jane@example.com",
+        "lead_score": 65,
+        "category": "=IF(C3>=80,\"High\",\"Medium\")"
+      }
+    ],
+    "hasFormulas": true
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "file_url": "https://storage.gocobalt.io/files/def456/contact-report.xlsx",
+  "file_name": "contact-report.xlsx",
+  "file_size": 8796,
+  "format": "Excel",
+  "created_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Example 3: Parse CSV and Process Data
+
+This example parses a CSV file into an array for further processing in the workflow:
+
+```javascript
+// Workflow configuration  
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "parse_contact_csv",
+  "type": "FILE_HANDLER",
+  "action": "Parse CSV to Array",
+  "inputParameters": {
+    "fileContent": "name,email,phone,status\nJohn Doe,john@example.com,+1-555-123-4567,Qualified\nJane Smith,jane@example.com,+1-555-987-6543,New Lead"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "parsed_data": [
+    {
+      "name": "John Doe",
+      "email": "john@example.com", 
+      "phone": "+1-555-123-4567",
+      "status": "Qualified"
+    },
+    {
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "phone": "+1-555-987-6543", 
+      "status": "New Lead"
+    }
+  ],
+  "total_rows": 2,
+  "columns": ["name", "email", "phone", "status"]
+}
+```
+
+## Runtime Behavior
+
+<Warning>File processing may take additional time for large files or complex operations. Ensure source URLs are publicly accessible and files don't exceed size limits.</Warning>
+
+### Processing Flow
+
+The File Handler Node processes files in the following order:
+
+1. **Input Validation**: Validates URLs, content format, and required parameters
+2. **File Retrieval**: Downloads files from provided URLs (if applicable)
+3. **Format Processing**: Performs conversion, parsing, or merging operations
+4. **Formula Handling**: Processes Excel formulas if enabled
+5. **File Generation**: Creates output file and uploads to storage
+6. **URL Generation**: Generates publicly accessible URL for the result
+
+### Formula Detection
+
+For Excel actions with "Has Formulas" enabled:
+- **Enabled**: Values starting with "=" are treated as Excel formulas
+- **Disabled**: "=" characters are treated as literal text
+- **Validation**: Basic formula syntax validation prevents errors
+- **Security**: Only safe Excel functions are supported
+
+## Troubleshooting
+
+### File URL Not Accessible
+
+**Problem**: Source file URL returns 404 or access denied errors
+
+**Solutions**:
+- Verify the URL is publicly accessible without authentication
+- Check that the file exists at the specified location
+- Ensure the URL uses HTTPS protocol for secure access
+- Test URL accessibility in a browser before using in workflow
+
+### CSV Parsing Errors
+
+**Problem**: CSV conversion fails with malformed data errors
+
+**Solutions**:
+- Verify CSV has consistent column structure across all rows
+- Check for proper comma separation and quote escaping
+- Ensure headers are present in the first row
+- Remove any empty rows or trailing commas
+
+### Excel Formula Errors
+
+**Problem**: Generated Excel file shows formula errors or unexpected values
+
+**Solutions**:
+- Verify formula syntax matches Excel standards
+- Check that referenced cells exist in the data structure
+- Use simple formulas like SUM, IF, AVERAGE for better compatibility
+- Test with "Has Formulas" disabled to isolate issues
+
+### Merge Operation Failures
+
+**Problem**: Excel merge fails or produces unexpected results
+
+**Solutions**:
+- Verify all source Excel files are accessible and valid
+- Check that files don't contain conflicting sheet names
+- Ensure source files are proper Excel format (.xlsx, .xls)
+- Reduce the number of files if hitting processing limits
+
+<Tip>Use the Debug Node after File Handler to inspect generated URLs and verify file accessibility before using them in subsequent workflow steps.</Tip>
+
+## What's Next?
+
+- Learn about [HTTP Request Node](/nodes/http-request-node) to send generated file URLs to external systems
+- Explore [Custom Code Node](/nodes/custom-code-node) for advanced file data processing
+- Check out [Response Node](/nodes/response-node) to return file URLs in workflow responses
+- Review [Workflow Testing](/testing/workflow-testing) to test file processing operations
