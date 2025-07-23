@@ -1,0 +1,461 @@
+---
+title: "Loop Node"
+description: "Execute workflow sections repeatedly with fixed iterations, array processing, or conditional loops"
+sidebarTitle: "Loop"
+---
+
+# Loop Node
+
+## What does it do?
+
+The Loop Node enables repetitive execution of workflow sections, allowing you to process multiple items, run operations a specific number of times, or continue execution until certain conditions are met. It acts as a container for other nodes that need to be executed multiple times with different data or conditions.
+
+**Common use cases:**
+- Create multiple test contacts in Salesforce for sandbox environments
+- Process arrays of contact IDs to update their lifecycle stages
+- Fetch paginated Salesforce API results until all data is retrieved
+- Bulk process lead data with controlled concurrency
+- Generate multiple reports or documents in batches
+
+## Actions
+
+<ResponseField name="Action Name" type="string">
+  <Expandable title="Available Actions">
+    <ResponseField name="`Fixed Iteration`" type="action">
+      Runs the loop a specified number of times regardless of input data.
+      
+      **Behavior:**
+      - Executes for exact number of iterations specified
+      - Each iteration runs the same nodes inside the loop
+      - Supports concurrent batch processing for performance
+      - Collects output data from each iteration into an array
+    </ResponseField>
+    <ResponseField name="`Array Iteration`" type="action">
+      Runs the loop once for each element in the provided array.
+      
+      **Behavior:**
+      - Number of iterations equals array length
+      - Each iteration has access to current array element
+      - Array elements available as variables within loop
+      - Supports concurrent batch processing
+    </ResponseField>
+    <ResponseField name="`DO While`" type="action">
+      Continues looping while conditions are met and stops when break conditions are satisfied.
+      
+      **Behavior:**
+      - Runs continuously while loop condition is true
+      - Stops immediately when break condition is met
+      - Supports complex AND/OR condition logic
+      - No built-in iteration limits (manual stop required)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Input Parameters
+
+### Fixed Iteration Parameters
+
+<ParamField path="Total Iterations" type="number" required="yes">
+  Number of times to execute the loop. Example: `5`
+</ParamField>
+
+<ParamField path="Concurrent Batches" type="number" required="optional">
+  Number of iterations to run in parallel batches. If total is 10 and concurrent is 3, runs as 3,3,3,1. Example: `3`
+</ParamField>
+
+<ParamField path="Output Data" type="string" required="optional">
+  Data to collect from each iteration. Can be variables from nodes inside or outside the loop. Example: `"{{create_contact.id}}"` or `"{{salesforce_contact.Name}}"`
+</ParamField>
+
+### Array Iteration Parameters
+
+<ParamField path="Group Array" type="array" required="yes">
+  Array of items to iterate over. Each element becomes available as `{{array_item}}` within the loop. Example: `[{"id": "001"}, {"id": "002"}]` or `{{contact_list.records}}`
+</ParamField>
+
+<ParamField path="Concurrent Batches" type="number" required="optional">
+  Number of array elements to process in parallel batches. Example: `2`
+</ParamField>
+
+<ParamField path="Output Data" type="string" required="optional">
+  Data to collect from each iteration using array element variables. Example: `"{{update_contact.status}}"`
+</ParamField>
+
+### DO While Parameters
+
+<ParamField path="Loop Condition" type="object" required="yes">
+  Conditions that must be true for the loop to continue running. Supports AND/OR logic with multiple conditions. Example: `{"variable": "{{api_response.hasMore}}", "operator": "Equal To", "value": "true"}`
+</ParamField>
+
+<ParamField path="Break Condition" type="object" required="yes">
+  Conditions that immediately stop the loop when satisfied. Overrides loop conditions. Example: `{"variable": "{{api_response.nextToken}}", "operator": "Is Null", "value": ""}`
+</ParamField>
+
+<ParamField path="Output Data" type="string" required="optional">
+  Data to collect from each iteration. Can reference current iteration results. Example: `"{{fetch_contacts.data}}"`
+</ParamField>
+
+<Info>Concurrent batches are optional and default to dynamic internal logic when not specified. Failed iterations don't stop the loop - remaining iterations continue executing.</Info>
+
+## Output
+
+The Loop Node outputs an array of results collected from each iteration based on the configured output data.
+
+### Output Structure
+
+```json
+{
+  "loop_results": [
+    {
+      "id": "003xx000001ABC",
+      "name": "Test Contact 1",
+      "created_at": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "003xx000002DEF", 
+      "name": "Test Contact 2",
+      "created_at": "2024-01-15T10:31:00Z"
+    }
+  ],
+  "total_iterations": 2,
+  "successful_iterations": 2,
+  "failed_iterations": 0
+}
+```
+
+### Empty Output (No Output Data Configured)
+
+```json
+{
+  "loop_results": [],
+  "total_iterations": 5,
+  "successful_iterations": 5,
+  "failed_iterations": 0
+}
+```
+
+### Status Information
+
+- **total_iterations**: Total number of loop executions completed
+- **successful_iterations**: Number of iterations that completed without errors
+- **failed_iterations**: Number of iterations that encountered errors
+- **loop_results**: Array of collected output data from each iteration
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Loop Node to canvas">
+    From the **Utility Nodes** section, drag the Loop Node to your workflow canvas where you need repetitive processing.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-drag-drop.png" alt="Dragging Loop Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select loop type">
+    Choose your loop execution method:
+    - **Fixed Iteration**: Run a specific number of times
+    - **Array Iteration**: Process each element in an array
+    - **DO While**: Continue until conditions are met
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-type-selection.png" alt="Selecting loop type" />
+    </Frame>
+  </Step>
+  <Step title="Configure loop parameters">
+    Set up your loop configuration:
+    - **Fixed**: Set iteration count and optional concurrent batches
+    - **Array**: Provide array data and batch settings
+    - **DO While**: Define loop and break conditions
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-parameter-configuration.png" alt="Configuring loop parameters" />
+    </Frame>
+  </Step>
+  <Step title="Add nodes inside the loop">
+    Drag and connect nodes inside the loop container:
+    - These nodes will execute for each iteration
+    - Connect them in the desired execution order
+    - Use loop variables in node configurations
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-internal-nodes.png" alt="Adding nodes inside the loop" />
+    </Frame>
+  </Step>
+  <Step title="Configure output data (optional)">
+    Specify what data to collect from each iteration:
+    - Reference nodes inside the loop for dynamic data
+    - Use static values or external node data
+    - Leave empty if no output collection needed
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-output-configuration.png" alt="Configuring loop output data" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your loop configuration with sample data to verify iterations and output collection work correctly.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/loop-node-test-execution.png" alt="Testing loop node execution" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Nodes inside the loop execute in the order they're connected. Each iteration runs independently and cannot access data from previous iterations.</Info>
+
+## Examples
+
+### Example 1: Fixed Iteration - Create Test Contacts
+
+This example creates 5 test contacts in Salesforce for sandbox testing:
+
+```javascript
+// Workflow configuration
+{
+  "name": "loop_task",
+  "taskReferenceName": "create_test_contacts",
+  "type": "LOOP",
+  "action": "Fixed Iteration",
+  "inputParameters": {
+    "total_iterations": 5,
+    "concurrent_batches": 2,
+    "output_data": "{{create_contact.id}}"
+  },
+  "internal_nodes": [
+    {
+      "name": "salesforce_create_contact",
+      "taskReferenceName": "create_contact",
+      "type": "SALESFORCE_ACTION",
+      "inputParameters": {
+        "action": "Create Contact",
+        "firstName": "Test {{loop.iteration_number}}",
+        "lastName": "Contact",
+        "email": "test{{loop.iteration_number}}@example.com"
+      }
+    }
+  ]
+}
+```
+
+**Expected Output:**
+```json
+{
+  "loop_results": [
+    "003xx000001ABC",
+    "003xx000002DEF", 
+    "003xx000003GHI",
+    "003xx000004JKL",
+    "003xx000005MNO"
+  ],
+  "total_iterations": 5,
+  "successful_iterations": 5,
+  "failed_iterations": 0
+}
+```
+
+### Example 2: Array Iteration - Update Contact Lifecycle Stages
+
+This example processes an array of contact IDs to update their lifecycle stages:
+
+```javascript
+// Workflow configuration
+{
+  "name": "loop_task", 
+  "taskReferenceName": "update_contact_stages",
+  "type": "LOOP",
+  "action": "Array Iteration",
+  "inputParameters": {
+    "group_array": "{{contact_list.records}}",
+    "concurrent_batches": 3,
+    "output_data": "{{update_contact.status}}"
+  },
+  "internal_nodes": [
+    {
+      "name": "salesforce_update_contact",
+      "taskReferenceName": "update_contact", 
+      "type": "SALESFORCE_ACTION",
+      "inputParameters": {
+        "action": "Update Contact",
+        "contactId": "{{array_item.id}}",
+        "lifecycleStage": "Marketing Qualified"
+      }
+    }
+  ]
+}
+```
+
+**Input Array:**
+```json
+[
+  {"id": "003xx000001ABC", "name": "John Doe"},
+  {"id": "003xx000002DEF", "name": "Jane Smith"},
+  {"id": "003xx000003GHI", "name": "Bob Johnson"}
+]
+```
+
+**Expected Output:**
+```json
+{
+  "loop_results": [
+    "success",
+    "success", 
+    "success"
+  ],
+  "total_iterations": 3,
+  "successful_iterations": 3,
+  "failed_iterations": 0
+}
+```
+
+### Example 3: DO While - Fetch Paginated Salesforce Data
+
+This example continues fetching contact data until all pages are retrieved:
+
+```javascript
+// Workflow configuration
+{
+  "name": "loop_task",
+  "taskReferenceName": "fetch_all_contacts",
+  "type": "LOOP", 
+  "action": "DO While",
+  "inputParameters": {
+    "loop_condition": {
+      "conditions": [
+        {
+          "variable": "{{fetch_contacts.hasMore}}",
+          "operator": "Equal To",
+          "value": "true"
+        }
+      ],
+      "logic": "AND"
+    },
+    "break_condition": {
+      "conditions": [
+        {
+          "variable": "{{fetch_contacts.nextPageUrl}}",
+          "operator": "Is Null",
+          "value": ""
+        }
+      ],
+      "logic": "OR"
+    },
+    "output_data": "{{fetch_contacts.records}}"
+  },
+  "internal_nodes": [
+    {
+      "name": "salesforce_query_contacts",
+      "taskReferenceName": "fetch_contacts",
+      "type": "SALESFORCE_ACTION", 
+      "inputParameters": {
+        "action": "Query Records",
+        "soql": "SELECT Id, Name, Email FROM Contact LIMIT 200",
+        "nextPageUrl": "{{loop.previous_next_url}}"
+      }
+    }
+  ]
+}
+```
+
+**Expected Output:**
+```json
+{
+  "loop_results": [
+    [
+      {"id": "003xx000001ABC", "name": "John Doe"},
+      {"id": "003xx000002DEF", "name": "Jane Smith"}
+    ],
+    [
+      {"id": "003xx000003GHI", "name": "Bob Johnson"},
+      {"id": "003xx000004JKL", "name": "Alice Brown"}
+    ]
+  ],
+  "total_iterations": 2,
+  "successful_iterations": 2, 
+  "failed_iterations": 0
+}
+```
+
+## Runtime Behavior
+
+<Warning>DO While loops have no built-in iteration limits and must be manually stopped if they run indefinitely. Ensure your break conditions are properly configured to prevent infinite loops.</Warning>
+
+### Execution Flow
+
+The Loop Node processes iterations in the following order:
+
+1. **Parameter Resolution**: Resolves input parameters and conditions
+2. **Iteration Planning**: Determines total iterations based on loop type
+3. **Batch Processing**: Groups iterations into concurrent batches if specified
+4. **Node Execution**: Runs internal nodes for each iteration
+5. **Output Collection**: Gathers specified output data from each iteration
+6. **Result Compilation**: Combines all iteration results into final output
+
+### Variable Access Within Loops
+
+Different loop types provide different variables:
+
+- **Fixed Iteration**: `{{loop.iteration_number}}` (1, 2, 3, etc.)
+- **Array Iteration**: `{{array_item}}` (current array element), `{{array_item.property}}`
+- **DO While**: Previous iteration results available for condition evaluation
+
+### Concurrent Processing
+
+When concurrent batches are specified:
+- **Batch Size**: Iterations divided into groups of specified size
+- **Parallel Execution**: Each batch runs simultaneously
+- **Order Preservation**: Results maintain original iteration order
+- **Error Isolation**: Failed iterations don't affect other concurrent batches
+
+## Troubleshooting
+
+### Loop Never Stops (DO While)
+
+**Problem**: DO While loop continues indefinitely without reaching break condition
+
+**Solutions**:
+- Verify break condition can actually be satisfied by loop execution
+- Check that variables referenced in break condition are being updated
+- Add Debug Node inside loop to monitor condition variable values
+- Implement fallback break conditions based on iteration count
+
+### Concurrent Batch Failures
+
+**Problem**: High failure rate when using concurrent batches
+
+**Solutions**:
+- Reduce concurrent batch size to avoid rate limiting
+- Add delay between API calls within loop iterations
+- Implement retry logic in nodes inside the loop
+- Check external system capacity for concurrent requests
+
+### Array Iteration Variable Errors
+
+**Problem**: Cannot access array element properties within loop
+
+**Solutions**:
+- Verify array structure matches expected format
+- Use correct variable syntax: `{{array_item.property_name}}`
+- Check that array elements contain expected properties
+- Use Debug Node to inspect array_item structure
+
+### Output Data Not Collected
+
+**Problem**: Loop completes but output_data is empty or missing
+
+**Solutions**:
+- Verify output_data references valid node outputs inside the loop
+- Check that referenced nodes complete successfully in each iteration
+- Ensure output_data syntax matches node response structure
+- Test output_data expression with single iteration first
+
+### Memory Issues with Large Loops
+
+**Problem**: Workflow fails or slows down with many iterations
+
+**Solutions**:
+- Use concurrent batches to control memory usage
+- Minimize data stored in output_data collection
+- Process large datasets in smaller chunks with multiple loop nodes
+- Monitor workflow execution resources and adjust accordingly
+
+<Tip>Use the Debug Node inside your loop to inspect variables and data flow during each iteration. This helps identify issues with variable references and condition evaluation.</Tip>
+
+## What's Next?
+
+- Learn about [Rule Node](/nodes/rule-node) for conditional logic within loops
+- Explore [Custom Code Node](/nodes/custom-code-node) for complex loop data processing
+- Check out [Transform Node](/nodes/transform-node) to format loop output data
+- Review [Workflow Testing](/testing/workflow-testing) to test loop behavior with different data sets
