@@ -1,14 +1,14 @@
 ---
-title: "File Handler Node"
+title: "Data Converter Node"
 description: "Convert, merge, and process files between CSV, JSON, and Excel formats with data transformation capabilities"
-sidebarTitle: "File Handler"
+sidebarTitle: "Data Converter"
 ---
 
-# File Handler Node
+# Data Converter Node
 
 ## What does it do?
 
-The File Handler Node provides comprehensive file processing capabilities, allowing you to convert between different data formats (CSV, JSON, Excel), merge multiple files, and generate new files from workflow data. All processed files are hosted on publicly accessible URLs for easy integration with external systems.
+The Data Converter Node provides comprehensive file processing capabilities, allowing you to convert between different data formats (CSV, JSON, Excel), merge multiple files, and generate new files from workflow data. All processed files are hosted on publicly accessible URLs for easy integration with external systems.
 
 **Common use cases:**
 - Convert Salesforce contact exports from CSV to JSON for API processing
@@ -87,7 +87,7 @@ The File Handler Node provides comprehensive file processing capabilities, allow
 
 ## Output
 
-The File Handler Node outputs different structures based on the selected action.
+The Data Converter Node outputs different structures based on the selected action.
 
 ### URL Output Actions (Most Actions)
 
@@ -135,10 +135,10 @@ The File Handler Node outputs different structures based on the selected action.
 ## Adding to Workflow
 
 <Steps>
-  <Step title="Drag File Handler Node to canvas">
-    From the **Utility Nodes** section, drag the File Handler Node to your workflow canvas where you need file processing.
+  <Step title="Drag Data Converter Node to canvas">
+    From the **Utility Nodes** section, drag the Data Converter Node to your workflow canvas where you need file processing.
     <Frame>
-      <img height="200" src="/images/workflow/nodes/file-handler-node-drag-drop.png" alt="Dragging File Handler Node from utility nodes" />
+      <img height="200" src="/images/workflow/nodes/file-handler-node-drag-drop.png" alt="Dragging Data Converter Node from utility nodes" />
     </Frame>
   </Step>
   <Step title="Select processing action">
@@ -287,7 +287,7 @@ This example parses a CSV file into an array for further processing in the workf
 
 ### Processing Flow
 
-The File Handler Node processes files in the following order:
+The Data Converter Node processes files in the following order:
 
 1. **Input Validation**: Validates URLs, content format, and required parameters
 2. **File Retrieval**: Downloads files from provided URLs (if applicable)
@@ -346,7 +346,7 @@ For Excel actions with "Has Formulas" enabled:
 - Ensure source files are proper Excel format (.xlsx, .xls)
 - Reduce the number of files if hitting processing limits
 
-<Tip>Use the Debug Node after File Handler to inspect generated URLs and verify file accessibility before using them in subsequent workflow steps.</Tip>
+<Tip>Use the Debug Node after Data Converter to inspect generated URLs and verify file accessibility before using them in subsequent workflow steps.</Tip>
 
 ## What's Next?
 
