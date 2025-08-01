@@ -1,0 +1,255 @@
+---
+title: "Wait for Webhook Node"
+description: "Pause workflow execution until an external webhook is triggered, enabling asynchronous workflow coordination"
+sidebarTitle: "Wait for Webhook"
+---
+
+# Wait for Webhook Node
+
+## What does it do?
+
+The Wait for Webhook Node pauses workflow execution until an external system triggers a webhook by sending a POST request to the generated webhook URL. This enables asynchronous workflow coordination where the workflow waits for external processes to complete before continuing with subsequent steps.
+
+**Common use cases:**
+- Wait for third-party data enrichment services (Clearbit, ZoomInfo) to return Salesforce lead data
+- Pause workflow for manual approval processes via external systems
+- Coordinate with asynchronous external APIs that respond via webhooks
+- Wait for external document processing or validation to complete
+- Synchronize workflows with external business process completion
+
+## Input Parameters
+
+<ParamField path="Webhook URL" type="string" required="automatic">
+  Automatically generated static webhook URL that external systems must call to resume workflow execution. Example: `https://api.gocobalt.io/api/v1/workflows/webhooks/6887`
+</ParamField>
+
+<ParamField path="Security Headers" type="object" required="optional">
+  Optional key-value pairs for webhook authentication validation. If configured, incoming webhook requests must include these headers. Example: `{"Authorization": "Bearer secret123", "X-API-Key": "webhook-key"}`
+</ParamField>
+
+<ParamField path="Additional Fields" type="boolean" required="optional">
+  Toggle to enable/disable additional configuration options. When disabled, removes the Security Headers field requirement.
+</ParamField>
+
+<Info>The webhook URL is automatically generated when the node is added and remains static. Only POST requests are supported. The webhook serves purely as a trigger mechanism and does not pass data to subsequent nodes.</Info>
+
+## Output
+
+The Wait for Webhook Node does not produce any output data for subsequent nodes. It serves purely as a workflow control mechanism.
+
+### Execution States
+
+- **Waiting**: Workflow paused at this node, waiting for webhook trigger
+- **Triggered**: Webhook received, workflow continues to next nodes
+- **Error**: Webhook request failed validation (missing security headers)
+
+<Info>This node acts as a gate in your workflow - it either blocks execution (waiting) or allows it to continue (triggered), but doesn't transform or pass along any data.</Info>
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Wait for Webhook Node to canvas">
+    From the **Utility Nodes** section, drag the Wait for Webhook Node to your workflow canvas where you need to pause execution.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/wait-webhook-node-drag-drop.png" alt="Dragging Wait for Webhook Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Configure security headers (optional)">
+    Set up webhook authentication if needed:
+    - Add key-value pairs for required headers
+    - Leave empty `{}` if no authentication required
+    - Headers must match exactly in incoming webhook requests
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/wait-webhook-node-security-configuration.png" alt="Configuring webhook security headers" />
+    </Frame>
+  </Step>
+  <Step title="Copy webhook URL">
+    Copy the automatically generated webhook URL:
+    - Share this URL with external systems that need to trigger the webhook
+    - URL remains static and can be used multiple times
+    - Only POST requests to this URL will trigger the workflow
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/wait-webhook-node-url-display.png" alt="Copying webhook URL" />
+    </Frame>
+  </Step>
+  <Step title="Configure external system">
+    Set up the external system to call your webhook:
+    - Configure POST request to the webhook URL
+    - Include required security headers if configured
+    - Set up timing for when the webhook should be triggered
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/wait-webhook-external-setup.png" alt="Setting up external webhook caller" />
+    </Frame>
+  </Step>
+  <Step title="Test webhook trigger">
+    Test the webhook integration to verify the workflow resumes correctly when triggered.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/wait-webhook-node-test-execution.png" alt="Testing webhook trigger" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>The workflow will remain paused at this node indefinitely until the webhook is triggered. Only the first webhook request will resume execution - subsequent requests are ignored.</Info>
+
+## Examples
+
+### Example 1: Salesforce Lead Enrichment Workflow
+
+This example pauses a workflow while waiting for third-party lead enrichment data:
+
+```javascript
+// Workflow configuration
+{
+  "name": "wait_webhook_task",
+  "taskReferenceName": "wait_for_enrichment",
+  "type": "WAIT_FOR_WEBHOOK",
+  "inputParameters": {
+    "webhook_url": "https://api.gocobalt.io/api/v1/workflows/webhooks/6887",
+    "security_headers": {
+      "Authorization": "Bearer enrichment-secret-123",
+      "X-Webhook-Source": "clearbit"
+    }
+  }
+}
+```
+
+**Workflow Flow:**
+1. **Trigger**: New Salesforce lead created
+2. **HTTP Request Node**: Send lead email to Clearbit enrichment API
+3. **Wait for Webhook**: Pause until Clearbit sends enrichment data via webhook
+4. **Update Salesforce**: Continue with enriched lead data processing
+
+**External Webhook Call (from Clearbit):**
+```bash
+curl -X POST https://api.gocobalt.io/api/v1/workflows/webhooks/6887 \
+  -H "Authorization: Bearer enrichment-secret-123" \
+  -H "X-Webhook-Source: clearbit" \
+  -H "Content-Type: application/json"
+```
+
+### Example 2: Manual Approval Process
+
+This example waits for manual approval via an external approval system:
+
+```javascript
+// Workflow configuration  
+{
+  "name": "wait_webhook_task",
+  "taskReferenceName": "wait_for_approval",
+  "type": "WAIT_FOR_WEBHOOK",
+  "inputParameters": {
+    "webhook_url": "https://api.gocobalt.io/api/v1/workflows/webhooks/7234",
+    "security_headers": {
+      "X-Approval-System": "internal",
+      "X-Request-ID": "{{approval_request.id}}"
+    }
+  }
+}
+```
+
+**Workflow Flow:**
+1. **Salesforce Opportunity**: High-value opportunity created
+2. **Send Approval Request**: Notify approval system via email/Slack
+3. **Wait for Webhook**: Pause until approval decision received
+4. **Process Approval**: Continue with approved opportunity workflow
+
+### Example 3: Simple Webhook Without Security
+
+This example demonstrates a basic webhook wait without authentication:
+
+```javascript
+// Workflow configuration
+{
+  "name": "wait_webhook_task", 
+  "taskReferenceName": "simple_webhook_wait",
+  "type": "WAIT_FOR_WEBHOOK",
+  "inputParameters": {
+    "webhook_url": "https://api.gocobalt.io/api/v1/workflows/webhooks/8456",
+    "security_headers": {}
+  }
+}
+```
+
+**External Webhook Call:**
+```bash
+curl -X POST https://api.gocobalt.io/api/v1/workflows/webhooks/8456 \
+  -H "Content-Type: application/json"
+```
+
+## Runtime Behavior
+
+<Warning>Workflows will remain paused indefinitely at the Wait for Webhook Node until the webhook is triggered. Ensure external systems are properly configured to send the webhook request.</Warning>
+
+### Webhook Processing
+
+The Wait for Webhook Node processes incoming requests in the following order:
+
+1. **Request Validation**: Validates POST method and URL match
+2. **Security Header Check**: Verifies required headers if configured
+3. **Workflow Resume**: Triggers continuation of workflow execution
+4. **Duplicate Prevention**: Ignores subsequent webhook requests for the same execution
+
+### Security Validation
+
+When security headers are configured:
+- **Required Headers**: All configured headers must be present in the webhook request
+- **Exact Match**: Header values must match exactly (case-sensitive)
+- **Missing Headers**: Returns `missing_security_headers` error to webhook caller
+- **Workflow Continuation**: Only resumes workflow if all security requirements met
+
+### Multiple Request Handling
+
+- **First Request**: Resumes workflow execution if validation passes
+- **Subsequent Requests**: Ignored, do not affect workflow state
+- **Error Requests**: Failed validation attempts do not prevent valid requests from working
+
+## Troubleshooting
+
+### Workflow Stuck at Webhook Node
+
+**Problem**: Workflow remains paused indefinitely at Wait for Webhook Node
+
+**Solutions**:
+- Verify external system is configured to call the correct webhook URL
+- Check that external system is using POST method
+- Confirm external system includes required security headers if configured
+- Test webhook URL manually with curl or API testing tool
+
+### Security Header Validation Errors
+
+**Problem**: Webhook requests fail with `missing_security_headers` error
+
+**Solutions**:
+- Verify all configured security headers are included in webhook request
+- Check header names and values match exactly (case-sensitive)
+- Ensure external system is sending headers in correct format
+- Test with empty security headers `{}` to isolate authentication issues
+
+### External System Integration Issues
+
+**Problem**: External system cannot trigger webhook or receives errors
+
+**Solutions**:
+- Confirm external system supports POST requests to webhook URLs
+- Verify external system can access Cobalt webhook endpoints (no firewall blocks)
+- Check external system timeout settings allow for webhook delivery
+- Implement retry logic in external system for webhook delivery
+
+### Webhook URL Not Working
+
+**Problem**: Webhook URL returns 404 or other HTTP errors
+
+**Solutions**:
+- Verify webhook URL is copied correctly without truncation
+- Ensure workflow with Wait for Webhook Node is deployed and active
+- Check that workflow execution has reached the Wait for Webhook Node
+- Confirm webhook URL has not been regenerated by modifying the node
+
+<Tip>Use webhook testing tools like curl, Postman, or online webhook testers to verify your webhook URL and security headers work correctly before integrating with external systems.</Tip>
+
+## What's Next?
+
+- Learn about [HTTP Request Node](/nodes/http-request-node) to trigger external systems that will call your webhook
+- Explore [Delay Node](/nodes/delay-node) for time-based workflow pausing
+- Check out [Rule Node](/nodes/rule-node) to add conditional logic before webhook waits
+- Review [Workflow Testing](/testing/workflow-testing) to test webhook integration scenarios

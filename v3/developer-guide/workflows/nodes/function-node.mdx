@@ -1,0 +1,456 @@
+---
+title: "Functions Node"
+description: "Execute pre-built JavaScript utility functions for data transformation, calculations, and processing without writing custom code"
+sidebarTitle: "Functions"
+---
+
+# Functions Node
+
+## What does it do?
+
+The Functions Node provides a lightweight, plug-and-play way to run pre-built JavaScript utility functions inside workflows without writing custom code from scratch. Instead of using a full Custom Code node for simple operations, you can select from a library of pre-built functions and simply configure the required parameters.
+
+**Common use cases:**
+- Convert Salesforce date formats for downstream systems (ISO to MM/dd/yyyy)
+- Generate unique tracking IDs for record creation and integration workflows
+- Perform mathematical operations on arrays of numbers from API responses
+- Find specific elements in data arrays returned from Salesforce queries
+- Group objects by key values for data organization and reporting
+- Encrypt sensitive data before sending to external systems
+- Extract specific date components (year, month, day) for filtering
+- Add or subtract time periods for SLA calculations and scheduling
+
+## Actions
+
+<Expandable title="Available Functions">
+  <ResponseField name="Find element in array" type="function">
+    Searches through an array to locate specific elements based on criteria. Useful for finding specific records in Salesforce query results or API responses. Returns the matching element or null if not found.
+  </ResponseField>
+  <ResponseField name="Group objects by a key" type="function">
+    Groups an array of objects by a specified key field. Essential for organizing Salesforce records by status, type, or any custom field. Returns an object with grouped arrays.
+  </ResponseField>
+  <ResponseField name="Encrypt a string" type="function">
+    Encrypts sensitive text data using standard encryption algorithms. Critical for securing PII, API keys, or confidential data before external transmission. Returns encrypted string.
+  </ResponseField>
+  <ResponseField name="Get current date" type="function">
+    Retrieves the current date and time in various formats. Useful for timestamping records, calculating relative dates, or workflow scheduling. Returns formatted date string.
+  </ResponseField>
+  <ResponseField name="Convert date from one format to another" type="function">
+    Transforms dates between different format patterns. Essential for integrating Salesforce dates with external systems that expect specific formats. Returns converted date string.
+  </ResponseField>
+  <ResponseField name="Extract date units" type="function">
+    Parses dates to extract specific components like year, month, day, hour, etc. Useful for date-based filtering, reporting, and conditional logic. Returns object with date components.
+  </ResponseField>
+  <ResponseField name="Add/Subtract time" type="function">
+    Performs time arithmetic by adding or subtracting days, hours, minutes from dates. Critical for SLA calculations, scheduling, and deadline management. Returns modified date.
+  </ResponseField>
+  <ResponseField name="Generate UUID" type="function">
+    Creates unique identifiers for tracking, record linking, or external system integration. Ensures uniqueness across distributed systems. Returns UUID string.
+  </ResponseField>
+  <ResponseField name="Math Operations" type="function">
+    Performs various mathematical calculations including sum, average, min, max on arrays of numbers. Essential for calculating totals from Salesforce line items or metrics aggregation. Returns calculation results.
+  </ResponseField>
+  <ResponseField name="Custom Functions" type="function">
+    Execute user-defined functions created in the Cobalt dashboard. Allows for organization-specific logic and reusable business rules. Returns custom-defined output structure.
+  </ResponseField>
+</Expandable>
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Functions Node to canvas">
+    From the **Utility Nodes** section, drag the Functions Node to your workflow canvas where you need to transform or process data.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/functions-node-drag-drop.png" alt="Dragging Functions Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select function from dropdown">
+    Select a function that has already been defined in **More > Functions**. The dropdown shows all available template functions and custom functions created for your organization.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/functions-node-function-selection.png" alt="Selecting function from dropdown" />
+    </Frame>
+  </Step>
+  <Step title="Configure input data">
+    Enter the data that needs to be passed to the selected function. Input fields are automatically generated based on the function's parameter requirements and may include data from previous workflow steps.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/functions-node-parameter-configuration.png" alt="Configuring function input data" />
+    </Frame>
+  </Step>
+  <Step title="Test the function">
+    Run a test to verify the function executes correctly with your input parameters and returns the expected output format.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/functions-node-test-execution.png" alt="Testing functions node operation" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Parameter requirements vary by function. Some functions have all optional parameters while others require specific inputs. Refer to individual function documentation or code to understand parameter requirements.</Info>
+
+## Examples
+
+### Example 1: Convert Salesforce Date Format
+
+Convert Salesforce `CreatedDate` from ISO format to a format expected by downstream ERP systems:
+
+```javascript
+// Workflow configuration
+{
+  "name": "functions_task",
+  "taskReferenceName": "convert_salesforce_date",
+  "type": "FUNCTIONS",
+  "inputParameters": {
+    "date": "{{salesforce_lead.CreatedDate}}",
+    "from_format": "yyyy-MM-dd'T'HH:mm:ssX",
+    "to_format": "dd/MM/yyyy"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "converted_date": "01-05-2025"
+}
+```
+
+### Example 2: Find Specific Opportunity in Salesforce Results
+
+Locate a specific opportunity from Salesforce query results based on stage criteria:
+
+```javascript
+// Workflow configuration
+{
+  "name": "functions_task",
+  "taskReferenceName": "find_closed_won_opportunity",
+  "type": "FUNCTIONS",
+  "inputParameters": {
+    "function_name": "Find element in array",
+    "array": "{{salesforce_query.opportunities}}",
+    "search_key": "StageName",
+    "search_value": "Closed Won",
+    "return_first": true
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "found_element": {
+    "Id": "0063000000ABC123",
+    "Name": "Acme Corp - 1000 Licenses",
+    "StageName": "Closed Won",
+    "Amount": 50000
+  },
+  "index": 2
+}
+```
+
+### Example 3: Group Salesforce Cases by Status
+
+Organize Salesforce cases by their status for dashboard reporting:
+
+```javascript
+// Workflow configuration
+{
+  "name": "functions_task",
+  "taskReferenceName": "group_cases_by_status",
+  "type": "FUNCTIONS",
+  "inputParameters": {
+    "function_name": "Group objects by a key",
+    "array": "{{salesforce_cases.records}}",
+    "group_key": "Status",
+    "include_count": true
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "grouped_data": {
+    "New": [
+      {"Id": "5003000000XYZ123", "Subject": "Login Issue", "Status": "New"},
+      {"Id": "5003000000XYZ124", "Subject": "Password Reset", "Status": "New"}
+    ],
+    "In Progress": [
+      {"Id": "5003000000XYZ125", "Subject": "Data Import", "Status": "In Progress"}
+    ],
+    "Closed": [
+      {"Id": "5003000000XYZ126", "Subject": "Account Setup", "Status": "Closed"}
+    ]
+  },
+  "counts": {
+    "New": 2,
+    "In Progress": 1,
+    "Closed": 1
+  }
+}
+```
+
+### Example 4: Calculate SLA Deadline
+
+Add business days to a Salesforce case creation date to calculate SLA deadline:
+
+```javascript
+// Workflow configuration
+{
+  "name": "functions_task",
+  "taskReferenceName": "calculate_sla_deadline",
+  "type": "FUNCTIONS",
+  "inputParameters": {
+    "function_name": "Add/Subtract time",
+    "date": "{{salesforce_case.CreatedDate}}",
+    "operation": "add",
+    "amount": 5,
+    "unit": "business_days",
+    "timezone": "America/New_York"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "result_date": "2025-08-06T14:23:11Z",
+  "original_date": "2025-07-30T14:23:11Z",
+  "days_added": 5,
+  "business_days_only": true
+}
+```
+
+### Example 5: Generate Unique Tracking ID
+
+Create unique identifiers for tracking Salesforce integrations with external systems:
+
+```javascript
+// Workflow configuration
+{
+  "name": "functions_task",
+  "taskReferenceName": "generate_tracking_id",
+  "type": "FUNCTIONS",
+  "inputParameters": {
+    "function_name": "Generate UUID",
+    "include_timestamp": true,
+    "prefix": "SF-SYNC"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "uuid": "SF-SYNC-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "timestamp": "2025-07-30T14:23:11Z",
+  "short_id": "SF-SYNC-a1b2c3d4"
+}
+```
+
+## Creating Custom Functions
+
+### Function Management
+
+Custom functions are created and managed in the main Cobalt dashboard:
+
+1. Navigate to **More > Functions > Create Function**
+2. Write your JavaScript function following the required structure
+3. Test and save the function
+4. Use the function in any workflow via the Functions Node
+
+### Function Structure
+
+All custom functions must follow this structure:
+
+```javascript
+// Import required libraries at the top
+const { parse, format } = require("date-fns");
+
+function yourFunctionName(params) {
+    // Destructure input parameters
+    const { param1, param2, param3 } = params;
+    
+    try {
+        // Your function logic here
+        const result = processData(param1, param2, param3);
+        
+        // Return your custom output structure
+        return {
+            result: result,
+            status: "success"
+        };
+    } catch (error) {
+        // Always handle errors gracefully
+        return { 
+            error: error.message,
+            status: "failed"
+        };
+    }
+}
+```
+
+### Available Libraries
+
+Custom functions support these JavaScript libraries:
+- **date-fns** - Date parsing and formatting
+- **lodash** - Utility functions for data manipulation
+- **uuid** - Unique identifier generation
+- **crypto** - Cryptographic functions
+- **moment** - Date/time manipulation (legacy support)
+
+## Input Parameters
+
+### Function Selection
+<ParamField path="function_name" type="dropdown" required="yes">
+  Select a function that has already been defined in More -> Functions. The dropdown shows all available template functions and custom functions created for your organization.
+  Example: `"Convert date from one format to another"` or `"Find element in array"`
+</ParamField>
+
+### Dynamic Input Fields
+Input fields are automatically generated based on the selected function. For example, when selecting "Convert date from one format to another", you get these input fields:
+
+<ParamField path="date" type="string" required="yes">
+  The date value to convert. Example: `"2025-05-01"` or `{{salesforce_record.CreatedDate}}`
+</ParamField>
+
+<ParamField path="from_format" type="string" required="yes">
+  Source date format pattern. Example: `"yyyy-MM-dd"` for the input date format
+</ParamField>
+
+<ParamField path="to_format" type="string" required="yes">
+  Target date format pattern. Example: `"dd-MM-yyyy"` for the desired output format
+</ParamField>
+
+<Info>Input parameters vary by selected function. Each function shows only the relevant input fields required for that specific operation. Parameter requirements depend on the function's implementation.</Info>
+
+## Output
+
+Functions Node output varies significantly based on the selected function. Each function returns a custom structure:
+
+### Date Conversion Output
+```json
+{
+  "converted_date": "01-05-2025"
+}
+```
+
+### Array Search Output
+```json
+{
+  "found_element": {
+    "Id": "123456",
+    "Name": "Found Record"
+  },
+  "index": 2
+}
+```
+
+### UUID Generation Output
+```json
+{
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}
+```
+
+### Math Operations Output
+```json
+{
+  "sum": 150.75,
+  "average": 30.15,
+  "count": 5
+}
+```
+
+## Runtime Behavior
+
+### Function Execution Process
+
+The Functions Node processes operations in this order:
+
+1. **Function Validation**: Verifies selected function exists in the function library
+2. **Parameter Processing**: Resolves dynamic values and validates input data
+3. **Function Execution**: Runs the JavaScript function with provided inputs
+4. **Output Processing**: Formats and returns the function result
+5. **Error Handling**: Captures and returns any execution errors
+
+### Performance Characteristics
+- **Execution Time**: Most template functions complete quickly
+- **Memory Usage**: Lightweight execution with minimal memory footprint
+- **Concurrency**: Functions run independently and support parallel execution
+- **Caching**: Function definitions are cached for improved performance
+
+### Parameter Resolution
+- **Dynamic Values**: Variables like `{{previous_node.output}}` are resolved before execution
+- **Type Conversion**: Automatic conversion between string and numeric types when possible
+- **Null Handling**: Graceful handling of null or undefined parameter values
+- **Array Processing**: Efficient handling of large arrays from Salesforce queries
+
+## Troubleshooting
+
+### Function Not Available
+
+**Problem**: Required function doesn't appear in dropdown
+
+**Solutions**:
+- Verify function was created and saved in **More > Functions** in main dashboard
+- Check function follows required JavaScript structure
+- Ensure function name doesn't conflict with existing template functions
+- Refresh the workflow editor to reload the function library
+
+### Parameter Validation Errors
+
+**Problem**: Function fails with "missing required parameter" errors
+
+**Solutions**:
+- Review the function code to identify truly required vs optional parameters
+- Verify dynamic parameter values (e.g., `{{variable}}`) resolve correctly
+- Test with static values first to isolate dynamic data issues
+- Check previous workflow steps provide expected output structure
+
+### Date Format Conversion Issues
+
+**Problem**: Date conversion returns invalid date errors
+
+**Solutions**:
+- Verify input date exactly matches the specified `from_format` pattern
+- Handle timezone indicators (Z, +00:00) correctly in format patterns
+- Test format patterns using date-fns documentation for reference
+- Add null/empty date validation in custom functions
+
+### Array Processing Failures
+
+**Problem**: Array functions fail with undefined or null errors
+
+**Solutions**:
+- Verify the input is actually an array before processing
+- Check that Salesforce queries return expected array structure
+- Handle empty arrays gracefully in function logic
+- Use Debug Node to inspect actual data structure from previous steps
+
+### Custom Function Execution Errors
+
+**Problem**: Custom functions throw runtime errors
+
+**Solutions**:
+- Add comprehensive error handling with try-catch blocks
+- Test functions with edge cases (null, empty, large data sets)
+- Use console.log for debugging during function development
+- Ensure all required parameters are handled properly
+
+### Library Import Issues
+
+**Problem**: Required JavaScript libraries are not available
+
+**Solutions**:
+- Use only supported libraries (date-fns, lodash, uuid, crypto, moment)
+- Check require() syntax matches Node.js patterns exactly
+- Verify library methods are called correctly
+- Contact support if additional libraries are needed for your use case
+
+<Tip>Use the Functions Node test functionality to debug parameter resolution and output formatting before deploying workflows to production environments.</Tip>
+
+## What's Next?
+
+- Learn about [Custom Code Node](/nodes/custom-code-node) for complex logic requiring full JavaScript flexibility beyond pre-built functions
+- Explore [Conditional Node](/nodes/conditional-node) to create workflow branches based on function outputs and results
+- Check out [Loop Node](/nodes/loop-node) to apply functions across arrays of Salesforce records or API responses
+- Review [Workflow Testing](/testing/workflow-testing) to validate function behavior across different data scenarios

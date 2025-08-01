@@ -1,0 +1,297 @@
+---
+title: "Human Task Node"
+description: "Documentation for the Human Task Node in Cobalt Workflows."
+sidebarTitle: "Human Task"
+---
+
+# Human Task Node
+
+## What does it do?
+
+The Human Task Node allows you to pause workflow execution and wait for human intervention or approval before continuing. This node is essential for workflows that require manual review, approval, or data entry from users.
+
+**Common use cases:**
+- Require manager approval for large deals or contracts
+- Manual review of data quality before processing
+- Human verification of critical business decisions
+- Manual data entry for missing information
+- Approval workflows for expense reports or invoices
+- Quality assurance checks before data synchronization
+
+## Actions
+
+<ResponseField name="Action" type="string">
+  <Expandable title="Available Actions">
+    <ResponseField name="Create Human Task" type="action">
+      Creates a human task that pauses workflow execution and waits for user input or approval. Takes task configuration as input, sends notifications to assigned users, and resumes workflow when task is completed.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Input Parameters
+
+### Create Human Task
+<ParamField path="task_name" type="string" required="yes">
+  A descriptive name for the human task that will be displayed to users.
+  Example: `"Approve Large Deal"` or `"Review Data Quality"`
+</ParamField>
+
+<ParamField path="task_description" type="string" required="yes">
+  Detailed description of what the user needs to do or review.
+  Example: `"Please review the deal details and approve if all terms are acceptable"`
+</ParamField>
+
+<ParamField path="assigned_users" type="array" required="yes">
+  Array of user IDs or email addresses who should receive the task.
+  Example: `["user@company.com", "manager@company.com"]` or `{{workflow_config.approvers}}`
+</ParamField>
+
+<ParamField path="task_data" type="object" required="optional">
+  Additional data to provide to the user for review or decision making.
+  Example: `{"deal_amount": 50000, "customer_name": "Acme Corp", "terms": "Net 30"}`
+</ParamField>
+
+<ParamField path="timeout_hours" type="number" required="optional">
+  Number of hours before the task times out. If not specified, task will wait indefinitely.
+  Example: `24` or `48`
+</ParamField>
+
+<ParamField path="approval_required" type="boolean" required="optional">
+  Whether the task requires explicit approval or just completion. Default is true.
+  Example: `true` or `false`
+</ParamField>
+
+<Info>Human tasks can be configured to require approval, allow comments, and include custom data for review. Tasks will pause workflow execution until completed or timed out.</Info>
+
+## Output
+
+The Human Task Node outputs the result of the human task completion.
+
+### Human Task Response
+
+```json
+{
+  "task_id": "task_12345",
+  "status": "approved",
+  "approved_by": "user@company.com",
+  "approved_at": "2024-01-15T14:30:00Z",
+  "comments": "All terms look good, approved for processing",
+  "task_data": {
+    "deal_amount": 50000,
+    "customer_name": "Acme Corp"
+  }
+}
+```
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Human Task Node to canvas">
+    From the **Control Nodes** section, drag the Human Task Node to your workflow canvas where you need human intervention.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/human-task-node-drag-drop.png" alt="Dragging Human Task Node from control nodes" />
+    </Frame>
+  </Step>
+  <Step title="Configure task details">
+    Set up the task name, description, and assign users who will receive the task notification.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/human-task-node-configuration.png" alt="Configuring human task details" />
+    </Frame>
+  </Step>
+  <Step title="Add task data">
+    Include any relevant data that users need to review or make decisions about.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/human-task-node-data-configuration.png" alt="Adding data for human task review" />
+    </Frame>
+  </Step>
+  <Step title="Set timeout and approval settings">
+    Configure how long the task can wait and whether approval is required.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/human-task-node-settings.png" alt="Setting timeout and approval requirements" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Human tasks will pause workflow execution until the assigned users complete the task or the timeout period expires.</Info>
+
+## Examples
+
+### Example 1: Manager Approval for Large Deals
+
+This example creates a human task requiring manager approval for deals over $50,000:
+
+```javascript
+// Workflow configuration
+{
+  "name": "human_task",
+  "taskReferenceName": "manager_approval",
+  "type": "HUMAN_TASK",
+  "action": "Create Human Task",
+  "inputParameters": {
+    "task_name": "Approve Large Deal",
+    "task_description": "Please review and approve this deal for Acme Corp worth $75,000",
+    "assigned_users": ["manager@company.com", "director@company.com"],
+    "task_data": {
+      "deal_amount": 75000,
+      "customer_name": "Acme Corp",
+      "deal_type": "Enterprise License",
+      "payment_terms": "Net 30"
+    },
+    "timeout_hours": 48,
+    "approval_required": true
+  }
+}
+```
+
+### Example 2: Data Quality Review
+
+This example creates a task for manual review of data quality issues:
+
+```javascript
+// Workflow configuration
+{
+  "name": "human_task",
+  "taskReferenceName": "data_quality_review",
+  "type": "HUMAN_TASK",
+  "action": "Create Human Task",
+  "inputParameters": {
+    "task_name": "Review Data Quality Issues",
+    "task_description": "Please review and fix the data quality issues found in the customer import",
+    "assigned_users": ["data_analyst@company.com"],
+    "task_data": {
+      "import_id": "imp_12345",
+      "issues_found": [
+        {"field": "email", "issue": "Invalid format", "count": 15},
+        {"field": "phone", "issue": "Missing country code", "count": 8}
+      ],
+      "total_records": 500
+    },
+    "timeout_hours": 24,
+    "approval_required": false
+  }
+}
+```
+
+### Example 3: Expense Report Approval
+
+This example creates an approval task for expense reports:
+
+```javascript
+// Workflow configuration
+{
+  "name": "human_task",
+  "taskReferenceName": "expense_approval",
+  "type": "HUMAN_TASK",
+  "action": "Create Human Task",
+  "inputParameters": {
+    "task_name": "Approve Expense Report",
+    "task_description": "Please review and approve the expense report for John Doe",
+    "assigned_users": ["finance@company.com"],
+    "task_data": {
+      "employee_name": "John Doe",
+      "expense_amount": 1250.75,
+      "expense_items": [
+        {"item": "Conference Registration", "amount": 800},
+        {"item": "Travel Expenses", "amount": 450.75}
+      ],
+      "report_id": "EXP-2024-001"
+    },
+    "timeout_hours": 72,
+    "approval_required": true
+  }
+}
+```
+
+## Runtime Behavior
+
+<Warning>Human tasks will pause workflow execution indefinitely until completed or timed out. Ensure proper timeout settings and user notifications are configured.</Warning>
+
+### Task Lifecycle
+
+The Human Task Node manages tasks through the following lifecycle:
+
+1. **Task Creation**: Task is created and assigned to specified users
+2. **Notification**: Users receive notifications about the pending task
+3. **User Action**: Users review data and take required action (approve/reject/complete)
+4. **Task Completion**: Task is marked as complete with user response
+5. **Workflow Resume**: Workflow execution continues with task results
+
+### User Experience
+
+Users assigned to human tasks will:
+
+- **Receive notifications** via email and in-app notifications
+- **Access task details** including description and review data
+- **Take action** by approving, rejecting, or completing the task
+- **Add comments** to provide context for their decision
+- **View task history** and previous actions taken
+
+### Timeout Handling
+
+If a task times out:
+
+- **Workflow continues** with timeout status
+- **Timeout notification** is sent to workflow owner
+- **Default action** can be configured (approve/reject/error)
+- **Audit trail** is maintained for compliance
+
+## Troubleshooting
+
+### Task Not Assigned
+
+**Problem**: Users don't receive task notifications
+
+**Solutions**:
+- Verify user email addresses are correct and active
+- Check user permissions and access to the workflow
+- Ensure notification settings are properly configured
+- Review task assignment logic and user availability
+
+### Task Timeout Issues
+
+**Problem**: Tasks timeout unexpectedly or don't timeout when expected
+
+**Solutions**:
+- Verify timeout_hours parameter is set correctly
+- Check timezone settings for timeout calculations
+- Review workflow execution logs for timeout events
+- Ensure proper error handling for timeout scenarios
+
+### User Access Problems
+
+**Problem**: Users cannot access or complete assigned tasks
+
+**Solutions**:
+- Verify user has proper permissions to view and complete tasks
+- Check if user account is active and not suspended
+- Review task access controls and security settings
+- Ensure proper authentication and session management
+
+### Workflow Continuation Issues
+
+**Problem**: Workflow doesn't resume after task completion
+
+**Solutions**:
+- Check task completion status and response format
+- Verify workflow execution logs for continuation events
+- Review conditional logic that depends on task results
+- Ensure proper error handling for task completion
+
+### Data Access Problems
+
+**Problem**: Users cannot see task data or relevant information
+
+**Solutions**:
+- Verify task_data parameter includes all necessary information
+- Check data formatting and structure for user interface
+- Review data access permissions and security settings
+- Ensure sensitive data is properly handled and displayed
+
+<Tip>Use the Debug Node after Human Task nodes to inspect task completion data and ensure proper workflow continuation based on user decisions.</Tip>
+
+## What's Next?
+
+- Learn about [Conditional Node](/nodes/conditional-node) to create different workflow paths based on task approval/rejection
+- Explore [Email Node](/nodes/email-node) to send additional notifications about task status
+- Check out [Delay Node](/nodes/delay-node) to add time-based logic around human tasks
+- Review [Workflow Testing](/testing/workflow-testing) to test human task scenarios 
