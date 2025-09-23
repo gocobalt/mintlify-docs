@@ -1,0 +1,429 @@
+---
+title: "MCP Test Page - Component Showcase"
+description: "Comprehensive test page showcasing all Mintlify components in the MCP context"
+icon: "flask"
+---
+
+# MCP Test Page - Component Showcase
+
+This test page demonstrates all major Mintlify components within the context of Multi-Customer Platforms (MCPs) on the Cobalt AI Integration platform.
+
+<Note>
+This is a test page created to showcase documentation components. It includes examples of all major Mintlify elements styled for Cobalt's MCP documentation.
+</Note>
+
+## Getting Started with MCP Testing
+
+<Steps>
+<Step title="Set up your test environment">
+  First, configure your development environment for MCP testing:
+  
+  ```bash
+  npm install @cobalt/mcp-sdk
+  export COBALT_API_KEY="your_api_key_here"
+  ```
+  
+  <Check>
+  Verify your API key is working by calling the health endpoint.
+  </Check>
+</Step>
+
+<Step title="Initialize MCP client">
+  Create a new MCP client instance:
+  
+  ```javascript
+  import { MCPClient } from '@cobalt/mcp-sdk';
+  
+  const mcpClient = new MCPClient({
+    apiKey: process.env.COBALT_API_KEY,
+    environment: 'development'
+  });
+  ```
+  
+  <Warning>
+  Never commit your API keys to version control. Always use environment variables.
+  </Warning>
+</Step>
+
+<Step title="Test multi-tenant configuration">
+  Configure your first customer organization:
+  
+  ```javascript
+  const customerOrg = await mcpClient.organizations.create({
+    name: "Test Customer Inc",
+    subdomain: "testcustomer",
+    settings: {
+      whiteLabel: true,
+      customBranding: {
+        primaryColor: "#007bff",
+        logo: "https://example.com/logo.png"
+      }
+    }
+  });
+  ```
+</Step>
+</Steps>
+
+## Code Examples
+
+### Single Language Example
+
+Here's how to authenticate a customer's integration:
+
+```javascript
+// Authenticate customer integration
+const authenticateCustomer = async (customerId, integrationSlug) => {
+  try {
+    const authUrl = await mcpClient.auth.getAuthUrl({
+      customerId,
+      integrationSlug,
+      redirectUrl: `https://yourapp.com/auth/callback`,
+      scopes: ['read', 'write']
+    });
+    
+    return { success: true, authUrl };
+  } catch (error) {
+    console.error('Authentication failed:', error);
+    return { success: false, error: error.message };
+  }
+};
+```
+
+### Multi-Language Code Group
+
+<CodeGroup>
+```javascript Node.js
+const response = await fetch('/api/v1/mcp/customers', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${apiKey}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'Acme Corp',
+    plan: 'enterprise'
+  })
+});
+
+const customer = await response.json();
+console.log('Created customer:', customer.id);
+```
+
+```python Python
+import requests
+
+response = requests.post('/api/v1/mcp/customers', 
+  headers={
+    'Authorization': f'Bearer {api_key}',
+    'Content-Type': 'application/json'
+  },
+  json={
+    'name': 'Acme Corp',
+    'plan': 'enterprise'
+  }
+)
+
+customer = response.json()
+print(f'Created customer: {customer["id"]}')
+```
+
+```curl cURL
+curl -X POST '/api/v1/mcp/customers' \
+  -H 'Authorization: Bearer YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Acme Corp",
+    "plan": "enterprise"
+  }'
+```
+</CodeGroup>
+
+## API Documentation Components
+
+### Request Example
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.cobalt.ai/v1/mcp/organizations' \
+  -H 'Authorization: Bearer sk_test_1234567890' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Customer Organization",
+    "subdomain": "customer-org",
+    "plan": "professional",
+    "settings": {
+      "whiteLabel": true,
+      "customDomain": "integrations.customer-org.com"
+    }
+  }'
+```
+</RequestExample>
+
+### Response Example
+
+<ResponseExample>
+```json Success Response
+{
+  "id": "org_abc123def456",
+  "name": "Customer Organization",
+  "subdomain": "customer-org",
+  "plan": "professional",
+  "status": "active",
+  "settings": {
+    "whiteLabel": true,
+    "customDomain": "integrations.customer-org.com",
+    "brandingEnabled": true
+  },
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+}
+```
+</ResponseExample>
+
+### Parameter Documentation
+
+<ParamField path="organization_id" type="string" required>
+Unique identifier for the customer organization. Must be a valid UUID v4 format.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+Display name for the customer organization. Used in the admin dashboard and customer-facing interfaces.
+</ParamField>
+
+<ParamField query="include_integrations" type="boolean" default="false">
+Whether to include active integrations in the response. Set to `true` to get full organization details.
+</ParamField>
+
+<ParamField header="X-Customer-Context" type="string">
+Optional header to specify customer context for the request. Format: `customer:CUSTOMER_ID`
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="organization_id" type="string" required>
+Unique identifier assigned to the newly created organization.
+</ResponseField>
+
+<ResponseField name="integrations" type="array">
+List of active integrations for this organization.
+
+<Expandable title="Integration object structure">
+  <ResponseField name="integration_slug" type="string">
+  Unique slug identifier for the integration (e.g., "salesforce", "hubspot").
+  </ResponseField>
+  
+  <ResponseField name="status" type="string">
+  Current status of the integration. Possible values: `active`, `inactive`, `error`.
+  </ResponseField>
+  
+  <ResponseField name="connected_accounts" type="integer">
+  Number of connected accounts for this integration.
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+## Interactive Components
+
+### Tabs for Platform-Specific Content
+
+<Tabs>
+<Tab title="Agency Implementation">
+  ```javascript
+  // Agency-specific MCP setup
+  const agencyMCP = new MCPClient({
+    mode: 'agency',
+    features: ['whiteLabel', 'multiTenant', 'billing']
+  });
+  
+  // Create customer workspace
+  const workspace = await agencyMCP.workspaces.create({
+    name: 'Client Workspace',
+    branding: agencyMCP.branding.getTemplate('agency-default')
+  });
+  ```
+</Tab>
+
+<Tab title="SaaS Platform">
+  ```javascript
+  // SaaS platform MCP configuration
+  const platformMCP = new MCPClient({
+    mode: 'platform',
+    features: ['embedded', 'ssoIntegration', 'advancedAnalytics']
+  });
+  
+  // Embed integrations in your app
+  const embeddedFlow = await platformMCP.embed.createFlow({
+    customerId: 'customer_123',
+    integrationType: 'crm',
+    theme: 'seamless'
+  });
+  ```
+</Tab>
+
+<Tab title="Enterprise">
+  ```javascript
+  // Enterprise MCP with advanced security
+  const enterpriseMCP = new MCPClient({
+    mode: 'enterprise',
+    features: ['soc2', 'hipaa', 'advancedAudit', 'customCompliance']
+  });
+  
+  // Configure enterprise security policies
+  await enterpriseMCP.security.setPolicies({
+    dataRetention: '7-years',
+    encryptionLevel: 'enterprise-grade',
+    auditLevel: 'comprehensive'
+  });
+  ```
+</Tab>
+</Tabs>
+
+### Accordion for FAQ/Troubleshooting
+
+<AccordionGroup>
+<Accordion title="How do I handle authentication failures in MCP?">
+  When authentication fails in an MCP environment, follow these steps:
+  
+  1. **Check customer context**: Ensure you're authenticating within the correct customer organization
+  2. **Verify scopes**: Confirm the integration has the required permissions
+  3. **Refresh tokens**: Implement automatic token refresh for long-running integrations
+  
+  ```javascript
+  // Handle auth failure with retry logic
+  const handleAuthFailure = async (error, customerId, integrationSlug) => {
+    if (error.code === 'AUTH_EXPIRED') {
+      return await mcpClient.auth.refreshToken(customerId, integrationSlug);
+    }
+    
+    // Log for customer-specific debugging
+    await mcpClient.audit.log({
+      customerId,
+      event: 'auth_failure',
+      details: error.message
+    });
+  };
+  ```
+</Accordion>
+
+<Accordion title="What are the rate limits for MCP operations?">
+  MCP rate limits vary by plan and operation type:
+  
+  - **Professional Plan**: 1,000 requests/minute per organization
+  - **Enterprise Plan**: 5,000 requests/minute per organization
+  - **Agency Plan**: 10,000 requests/minute across all customers
+  
+  <Warning>
+  Rate limits are enforced per customer organization in MCP mode, not per API key.
+  </Warning>
+</Accordion>
+
+<Accordion title="How do I set up white-label branding?">
+  White-label branding allows your customers to see your brand instead of Cobalt's:
+  
+  ```javascript
+  const brandingConfig = {
+    primaryColor: '#007bff',
+    secondaryColor: '#6c757d',
+    logo: 'https://yourapp.com/logo.png',
+    favicon: 'https://yourapp.com/favicon.ico',
+    customDomain: 'integrations.yourapp.com'
+  };
+  
+  await mcpClient.branding.update(organizationId, brandingConfig);
+  ```
+</Accordion>
+</AccordionGroup>
+
+## Visual Components
+
+### Cards for Navigation
+
+<CardGroup cols={2}>
+  <Card title="MCP Architecture Guide" icon="sitemap" href="/v3/mcps/overview/architecture">
+    Deep dive into multi-customer platform technical architecture
+  </Card>
+  
+  <Card title="Security & Compliance" icon="shield-check" href="/v3/mcps/implementation/security-compliance">
+    Enterprise-grade security features for MCP deployments
+  </Card>
+  
+  <Card title="White-label Solutions" icon="palette" href="/v3/mcps/implementation/white-label-solutions">
+    Custom branding and white-label implementation guide
+  </Card>
+  
+  <Card title="Multi-tenant Workflows" icon="users" href="/v3/mcps/implementation/multi-tenant-workflows">
+    Building workflows that scale across multiple customers
+  </Card>
+</CardGroup>
+
+### Image with Frame
+
+<Frame>
+<img src="/images/v3-images/mcp-architecture-diagram.png" alt="MCP Architecture Overview showing multi-tenant structure" />
+</Frame>
+
+<Frame caption="MCP dashboard showing multiple customer organizations">
+<img src="/images/v3-images/mcp-dashboard-screenshot.png" alt="MCP admin dashboard with customer organization list" />
+</Frame>
+
+## Callout Components
+
+<Tip>
+For optimal MCP performance, implement customer-specific caching strategies. Each customer organization should have isolated cache keys to prevent data leakage.
+</Tip>
+
+<Warning>
+When implementing MCP solutions, ensure proper customer data isolation. Never share sensitive data between customer organizations, even accidentally through shared cache or logging.
+</Warning>
+
+<Info>
+MCP pricing is based on active customer organizations, not individual integrations. You can have unlimited integrations per customer organization within your plan limits.
+</Info>
+
+<Check>
+Successfully configured MCP test environment! You can now proceed with implementing customer-specific integrations and workflows.
+</Check>
+
+## Advanced Features
+
+### Video Embed Example
+
+<iframe
+  className="w-full aspect-video rounded-xl"
+  src="https://www.youtube.com/embed/4KzFe50RQkQ"
+  title="Cobalt MCP Implementation Guide"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+></iframe>
+
+### Tooltip Example
+
+Learn about <Tooltip tip="Model Context Protocol - A framework for AI-powered integration workflows">MCP</Tooltip> implementation patterns for enterprise-scale deployments.
+
+### Update/Changelog Example
+
+<Update label="MCP v2.1.0" description="Released March 15, 2024">
+## New MCP Features
+- **Enhanced Security**: Added SOC 2 compliance framework for enterprise customers
+- **Improved Analytics**: Customer-specific usage analytics and reporting
+- **White-label SDK**: New React components for seamless white-label integration
+
+## Bug Fixes
+- Fixed customer isolation issue in shared workflow execution
+- Resolved authentication token refresh race condition
+- Improved error handling for customer-specific configuration validation
+</Update>
+
+## What's Next?
+
+After exploring this test page, you can:
+
+- **Implement Real MCPs**: Use the [Getting Started Guide](/v3/mcps/overview/getting-started) to build your first multi-customer platform
+- **Explore Architecture**: Learn about [MCP Architecture](/v3/mcps/overview/architecture) for scalable implementations  
+- **Security Setup**: Review [Security & Compliance](/v3/mcps/implementation/security-compliance) for enterprise deployments
+- **White-label Branding**: Customize the experience with [White-label Solutions](/v3/mcps/implementation/white-label-solutions)
+
+<Tip>
+This test page demonstrates all major Mintlify components. Use it as a reference when creating new MCP documentation pages.
+</Tip>
