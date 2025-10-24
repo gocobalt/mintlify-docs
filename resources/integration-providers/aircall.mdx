@@ -1,9 +1,10 @@
 ---
-title: Connect
-description: Connect with the Linked Account's Aircall account.
+title: "Connect"
+description: "Connect with the Linked Account's Aircall account."
 ---
+
 <Note>
-Aircall is an **API Key** based integration and does not require the setup of an app.
+  Aircall is an **API Key** based integration and does not require the setup of an app.
 </Note>
 
 ### Required Credentials of a Linked Account
@@ -14,59 +15,73 @@ To successfully connect with the **Aircall** integration, a Linked Account or an
 2. API Token
 
 <Info>
-To understand how a Linked Account can get the above mentioned credentials, refer below.
+  To understand how a Linked Account can get the above mentioned credentials, refer below.
 </Info>
-
 
 ### Getting Credentials of Aircall
 
 To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
-<img height="200" src="/images/Aircall/aircall_config.png" alt="Connect a Linked Account"/>
+
+<img
+  height="200"
+  src="/images/Aircall/aircall_config.png"
+  alt="Connect a Linked Account"
+/>
 
 1. Log in to your [Aircall account](https://dashboard.aircall.io/login).
 2. Click on the `Integrations & API` in the side menu and click on `API Keys` tab.
-<img height="200" src="/images/Aircall/aircall_navigation.png" alt="Navigation in Aircall"/>
+
+<img
+  height="200"
+  src="/images/Aircall/aircall_navigation.png"
+  alt="Navigation in Aircall"
+/>
 
 3. Click on `Generate an API key` and enter a `Key name`.
 4. Copy the `API ID` and `API Token` displayed and click on `Confirm`.
+
 <Info>
-Copy the API token as it won't be visible again.
+  Copy the API token as it won't be visible again.
 </Info>
-<img height="200" src="/images/Aircall/aircall_credentials.png" alt="Getting Credentials"/>
+
+<img
+  height="200"
+  src="/images/Aircall/aircall_credentials.png"
+  alt="Getting Credentials"
+/>
 
 The Linked Account or end-user now have all the credentials required to connect with Aircall.
 
 #### Actions and triggers
-In Cobalt, you can create orchestrations of your use-cases using Aircall actions and triggers. Following are the set of Aircall actions and triggers
-supported by Cobalt.
+
+In Cobalt, you can create orchestrations of your use-cases using Aircall actions and triggers. Following are the set of Aircall actions and triggers supported by Cobalt.
 
 <Tabs>
   <Tab title="Actions">
-  <AccordionGroup>
-  <Accordion title="Call">
-     1. **Start Outbound Call** - Start an outbound call for a User from their Phone app. The User must be available, not on a call, and associated with the Number to be used for the call.
-    </Accordion>
-    <Accordion title="Contact">
-     2. **Create Contact** - Create a new Contact that will be automatically shared across the company in Aircall.
-     3. **Update Contact** - Update a shared Contact and get the updated Contact as the response in Aircall.
-     4. **Delete Contact** - Delete a shared Contact from the Company in Aircall.
-     </Accordion>
-    <Accordion title="Others">
-     5. **HTTP Request** - Make HTTP API calls to any Aircall documented REST APIs.
-  </Accordion>
-  </AccordionGroup>
+    <AccordionGroup>
+      <Accordion title="Call">
+        1. **Start Outbound Call** - Start an outbound call for a User from their Phone app. The User must be available, not on a call, and associated with the Number to be used for the call.
+      </Accordion>
+      <Accordion title="Contact">
+        2. **Create Contact** - Create a new Contact that will be automatically shared across the company in Aircall.
+        3. **Update Contact** - Update a shared Contact and get the updated Contact as the response in Aircall.
+        4. **Delete Contact** - Delete a shared Contact from the Company in Aircall.
+      </Accordion>
+      <Accordion title="Others">
+        5. **HTTP Request** - Make HTTP API calls to any Aircall documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
   </Tab>
-
   <Tab title="Triggers">
-    1. **Contact Created** - Triggers when a new contact is created in Aircall.
-    2. **Contact Updated** - Triggers when a contact is updated in Aircall.
-    3. **Contact Deleted** - Triggers when a contact is deleted in Aircall.
-    4. **Call Created** - Triggers when a call is created in Aircall. 
-    5. **Call Ringing on Agent** - Triggers when calls start ringing on Agents' Phone in Aircall.
-    6. **Call Agent Declined** - Triggers when an Agent declines a call in Aircall.
-    7. **Call Answered** - Triggers when a call is answered in Aircall.
-    8. **Call Transferred** - Triggers when a call is transferred in Aircall.
-    9. **Call Unsuccessful Transfer** - Triggers when a call is unsuccessfully transferred in Aircall.
+     1. **Contact Created** - Triggers when a new contact is created in Aircall.
+     2. **Contact Updated** - Triggers when a contact is updated in Aircall.
+     3. **Contact Deleted** - Triggers when a contact is deleted in Aircall.
+     4. **Call Created** - Triggers when a call is created in Aircall.
+     5. **Call Ringing on Agent** - Triggers when calls start ringing on Agents' Phone in Aircall.
+     6. **Call Agent Declined** - Triggers when an Agent declines a call in Aircall.
+     7. **Call Answered** - Triggers when a call is answered in Aircall.
+     8. **Call Transferred** - Triggers when a call is transferred in Aircall.
+     9. **Call Unsuccessful Transfer** - Triggers when a call is unsuccessfully transferred in Aircall.
     10. **Call Hungup** - Triggers when a new contact is created in Aircall.
     11. **Contact Created** - Triggers when a call is hungup in Aircall.
     12. **Call Ended** - Triggers when a call is ended in Aircall.
@@ -92,6 +107,5 @@ supported by Cobalt.
     32. **Number Deleted** - Triggers when a number is deleted in Aircall.
     33. **Number Opened** - Triggers when a number opens according to its opening hours in Aircall.
     34. **Number Closed** - Triggers when a number closes according to its opening hours in Aircall.
-
   </Tab>
 </Tabs>

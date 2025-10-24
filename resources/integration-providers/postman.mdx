@@ -1,0 +1,145 @@
+---
+title: "Setup"
+description: "Connect to your Postman app for API Key authentication"
+---
+
+To setup your Postman app in Refold for API Key authentication, you will need the following credentials from your Postman account:
+
+- API Key
+
+### Pre-requisites
+
+1. Postman account with API access.
+
+<Info>
+  If you haven't already created an API key in Postman, you'd need to create one.
+</Info>
+
+### Creating an API Key in Postman
+
+To create a Postman API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Postman account at https://identity.getpostman.com/.
+2. Navigate to `Settings` in the top right corner, then select `API Keys` from the left sidebar.
+
+<img
+  height="200"
+  src="/images/postman/postman_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Click on `Generate API Key` button in the API Keys section.
+4. Enter a name for your API key (e.g., "Refold Integration") to help you identify it later.
+5. Click `Generate API Key` button to create the key.
+6. Go to your [`Apps catalog`](https://app.refold.ai/apps) in **Refold** \> Search for `Postman` \> `Settings` \> `Use your credentials` \> Copy the configuration endpoint if needed.
+7. Copy the generated API key immediately as it will only be shown once.
+
+<img
+  height="200"
+  src="/images/postman/postman_config.png"
+  alt="Setting up Postman API Key"
+/>
+
+8. Store the **API Key** securely as you won't be able to see it again.
+
+<img
+  height="200"
+  src="/images/postman/postman_credentials.png"
+  alt="Getting API Key"
+/>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/postman/postman_refold.png"
+  alt="Setting up application credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Configuring Permissions
+
+Refold lets you configure what permissions to ask from your users while they install your application. For Postman API Key authentication, the API key has full access to all resources in the workspace.
+
+<img
+  height="200"
+  src="/images/postman/postman_scopes.png"
+  alt="API Permissions"
+/>
+
+<Warning>
+  If you are facing authentication errors, make sure your API key is valid and has not been revoked. API keys provide full access to your Postman workspace resources.
+</Warning>
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Postman actions and triggers. Following are the set of Postman actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="APIs">
+        1. **Get All APIs** - List all APIs in the workspace.
+        2. **Get an API** - Retrieve specific API details by ID.
+        3. **Create an API** - Create a new API in the workspace.
+        4. **Update an API** - Update an existing API's information.
+        5. **Delete an API** - Remove an API from the workspace.
+      </Accordion>
+      <Accordion title="Collections">
+        6. **Create a Collection** - Create a new collection in the workspace.
+        7. **Get a Collection** - Retrieve specific collection details by ID.
+        8. **Get All Collections** - List all collections in the workspace.
+        9. **Delete a Collection** - Remove a collection from the workspace.
+      </Accordion>
+      <Accordion title="Workspaces">
+        **Get All Workspaces** - List all workspaces accessible to the user.
+
+        11. **Get a Workspace** - Retrieve specific workspace details by ID.
+        12. **Create a Workspace** - Create a new workspace.
+        13. **Update a Workspace** - Update an existing workspace's information.
+        14. **Delete a Workspace** - Remove a workspace.
+      </Accordion>
+      <Accordion title="Users">
+        15. **Get Authenticated User** - Get details of the currently authenticated user.
+        16. **Get All Team Users** - List all users in the team.
+        17. **Get a Team User** - Retrieve specific team user details by ID.
+      </Accordion>
+      <Accordion title="Environments">
+        18. **Get All Environments** - List all environments in the workspace.
+        19. **Get an Environment** - Retrieve specific environment details by ID.
+        20. **Create an Environment** - Create a new environment.
+        21. **Update an Environment** - Update an existing environment's variables.
+        22. **Delete an Environment** - Remove an environment from the workspace.
+      </Accordion>
+      <Accordion title="Mock Servers">
+        23. **Get All Mock Servers** - List all mock servers in the workspace.
+        24. **Get a Mock Server** - Retrieve specific mock server details by ID.
+        25. **Create a Mock Server** - Create a new mock server for a collection.
+        26. **Update a Mock Server** - Update an existing mock server configuration.
+        27. **Delete a Mock Server** - Remove a mock server from the workspace.
+      </Accordion>
+      <Accordion title="Monitors">
+        28. **Get All Monitors** - List all monitors in the workspace.
+        29. **Get a Monitor** - Retrieve specific monitor details by ID.
+        30. **Create a Monitor** - Create a new collection monitor.
+        31. **Update a Monitor** - Update an existing monitor configuration.
+        32. **Delete a Monitor** - Remove a monitor from the workspace.
+      </Accordion>
+      <Accordion title="Others">
+        33. **HTTP Request** - Make HTTP API calls to any Postman documented REST APIs.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Collection Updated** - Triggers when a collection is updated in Postman.
+    2. **Collection Created** - Triggers when a new collection is created in Postman.
+    3. **Collection Deleted** - Triggers when a collection is deleted in Postman.
+    4. **Workspace Updated** - Triggers when a workspace is updated in Postman.
+    5. **Environment Updated** - Triggers when an environment is updated in Postman.
+    6. **API Updated** - Triggers when an API is updated in Postman.
+    7. **Monitor Run Completed** - Triggers when a monitor run completes in Postman.
+  </Tab>
+</Tabs>
