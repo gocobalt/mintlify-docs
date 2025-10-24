@@ -1,0 +1,99 @@
+---
+title: "Connect"
+description: "Connect with the Linked Account's Stripe account."
+---
+
+## Required Credentials of a Linked Account
+
+To successfully connect with the **Stripe** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+- API Key (Secret Key)
+
+### Pre-requisites
+
+1. Stripe account with API access enabled.
+
+<Info>
+  If you haven't already created a Stripe account, you'd need to create one [here](https://stripe.com)
+</Info>
+
+## Getting Credentials of Stripe
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+
+![Screenshot2025 10 24at3 25 24PM Pn](/images/Screenshot2025-10-24at3.25.24PM.png)
+
+1. Log in to your [Stripe Dashboard](https://dashboard.stripe.com).
+2. Navigate to `Developers` in the left sidebar and click on `API keys`.
+
+   ![Screenshot2025 10 24at3 30 01PM Pn](/images/Screenshot2025-10-24at3.30.01PM.png)
+3. You will see three types of keys: **Restricted keys**, **Publishable key** and **Secret key**.
+
+   ![Screenshot2025 10 24at3 40 12PM Pn](/images/Screenshot2025-10-24at3.40.12PM.png)
+4. The **Secret key** is your API Key that will be used for server-side API calls. Click on `Reveal test key` or `Reveal live key` based on your environment.
+5. Click on `Create secret key` button if you need to generate a new secret key for enhanced security.
+7. Copy the **Secret key** from the Stripe dashboard. You can also set a name for your key to identify it later.
+
+#### Test Mode vs Live Mode
+
+Stripe provides separate API keys for test mode and live mode:
+
+- **Test Mode Keys**: Use these for development and testing. Test mode keys start with `sk_test_`.
+- **Live Mode Keys**: Use these for production. Live mode keys start with `sk_live_`.
+
+Make sure to use the appropriate key based on your environment. Refold supports both test and live mode configurations.
+
+## Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Stripe actions and triggers. Following are the set of Stripe actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Balance">
+        1. **Get Balance** - Get balance in Stripe.
+      </Accordion>
+      <Accordion title="Charges">
+        2. **List Charges** - List charges in Stripe.
+        3. **Create Charge** - Create charge in Stripe.
+        4. **Update Charge** - Update charge in Stripe.
+      </Accordion>
+      <Accordion title="Customers">
+        5. **List Customers** - List customers in Stripe.
+        6. **Create Customer** - Create customer in Stripe.
+        7. **Update Customer** - Update customer in Stripe.
+        8. **Search Customers** - Search customers in Stripe.
+      </Accordion>
+      <Accordion title="Payment Intents">
+         9. **List Payment Intents** - List payment intents in Stripe.
+        10. **Create Payment Intent** - Create payment intent in Stripe.
+        11. **Update Payment Intent** - Update payment intent in Stripe.
+        12. **Get Payment Intent** - Get payment intent by id in Stripe.
+        13. **Cancel Payment Intent** - Cancel payment intent in Stripe.
+        14. **Capture Payment Intent** - Capture payment intent in Stripe.
+        15. **Confirm Payment Intent** - Confirm payment intent in Stripe.
+      </Accordion>
+      <Accordion title="Products">
+        16. **List Products** - List products in Stripe.
+        17. **Create Product** - Create product in Stripe.
+        18. **Update Product** - Update product in Stripe.
+        19. **Get Product** - Get product by id in Stripe.
+      </Accordion>
+      <Accordion title="Subscriptions">
+        20. **List Subscriptions** - List subscriptions in Stripe.
+        21. **Create Subscription** - Create subscription in Stripe.
+        22. **Update Subscription** - Update subscription in Stripe.
+        23. **Cancel Subscription** - Cancel subscription in Stripe.
+      </Accordion>
+      <Accordion title="Others">
+        24. **HTTP Request** - Make HTTP API calls to any Stripe documented REST APIs.
+        25. **Incremental Sync** - Check for new data in the endpoint in Stripe.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Balance Available** - Triggers when your Stripe balance has been updated in Stripe.
+    2. **Charge Succeeded** - Triggers when a charge is successful in Stripe.
+    3. **Credit Note Updated** - Triggers when a credit note is updated in Stripe.
+  </Tab>
+</Tabs>
