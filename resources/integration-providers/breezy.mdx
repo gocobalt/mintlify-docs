@@ -1,0 +1,100 @@
+---
+title: "Setup"
+description: "Connect to your Breezy HR app for API Key authentication"
+---
+
+To setup your Breezy HR app in Refold for API Key authentication, you will need the following credentials from your Breezy HR account:
+
+- API Key (Access Token)
+
+### Pre-requisites
+
+1. Breezy HR account with Admin access.
+
+<Info>
+  If you don't have Admin access in Breezy HR, you'll need to contact your Breezy HR administrator to generate an API key for you.
+</Info>
+
+### Creating an API Key in Breezy HR
+
+To create a Breezy HR API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Breezy HR account at [https://app.breezy.hr](https://app.breezy.hr).
+2. Click on the **gear icon** (⚙️) in the left sidebar to access Company Settings.
+
+<img
+  height="200"
+  src="/images/breezyhr/breezyhr_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Navigate to the `Integrations` section in the settings menu.
+4. Locate the **API** option and click on `Settings`.
+5. Click on `Generate API Key` or `Create new key` to generate a new access token.
+6. Enter a **Name** for your API key to identify its purpose (e.g., "Refold Integration").
+7. Click `Save` or `Create` to generate your API key.
+
+<img
+  height="200"
+  src="/images/breezyhr/breezyhr_config.png"
+  alt="Setting up Breezy HR API Key"
+/>
+
+8. Copy the generated **Access Token**. This token will be used for API authentication.
+
+<img
+  height="200"
+  src="/images/breezyhr/breezyhr_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  The access token is valid for **30 days** from the time of creation. After 30 days, you will need to generate a new token. Store your API key securely and never share it publicly.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/breezyhr/breezyhr_refold.png"
+  alt="Setting up application API Key credentials"
+/>
+
+Provide the acquired API Key (Access Token) under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Breezy HR actions and triggers. Following are the set of Breezy HR actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Candidate">
+        1. **Get Candidates For Position** - Retrieve candidates for a given position in Breezy HR.
+        2. **Add Candidate** - Add a new candidate to a position in Breezy HR.
+        3. **Update Candidate** - Update an existing candidate in Breezy HR.
+        4. **Get Candidate By ID** - Get a specific candidate by ID in Breezy HR.
+      </Accordion>
+      <Accordion title="Position">
+        5. **Get All Positions** - Get all positions in Breezy HR.
+        6. **Get Position By ID** - Get a specific position by ID in Breezy HR.
+        7. **Update Position** - Update details for a given position in Breezy HR.
+      </Accordion>
+      <Accordion title="Company">
+        8. **Get Companies** - Get a list of companies in Breezy HR.
+      </Accordion>
+      <Accordion title="User">
+        9. **Get User By ID** - Get a specific user by ID in Breezy HR.
+      </Accordion>
+      <Accordion title="Others">
+        10. **HTTP Request** - Make HTTP API calls to any Breezy HR documented REST APIs.
+        11. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

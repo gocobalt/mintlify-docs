@@ -1,0 +1,101 @@
+---
+title: "Setup"
+description: "Connect to your Mailgun app for API Key"
+---
+
+To setup your Mailgun app in Refold for API Key, you will need the following credentials from your Mailgun account:
+
+- API Key
+
+### Pre-requisites
+
+1. Mailgun account with API access enabled.
+
+<Info>
+  If you haven't already created an API Key in Mailgun, you'd need to create one.
+</Info>
+
+### Creating an API Key in Mailgun
+
+To create a Mailgun API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Mailgun account at [https://www.mailgun.com](https://www.mailgun.com).
+2. In the top-right corner of the Mailgun Control Panel, click on your Profile Menu to expand the dropdown list of options.
+
+<img
+  height="200"
+  src="/images/mailgun/mailgun_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Click on `API Security` or navigate to `Account Settings` → `API Keys`.
+4. In the API Keys section, click on `Create API Key` or `Add new key` button.
+5. Enter a description for your API Key (e.g., "Refold Integration") to help identify its purpose.
+6. Select the appropriate **Role** for your API Key:
+   - **Admin** - Full access to all API endpoints
+   - **Developer** - Access to most endpoints except account management
+   - **Sending** - Restricted to sending messages only
+7. Click `Create Key` to generate your API Key.
+
+<img
+  height="200"
+  src="/images/mailgun/mailgun_config.png"
+  alt="Setting up Mailgun API Key"
+/>
+
+8. Copy the generated **API Key** immediately from the pop-up modal and store it securely.
+
+<img
+  height="200"
+  src="/images/mailgun/mailgun_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  The Mailgun API Key can only be seen once within the pop-up modal after creation. Store the API Key in a secure location such as a password manager. If you lose the API Key, Mailgun cannot retrieve it, and you will need to create a new one.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/mailgun/mailgun_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Mailgun actions and triggers. Following are the set of Mailgun actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Domain">
+        1. **List Domains** - List all domains in Mailgun.
+        2. **Create Domain** - Create a domain in Mailgun.
+        3. **Update Domain** - Update a domain in Mailgun.
+        4. **Delete Domain** - Delete a domain in Mailgun.
+      </Accordion>
+      <Accordion title="Mailing List">
+        5. **Create Mail List** - Create a mailing list in Mailgun.
+        6. **Get Mailing Lists** - Get all mailing lists in Mailgun.
+        7. **Get Mailing Lists Members** - Get mailing list members in Mailgun.
+      </Accordion>
+      <Accordion title="Message">
+        8. **Send Email** - Send an email in Mailgun.
+        9. **Delete Mail** - Delete scheduled and undelivered mail in Mailgun.
+      </Accordion>
+      <Accordion title="Others">
+        10. **HTTP Request** - Make HTTP API calls to any Mailgun documented REST APIs.
+        11. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Delivered** - Triggers when Mailgun sends an email and it is accepted by the recipient email server.
+  </Tab>
+</Tabs>

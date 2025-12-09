@@ -1,0 +1,96 @@
+---
+title: "Setup"
+description: "Connect to your Canny app for API Key authentication"
+---
+
+To setup your Canny app in Refold for API Key authentication, you will need the following credentials from your Canny account:
+
+- API Key
+
+### Pre-requisites
+
+1. Canny account with admin access.
+
+<Info>
+  If you don't have admin access to your Canny account, you'll need to request it from your account administrator to access the API key.
+</Info>
+
+### Getting your API Key from Canny
+
+To retrieve your Canny API Key and configure it in Refold, please follow the steps mentioned below:
+
+1. Log in to your Canny account at [https://canny.io/login](https://canny.io/login).
+2. Navigate to `Settings` in the sidebar, then click on `API & Webhooks` under the Integrations section.
+
+<img
+  height="200"
+  src="/images/canny/canny_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. In the API & Webhooks settings page, you will find your **Secret API Key**.
+4. Click on the `Copy` button next to the API Key to copy it to your clipboard.
+5. Store this API Key securely - it provides full access to your Canny data.
+
+<img
+  height="200"
+  src="/images/canny/canny_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  Your API Key is secret! Store it securely on your server and never share it publicly. Anyone with access to this key can read and modify your Canny data.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would need to provide their API Key. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/canny/canny_refold.png"
+  alt="Setting up application API Key credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Canny actions and triggers. Following are the set of Canny actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Company">
+        1. **Update Company** - Update an existing company's details in Canny.
+        2. **Delete Company** - Delete an existing company in Canny.
+      </Accordion>
+      <Accordion title="Post">
+        3. **Create Post** - Create a new post on a board in Canny.
+        4. **Update Post** - Update an existing post's details in Canny.
+        5. **List Posts** - Get a list of posts with filtering and sorting options in Canny.
+        6. **Delete Post** - Delete an existing post in Canny.
+      </Accordion>
+      <Accordion title="Tag">
+        7. **Create Tag** - Create a new tag for a board in Canny.
+        8. **List Tags** - Get a list of tags for a board in Canny.
+      </Accordion>
+      <Accordion title="User">
+        9. **Create User** - Create a new user in Canny.
+        10. **Retrieve User** - Retrieve the details of an existing user by their ID in Canny.
+        11. **List Users** - Get a list of users in Canny.
+        12. **Delete User** - Delete an existing user in Canny.
+      </Accordion>
+      <Accordion title="Others">
+        13. **HTTP Request** - Make HTTP API calls to any Canny documented REST APIs.
+        14. **Incremental Sync** - Sync data incrementally from Canny.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Post Created** - Triggers when a new post is created in Canny.
+    2. **Post Status Changed** - Triggers when a post's status is changed in Canny.
+    3. **Comment Created** - Triggers when a new comment is created on a post in Canny.
+    4. **Vote Created** - Triggers when a new vote is cast on a post in Canny.
+  </Tab>
+</Tabs>

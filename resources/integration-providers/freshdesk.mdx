@@ -1,0 +1,102 @@
+---
+title: "Setup"
+description: "Connect to your Freshdesk app for API Key"
+---
+
+To setup your Freshdesk app in Refold for API Key, you will need the following credentials from your Freshdesk account:
+
+- API Key
+- Freshdesk Domain
+
+### Pre-requisites
+
+1. Freshdesk account with a paid plan (Blossom, Garden, Estate, or Forest).
+
+<Info>
+  API functionality is not available on Freshdesk's free plan. Ensure you have a paid plan to access API features.
+</Info>
+
+### Getting API credentials in Freshdesk
+
+To acquire the above mentioned credentials from Freshdesk, please follow the steps mentioned below:
+
+1. Log in to your Freshdesk helpdesk at `https://<your_domain>.freshdesk.com`.
+2. Click on your **profile picture** on the top right corner and select **Profile Settings** from the dropdown menu.
+
+<img
+  height="200"
+  src="/images/freshdesk/freshdesk_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. On the right pane of your Profile Settings page, locate the **View API Key** button.
+4. Click on **View API Key** and complete the **CAPTCHA verification** to reveal your API key.
+5. Copy the displayed **API Key** and store it securely.
+6. Note your **Freshdesk Domain** which is the subdomain of your helpdesk URL (e.g., if your URL is `https://yourcompany.freshdesk.com`, then your domain is `yourcompany`).
+
+<img
+  height="200"
+  src="/images/freshdesk/freshdesk_config.png"
+  alt="Setting up Freshdesk API Key"
+/>
+
+7. The API uses Basic Authentication with the format `API_KEY:X` (your API key followed by a colon and the letter X as a dummy password).
+8. You can reset your API Key at any time from the Profile Settings page. Note that resetting will disconnect all apps using the current key.
+
+<img
+  height="200"
+  src="/images/freshdesk/freshdesk_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  The API key is tied to your agent account and inherits your role permissions. Any API activities are allowed based on the role assigned to your agent profile. Keep your API key secure and do not share it publicly.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/freshdesk/freshdesk_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key and Freshdesk Domain under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Freshdesk actions and triggers. Following are the set of Freshdesk actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Company">
+        1. **Create Company** - Create a new company in Freshdesk.
+        2. **Update Company** - Update an existing company in Freshdesk.
+        3. **Search Companies** - Search for companies in Freshdesk.
+      </Accordion>
+      <Accordion title="Contact">
+        4. **Create Contact** - Create a new contact in Freshdesk.
+        5. **Get Contacts** - Retrieve contacts from Freshdesk.
+        6. **Update Contact** - Update an existing contact in Freshdesk.
+        7. **Search Contacts** - Search for contacts in Freshdesk.
+      </Accordion>
+      <Accordion title="Ticket">
+        8. **Create Ticket** - Create a new support ticket in Freshdesk.
+        9. **Update Ticket** - Update an existing ticket in Freshdesk.
+        10. **Get Ticket By Id** - Retrieve a specific ticket by its ID in Freshdesk.
+        11. **List Tickets** - Get a list of tickets in Freshdesk.
+      </Accordion>
+      <Accordion title="Others">
+        12. **HTTP Request** - Make HTTP API calls to any Freshdesk documented REST APIs.
+        13. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **New ticket created** - Triggers when a new ticket is created in Freshdesk.
+    2. **Ticket status updated** - Triggers when a ticket status is updated in Freshdesk.
+  </Tab>
+</Tabs>

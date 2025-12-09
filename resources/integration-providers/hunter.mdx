@@ -1,0 +1,95 @@
+---
+title: "Setup"
+description: "Connect to your Hunter app for API Key"
+---
+
+To setup your Hunter app in Refold for API Key, you will need the following credentials from your Hunter account:
+
+- API Key
+
+### Pre-requisites
+
+1. Hunter account with API access.
+
+<Info>
+  If you haven't already created an API Key in Hunter, you'd need to create one.
+</Info>
+
+### Creating an API Key in Hunter
+
+To create a Hunter API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Hunter account at [https://hunter.io](https://hunter.io).
+2. Click on your profile icon in the top-right corner and select `API` from the dropdown menu, or navigate directly to [https://hunter.io/api-keys](https://hunter.io/api-keys).
+
+<img
+  height="200"
+  src="/images/hunter/hunter_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. In the API page, you will see your existing API keys or an option to create a new one.
+4. Click on `Create a new API key` button.
+5. Enter a name for your API Key (e.g., "Refold Integration") to help identify its purpose.
+6. Click `Create` to generate your API Key.
+
+<img
+  height="200"
+  src="/images/hunter/hunter_config.png"
+  alt="Setting up Hunter API Key"
+/>
+
+7. Copy the generated **API Key** and store it securely.
+
+<img
+  height="200"
+  src="/images/hunter/hunter_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  Your API Key identifies your account, so make sure to keep it secret. Do not share your API Key publicly or commit it to version control. You can generate or delete API keys at any time from your dashboard.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/hunter/hunter_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Hunter actions and triggers. Following are the set of Hunter actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Campaign">
+        1. **List Campaigns** - Get all campaigns in Hunter.
+        2. **Create Recipient** - Add a recipient to a campaign in Hunter.
+      </Accordion>
+      <Accordion title="Lead">
+        3. **List Leads** - List leads in your account in Hunter.
+        4. **Create Lead** - Create a lead in Hunter.
+        5. **Update Lead** - Update a lead in Hunter.
+        6. **Delete Lead** - Delete a lead in Hunter.
+      </Accordion>
+      <Accordion title="Domain">
+        7. **Domain Search** - Search all email addresses corresponding to one website in Hunter.
+      </Accordion>
+      <Accordion title="Others">
+        8. **HTTP Request** - Make HTTP API calls to any Hunter documented REST APIs.
+        9. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Email Sent** - Triggers when an email is sent in Hunter.
+  </Tab>
+</Tabs>

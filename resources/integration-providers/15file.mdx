@@ -1,0 +1,97 @@
+---
+title: "Setup"
+description: "Connect to your 15Five app for API Key authentication"
+---
+
+To setup your 15Five app in Refold for API Key authentication, you will need the following credentials from your 15Five account:
+
+- API Key
+
+### Pre-requisites
+
+1. 15Five account with Account Admin access.
+
+<Info>
+  If you don't have Admin access in 15Five, you'll need to contact your 15Five administrator to generate an API key for you.
+</Info>
+
+### Creating an API Key in 15Five
+
+To create a 15Five API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your 15Five account at [https://my.15five.com](https://my.15five.com).
+2. Click on the **Settings gear** icon in the top, right-hand corner of 15Five.
+
+<img
+  height="200"
+  src="/images/15five/15five_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Select `Integrations` from the dropdown menu.
+4. Scroll to find **Public API** under Available integrations and click `Enable` to the right of the Public API option.
+5. Once enabled, you'll land on the **Company API keys** page. Click the `Create new key` button.
+6. Add a short **Name** for your API key. This name can be anything, but we suggest using a name that's easily identifiable (e.g., "Refold Integration").
+7. (Optional) If you would like to limit the API access to **High Fives only**, check that box before saving.
+8. Click `Save` to generate your API key.
+
+<img
+  height="200"
+  src="/images/15five/15five_config.png"
+  alt="Setting up 15Five API Key"
+/>
+
+9. You will be redirected back to the **Company API keys** page. Copy the **Access token** (32 characters long).
+
+<img
+  height="200"
+  src="/images/15five/15five_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  API keys generated in 15Five have an expiration date of **1 year** from the time of creation. After 1 year, the key will become inactive. A 2-week notice email will be sent out before the key expires. We recommend creating a new key and replacing old keys where used to avoid a lapse in functionality.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/15five/15five_refold.png"
+  alt="Setting up application API Key credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using 15Five actions and triggers. Following are the set of 15Five actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Security Audit">
+        1. **List Security Audits** - Retrieve all security audit logs in 15Five.
+      </Accordion>
+      <Accordion title="Group">
+        2. **List Groups** - Retrieve all groups in 15Five.
+        3. **Create Group** - Create a new group in 15Five.
+        4. **Update Group** - Update an existing group in 15Five.
+      </Accordion>
+      <Accordion title="User">
+        5. **List Users** - Retrieve all users in 15Five.
+        6. **Update User** - Update user information in 15Five.
+        7. **Get User by ID** - Retrieve a specific user by ID in 15Five.
+      </Accordion>
+      <Accordion title="Others">
+        8. **HTTP Request** - Make HTTP API calls to any 15Five documented REST APIs.
+        9. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
