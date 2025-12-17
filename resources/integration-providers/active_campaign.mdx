@@ -1,0 +1,78 @@
+---
+title: "Setup"
+description: "Connect to your Active Campaign app for API Key"
+---
+
+Active Campaign is an API Key-based integration and does not require the setup of an app.
+
+To connect with the Active Campaign integration, you will need the following credentials:
+
+- Base URL
+- API Key
+
+### Pre-requisites
+
+1. Active Campaign account with API access.
+
+<Info>
+  If you haven't already located your API Key in Active Campaign, you can find it in the Developer section of your account settings.
+</Info>
+
+### Getting Credentials of Active Campaign
+
+To acquire the required credentials and connect, please follow the steps mentioned below:
+
+1. Go to the [Active Campaign login page](https://www.activecampaign.com/login) and login using your credentials.
+2. Once logged in, navigate to the **Settings** section.
+
+<img
+  height="200"
+  src="/images/activecampaign/activecampaign_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Within the **Settings** menu, look for the **Developer** section in the left-hand sidebar.
+4. Once you click **Developer**, your **API Key** and **Base URL** will appear front and center.
+
+<img
+  height="200"
+  src="/images/activecampaign/activecampaign_credentials.png"
+  alt="Getting API Key and Base URL"
+/>
+
+<Warning>
+  Keep your API Key confidential — don't share it with anybody. Store it securely and avoid exposing it in public repositories or client-side code.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the Base URL and API Key when prompted during the Active Campaign connection setup.
+
+<img
+  height="200"
+  src="/images/activecampaign/activecampaign_refold.png"
+  alt="Setting up credentials in hosted portal"
+/>
+
+Provide the acquired Base URL and API Key in the hosted portal and complete the connection.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Active Campaign actions and triggers. Following are the set of Active Campaign actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Others">
+        1. **HTTP Request** - Make HTTP API calls to any Active Campaign documented REST APIs.
+        2. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Contact Created** - Triggers when a new contact is created in Active Campaign.
+    2. **Contact Updated** - Triggers when a contact is updated in Active Campaign.
+    3. **Deal Created** - Triggers when a new deal is created in Active Campaign.
+    4. **Deal Updated** - Triggers when a deal is updated in Active Campaign.
+  </Tab>
+</Tabs>

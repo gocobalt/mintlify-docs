@@ -1,68 +1,41 @@
 ---
 title: "Setup"
-description: "Connect to your Breezy HR app for API Key authentication"
+description: "Connect to your Breezy HR app for API Key"
 ---
 
-To setup your Breezy HR app in Refold for API Key authentication, you will need the following credentials from your Breezy HR account:
+To setup your Breezy HR app in Refold, you will need the following credentials from your Breezy HR account:
 
-- API Key (Access Token)
+- Email
+- Password
 
 ### Pre-requisites
 
-1. Breezy HR account with Admin access.
+1. Breezy HR account with API access.
 
 <Info>
-  If you don't have Admin access in Breezy HR, you'll need to contact your Breezy HR administrator to generate an API key for you.
+  Refold uses your Breezy HR account credentials to securely authenticate and connect to the Breezy HR API on your behalf.
 </Info>
 
-### Creating an API Key in Breezy HR
+### Connecting Breezy HR in Refold
 
-To create a Breezy HR API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+To connect your Breezy HR account, please follow the steps mentioned below:
 
-1. Log in to your Breezy HR account at [https://app.breezy.hr](https://app.breezy.hr).
-2. Click on the **gear icon** (⚙️) in the left sidebar to access Company Settings.
+1. Log in to your Breezy HR account at `https://app.breezy.hr` and note your account email and password.
 
-<img
-  height="200"
-  src="/images/breezyhr/breezyhr_navigation.png"
-  alt="Navigation for API setup"
-/>
-
-3. Navigate to the `Integrations` section in the settings menu.
-4. Locate the **API** option and click on `Settings`.
-5. Click on `Generate API Key` or `Create new key` to generate a new access token.
-6. Enter a **Name** for your API key to identify its purpose (e.g., "Refold Integration").
-7. Click `Save` or `Create` to generate your API key.
-
-<img
-  height="200"
-  src="/images/breezyhr/breezyhr_config.png"
-  alt="Setting up Breezy HR API Key"
-/>
-
-8. Copy the generated **Access Token**. This token will be used for API authentication.
-
-<img
-  height="200"
-  src="/images/breezyhr/breezyhr_credentials.png"
-  alt="Getting API Key Credentials"
-/>
-
-<Warning>
-  The access token is valid for **30 days** from the time of creation. After 30 days, you will need to generate a new token. Store your API key securely and never share it publicly.
-</Warning>
-
-#### Configuring credentials in Refold
-
-App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+2. Navigate to the Refold hosted portal and select **Breezy HR** from the available integrations.
+3. Enter your Breezy HR **Email** and **Password** in the connection form.
 
 <img
   height="200"
   src="/images/breezyhr/breezyhr_refold.png"
-  alt="Setting up application API Key credentials"
+  alt="Setting up Breezy HR credentials in hosted portal"
 />
 
-Provide the acquired API Key (Access Token) under Settings of the app and save it.
+4. Click **Connect** to complete the setup.
+
+<Warning>
+  Keep your credentials confidential — don't share them with anybody. Refold securely handles authentication with Breezy HR on your behalf.
+</Warning>
 
 #### Actions and triggers
 
@@ -95,6 +68,6 @@ Once the above setup is completed, you can create orchestrations of your use-cas
     </AccordionGroup>
   </Tab>
   <Tab title="Triggers">
-    There are no triggers in this application.
+    No triggers available for this application.
   </Tab>
 </Tabs>
