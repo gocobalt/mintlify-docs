@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "theme": "palm",
+  "theme": "mint",
   "name": "Cobalt",
   "logo": {
     "dark": "/logo/white-icon.svg",
@@ -56,17 +56,27 @@
                 "pages": [
                   "v3/welcome"
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "tab": "Developer",
+            "groups": [
               {
                 "group": "Getting Started",
                 "pages": [
+                  "v3/developer-guide/getting-started/overview",
                   "v3/developer-guide/getting-started/quick-start",
-                  "v3/developer-guide/getting-started/first-integration",
                   {
                     "group": "Core Concepts",
                     "pages": [
                       "v3/developer-guide/workflows/fundamentals",
-                      "v3/developer-guide/integrations/field-mapping"
+                      "v3/developer-guide/platform/linked-accounts",
+                      "v3/developer-guide/getting-started/core-concepts/auth-configs",
+                      "v3/developer-guide/getting-started/core-concepts/user-configs",
+                      "v3/developer-guide/integrations/field-mapping",
+                      "v3/developer-guide/getting-started/core-concepts/triggers-actions",
+                      "v3/developer-guide/getting-started/core-concepts/applications-connectors"
                     ]
                   },
                   "v3/developer-guide/getting-started/terminology"
@@ -75,53 +85,18 @@
               {
                 "group": "Platform",
                 "pages": [
-                  {
-                    "group": "Authentication",
-                    "pages": [
-                      "v3/developer-guide/platform/authentication"
-                    ]
-                  },
-                  {
-                    "group": "Linked Accounts",
-                    "pages": [
-                      "v3/developer-guide/platform/managing-users"
-                    ]
-                  },
-                  {
-                    "group": "Events",
-                    "pages": [
-                      "v3/developer-guide/platform/events"
-                    ]
-                  },
-                  {
-                    "group": "API Proxies",
-                    "pages": [
-                      "v3/developer-guide/platform/api-proxies"
-                    ]
-                  },
-                  {
-                    "group": "Variables",
-                    "pages": [
-                      "v3/developer-guide/platform/variables"
-                    ]
-                  },
-                  {
-                    "group": "Webhooks",
-                    "pages": [
-                      "v3/developer-guide/platform/webhooks"
-                    ]
-                  }
+                  "v3/developer-guide/platform/authentication",
+                  "v3/developer-guide/platform/linked-accounts",
+                  "v3/developer-guide/platform/events",
+                  "v3/developer-guide/platform/api-proxies",
+                  "v3/developer-guide/platform/variables",
+                  "v3/developer-guide/platform/webhooks"
                 ]
               },
               {
                 "group": "Workflows",
                 "pages": [
-                  {
-                    "group": "Fundamentals",
-                    "pages": [
-                      "v3/developer-guide/workflows/fundamentals"
-                    ]
-                  },
+                  "v3/developer-guide/workflows/fundamentals",
                   {
                     "group": "Triggers",
                     "pages": [
@@ -147,37 +122,27 @@
                       "v3/developer-guide/workflows/nodes/webhook-node",
                       "v3/developer-guide/workflows/nodes/delay-node",
                       "v3/developer-guide/workflows/nodes/custom-code-node",
+                      "v3/developer-guide/workflows/nodes/agent-node",
+                      "v3/developer-guide/workflows/nodes/pdf-node",
                       "v3/developer-guide/workflows/nodes/file-handler-node",
                       "v3/developer-guide/workflows/nodes/data-converter-node",
                       "v3/developer-guide/workflows/nodes/data-ref-node",
-                      "v3/developer-guide/workflows/nodes/function-node",
+                      "v3/developer-guide/workflows/nodes/sub-flows-node",
                       "v3/developer-guide/workflows/nodes/human-task-node",
-                      "v3/developer-guide/workflows/nodes/debug-node"
+                      "v3/developer-guide/workflows/nodes/function-node",
+                      "v3/developer-guide/workflows/nodes/log-node",
+                      "v3/developer-guide/workflows/nodes/terminate-node"
                     ]
                   },
-                  {
-                    "group": "Advanced Features",
-                    "pages": [
-                      "v3/developer-guide/workflows/advanced/error-handling",
-                      "v3/developer-guide/workflows/advanced/parallel-execution",
-                      "v3/developer-guide/advanced-features/customization/custom-functions",
-                      "v3/developer-guide/advanced-features/customization/advanced-workflows"
-                    ]
-                  },
-                  {
-                    "group": "Testing",
-                    "pages": [
-                      "v3/developer-guide/workflows/testing/workflow-testing",
-                      "v3/developer-guide/workflows/testing/debug-workflows",
-                      "v3/developer-guide/workflows/testing/test-data"
-                    ]
-                  }
+                  "v3/developer-guide/workflows/advanced-features",
+                  "v3/developer-guide/workflows/testing",
+                  "v3/developer-guide/workflows/ai-powered"
                 ]
               },
               {
                 "group": "Custom Apps",
-                "pages": [
-                  "v3/developer-guide/custom-apps/getting-started",
+                    "pages": [
+                  "v3/developer-guide/custom-apps/overview",
                   {
                     "group": "Building Methods",
                     "pages": [
@@ -185,108 +150,811 @@
                       "v3/developer-guide/custom-apps/building/openapi-integration",
                       "v3/developer-guide/custom-apps/building/ai-assisted-building"
                     ]
-                  },
-                  {
-                    "group": "Configuration",
-                    "pages": [
-                      "v3/developer-guide/custom-apps/authentication-setup",
-                      "v3/developer-guide/custom-apps/field-configuration"
-                    ]
-                  },
-                  "v3/developer-guide/custom-apps/testing-publishing"
+                  }
                 ]
               },
               {
                 "group": "Platform Administration",
-                "pages": [
-                  {
-                    "group": "Dashboard",
                     "pages": [
-                      "v3/developer-guide/platform-administration/dashboard/admin-dashboard",
-                      "v3/developer-guide/platform-administration/dashboard/analytics-overview",
-                      "v3/developer-guide/platform-administration/dashboard/usage-metrics"
-                    ]
-                  },
-                  {
-                    "group": "User Management",
-                    "pages": [
-                      "v3/developer-guide/platform-administration/user-management/user-roles",
-                      "v3/developer-guide/platform-administration/user-management/permissions",
-                      "v3/developer-guide/platform-administration/user-management/team-management"
-                    ]
-                  },
-                  {
-                    "group": "Organization",
-                    "pages": [
-                      "v3/developer-guide/platform-administration/organization/organization-settings",
-                      "v3/developer-guide/platform-administration/organization/billing-usage",
-                      "v3/developer-guide/platform-administration/organization/subscription-management"
-                    ]
-                  },
-                  {
-                    "group": "Customization",
-                    "pages": [
-                      "v3/developer-guide/platform-administration/customization/branding-customization",
-                      "v3/developer-guide/platform-administration/customization/custom-domains",
-                      "v3/developer-guide/platform-administration/customization/white-labeling"
-                    ]
-                  }
+                  "v3/developer-guide/platform-administration/dashboard",
+                  "v3/developer-guide/platform-administration/user-management",
+                  "v3/developer-guide/platform-administration/organization",
+                  "v3/developer-guide/platform-administration/customization"
                 ]
               },
               {
                 "group": "Monitoring & Logs",
                 "pages": [
-                  {
-                    "group": "Log Types",
-                    "pages": [
-                      "v3/developer-guide/monitoring-logs/log-types/event-logs",
-                      "v3/developer-guide/monitoring-logs/log-types/workflow-logs",
-                      "v3/developer-guide/monitoring-logs/log-types/webhook-logs",
-                      "v3/developer-guide/monitoring-logs/log-types/integration-logs"
-                    ]
-                  },
-                  {
-                    "group": "Monitoring",
-                    "pages": [
-                      "v3/developer-guide/monitoring-logs/monitoring/real-time-monitoring",
-                      "v3/developer-guide/monitoring-logs/monitoring/performance-metrics",
-                      "v3/developer-guide/monitoring-logs/monitoring/health-checks"
-                    ]
-                  },
-                  {
-                    "group": "Troubleshooting",
-                    "pages": [
-                      "v3/developer-guide/monitoring-logs/troubleshooting/error-tracking",
-                      "v3/developer-guide/monitoring-logs/troubleshooting/debug-tools",
-                      "v3/developer-guide/monitoring-logs/troubleshooting/log-analysis"
-                    ]
-                  }
+                  "v3/developer-guide/monitoring-logs/log-types",
+                  "v3/developer-guide/monitoring-logs/monitoring",
+                  "v3/developer-guide/monitoring-logs/troubleshooting"
                 ]
               },
               {
                 "group": "Deployment",
                 "pages": [
                   "v3/developer-guide/deployment/overview",
-                  {
-                    "group": "Hosting Solutions",
+                  "v3/developer-guide/deployment/aws",
+                  "v3/developer-guide/deployment/gcp"
+                ]
+              },
+              {
+                "group": "Guides",
                     "pages": [
-                      "v3/developer-guide/deployment/aws",
-                      "v3/developer-guide/deployment/gcp",
-                      "v3/developer-guide/deployment/standalone-machine"
+                  {
+                    "group": "Catalogue",
+                    "pages": [
+                      "resources/integration-providers/overview",
+                      {
+                        "group": "Adobe Workfront",
+                        "pages": [
+                          "resources/integration-providers/adobe_workfront"
+                        ]
+                      },
+                      {
+                        "group": "Adobe Sign",
+                    "pages": [
+                          "resources/integration-providers/adobesign"
+                        ]
+                      },
+                      {
+                        "group": "Agilecrm",
+                        "pages": [
+                          "resources/integration-providers/agilecrm"
+                        ]
+                      },
+                      {
+                        "group": "Aircall",
+                "pages": [
+                          "resources/integration-providers/aircall"
+                        ]
+                      },
+                  {
+                        "group": "Airtable",
+                    "pages": [
+                          "resources/integration-providers/airtable"
+                        ]
+                      },
+                      {
+                        "group": "Amazons3",
+                        "pages": [
+                          "resources/integration-providers/amazons3"
+                        ]
+                      },
+                      {
+                        "group": "App Direct",
+                "pages": [
+                          "resources/integration-providers/app_direct"
+                        ]
+                      },
+                  {
+                        "group": "Apptivo",
+                    "pages": [
+                          "resources/integration-providers/apptivo"
+                    ]
+                  },
+                  {
+                        "group": "Asana",
+                    "pages": [
+                          "resources/integration-providers/asana"
+                    ]
+                  },
+                  {
+                        "group": "Attio",
+                    "pages": [
+                          "resources/integration-providers/attio"
+                    ]
+                  },
+                  {
+                        "group": "Auth0",
+                    "pages": [
+                          "resources/integration-providers/auth0"
+                        ]
+                      },
+                      {
+                        "group": "AWS Security Hub",
+                        "pages": [
+                          "resources/integration-providers/aws_security_hub"
+                        ]
+                      },
+                      {
+                        "group": "Azure Security Center",
+                "pages": [
+                          "resources/integration-providers/azure_security_center"
+                        ]
+                      },
+                  {
+                        "group": "Basecamp",
+                    "pages": [
+                          "resources/integration-providers/basecamp"
+                    ]
+                  },
+                  {
+                        "group": "Bigcommerce",
+                    "pages": [
+                          "resources/integration-providers/bigcommerce"
+                    ]
+                  },
+                  {
+                        "group": "Bitbucket",
+                    "pages": [
+                          "resources/integration-providers/bitbucket"
+                        ]
+                      },
+                      {
+                        "group": "Box",
+                        "pages": [
+                          "resources/integration-providers/box"
+                        ]
+                      },
+                      {
+                        "group": "Calendly",
+                "pages": [
+                          "resources/integration-providers/calendly"
+                        ]
+                      },
+                  {
+                        "group": "Campaign Monitor",
+                    "pages": [
+                          "resources/integration-providers/campaign_monitor"
+                    ]
+                  },
+                  {
+                        "group": "Capsule",
+                    "pages": [
+                          "resources/integration-providers/capsule"
+                    ]
+                  },
+                  {
+                        "group": "Chargify",
+                    "pages": [
+                          "resources/integration-providers/chargify"
+                        ]
+                      },
+                      {
+                        "group": "Clickup",
+                        "pages": [
+                          "resources/integration-providers/clickup"
+                        ]
+                      },
+                      {
+                        "group": "Clio Manage",
+                        "pages": [
+                          "resources/integration-providers/clio_manage"
+                        ]
+                      },
+                      {
+                        "group": "Clover",
+                        "pages": [
+                          "resources/integration-providers/clover"
+                        ]
+                      },
+                      {
+                        "group": "Confluence",
+                        "pages": [
+                          "resources/integration-providers/confluence"
+                        ]
+                      },
+                      {
+                        "group": "Constant Contact",
+                        "pages": [
+                          "resources/integration-providers/constant_contact"
+                        ]
+                      },
+                      {
+                        "group": "Contentful",
+                        "pages": [
+                          "resources/integration-providers/contentful"
+                        ]
+                      },
+                      {
+                        "group": "Copper",
+                        "pages": [
+                          "resources/integration-providers/copper"
+                        ]
+                      },
+                      {
+                        "group": "Customer Io",
+                        "pages": [
+                          "resources/integration-providers/customer_io"
+                        ]
+                      },
+                      {
+                        "group": "Deel",
+                        "pages": [
+                          "resources/integration-providers/deel"
+                        ]
+                      },
+                      {
+                        "group": "Dialpad",
+                        "pages": [
+                          "resources/integration-providers/dialpad"
+                        ]
+                      },
+                      {
+                        "group": "Docusign",
+                        "pages": [
+                          "resources/integration-providers/docusign"
+                        ]
+                      },
+                      {
+                        "group": "Dropbox",
+                        "pages": [
+                          "resources/integration-providers/dropbox"
+                        ]
+                      },
+                      {
+                        "group": "Epic",
+                        "pages": [
+                          "resources/integration-providers/epic"
+                        ]
+                      },
+                      {
+                        "group": "Etsy",
+                        "pages": [
+                          "resources/integration-providers/etsy"
+                        ]
+                      },
+                      {
+                        "group": "Exactonline",
+                        "pages": [
+                          "resources/integration-providers/exactonline"
+                        ]
+                      },
+                      {
+                        "group": "Facebook Ads",
+                        "pages": [
+                          "resources/integration-providers/facebook_ads"
+                        ]
+                      },
+                      {
+                        "group": "Fedex",
+                        "pages": [
+                          "resources/integration-providers/fedex"
+                        ]
+                      },
+                      {
+                        "group": "Figma",
+                        "pages": [
+                          "resources/integration-providers/figma"
+                        ]
+                      },
+                      {
+                        "group": "Fireflies",
+                        "pages": [
+                          "resources/integration-providers/fireflies"
+                        ]
+                      },
+                      {
+                        "group": "Freeagent",
+                        "pages": [
+                          "resources/integration-providers/freeagent"
+                        ]
+                      },
+                      {
+                        "group": "Freshbooks",
+                        "pages": [
+                          "resources/integration-providers/freshbooks"
+                        ]
+                      },
+                      {
+                        "group": "Freshsales",
+                        "pages": [
+                          "resources/integration-providers/freshsales"
+                        ]
+                      },
+                      {
+                        "group": "Front",
+                        "pages": [
+                          "resources/integration-providers/front"
+                        ]
+                      },
+                      {
+                        "group": "Getresponse",
+                        "pages": [
+                          "resources/integration-providers/getresponse"
+                        ]
+                      },
+                      {
+                        "group": "Github",
+                        "pages": [
+                          "resources/integration-providers/github"
+                        ]
+                      },
+                      {
+                        "group": "Gong",
+                        "pages": [
+                          "resources/integration-providers/gong"
+                        ]
+                      },
+                      {
+                        "group": "Google Admin",
+                        "pages": [
+                          "resources/integration-providers/google_admin"
+                        ]
+                      },
+                      {
+                        "group": "Google Drive",
+                        "pages": [
+                          "resources/integration-providers/google_drive"
+                        ]
+                      },
+                      {
+                        "group": "Google Security Command Center",
+                        "pages": [
+                          "resources/integration-providers/google_security_command_center"
+                        ]
+                      },
+                      {
+                        "group": "Google Sheets",
+                        "pages": [
+                          "resources/integration-providers/google_sheets"
+                        ]
+                      },
+                      {
+                        "group": "Gusto",
+                        "pages": [
+                          "resources/integration-providers/gusto"
+                        ]
+                      },
+                      {
+                        "group": "Harvest",
+                        "pages": [
+                          "resources/integration-providers/harvest"
+                        ]
+                      },
+                      {
+                        "group": "Helpscout",
+                        "pages": [
+                          "resources/integration-providers/helpscout"
+                        ]
+                      },
+                      {
+                        "group": "Hibob",
+                        "pages": [
+                          "resources/integration-providers/hibob"
+                        ]
+                      },
+                      {
+                        "group": "Highlevel",
+                        "pages": [
+                          "resources/integration-providers/highlevel"
+                        ]
+                      },
+                      {
+                        "group": "Hubspot",
+                        "pages": [
+                          "resources/integration-providers/hubspot"
+                        ]
+                      },
+                      {
+                        "group": "HubSpot Features",
+                        "pages": [
+                          "resources/integration-providers/hubspot_features"
+                        ]
+                      },
+                      {
+                        "group": "HubSpot Overview",
+                        "pages": [
+                          "resources/integration-providers/hubspot_overview"
+                        ]
+                      },
+                      {
+                        "group": "Intercom",
+                        "pages": [
+                          "resources/integration-providers/intercom"
+                        ]
+                      },
+                      {
+                        "group": "Jibble",
+                        "pages": [
+                          "resources/integration-providers/jibble"
+                        ]
+                      },
+                      {
+                        "group": "Jira",
+                        "pages": [
+                          "resources/integration-providers/jira"
+                        ]
+                      },
+                      {
+                        "group": "Jira Features",
+                        "pages": [
+                          "resources/integration-providers/jira_features"
+                        ]
+                      },
+                      {
+                        "group": "Jira Overview",
+                        "pages": [
+                          "resources/integration-providers/jira_overview"
+                        ]
+                      },
+                      {
+                        "group": "Keap",
+                        "pages": [
+                          "resources/integration-providers/keap"
+                        ]
+                      },
+                      {
+                        "group": "Keka",
+                        "pages": [
+                          "resources/integration-providers/keka"
+                        ]
+                      },
+                      {
+                        "group": "Lever",
+                        "pages": [
+                          "resources/integration-providers/lever"
+                        ]
+                      },
+                      {
+                        "group": "Mailchimp",
+                        "pages": [
+                          "resources/integration-providers/mailchimp"
+                        ]
+                      },
+                      {
+                        "group": "Marketo",
+                        "pages": [
+                          "resources/integration-providers/marketo"
+                        ]
+                      },
+                      {
+                        "group": "Marketo Features",
+                        "pages": [
+                          "resources/integration-providers/marketo_features"
+                        ]
+                      },
+                      {
+                        "group": "Marketo Overview",
+                        "pages": [
+                          "resources/integration-providers/marketo_overview"
+                        ]
+                      },
+                      {
+                        "group": "Miro",
+                        "pages": [
+                          "resources/integration-providers/miro"
+                        ]
+                      },
+                      {
+                        "group": "Monday",
+                        "pages": [
+                          "resources/integration-providers/monday"
+                        ]
+                      },
+                      {
+                        "group": "Microsoft 365",
+                        "pages": [
+                          "resources/integration-providers/ms_365"
+                        ]
+                      },
+                      {
+                        "group": "Microsoft Dynamics CRM",
+                        "pages": [
+                          "resources/integration-providers/ms_dynamics_crm"
+                        ]
+                      },
+                      {
+                        "group": "Microsoft OneDrive",
+                        "pages": [
+                          "resources/integration-providers/ms_one_drive"
+                        ]
+                      },
+                      {
+                        "group": "Microsoft Teams",
+                        "pages": [
+                          "resources/integration-providers/ms_teams"
+                        ]
+                      },
+                      {
+                        "group": "Msdefender",
+                        "pages": [
+                          "resources/integration-providers/msdefender"
+                        ]
+                      },
+                      {
+                        "group": "Myob",
+                        "pages": [
+                          "resources/integration-providers/myob"
+                        ]
+                      },
+                      {
+                        "group": "Netsuite",
+                        "pages": [
+                          "resources/integration-providers/netsuite"
+                        ]
+                      },
+                      {
+                        "group": "NetSuite OAuth",
+                        "pages": [
+                          "resources/integration-providers/netsuite_oauth"
+                        ]
+                      },
+                      {
+                        "group": "Notion",
+                        "pages": [
+                          "resources/integration-providers/notion"
+                        ]
+                      },
+                      {
+                        "group": "Opentext",
+                        "pages": [
+                          "resources/integration-providers/opentext"
+                        ]
+                      },
+                      {
+                        "group": "Outreach",
+                        "pages": [
+                          "resources/integration-providers/outreach"
+                        ]
+                      },
+                      {
+                        "group": "Pagerduty",
+                        "pages": [
+                          "resources/integration-providers/pagerduty"
+                        ]
+                      },
+                      {
+                        "group": "Pandle",
+                        "pages": [
+                          "resources/integration-providers/pandle"
+                        ]
+                      },
+                      {
+                        "group": "Pardot Create",
+                        "pages": [
+                          "resources/integration-providers/pardot_create"
+                        ]
+                      },
+                      {
+                        "group": "Pardot Features",
+                        "pages": [
+                          "resources/integration-providers/pardot_features"
+                        ]
+                      },
+                      {
+                        "group": "Pardot Overview",
+                        "pages": [
+                          "resources/integration-providers/pardot_overview"
+                        ]
+                      },
+                      {
+                        "group": "Pipedrive",
+                        "pages": [
+                          "resources/integration-providers/pipedrive"
+                        ]
+                      },
+                      {
+                        "group": "Quickbooks",
+                        "pages": [
+                          "resources/integration-providers/quickbooks"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce",
+                        "pages": [
+                          "resources/integration-providers/salesforce"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce Features",
+                        "pages": [
+                          "resources/integration-providers/salesforce_features"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce Finance",
+                        "pages": [
+                          "resources/integration-providers/salesforce_finance"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce Marketing Cloud",
+                        "pages": [
+                          "resources/integration-providers/salesforce_marketing_cloud"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce Overview",
+                        "pages": [
+                          "resources/integration-providers/salesforce_overview"
+                        ]
+                      },
+                      {
+                        "group": "Salesforce Pardot",
+                        "pages": [
+                          "resources/integration-providers/salesforce_pardot"
+                        ]
+                      },
+                      {
+                        "group": "Salesloft",
+                        "pages": [
+                          "resources/integration-providers/salesloft"
+                        ]
+                      },
+                      {
+                        "group": "Segment",
+                        "pages": [
+                          "resources/integration-providers/segment"
+                        ]
+                      },
+                      {
+                        "group": "Sentry",
+                        "pages": [
+                          "resources/integration-providers/sentry"
+                        ]
+                      },
+                      {
+                        "group": "Servicenow",
+                        "pages": [
+                          "resources/integration-providers/servicenow"
+                        ]
+                      },
+                      {
+                        "group": "Google Sheets Features",
+                        "pages": [
+                          "resources/integration-providers/sheets_features"
+                        ]
+                      },
+                      {
+                        "group": "Google Sheets Overview",
+                        "pages": [
+                          "resources/integration-providers/sheets_overview"
+                        ]
+                      },
+                      {
+                        "group": "Shopify",
+                        "pages": [
+                          "resources/integration-providers/shopify"
+                        ]
+                      },
+                      {
+                        "group": "Slack",
+                        "pages": [
+                          "resources/integration-providers/slack"
+                        ]
+                      },
+                      {
+                        "group": "Slack Features",
+                        "pages": [
+                          "resources/integration-providers/slack_features"
+                        ]
+                      },
+                      {
+                        "group": "Slack Overview",
+                        "pages": [
+                          "resources/integration-providers/slack_overview"
+                        ]
+                      },
+                      {
+                        "group": "Snowflake",
+                        "pages": [
+                          "resources/integration-providers/snowflake"
+                        ]
+                      },
+                      {
+                        "group": "Survey Monkey",
+                        "pages": [
+                          "resources/integration-providers/survey_monkey"
+                        ]
+                      },
+                      {
+                        "group": "Tableau",
+                        "pages": [
+                          "resources/integration-providers/tableau"
+                        ]
+                      },
+                      {
+                        "group": "Talkdesk",
+                        "pages": [
+                          "resources/integration-providers/talkdesk"
+                        ]
+                      },
+                      {
+                        "group": "Teamwork",
+                        "pages": [
+                          "resources/integration-providers/teamwork"
+                        ]
+                      },
+                      {
+                        "group": "Trello",
+                        "pages": [
+                          "resources/integration-providers/trello"
+                        ]
+                      },
+                      {
+                        "group": "Twilio",
+                        "pages": [
+                          "resources/integration-providers/twilio"
+                        ]
+                      },
+                      {
+                        "group": "Ups",
+                        "pages": [
+                          "resources/integration-providers/ups"
+                        ]
+                      },
+                      {
+                        "group": "Usps",
+                        "pages": [
+                          "resources/integration-providers/usps"
+                        ]
+                      },
+                      {
+                        "group": "Webex",
+                        "pages": [
+                          "resources/integration-providers/webex"
+                        ]
+                      },
+                      {
+                        "group": "Workable",
+                        "pages": [
+                          "resources/integration-providers/workable"
+                        ]
+                      },
+                      {
+                        "group": "Workday",
+                        "pages": [
+                          "resources/integration-providers/workday"
+                        ]
+                      },
+                      {
+                        "group": "Wrike",
+                        "pages": [
+                          "resources/integration-providers/wrike"
+                        ]
+                      },
+                      {
+                        "group": "Xero",
+                        "pages": [
+                          "resources/integration-providers/xero"
+                        ]
+                      },
+                      {
+                        "group": "Zendesk CRM",
+                        "pages": [
+                          "resources/integration-providers/zendesk_crm"
+                        ]
+                      },
+                      {
+                        "group": "Zettle",
+                        "pages": [
+                          "resources/integration-providers/zettle"
+                        ]
+                      },
+                      {
+                        "group": "Zoho",
+                        "pages": [
+                          "resources/integration-providers/zoho"
+                        ]
+                      },
+                      {
+                        "group": "Zoho Recruit",
+                        "pages": [
+                          "resources/integration-providers/zoho_recruit"
+                        ]
+                      },
+                      {
+                        "group": "Zohobooks",
+                        "pages": [
+                          "resources/integration-providers/zohobooks"
+                        ]
+                      },
+                      {
+                        "group": "Zoom",
+                        "pages": [
+                          "resources/integration-providers/zoom"
+                        ]
+                      }
+                    ]
+                  }
                     ]
                   }
                 ]
               },
               {
-                "group": "Security & Compliance",
-                "pages": [
-                  "v3/developer-guide/security/security"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Embedded Integration",
+            "tab": "Embedded",
             "groups": [
               {
                 "group": "Overview",
@@ -294,9 +962,9 @@
                   "v3/developer-guide/integrations/overview"
                 ]
               },
-              {
+                  {
                 "group": "Getting Started",
-                "pages": [
+                    "pages": [
                   "v3/developer-guide/getting-started/first-integration"
                 ]
               },
@@ -356,118 +1024,105 @@
                 ]
               },
               {
-                "group": "Implementation",
+                "group": "Implementation Examples",
                 "pages": [
-                  {
-                    "group": "Backend",
+                  "v3/developer-guide/implementation/backend/server-setup",
+                  "v3/developer-guide/implementation/backend/api-integration",
+                  "v3/developer-guide/implementation/backend/webhook-handling"
+                ]
+              },
+              {
+                "group": "Best Practices",
                     "pages": [
-                      "v3/developer-guide/implementation/backend/server-setup",
-                      "v3/developer-guide/implementation/backend/api-integration",
-                      "v3/developer-guide/implementation/backend/webhook-handling"
-                    ]
-                  },
-                  {
-                    "group": "Frontend",
-                    "pages": [
-                      "v3/developer-guide/implementation/frontend/ui-integration",
-                      "v3/developer-guide/implementation/frontend/react-components",
-                      "v3/developer-guide/implementation/frontend/javascript-sdk"
-                    ]
-                  },
-                  {
-                    "group": "Data",
-                    "pages": [
-                      "v3/developer-guide/implementation/data/data-transformation",
-                      "v3/developer-guide/implementation/data/field-mapping",
-                      "v3/developer-guide/implementation/data/data-validation"
+                      "v3/developer-guide/advanced-features/enterprise/rate-limiting",
+                  "v3/developer-guide/workflows/advanced/error-handling"
                     ]
                   }
                 ]
               },
               {
-                "group": "Best Practices",
-                "pages": [
-                  "v3/developer-guide/advanced-features/enterprise/rate-limiting",
-                  "v3/developer-guide/workflows/advanced/error-handling"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Integration Projects",
+            "tab": "Project",
             "groups": [
               {
                 "group": "Overview",
                 "pages": [
-                  "v3/developer-guide/integrations/overview"
+                  "v3/integration-projects/overview"
                 ]
               },
               {
                 "group": "Getting Started",
                 "pages": [
-                  "v3/developer-guide/getting-started/first-integration"
+                  "v3/integration-projects/getting-started"
                 ]
               },
               {
-                "group": "Workflows",
+                "group": "Project Lifecycle",
                 "pages": [
-                  "v3/developer-guide/workflows/fundamentals",
-                  {
-                    "group": "Triggers",
-                    "pages": [
-                      "v3/developer-guide/workflows/triggers/event-triggers",
-                      "v3/developer-guide/workflows/triggers/webhook-triggers",
-                      "v3/developer-guide/workflows/triggers/schedule-triggers",
-                      "v3/developer-guide/workflows/triggers/manual-triggers"
-                    ]
-                  },
-                  {
-                    "group": "Nodes",
-                    "pages": [
-                      "v3/developer-guide/workflows/nodes/start-node",
-                      "v3/developer-guide/workflows/nodes/response-node",
-                      "v3/developer-guide/workflows/nodes/merge-node",
-                      "v3/developer-guide/workflows/nodes/transform-node",
-                      "v3/developer-guide/workflows/nodes/rule-node",
-                      "v3/developer-guide/workflows/nodes/mapping-node",
-                      "v3/developer-guide/workflows/nodes/loop-node",
-                      "v3/developer-guide/workflows/nodes/switch-node",
-                      "v3/developer-guide/workflows/nodes/http-request-node",
-                      "v3/developer-guide/workflows/nodes/email-node",
-                      "v3/developer-guide/workflows/nodes/webhook-node",
-                      "v3/developer-guide/workflows/nodes/delay-node",
-                      "v3/developer-guide/workflows/nodes/custom-code-node",
-                      "v3/developer-guide/workflows/nodes/file-handler-node",
-                      "v3/developer-guide/workflows/nodes/data-converter-node",
-                      "v3/developer-guide/workflows/nodes/data-ref-node",
-                      "v3/developer-guide/workflows/nodes/function-node",
-                      "v3/developer-guide/workflows/nodes/human-task-node"
-                    ]
-                  }
+                  "v3/integration-projects/lifecycle/overview",
+                  "v3/integration-projects/lifecycle/fsd",
+                  "v3/integration-projects/lifecycle/tsd",
+                  "v3/integration-projects/lifecycle/field-mapping",
+                  "v3/integration-projects/lifecycle/workflow-generation",
+                  "v3/integration-projects/lifecycle/testing",
+                  "v3/integration-projects/lifecycle/go-live"
                 ]
               },
               {
-                "group": "Field Mapping",
+                "group": "Dashboard",
                 "pages": [
-                  "v3/developer-guide/integrations/field-mapping",
-                  "v3/developer-guide/implementation/data/data-transformation"
+                  "v3/integration-projects/dashboard"
+                ]
+              },
+              {
+                "group": "Knowledge Base",
+                "pages": [
+                  "v3/integration-projects/knowledge-base/overview",
+                  "v3/integration-projects/knowledge-base/artifacts",
+                  "v3/integration-projects/knowledge-base/memories",
+                  "v3/integration-projects/knowledge-base/lookups"
+                ]
+              },
+              {
+                "group": "Field Mapping Workbench",
+                "pages": [
+                  "v3/integration-projects/field-mapping-workbench/overview",
+                  "v3/integration-projects/field-mapping-workbench/mapping-modes",
+                  "v3/integration-projects/field-mapping-workbench/confidence-scoring",
+                  "v3/integration-projects/field-mapping-workbench/transformations"
+                ]
+              },
+              {
+                "group": "Workflow Agent",
+                "pages": [
+                  "v3/integration-projects/workflow-agent/overview",
+                  "v3/integration-projects/workflow-agent/pipeline",
+                  "v3/integration-projects/workflow-agent/memory-system",
+                  "v3/integration-projects/workflow-agent/agent-ecosystem"
                 ]
               },
               {
                 "group": "Testing & Validation",
                 "pages": [
-                  "v3/developer-guide/workflows/testing/workflow-testing",
-                  "v3/developer-guide/workflows/testing/debug-workflows",
-                  "v3/developer-guide/workflows/testing/test-data"
+                  "v3/integration-projects/testing/overview",
+                  "v3/integration-projects/testing/creating-tests",
+                  "v3/integration-projects/testing/running-tests"
                 ]
               },
               {
                 "group": "Operations & Monitoring",
                 "pages": [
-                  "v3/developer-guide/monitoring-logs/monitoring/real-time-monitoring",
-                  "v3/developer-guide/monitoring-logs/monitoring/performance-metrics",
-                  "v3/developer-guide/monitoring-logs/monitoring/health-checks",
-                  "v3/developer-guide/monitoring-logs/log-types/workflow-logs"
+                  "v3/integration-projects/operations/overview",
+                  "v3/integration-projects/operations/health-metrics",
+                  "v3/integration-projects/operations/alerts",
+                  "v3/integration-projects/operations/logs"
+                ]
+              },
+              {
+                "group": "Enterprise Examples",
+                "pages": [
+                  "v3/integration-projects/examples/sap-tipalti",
+                  "v3/integration-projects/examples/netsuite-sap",
+                  "v3/integration-projects/examples/multi-system"
                 ]
               }
             ]
@@ -497,6 +1152,23 @@
                 ]
               },
               {
+                "group": "Chains",
+                "pages": [
+                  "v3/mcps/chains/overview",
+                  "v3/mcps/chains/creating-chains",
+                  "v3/mcps/chains/examples"
+                ]
+              },
+              {
+                "group": "Workflow as MCP",
+                "pages": [
+                  "v3/mcps/workflow-as-mcp/overview",
+                  "v3/mcps/workflow-as-mcp/reliability",
+                  "v3/mcps/workflow-as-mcp/configuration",
+                  "v3/mcps/workflow-as-mcp/examples"
+                ]
+              },
+              {
                 "group": "Use Cases",
                 "pages": [
                   "v3/mcps/overview/use-cases"
@@ -508,23 +1180,6 @@
                   "v3/mcps/implementation/security-compliance",
                   "v3/mcps/enterprise/advanced-security"
                 ]
-              },
-              {
-                "group": "Enterprise Features",
-                "pages": [
-                  "v3/mcps/enterprise/single-sign-on",
-                  "v3/mcps/enterprise/custom-domains",
-                  "v3/mcps/enterprise/priority-support"
-                ]
-              },
-              {
-                "group": "Management",
-                "pages": [
-                  "v3/mcps/management/organization-management",
-                  "v3/mcps/management/user-management",
-                  "v3/mcps/management/billing-usage",
-                  "v3/mcps/management/analytics-reporting"
-                ]
               }
             ]
           },
@@ -532,17 +1187,17 @@
             "tab": "API Reference",
             "groups": [
               {
-                "group": "About API Reference",
+                "group": "Overview",
                 "pages": [
                   "api-reference/overview"
                 ]
               },
               {
-                "group": "Linked Account",
+                "group": "Linked Accounts",
                 "pages": [
+                  "api-reference/customer/create-linked-account",
                   "api-reference/customer/get-linked-account",
                   "api-reference/customer/list-linked-accounts",
-                  "api-reference/customer/create-linked-account",
                   "api-reference/customer/upsert-a-linked-account",
                   "api-reference/customer/delete-linked-account"
                 ]
@@ -558,45 +1213,35 @@
               {
                 "group": "Config",
                 "pages": [
+                  "api-reference/config/get-config",
+                  "api-reference/config/get-all-config",
                   "api-reference/config/find-or-create-config",
                   "api-reference/config/update-config",
-                  "api-reference/config/get-all-config",
-                  "api-reference/config/get-config",
                   "api-reference/config/delete-config"
                 ]
               },
               {
-                "group": "Config Fields",
+                "group": "Workflows",
                 "pages": [
-                  "api-reference/config-fields/get-all-fields",
-                  "api-reference/config-fields/get-field-by-id",
-                  "api-reference/config-fields/update-field-value",
-                  "api-reference/config-fields/delete-field-value",
-                  "api-reference/config-fields/get-options-rule-engine"
+                  "api-reference/public_workflows/get_public_workflows",
+                  "api-reference/public_workflows/create_public_workflow",
+                  "api-reference/public_workflows/get_draft"
                 ]
               },
               {
-                "group": "Datastores",
+                "group": "Events",
                 "pages": [
-                  "api-reference/datastore/list-config-datastores",
-                  "api-reference/datastore/config-datastore-records",
-                  "api-reference/datastore/search-config-records"
-                ]
-              },
-              {
-                "group": "Event",
-                "pages": [
-                  "api-reference/event/trigger-an-event-from-your-application",
-                  "api-reference/event/trigger-event"
+                  "api-reference/event/trigger-event",
+                  "api-reference/event/trigger-an-event-from-your-application"
                 ]
               },
               {
                 "group": "Webhooks",
                 "pages": [
                   "api-reference/webhooks/create-webhook",
-                  "api-reference/webhooks/update-webhook",
                   "api-reference/webhooks/get-webhook",
                   "api-reference/webhooks/get-webhook-by-id",
+                  "api-reference/webhooks/update-webhook",
                   "api-reference/webhooks/delete-webhook",
                   "api-reference/webhooks/subscribe-webhook-event",
                   "api-reference/webhooks/unsubscribe-webhook-event"
@@ -607,14 +1252,6 @@
                 "pages": [
                   "api-reference/executions/get-execution",
                   "api-reference/executions/list-executions"
-                ]
-              },
-              {
-                "group": "Public Workflows",
-                "pages": [
-                  "api-reference/public_workflows/create_public_workflow",
-                  "api-reference/public_workflows/get_public_workflows",
-                  "api-reference/public_workflows/get_draft"
                 ]
               },
               {
@@ -647,37 +1284,31 @@
             "tab": "SDKs",
             "groups": [
               {
-                "group": "Cobalt SDKs",
+                "group": "Overview",
                 "pages": [
                   "sdks/overview"
                 ]
               },
               {
-                "group": "Server-side SDKs",
+                "group": "Client-Side SDKs",
                 "pages": [
-                  "sdks/server-side-sdks/nodejs-sdk"
+                  "sdks/client-side-sdks/js-sdk",
+                  "sdks/client-side-sdks/react-sdk"
                 ]
               },
               {
-                "group": "Client-side SDKs",
+                "group": "Server-Side SDKs",
                 "pages": [
-                  "sdks/client-side-sdks/react-sdk",
-                  "sdks/client-side-sdks/js-sdk"
+                  "sdks/server-side-sdks/nodejs-sdk"
                 ]
               }
             ]
           },
           {
-            "tab": "Resources",
+            "tab": "Changelog",
             "groups": [
               {
-                "group": "Integration Providers",
-                "pages": [
-                  "resources/integration-providers/overview"
-                ]
-              },
-              {
-                "group": "Release Notes",
+                "group": "Changelog",
                 "pages": [
                   "v3/release-notes/overview",
                   "v3/release-notes/platform",
@@ -1064,7 +1695,7 @@
             ]
           },
           {
-            "tab": "Resources",
+            "tab": "Changelog",
             "groups": [
               {
                 "group": "Resources",
