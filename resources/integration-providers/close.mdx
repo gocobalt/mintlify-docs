@@ -1,0 +1,103 @@
+---
+title: "Connect"
+description: "Connect to your Close app for API Key authentication"
+---
+
+To setup your Close app in Refold for API Key authentication, you will need the following credentials from your Close account:
+
+- API Key
+
+### Pre-requisites
+
+1. Close account with access to Settings.
+
+<Info>
+  If you don't have access to the Developer settings in Close, you'll need to contact your Close administrator to generate an API key for you.
+</Info>
+
+### Creating an API Key in Close
+
+To create a Close API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Close account at [https://app.close.com](https://app.close.com).
+2. Click on **Settings** in the left-hand sidebar of the Close dashboard.
+
+<img
+  height="200"
+  src="/images/close/close_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Under the Settings menu, scroll down and click on `Developer`.
+4. In the Developer section, locate the **API Keys** option.
+5. Click on `+ New API Key` to create a new API key.
+6. Enter a **Name** for the API key to identify its purpose (e.g., "Refold Integration").
+7. Click `Save` to generate your API key.
+
+<img
+  height="200"
+  src="/images/close/close_config.png"
+  alt="Setting up Close API Key"
+/>
+
+8. Copy the generated **API Key**. The key will be in the format: `api_XXXXXXXX.XXXXXXXX`.
+
+<img
+  height="200"
+  src="/images/close/close_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  API keys can read and modify all of your CRM data and should be handled very carefully. Store your API key securely and never share it publicly. It is recommended to periodically rotate your API keys by creating new ones and deleting old ones.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the API Key when prompted during the Close connection setup.
+
+<img
+  height="200"
+  src="/images/close/close_refold.png"
+  alt="Setting up application API Key credentials"
+/>
+
+Provide the acquired API Key in the hosted portal and complete the connection.
+
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Close actions and triggers. Following are the set of Close actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Contact">
+        1. **Create Contact** - Create a new contact in Close.
+        2. **Update Contact** - Update an existing contact in Close.
+        3. **Fetch a Contact** - Fetch a contact by ID in Close.
+      </Accordion>
+      <Accordion title="Lead">
+        4. **Create Lead** - Create a new lead in Close.
+        5. **Update Lead** - Update an existing lead in Close.
+        6. **Fetch a Lead** - Fetch a lead by ID in Close.
+      </Accordion>
+      <Accordion title="Note Activity">
+        7. **Create a Note Activity** - Create a new note activity in Close.
+        8. **Update a Note Activity** - Update an existing note activity in Close.
+      </Accordion>
+      <Accordion title="Opportunity">
+        9. **Create Opportunity** - Create a new opportunity in Close.
+        10. **Update Opportunity** - Update an existing opportunity in Close.
+        11. **Fetch an Opportunity** - Fetch an opportunity by ID in Close.
+      </Accordion>
+      <Accordion title="Others">
+        12. **HTTP Request** - Make HTTP API calls to any Close documented REST APIs.
+        13. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
