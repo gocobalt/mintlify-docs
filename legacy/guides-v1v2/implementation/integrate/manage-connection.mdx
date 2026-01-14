@@ -1,0 +1,49 @@
+---
+title: Manage App connection
+description: Cobalt provides the flexibility for you to manage your customers’ application connections.
+---
+
+If you are building a Custom UI for your users using the Cobalt SDKs and now want to build the functionality for your users to connect or disconnect with the applications that you have displayed, you can do so by using the SDKs.
+
+<img height="200" src="/images/implementation/manage_connection_sequence.png" alt="Sequence Diagram for Managing App Connections"/>
+
+## Using Cobalt SDKs
+
+### .connect() method
+
+The **.connect()** method in the [JS SDK](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) by Cobalt lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
+``` JavaScript Method
+cobalt.connect("slack") // opens a new tab for OAuth apps
+cobalt.connect("twilio", {
+  number: 1234567890,
+  sid: "ACCOUNT_SID",
+}) // saves the auth data for Key based apps
+```
+
+The .connect() method requires the `application slug` for which the connection needs to be made and if the app is Key-based, then it requires a Payload containing the auth data.
+
+The method will return `true` if the connection was successful.
+
+### .disconnect() method
+
+The **.disconnect()** method disconnects the specified application and remove any associated data from Cobalt.
+``` JavaScript Method
+cobalt.disconnect("slack")
+```
+The .disconnect() method requires the application slug for which the disconnection needs to be done.
+
+## Handle App ReAuth
+
+Once the end customer goes through the auth flow, Cobalt saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
+of the created workflows.
+
+However, there are certain conditions where Cobalt can no longer authenticate the API on behalf of your end customers.
+1. The provided API credentials for eg: API keys, Refresh token has expired.
+2. The access token or refresh token of the end customer has been revoked.
+3. The end customer uninstalls the application.
+4. The user deletes the application being used by their customer.
+
+When any of the above conditions occur, Cobalt helps you handle the reauthenication for the integration.
+<Info>
+Checkout this documentation to understand how you can handle it [here](https://docs.gocobalt.io/ship/auth_flows/re-auth-flow).
+</Info>

@@ -1,0 +1,24 @@
+---
+title: Merge Node
+---
+The Merge Node in Cobalt provides a fundamental functionality for combining multiple branches of a workflow into a single flow. 
+
+This is particularly useful when there are parallel processes within a workflow that need to converge at a common point before proceeding with the subsequent actions. 
+
+## Use Case for Merge
+
+Consider a scenario where two parallel processes need to run simultaneously, and once both processes are completed, a common action or set of actions should be executed. So rather than replicating the same flow for each branch, leading to increased complexity and a higher number of nodes, the Merge Node allows these branches to converge seamlessly.
+
+<Info>
+The Merge will not be successful if any of the nodes which are being merged through the Merge Node are failing.
+</Info>
+<img height="200" src="/images/Guides/Workflow/merge-node.png" alt="Merge Node in Cobalt"/>
+### Example Scenario
+
+- **Parallel Processing**: You have three branches/nodes running different processes in parallel.
+
+- **Convergence**: Once all three branches complete their respective tasks, they need to converge to perform a common action, such as creating a datastore or any other action.
+
+By using the Merge Node, you can bring both branches together, eliminating the need to duplicate the subsequent steps for each branch.
+
+

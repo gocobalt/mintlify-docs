@@ -1,0 +1,100 @@
+---
+title: Sub Flows Node
+---
+
+This node allows you to call a workflow within another workflow using [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api). For eg: If you have a standard error notification policy, you can create a Internal Conductor sub flow and then have all workflows call this for error notification. 
+
+## Node Functionality
+
+Sub Flows node allows you to use a workflow within a workflow. It can:
+
+- Use all the Workflows created in the same application.
+- Use any internal conductor workflow within a workflow.
+- Use a workflow recursively by calling itself.
+<Warning>
+Ensure that you put a break condition in your workflow to avoid infinite recursion. For safeguards, Cobalt sets a limit of 1000 recursions incase a break condition is not available during recursion.
+</Warning>
+- Reduce the size of your workflows by converting repetitive steps into a separate workflow.
+
+A workflow that is being used as a Sub-flow is triggered by a Workflow API call from another workflow instead of an event based trigger in an application.
+
+<Tip>
+To learn more about how to fire a Workflow API Call, refer to the doc [here](https://docs.gocobalt.io/build/workflow/workflow_api#workflow-api-endpoints).
+</Tip>
+
+## Example Usage of Sub Flow
+
+Consider a use-case where you want to split a full name into first name and last name and then use it in your workflow.
+
+These involves two steps, first creating workflow which splits the full name and the second step is the workflow which will call the first one as a Sub Flow.
+
+
+#### Step 1: Creating a Sub Flow
+
+<Accordion title="Creating a Sub Flow." defaultOpen="true">
+
+Let's create an Internal Conductor for this so that it can be used in all the integrations' workflows.
+
+<Steps>
+  <Step title="Create Internal Conductor">   
+Go to [Internal Conductor](https://app.gocobalt.io/internal-workflows) in dashboard, and create a new workflow by clicking on `+ Add Workflow`.
+  </Step>
+  <Step title="Setup Workflow API Call">
+    In the `Start` Node, set the trigger as **API Call** and add `full_name` in the payload which you will receive as an input from your main workflow and click on `Save`.
+   <img height="200" src="/images/Guides/Workflow/sub-flow.png" alt="Sub Flow setup in Cobalt"/>
+  </Step>
+  <Step title="Split Full Name">
+    Connect a Custom Code node to Start Node and write a function that splits the full name.
+    <Info>
+    Learn more about how to use Custom Code Node [here](https://docs.gocobalt.io/build/workflow/custom-code).
+    </Info>
+    <img height="200" src="/images/Guides/Workflow/split-name.png" alt="Split Name in Workflow"/>
+  </Step>
+  <Step title="Return Workflow Response">
+    Now simply return the response of this node in [Response Node](https://docs.gocobalt.io/build/workflow/response) so that it can be used as a Sub Flow.
+    <Note>
+    Since Sub Flows work using Workflow API Call, it is necessary to return the data that you want to use in Response Node.
+    </Note>
+  </Step>
+</Steps>
+</Accordion>
+
+#### Step 2: Using the Sub Flow
+<Accordion title="Using the Sub Flow" defaultOpen="true">
+
+Since you have successfully created the workflow which splits the full name, you now want to use it in your workflow.
+
+Let's use it in a HubSpot workflow to create a new contact where we need to provide the first and last name separately.
+
+<Steps>
+  <Step title="Navigate to HubSpot Workflow">
+    Create a new workflow or in an existing workflow for Creating Contact, add a Sub Flows Node.
+  </Step>
+  <Step title="Configure the Node">
+    Select the sub flow that you created in [Step 1](/build/workflow/sub_flows#step-1-creating-a-sub-flow) in **Select Workflow**. Once selected, you will see the payload that you added in the Sub Flow and add the full name that you want to pass as an input in the `full_name` key.
+    <img height="200" src="/images/Guides/Workflow/select-flow.png" alt="Selecting Sub Flow in Cobalt"/> 
+    <Note>
+    We are passing the full name from our event using [Workflow Templating](https://docs.gocobalt.io/build/workflow/templating).
+    </Note>
+  </Step>
+</Steps>
+</Accordion>
+**Synchronous Execution Toggle**
+
+By default the toggle is turned off and only returns the execution ID which you can then use in the [/response](https://docs.gocobalt.io/build/workflow/workflow_api#response-api) API to get the response returned by the Sub Flow.
+
+If the toggle is turned On i.e Synchronous Execution is true, the API response will include both the execution_id and the return_value object containing response as set in the Response node.
+
+In conclusion, sub flows improve your workflow efficiency and by grouping a set of actions into a separate workflow instead of repeating them in the same workflow, you reduce the effort needed to change and test the steps.
+
+
+
+
+
+
+
+ 
+
+
+
+

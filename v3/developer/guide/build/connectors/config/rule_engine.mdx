@@ -1,0 +1,101 @@
+---
+title: Rule Engine
+description: The Rule Engine allows organizations to define and manage rules for the workflows
+---
+
+Consider an example that you can set up a rule to provision a user in an application only if their type is **Agent** and they have a specific role.
+    <img height="200" src="/images/Config/rule_engine_hosted.png" alt="Rule Engine by Cobalt"/>
+
+Managing such rules often involves complexities like fetching user-selected properties or making multiple API calls and the Rule Engine simplifies this process.
+
+## Configuring Rule Engine in Cobalt
+
+To configure the Rule Engine:
+
+<Steps>
+  <Step title="Navigate">
+    Navigate to the integration in Cobalt and click on `Config Portal`.
+  </Step>
+  <Step title="Create Dataslot">
+    Create a new dataslot and set its type to **Rule Engine**.
+    <img height="200" src="/images/Config/rule_engine.png" alt="Rule Engine field type by Cobalt"/>
+  </Step>
+</Steps>
+
+#### Rule Engine Columns
+
+Rule Engine has 3 columns:
+- **LHS** - This column lets users select the option that they want to use in the rule.
+
+- **Operator** - This column lets users select the operator that they want to use with the LHS value.
+
+- **RHS** - The value to compare against the LHS field.
+
+After you create a Rule Engine dataslot, you can configure the `Options` that you want to show for the LHS column.
+
+
+#### Dynamic Columns and Operators using Conditional Code
+
+If your use case requires you to use dynamic options you can select `Use Data Source` and select a workflow that responds with a list of options instead.
+
+The Rule Engine provides a `Conditional Code` block for advanced customizations. This block allows you to dynamically set Operators and RHS values based on the selected LHS.
+    <img height="200" src="/images/Config/rule_dynamic.png" alt="Dynamic Fields Setup in Rule Engine"/>
+
+A sample code snippet is available in the Rule Engine settings to help you get started.
+```JavaScript sample
+// NOTE: remove this sample code if you don't plan on using any dynamic columns
+async function main() {
+    // check whether the `lhs` column's value is set to "Region"
+    if (lhs === "Region") {
+        // define the operators
+        const operatorOptions = [
+            {
+                "name": "Equals To",
+                "value": "eq"
+            },
+            {
+                "name": "Not Equals To",
+                "value": "neq"
+            }
+        ]
+        // set operator column properties
+        cobaltRuleEngine.setColumnProperties("operator", operatorOptions)
+
+        // run the `get_regions` workflow to get the list of regions and set it as options for the rhs column
+        const rhsOptions = await cobaltDataSource.getDataSourceResponse("get_regions", {}).return_value
+        // set rhs column properties
+        cobaltRuleEngine.setColumnProperties("rhs", rhsOptions)
+
+        // log the rhs options. you'll see the logs when you call the `getRuleFieldOptions` method in Cobalt SDK
+        console.log("RHS Options", rhsOptions)
+    } else {
+        // define the operators
+        const operatorOptions = [
+            {
+                "name": "Equals To",
+                "value": "eq"
+            },
+            {
+                "name": "Not Equals To",
+                "value": "neq"
+            },
+            {
+                "name": "Includes",
+                "value": "includes"
+            }
+        ]
+        // set operator column properties
+        cobaltRuleEngine.setColumnProperties("operator", operatorOptions)
+        // set rhs column properties
+        cobaltRuleEngine.setColumnProperties("rhs")
+    }
+}
+
+main()
+```
+<Info>
+Use method `cobaltRuleEngine.setColumnProperties` to modify available options dynamically.
+</Info>
+
+
+

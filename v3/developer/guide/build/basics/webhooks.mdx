@@ -1,0 +1,244 @@
+---
+title: Webhooks
+description: Learn how to setup Webhooks in Cobalt
+---
+
+
+## What are webhooks?
+
+Cobalt webhooks is a method to provide your external applications with real-time information about events in the platform such as Workflow errored or Connection created.
+
+A webhook delivers data to the application at the moment that there is a change, resulting in data being pushed, unlike REST APIs where your application needs to poll the API at regular intervals in order to get the changed data. This makes webhooks much more efficient and friendly.
+
+## Event Types
+Currently Cobalt 5 webhook event types:
+
+<Accordion title="Connection Created">
+ A connection is created
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Created",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:03:27 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Connection Deleted">
+   A connection is deleted
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Deleted",
+  "slug": "hubspot",
+  "createdAt": "Tue, 07 Nov 2023 08:04:27 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Connection Expired">
+   A connection is removed or does not exist
+ ```javascript
+ {
+  "linked_account_id": "12345",
+  "org_id": "645270e37917442c4307297a",
+  "environment": "test",
+  "type": "General",
+  "event": "Connection Expired",
+  "slug": "pipedrive",
+  "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
+}
+ ```
+</Accordion>
+
+<Accordion title="Workflow Completed">
+   Workflow has been successfully executed
+ ```javascript
+{
+  "linked_account_id": "12345",
+  "instance_id": "656f30f69144bb8f183c0118",
+  "workflow_id": "6495792b9b6ca6d77a17e513",
+  "config_id": "12345",
+  "event": "Workflow Completed",
+  "workflow_name": "Export contact to Hubspot",
+  "status": "COMPLETED"
+}
+ ```
+</Accordion>
+
+<Accordion title="Workflow Errored">
+   Workflow execution stopped because of an error
+ ```javascript
+{
+  "linked_account_id": "12345",
+  "instance_id": "656f308b9144bb8f183bfc7b",
+  "workflow_id": "6495792b9b6ca6d77a17e513",
+  "config_id": "12345",
+  "event": "Workflow Errored",
+  "workflow_name": "Export contact to Hubspot",
+  "status": "ERRORED"
+}
+ ```
+</Accordion>
+
+## How to subscribe to webhook events?
+There are 2 ways to subscribe to Cobalt events:
+
+- via the Cobalt's platform
+- via the Webhook subscription API
+
+### Via Cobalt's platform
+Go to Dashboard > Developer > Webhooks
+
+![Webhooks](/images/Developer/webhooks.png)
+
+To create a Webhook subscription, click on `+ Add Webhook`, enter the Webhook URL of the endpoint from your system, and select the desired events you want to receive webhook events for.
+
+<Info>Webhooks should use HTTPS and expect to receive POST requests</Info>
+
+After you clicked **Add Webhook**, you are subscribed to the Webhook events.
+
+### Via the Webhook subscription 
+You can manage the webhook subscription using our webhooks API. Visit the [API reference](/api-reference/webhooks/create-webhook) 
+
+
+## Advanced Webhook Settings
+
+In Cobalt webhooks, you can configure advanced settings such as any headers or body that you want to send to the Webhook URL.
+
+For example, to fire the [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api) of Cobalt to execute a workflow when some event occurs in Cobalt. You will simply add the headers and Body too if required.
+
+<Tip>
+To use Advanced Settings, remember to choose `Custom` as the Webhook template while registering.
+</Tip>
+<img height="200" src="/images/Developer/advanced_webhooks.png" alt="Advanced Settings in Webhooks"/>
+
+### Templating Webhook Payload variables
+
+You can also use the payload data of a webhook by templating it in your body or headers of Webhooks.
+If a workflow with [Response node](https://docs.gocobalt.io/build/workflow/response) in it has executed successfully and you want to use its response data during webhook firing, you can template that in your headers or body.
+
+The format to template is:
+```javascript
+{{event.<payload_key_name>}}  // When you want to use a variable from the payload
+{{event.instance_id}} // Example of using Instance ID from Workflow Errored payload
+
+{{workflow_response}}  // In case you want to access complete Response Node payload
+{{workflow_response.<key_name>}} // To access any key inside the response node payload
+```
+
+## Verify HMAC Signature
+
+For security purposes, if you require to verify HMAC signature of the Cobalt webhooks you receive, you can easily do so.
+<Info>
+It is not necessary to verify the HMAC signature if you do not have a requirement.
+</Info>
+
+Following are the sample codes to verify HMAC signature of Cobalt Webhooks
+<CodeGroup>
+
+```typescript .TS
+import * as crypto from 'crypto';
+
+// your Cobalt API key based on environment
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '<Cobalt-API-key>';
+// payload is the data that you receive from the webhook
+const payload = {
+    "linked_account_id": "dev",
+    "instance_id": "67d22c4330d75f3a3fa29056",
+    "workflow_id": "67af37ad1d0bb61005439eaf",
+    "event": "Workflow Completed",
+    "workflow_name": "Get Response",
+    "status": "COMPLETED",
+    "environment": "test"
+}
+
+/**
+ * Verifies the HMAC signature from a webhook received from Cobalt
+ * @param payload The raw request body as a string (JSON.stringify(payload))
+ * @param signature The signature from the webhook header (Header is, 'x-cobalt-signature')
+ * @returns boolean indicating if the signature is valid
+ */
+function verifyWebhookSignature(payload: string, signature: string): boolean {
+    try {
+        const expectedSignature = crypto
+            .createHmac('sha256', WEBHOOK_SECRET)
+            .update(payload)
+            .digest('hex');
+
+        return crypto.timingSafeEqual(
+            Buffer.from(signature, 'hex'),
+            Buffer.from(expectedSignature, 'hex')
+        );
+    } catch (error) {
+        console.error('Error verifying webhook signature:', error);
+        return false;
+    }
+}
+
+const examplePayload = JSON.stringify(payload);
+const exampleSignature = '42799d46dfd9a8acf35c14e6b7c300cc3734d06a0ce129268f1b54096750a44f'; // This would be from the webhook header x-cobalt-signature
+
+const isValid = verifyWebhookSignature(examplePayload, exampleSignature);
+console.log('Signature is valid:', isValid);
+```
+
+```python .py
+import hashlib
+import os
+import hmac
+import json
+
+# your Cobalt API key based on environment
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "<Cobalt-API-key>")
+
+# Payload received from the webhook
+payload = {
+    "linked_account_id": "dev",
+    "instance_id": "67d22c4330d75f3a3fa29056",
+    "workflow_id": "67af37ad1d0bb61005439eaf",
+    "event": "Workflow Completed",
+    "workflow_name": "Get Response",
+    "status": "COMPLETED",
+    "environment": "test"
+}
+
+def verify_webhook_signature(payload: str, signature: str) -> bool:
+    """
+    Verifies the HMAC signature from a webhook received from Cobalt.
+    :param payload: The raw request body as a string (json.dumps(payload))
+    :param signature: The signature from the webhook header (x-cobalt-signature)
+    :return: Boolean indicating if the signature is valid
+    """
+    try:
+        expected_signature = hmac.new(
+            key=WEBHOOK_SECRET.encode(),
+            msg=payload.encode(),
+            digestmod=hashlib.sha256
+        ).hexdigest()
+        
+        return hmac.compare_digest(signature, expected_signature)
+    except Exception as e:
+        print("Error verifying webhook signature:", e)
+        return False
+
+example_payload = json.dumps(payload, separators=(',', ':'), ensure_ascii=False)
+example_signature = "42799d46dfd9a8acf35c14e6b7c300cc3734d06a0ce129268f1b54096750a44f"  # From the webhook header x-cobalt-signature
+
+is_valid = verify_webhook_signature(example_payload, example_signature)
+print("Signature is valid:", is_valid)
+```
+
+
+</CodeGroup>
+
+
+## Receive events
+On receiving an event, you should respond with an `HTTP 200 OK` to signal to Cobalt that the event was successfully delivered. Otherwise, Cobalt will consider the event delivery a failure and retry up to 3 times, with exponential backoff.

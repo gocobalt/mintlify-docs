@@ -1,0 +1,109 @@
+---
+title: Workflow Testing
+description: Workflow Testing in Cobalt enables you to test your workflow's functionality by running it with sample payloads as you build it.
+---
+
+It allows you to:
+
+- Execute multiple test cases for a workflow by modifying the input payload.
+
+- Test and inspect the output values of each workflow node.
+
+- Use the Run Node button at the bottom of each step to execute it for the authenticated Linked Account.
+
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.loom.com/embed/f670544ceccc4ef29580af736319f84a?sid=a91cea89-df23-4afe-913f-f82a69b9bb72&hide_owner=true&hide_speed=true"
+  title="Workflow Testing"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+  style={{ width: '100%', borderRadius: '0.5rem' }}
+></iframe>
+
+## Pre-requisites for Workflow Testing
+
+Before testing a workflow, ensure the following steps are completed:
+
+
+<Accordion title="Configure a Linked Account" defaultOpen="true">
+Click the `Testing` button in the workflow editor side menu and select a **[Linked Account](https://docs.gocobalt.io/build/basics/linked_account)** under `Prerequisites` section.
+
+If the Linked Account is not authenticated with the integration or if its authentication has expired, a warning will appear.
+
+Click the **Authorize Application** button to reauthenticate or establish a connection with the integration.
+<img height="200" src="/images/Guides/Workflow/testing_linked_account.png" alt="Authenticating Linked Account for testing"/>
+Once authentication is complete, a **Connected**  status will be displayed.
+
+<Check>Click on the next section to proceed.</Check>
+</Accordion>
+
+
+
+
+<Accordion title="Provide a Sample Payload" defaultOpen="true">
+
+Enter a payload with data to be used during workflow testing.
+A sample payload will automatically load based on the event trigger defined in the workflow.
+Modify the sample payload whenever required to suit your testing requirements.
+<img height="200" src="/images/Guides/Workflow/testing_payload.png" alt="Setting Payload for testing"/>
+
+<Tip>
+If you want to reset your payload, simply click on the `Reset` button.
+</Tip>
+</Accordion>
+
+
+After completing these steps, click on the `Save` button above. 
+
+<Check>Your workflow is now ready for testing.</Check>
+
+## Steps to test
+
+Cobalt provides options for testing both ndividual nodes or the entire workflow.
+
+#### Testing Node
+<Steps>
+  <Step title="Select Node">
+    Click on the node you want to test.
+  </Step>
+  <Step title="Run Node">
+    In the node, switch to `Input/Output` tab and click on `Run Node` button.
+<Warning>Testing for Group Node and Pagination is currently not supported.</Warning>
+    <img height="200" src="/images/Guides/Workflow/node_output.png" alt="Checking Input and Output of Test execution"/>
+  </Step>
+
+</Steps>
+
+<Check>Once the node executes successfully, a checkmark appears on the node, indicating it has been tested.</Check>
+
+
+#### Testing Entire Workflow
+
+
+Open the testing modal present in the side menu.
+
+Click on `Execute Workflow` button to perform a test execution and a **Run** log is generated with input and output of each node.
+
+You can easily switch between the run logs to see the execution history.
+<Warning>Since testing for Group nodes is not supported currently, you might not receive the logs of the group node.</Warning>
+<img height="200" src="/images/Guides/Workflow/workflow_output.png" alt="Checking Output of Workflow Test run"/>
+
+
+## Workflow Templating
+
+In Cobalt workflows, you can use dynamic variables generated through **Run Node** test execution to seamlessly access data from previous nodes. This method allows you to incorporate tested node response data into subsequent nodes.
+
+<Tip>
+To learn more about how to do Templating in Cobalt, refer to the docs [here](https://docs.gocobalt.io/build/workflow/templating).
+</Tip>
+
+Simply go to input field where you want to use variable within a node, select **Nodes** tab from the `Insert Variable` modal, choose the node whose response you want to access and select the field from that node response.
+  <img height="200" src="/images/Guides/Workflow/response_example.png" alt="Using Node response as variable"/>
+
+  In this example, we used the `id` received in the response when project was created and it's visible as `4.id` in the field which is of the format `<node_number>.<response_field>`.
+
+
+This streamlined approach of Workflow Testing ensures that your workflows perform as expected before deploying them in production.

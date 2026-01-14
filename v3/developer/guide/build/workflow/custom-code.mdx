@@ -1,0 +1,77 @@
+---
+title: Custom Code Node
+---
+The Custom Code node in Cobalt enables users to execute custom code within workflows. Users can leverage their preferred programming language to create custom logic and functionality.
+
+## Node Functionality
+
+Custom Code node is like a code executor within workflows. It can:
+
+- Modify structure of the data received;
+- Perform operations on data;
+- Filter data;
+- Use supported external JS libraries in code;
+<Tip>
+To know more about all the libraries supported, refer [here](/build/workflow/custom-code#supported-javascript-libraries). 
+</Tip>
+- Any other operation that you want to using code;
+
+
+## Custom Code Input Fields
+To get started with Custom Code, first provide the `Input Parameters` as a key-value pair that you want to use in code and then select your preferred language.
+
+In the Code section, the user can write their own custom code which they want to get executed within the **yourFunction**.
+
+<img height="200" src="/images/Guides/Workflow/custom-node.png" alt="Custom Code Node in Cobalt"/>
+
+## Supported JavaScript Libraries & Usage
+
+The full list for the supported npm modules can be found below. If you don't see the module that you want, [contact us](mailto:integrations@gocobalt.io) and we will get that added.
+
+- [axios](https://www.npmjs.com/package/axios)
+- [cheerio](https://www.npmjs.com/package/cheerio)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
+- [fuse.js](https://www.npmjs.com/package/fuse.js)
+- [lodash](https://www.npmjs.com/package/lodash)
+- [mime](https://www.npmjs.com/package/mime/v/3.0.0)
+- [number-to-words](https://www.npmjs.com/package/number-to-words)
+- [url](https://www.npmjs.com/package/url)
+- [uuid](https://www.npmjs.com/package/uuid)
+- [danfo](https://danfo.jsdata.org/getting-started)
+
+
+#### How to use Libraries
+To know how you can use these external libraries in your Custom Code function, refer to the examples below for axios and lodash.
+<CodeGroup>
+```JavaScript axios
+const axios = require('axios');
+
+async function yourFunction(params) {
+    const res = await axios.get("https://genshin-impact.up.railway.app/characters");
+
+    return{
+        data: res.data
+    }
+}
+```
+```JavaScript danfo
+const dfd = require('dfd')
+function yourFunction(params) {
+    const s = new dfd.Series([1, 3, 5, undefined, 6, 8])
+    return dfd.toJSON(s)
+}
+```
+``` JavaScript lodash
+const _ = require('lodash');
+
+function yourFunction(params) {
+    const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+    const sortedData = _.sortBy(array, "id");
+
+    return {
+        data: sortedData
+    };
+}
+```
+</CodeGroup>

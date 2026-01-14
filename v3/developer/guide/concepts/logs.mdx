@@ -1,0 +1,112 @@
+---
+title: Logs
+description: Logs in Cobalt allow you to monitor workflows, troubleshoot errors during executions, and gain insights into platform activities.
+---
+
+There are various types of Logs that you can see in Cobalt:
+
+## Workflow Logs
+
+**Workflow Logs** or **Executions** is able to provide various details about a workflow that was executed.
+
+
+With features such as detailed execution details and request/response data, workflow logs enable users to gain deeper insights into the execution process and ensure optimal performance.
+
+To view the Logs, navigate to `Logs` in **Cobalt** and check the `Executions` tab.
+<Tip>
+You can even filter out the logs based on Workflow name, Status, Linked Account etc.
+</Tip>
+<img height="200" src="/images/Guides/Platform/workflow-logs.png" alt="Workflow Logs Cobalt"/>
+
+**Key Functionalities**
+
+To test a workflow in Cobalt, user can also execute a workflow through the **Try API** section in Cobalt.
+
+<Info> 
+To learn more about Try API and how it can be used, refer to our guide [here](https://docs.gocobalt.io/guides/platform/tryapi).
+</Info>
+Some of the key functionalities of Workflow logs are described in details below:
+<AccordionGroup>
+
+<Accordion title="Node Activity Details">
+By clicking on a workflow log, users can view the activity of individual nodes present in the workflow. 
+
+This includes information about the status or errors encountered by each node, response etc. providing insights into the execution flow and potential points of failure.
+<img height="200" src="/images/Guides/Platform/workflow-logs-node.png" alt="Execution details of Workflow nodes in Cobalt"/>
+</Accordion>
+
+<Accordion title="Retry Functionality">
+
+For workflows that encounter errors, users have the option to retry execution by clicking on the `Retry` button in the top right corner of the Workflow details. 
+
+<Note>The retry functionality is limited to a single attempt.</Note>
+<img height="200" src="/images/Guides/Platform/workflow-logs-retry.png" alt="Retry an errored Workflow in Cobalt"/>
+  </Accordion>
+</AccordionGroup>
+
+## Event Logs
+
+Event logs in Cobalt provide information about the triggers and events called.
+<Info> 
+To learn more about Event in Cobalt, refer to our guide [here](https://docs.gocobalt.io/guides/developer-settings/events).
+</Info>
+
+To access the Event Logs, navigate to the `Logs` section in Cobalt and select the `Events` tab.
+<Tip>
+You can filter the logs based on Event name, Status and Linked Account ID etc.
+</Tip>
+<img height="200" src="/images/Guides/Platform/event-logs.png" alt="Event Logs Cobalt"/>
+
+Each Event Log entry provides you information about the `Workflows` that got executed on Event call, the `Event URL` and the `Payload` that was sent in the event.
+
+<Note>The Workflows section will not be visible if there was no Workflow that was associated with the event.</Note>
+
+
+<img height="200" src="/images/Guides/Platform/event-logs-details.png" alt="Details of an Event in Cobalt"/>
+
+
+## Webhook Logs
+
+Webhook logs allows users to monitor the execution of webhooks subscribed to in Cobalt.
+
+Webhook logs provide detailed information about each webhook event, including its **Execution status**, **Linked Account ID**, **fired date** and more.
+
+To access the Webhook Logs, navigate to the `Logs` section in Cobalt and select the `Webhooks` tab.
+<img height="200" src="/images/Guides/Platform/webhook-logs.png" alt="Webhook Logs Cobalt"/>
+
+<Info> 
+To learn more about Webhooks in Cobalt and how they can be subscribed, refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
+</Info>
+
+For each webhook event, users can view the associated request and response data, providing insights into the interaction between Cobalt and external systems.
+
+<img height="200" src="/images/Guides/Platform/webhook-logs-details.png" alt="Details of a Webhook in Cobalt"/>
+
+
+
+
+## Schedule Logs
+Schedule Logs provide users with visibility into scheduled workflows and their associated details.
+
+To access the Schedule Logs, navigate to the `Logs` section in Cobalt and select the `Schedules` tab.
+<img height="200" src="/images/Guides/Platform/schedule-logs.png" alt="Schedule Logs Cobalt"/>
+
+In Cobalt, Schedule Logs offer a comprehensive view of scheduled workflows, displaying essential information such as:
+
+<CardGroup cols={2}>
+  <Card title="Workflow Name and ID">
+    Identifies the workflow scheduled for execution.
+  </Card>
+  <Card title="Schedule Cron">
+    Specifies the cron expression defining the schedule for workflow execution.
+  </Card>
+  <Card title="Event">
+    Indicates the Event ID triggering the scheduled workflow.
+  </Card>
+<Card title="Status">
+    Reflects the current status of the scheduled workflow, either **Active** or **Inactive**.
+  </Card>
+</CardGroup>
+
+These details enable users to quickly identify scheduled workflows, understand their configurations, and track their status within the Cobalt platform.
+

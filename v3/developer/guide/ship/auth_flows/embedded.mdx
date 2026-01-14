@@ -1,0 +1,91 @@
+---
+title: Cobalt Modals
+description: Utilize the Cobalt React SDK for frontend and embed it within your React application.
+---
+
+## Pre-requisites
+Below are a few pre-requisites that you need to do before moving forward:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/build/basics/linked_account).
+</Note>
+
+<Tip>
+We recommend you create a linked account at the same time as your customer signs up within your app.
+</Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
+
+## Steps to Implement  
+
+Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt auth flow into your React application.
+
+It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
+
+<Steps>
+  <Step title="Install">
+    Install `@cobaltio/react-cobalt-js` and `@cobaltio/cobalt-js` via the terminal.
+
+```bash
+npm install --save @cobaltio/react-cobalt-js @cobaltio/cobalt-js
+```
+  </Step>
+  <Step title="Initialise">
+    Import `Provider` & `Config`
+
+```bash
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+```
+  </Step>
+
+  <Step title="Render Cobalt Connect">
+  Perform the on click action to render the react component of Cobalt connect
+
+> * Config component needs to be wrapped inside the Provider component.
+> * Pass the Cobalt session token (that you generated using the Cobalt backend SDK) to the provider.
+
+```JavaScript
+<Provider sessionToken={ cobaltToken }>
+    {
+        // ideally you'd render the Config component inside a modal.
+        // the component only gets rendered when `slug` is passed.
+        <Config
+            id="SOME_UNIQUE_CONFIG_ID" // Optional
+            slug="APP_SLUG" // application type / slug
+            // dynamic labels payload (optional)
+            labels={{ /* PAYLOAD */ }}
+            // you can override the component's container style if you want
+            style={{
+                borderRadius: 8,
+                maxWidth: 450,
+            }}
+        />
+    }
+</Provider>
+```
+    
+  </Step>
+</Steps>
+
+
+
+
+<Info>
+Learn more about Cobalt's React SDK and how to initialize it [here](http://docs.gocobalt.io/sdks/client-side-sdks/react-sdk).
+</Info>
+
+
+For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.
+
+<Check>
+By completing these steps, you have successfully implemented Cobalt's React Frontend SDK for authentication with apps.
+</Check>
