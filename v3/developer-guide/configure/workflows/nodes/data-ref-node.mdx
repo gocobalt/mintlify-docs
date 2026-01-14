@@ -1,0 +1,289 @@
+---
+title: "DataRef Node"
+description: "Reference data from other workflows without manually passing it around - store and retrieve cross-workflow data mappings"
+sidebarTitle: "DataRef"
+---
+
+# DataRef Node
+
+## What does it do?
+
+The DataRef node lets you reference data from other workflows without manually passing it around. Think of it as a way to "look up" data that was generated or stored elsewhere in the system by creating mappings between record IDs and external system IDs.
+
+**Common use cases:**
+- Map Salesforce Lead IDs to corresponding Marketo contact IDs for future updates
+- Store bulk Contact-to-HubSpot ID mappings during nightly sync operations  
+- Retrieve NetSuite customer IDs using known Salesforce Opportunity IDs
+- Clean up sync mappings when Salesforce records are deleted
+- Maintain cross-system data relationships without complex workflow parameter passing
+
+## Actions
+
+<ResponseField name="Action" type="string">
+  <Expandable title="Available Actions">
+    <ResponseField name="Create Ref" type="action">
+      Creates a single record ID to external ID mapping in a DataRef table. Takes dataref name, record_id, and external_id as input, stores the mapping under the application slug, and returns success confirmation with mapping details.
+    </ResponseField>
+    <ResponseField name="Create Bulk Refs" type="action">
+      Creates multiple record ID to external ID mappings in one operation. Takes dataref name and array of record_id/external_id pairs as input, processes all mappings for the same application workflow, and returns success confirmation for bulk creation.
+    </ResponseField>
+    <ResponseField name="Get Ref from record ID" type="action">
+      Retrieves all external IDs associated with a specific record ID. Takes dataref name and record_id as input, returns all external IDs across different application slugs for the record, and shows which applications have mappings.
+    </ResponseField>
+    <ResponseField name="Get Ref from external ID" type="action">
+      Retrieves record information using an external system ID. Takes dataref name and external_id as input, finds the record ID associated with the external ID, and returns all related external IDs for that record across applications.
+    </ResponseField>
+    <ResponseField name="Delete Ref by record ID" type="action">
+      Removes all entries for a specific record ID from the DataRef table. Takes dataref name and record_id as input, deletes the record and all associated external IDs across all applications, and returns success confirmation.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Input Parameters
+
+### Create Ref / Get Ref / Delete Ref
+<ParamField path="dataref_name" type="string" required="yes">
+  The name of the DataRef table you want to use. Must match a table created via More -> Data Refs -> New Data Ref.
+  Example: `"salesforce_hubspot_mapping"` or `{{workflow_config.table_name}}`
+</ParamField>
+
+<ParamField path="record_id" type="string" required="yes">
+  User-defined identifier for the primary record. Required for Create Ref, Get Ref from record ID, and Delete Ref actions.
+  Example: `"sf_contact_123"` or `{{salesforce_contact.Id}}`
+</ParamField>
+
+<ParamField path="external_id" type="string" required="yes">
+  User-defined identifier from the external system. Required for Create Ref and Get Ref from external ID actions.
+  Example: `"hubspot_456"` or `{{hubspot_contact.vid}}`
+</ParamField>
+
+### Create Bulk Refs
+<ParamField path="dataref_name" type="string" required="yes">
+  The name of the DataRef table you want to use. Must match a table created via More -> Data Refs -> New DataRef.
+  Example: `"salesforce_hubspot_mapping"` or `{{workflow_config.table_name}}`
+</ParamField>
+
+<ParamField path="bulk_refs" type="array" required="yes">
+  Array of record_id and external_id pairs for bulk creation. Required only for Create Bulk Refs action.
+  Example: `[{"record_id": "sf_contact_1", "external_id": "hs_contact_1"}, {"record_id": "sf_contact_2", "external_id": "hs_contact_2"}]`
+</ParamField>
+
+<Info>DataRef tables must be created first via More -> Data Refs -> New Data Ref before using this node. Each table is linked to a specific company account and stores mappings under application slugs.</Info>
+
+## Output
+
+The DataRef node outputs different structures based on the selected action.
+
+### Create Ref / Create Bulk Refs Response
+
+```json
+{
+  "data": [
+    {
+      "yuid": [
+        {
+          "slug": "salesforce",
+          "value": "sf_contact_123"
+        }
+      ]
+    }
+  ],
+  "message": "Ref created successfully"
+}
+```
+
+### Get Ref Response (from record ID or external ID)
+
+```json
+{
+  "data": {
+    "uuid": [
+      {
+        "slug": "hubspot",
+        "value": "12345"
+      },
+      {
+        "slug": "salesforce",
+        "value": "187876"
+      }
+    ]
+  },
+  "message": "Ref found"
+}
+```
+
+### Delete Ref Response
+
+```json
+{
+  "message": "Ref deleted"
+}
+```
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag DataRef Node to canvas">
+    From the **Data Nodes** section, drag the DataRef Node to your workflow canvas where you need to store or retrieve cross-workflow data mappings.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/dataref-node-drag-drop.png" alt="Dragging DataRef Node from data nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select mapping action">
+    Choose the appropriate action based on your use case: Create Ref for single mapping creation, Create Bulk Refs for batch mapping creation, Get Ref from record ID to find external IDs using record ID, Get Ref from external ID to find record info using external ID, or Delete Ref by record ID to clean up mappings.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/dataref-node-action-selection.png" alt="Selecting DataRef mapping action" />
+    </Frame>
+  </Step>
+  <Step title="Configure mapping parameters">
+    Fill in the required parameters based on your selected action: DataRef Name to select your pre-created table, Record ID as primary identifier for most actions, External ID as external system identifier for create/get actions, and Bulk Refs in array format for bulk operations.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/dataref-node-parameter-configuration.png" alt="Configuring DataRef mapping parameters" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your DataRef configuration to verify the mapping operation works correctly and returns expected data format.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/dataref-node-test-execution.png" alt="Testing DataRef node configuration" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Generated mappings are immediately available for lookup operations in subsequent workflow steps or other workflows accessing the same DataRef table.</Info>
+
+## Examples
+
+### Example 1: Create Lead-to-Marketo Mapping
+
+This example creates a mapping when a Salesforce Lead is synced to Marketo for future reference and updates:
+
+```javascript
+// Workflow configuration
+{
+  "name": "dataref_task",
+  "taskReferenceName": "create_lead_mapping",
+  "type": "DATAREF",
+  "action": "Create Ref",
+  "inputParameters": {
+    "dataref_name": "lead_sync_table",
+    "record_id": "{{salesforce_lead.Id}}",
+    "external_id": "{{marketo_response.lead_id}}"
+  }
+}
+```
+
+### Example 2: Bulk Contact Sync Mapping
+
+This example creates multiple Contact mappings during a nightly HubSpot sync operation to maintain data relationships:
+
+```javascript
+// Workflow configuration
+{
+  "name": "dataref_task",
+  "taskReferenceName": "bulk_contact_mapping",
+  "type": "DATAREF",
+  "action": "Create Bulk Refs",
+  "inputParameters": {
+    "dataref_name": "contact_sync_table",
+    "bulk_refs": [
+      {"record_id": "{{salesforce_contacts[0].Id}}", "external_id": "{{hubspot_contacts[0].vid}}"},
+      {"record_id": "{{salesforce_contacts[1].Id}}", "external_id": "{{hubspot_contacts[1].vid}}"},
+      {"record_id": "{{salesforce_contacts[2].Id}}", "external_id": "{{hubspot_contacts[2].vid}}"}
+    ]
+  }
+}
+```
+
+### Example 3: Retrieve NetSuite ID for Opportunity Update
+
+This example looks up a NetSuite customer ID using a Salesforce Opportunity ID to enable cross-system updates:
+
+```javascript
+// Workflow configuration
+{
+  "name": "dataref_task",
+  "taskReferenceName": "get_netsuite_mapping",
+  "type": "DATAREF", 
+  "action": "Get Ref from record ID",
+  "inputParameters": {
+    "dataref_name": "opportunity_sync_table",
+    "record_id": "{{salesforce_opportunity.Id}}"
+  }
+}
+```
+
+## Runtime Behavior
+
+<Warning>DataRef tables must exist before using this node. Each record_id can only have one external_id per application slug - attempting to create duplicates will result in an "entry already exists" error.</Warning>
+
+### Data Storage and Relationships
+
+The DataRef node manages data relationships in the following structure:
+
+1. **Table Level**: Each DataRef table is linked to a specific company account
+2. **Record Level**: Record IDs serve as primary identifiers that can map to multiple external systems
+3. **Application Level**: External IDs are stored under application slugs (salesforce, hubspot, netsuite, etc.)
+4. **Uniqueness**: One record_id can have only one external_id per application slug
+
+### Error Handling and Validation
+
+**Input Validation**:
+- DataRef table name must exist and be accessible
+- Record IDs and external IDs are validated as non-empty strings
+- Bulk operations validate array structure and content
+
+**Conflict Resolution**:
+- Duplicate record_id/slug combinations return immediate errors
+- Missing references return clear "not found" messages
+- Invalid table names provide specific error details
+
+## Troubleshooting
+
+### Table Not Found Errors
+
+**Problem**: Error message indicates DataRef table doesn't exist or is inaccessible
+
+**Solutions**:
+- Verify the DataRef table was created via More -> Data Refs -> New Data Ref
+- Check that the dataref_name parameter exactly matches the created table name
+- Ensure the table is linked to the correct company account for this workflow
+- Confirm you have proper permissions to access the DataRef table
+
+### Duplicate Entry Errors
+
+**Problem**: "Entry already exists" error when creating refs with existing record_id/slug combinations
+
+**Solutions**:
+- Use Get Ref from record ID to check existing mappings before creating new ones
+- Consider using different record_id values or updating the external system instead
+- Implement conditional logic to handle existing mappings gracefully
+- Review your workflow logic to prevent duplicate creation attempts
+
+### Record Not Found Errors
+
+**Problem**: Get Ref actions return "not found" errors for valid-looking identifiers
+
+**Solutions**:
+- Verify the record_id or external_id exists in the specified DataRef table
+- Check that you're using the correct dataref_name in your lookup
+- Ensure previous Create Ref operations completed successfully
+- Review the application slug context for your lookup operation
+
+### Bulk Operation Failures
+
+**Problem**: Create Bulk Refs fails with array formatting or processing errors
+
+**Solutions**:
+- Verify the bulk_refs array follows the exact format: `[{"record_id": "value", "external_id": "value"}]`
+- Check that all array elements contain both required fields
+- Ensure no duplicate record_id values exist within the same bulk operation
+- Test with smaller batch sizes if encountering processing limits
+
+<Tip>Use descriptive record_id patterns like "sf_contact_{'{Id}'}" or "opp_{'{opportunity.Id}'}" to make debugging easier when reviewing DataRef table contents and troubleshooting mapping issues.</Tip>
+
+## What's Next?
+
+- Learn about [HTTP Request Node](/nodes/http-request-node) to send retrieved external IDs to target systems
+- Explore [Conditional Node](/nodes/conditional-node) to handle cases where DataRef lookups return no results  
+- Check out [Transform Node](/nodes/transform-node) for formatting DataRef outputs before using in other systems
+- Review [Workflow Variables](/workflow/variables) for managing DataRef table names across environments

@@ -1,0 +1,29 @@
+---
+title: App Settings
+---
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/app_setting.png" alt="Setting up application client credentials"/>
+
+#### Configuring credentials
+
+Cobalt lets you use pre-configured applications to play around. You can do so by selecting `Use our credentials`. However, if you wish to use your own application,
+select `Use your own credentials` and provide the required data and save. It is required that you have already created an application inside the respective platform first.
+Go to the application and acquire the credentials required in Cobalt's app setting page.
+
+#### Scopes
+
+Cobalt lets you configure what permissions to ask from your users while they install your application. For some applications Cobalt sets mandatory scopes which cannot be
+removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any custom scopes supported by the respective platform.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Callback URL
+
+While creating an installable app on a platform, the platform asks the developer to provide a redirect URL which it would be calling to send across the authorization code once a 
+user installs the application. Copy the Callback URL provided on the app settings page and paste it where the platform asks for the redirect url.

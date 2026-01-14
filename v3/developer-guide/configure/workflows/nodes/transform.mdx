@@ -1,0 +1,336 @@
+---
+title: "Transform Node"
+description: "Transform and query JSON objects using JSONata expressions for advanced data manipulation and restructuring"
+sidebarTitle: "Transform"
+---
+
+# Transform Node
+
+## What does it do?
+
+The Transform Node enables advanced JSON data transformation and querying using JSONata expressions. It allows you to restructure, extract, filter, and format data from complex JSON objects or arrays, making it perfect for preparing data for external APIs or internal processing.
+
+**Common use cases:**
+- Transform Salesforce contact data structure for external API integration
+- Extract specific fields from complex Salesforce objects
+- Format dates from Salesforce ISO format to custom formats
+- Combine multiple fields into computed values
+- Filter and reshape arrays of contact or lead data
+- Create custom JSON structures from existing data
+
+## Input Parameters
+
+<ParamField path="Input" type="object|array" required="yes">
+  JSON object or array to transform. Can accept variables from previous nodes. Example: `{"contact": {"name": "Alice", "phone": "9876543"}}` or `{{salesforce_contacts}}`
+</ParamField>
+
+<ParamField path="Query" type="string" required="optional">
+  JSONata expression to transform or query the input data. If left empty, returns the input unchanged. Example: `{"FirstName": contact.name, "Phone": contact.phone}`
+</ParamField>
+
+<Info>The Transform Node supports all JSONata functions and expressions. If the query field is empty, the output will be identical to the input data.</Info>
+
+## Output
+
+The Transform Node outputs the result of the JSONata expression applied to the input data.
+
+### Basic Transformation Output
+
+```json
+{
+  "FirstName": "Alice",
+  "Phone": "9876543",
+  "SignupDate": "2024-12-01"
+}
+```
+
+### Array Processing Output
+
+```json
+[
+  {
+    "fullName": "Alice Johnson",
+    "signupDate": "2024-05-01"
+  },
+  {
+    "fullName": "Bob Smith", 
+    "signupDate": "2024-06-15"
+  }
+]
+```
+
+### Error Output
+
+```json
+{
+  "error": "JSONata expression syntax error: unexpected token 'invalid'",
+  "query": "invalid.expression.syntax"
+}
+```
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Transform Node to canvas">
+    From the **Utility Nodes** section, drag the Transform Node to your workflow canvas where you need data transformation.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/transform-node-drag-drop.png" alt="Dragging Transform Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Configure input data">
+    Set up your source data:
+    - Provide JSON object or array from previous nodes
+    - Can be single objects or arrays of objects
+    - Ensure data structure matches your JSONata query needs
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/transform-node-input-configuration.png" alt="Configuring input data" />
+    </Frame>
+  </Step>
+  <Step title="Write JSONata query">
+    Create your transformation expression:
+    - Use JSONata syntax for data manipulation
+    - Reference input fields directly by name
+    - Apply functions for date formatting, string operations, etc.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/transform-node-query-configuration.png" alt="Writing JSONata query" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your transformation to verify the JSONata expression produces the expected output structure.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/transform-node-test-execution.png" alt="Testing transform node" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Leave the Query field empty if you want to pass the input data through unchanged. This is useful for testing or when transformation is conditional.</Info>
+
+## Examples
+
+### Example 1: Basic Field Transformation
+
+This example transforms Salesforce contact data into a simplified format:
+
+```javascript
+// Workflow configuration
+{
+  "name": "transform_task",
+  "taskReferenceName": "simplify_contact_data",
+  "type": "TRANSFORM",
+  "inputParameters": {
+    "input": {
+      "contact": {
+        "name": "Alice",
+        "phone": "9876543",
+        "created_at": "2024-12-01T10:30:00Z"
+      }
+    },
+    "query": "{ \"FirstName\": contact.name, \"Phone\": contact.phone, \"SignupDate\": $fromMillis($toMillis(contact.created_at), \"[Y0001]-[M01]-[D01]\") }"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "FirstName": "Alice",
+  "Phone": "9876543", 
+  "SignupDate": "2024-12-01"
+}
+```
+
+### Example 2: Salesforce Contact Data Transformation
+
+This example transforms Salesforce contact data for external API integration:
+
+```javascript
+// Workflow configuration
+{
+  "name": "transform_task",
+  "taskReferenceName": "format_salesforce_contact",
+  "type": "TRANSFORM",
+  "inputParameters": {
+    "input": "{{salesforce_contact}}",
+    "query": "{ \"fullName\": FirstName & \" \" & LastName, \"contactNumber\": Phone, \"signupDate\": $fromMillis($toMillis(CreatedDate), \"[Y0001]-[M01]-[D01]\"), \"leadSource\": LeadSource }"
+  }
+}
+```
+
+**Input (from Salesforce):**
+```json
+{
+  "Id": "0031x00000ABC123",
+  "FirstName": "Alice", 
+  "LastName": "Nguyen",
+  "Phone": "(987) 654-3210",
+  "CreatedDate": "2024-07-25T14:23:10.000Z",
+  "LeadSource": "Website"
+}
+```
+
+**Expected Output:**
+```json
+{
+  "fullName": "Alice Nguyen",
+  "contactNumber": "(987) 654-3210", 
+  "signupDate": "2024-07-25",
+  "leadSource": "Website"
+}
+```
+
+### Example 3: Array Processing with Filtering
+
+This example processes an array of contacts and applies filtering and transformation:
+
+```javascript
+// Workflow configuration
+{
+  "name": "transform_task",
+  "taskReferenceName": "process_contact_array",
+  "type": "TRANSFORM",
+  "inputParameters": {
+    "input": [
+      { "firstName": "Alice", "joined": "2023-05-01T12:00:00Z", "status": "active" },
+      { "firstName": "Bob", "joined": "2023-06-15T15:30:00Z", "status": "inactive" },
+      { "firstName": "Carol", "joined": "2023-07-20T09:00:00Z", "status": "active" }
+    ],
+    "query": "$map($filter($, function($v) { $v.status = \"active\" }), function($contact) { { \"name\": $contact.firstName, \"joinDate\": $fromMillis($toMillis($contact.joined), \"[Y0001]-[M01]-[D01]\") } })"
+  }
+}
+```
+
+**Expected Output:**
+```json
+[
+  {
+    "name": "Alice",
+    "joinDate": "2023-05-01"
+  },
+  {
+    "name": "Carol", 
+    "joinDate": "2023-07-20"
+  }
+]
+```
+
+### Example 4: Complex Data Restructuring
+
+This example creates a complex nested structure from flat Salesforce data:
+
+```javascript
+// Workflow configuration
+{
+  "name": "transform_task",
+  "taskReferenceName": "create_contact_summary",
+  "type": "TRANSFORM",
+  "inputParameters": {
+    "input": "{{salesforce_contact}}",
+    "query": "{ \"contact\": { \"personal\": { \"fullName\": FirstName & \" \" & LastName, \"email\": Email }, \"business\": { \"company\": Account.Name, \"title\": Title, \"phone\": Phone }, \"metadata\": { \"salesforceId\": Id, \"created\": $fromMillis($toMillis(CreatedDate), \"[Y0001]-[M01]-[D01]\"), \"lastModified\": $fromMillis($toMillis(LastModifiedDate), \"[Y0001]-[M01]-[D01]\") } } }"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "contact": {
+    "personal": {
+      "fullName": "John Doe",
+      "email": "john@example.com"
+    },
+    "business": {
+      "company": "TechCorp Inc",
+      "title": "Sales Manager",
+      "phone": "+1-555-123-4567"
+    },
+    "metadata": {
+      "salesforceId": "003xx000002ABC",
+      "created": "2024-01-15",
+      "lastModified": "2024-01-20"
+    }
+  }
+}
+```
+
+## Runtime Behavior
+
+<Warning>JSONata expressions are evaluated against the entire input object. Malformed expressions will return an error instead of transformed data.</Warning>
+
+### JSONata Expression Processing
+
+The Transform Node processes JSONata expressions in the following order:
+
+1. **Input Validation**: Validates input is valid JSON object or array
+2. **Expression Parsing**: Parses and validates JSONata query syntax
+3. **Context Binding**: Binds input data as context for expression evaluation
+4. **Expression Execution**: Executes JSONata expression against input data
+5. **Result Generation**: Returns transformed data or error information
+
+### Supported JSONata Features
+
+**Data Access:**
+- **Field Access**: `contact.name`, `address.street`
+- **Array Access**: `contacts[0]`, `items[-1]`
+- **Conditional Access**: `contact.phone ? contact.phone : "N/A"`
+
+**Functions:**
+- **String Functions**: `$uppercase()`, `$lowercase()`, `$substring()`
+- **Date Functions**: `$fromMillis()`, `$toMillis()`, `$now()`
+- **Array Functions**: `$map()`, `$filter()`, `$reduce()`
+- **Math Functions**: `$sum()`, `$average()`, `$round()`
+
+**Operators:**
+- **Concatenation**: `FirstName & " " & LastName`
+- **Arithmetic**: `price * quantity`, `total + tax`
+- **Comparison**: `status = "active"`, `score > 80`
+
+## Troubleshooting
+
+### JSONata Syntax Errors
+
+**Problem**: Transform Node returns syntax error instead of transformed data
+
+**Solutions**:
+- Verify JSONata expression syntax is correct
+- Check for missing quotes, brackets, or operators
+- Test expressions with simpler queries first
+- Use JSONata online playground to validate syntax before adding to workflow
+
+### Missing Field References
+
+**Problem**: Query references fields that don't exist in input, resulting in null values
+
+**Solutions**:
+- Use Debug Node before Transform to inspect actual input structure
+- Add conditional checks: `field ? field : "default_value"`
+- Verify field names match exactly (case-sensitive)
+- Use optional chaining for nested fields: `contact.address.street`
+
+### Date Formatting Issues
+
+**Problem**: Date transformation functions produce unexpected results
+
+**Solutions**:
+- Verify input dates are in valid ISO format
+- Check `$toMillis()` conversion works with your date format
+- Use proper format strings in `$fromMillis()`: `"[Y0001]-[M01]-[D01]"`
+- Test date functions with known good date values
+
+### Array Processing Errors
+
+**Problem**: Array operations fail or produce unexpected results
+
+**Solutions**:
+- Confirm input is actually an array when using array functions
+- Use `$type()` function to check data types in expressions
+- Test array functions on smaller datasets first
+- Ensure array elements have expected structure for mapping/filtering
+
+<Tip>Use the JSONata online playground (jsonata.org) to test and debug your expressions before adding them to the Transform Node. This helps identify syntax issues and verify logic.</Tip>
+
+## What's Next?
+
+- Learn about [Custom Code Node](/nodes/custom-code-node) for more complex data processing
+- Explore [Data Mapper Node](/nodes/data-mapper-node) for simple field name transformations
+- Check out [Rule Node](/nodes/rule-node) to add conditional transformation logic
+- Review [Workflow Testing](/testing/workflow-testing) to test data transformations

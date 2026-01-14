@@ -1,0 +1,293 @@
+---
+title: "Email Node"
+description: "Send emails during workflow execution with dynamic content and SMTP configuration"
+sidebarTitle: "Email"
+---
+
+
+## What does it do?
+
+The Email Node allows you to send emails directly through a workflow in Cobalt. It's designed for internal notifications and alerts, such as notifying your team when a Salesforce contact sync is completed or when workflow processes finish successfully.
+
+**Common use cases:**
+- Send notifications when Salesforce contact sync completes
+- Alert teams about workflow completion status
+- Send internal reports with dynamic data from previous nodes
+- Notify stakeholders about data processing results
+
+## Input Parameters
+
+### SMTP Configuration (Optional)
+
+<ParamField path="SMTP Host" type="string" required="conditional">
+  SMTP server hostname. Required only if not configured in admin settings. Example: `smtp.gmail.com`
+</ParamField>
+
+<ParamField path="SMTP Port" type="number" required="conditional">
+  SMTP server port number. Required only if not configured in admin settings. Example: `587`
+</ParamField>
+
+<ParamField path="SMTP Username" type="string" required="conditional">
+  SMTP authentication username. Required only if not configured in admin settings. Example: `notifications@company.com`
+</ParamField>
+
+<ParamField path="SMTP Password" type="string" required="conditional">
+  SMTP authentication password. Required only if not configured in admin settings. Secured field.
+</ParamField>
+
+<ParamField path="TLS Encryption" type="boolean" required="optional">
+  Enable TLS encryption for secure connection. Example: `true`
+</ParamField>
+
+### Email Configuration
+
+<ParamField path="From Address" type="string" required="yes">
+  Sender email address. Can be static or variable from previous nodes. Example: `notifications@company.com` or `{{config.from_email}}`
+</ParamField>
+
+<ParamField path="To Address" type="string" required="yes">
+  Recipient email address(es). Multiple addresses separated by commas. Example: `team@company.com` or `{{salesforce_contact.Email}}`
+</ParamField>
+
+<ParamField path="CC Address" type="string" required="optional">
+  Carbon copy email address(es). Multiple addresses separated by commas. Example: `manager@company.com,admin@company.com`
+</ParamField>
+
+<ParamField path="BCC Address" type="string" required="optional">
+  Blind carbon copy email address(es). Multiple addresses separated by commas. Example: `archive@company.com`
+</ParamField>
+
+<ParamField path="Subject" type="string" required="yes">
+  Email subject line. Supports dynamic variables. Example: `"Salesforce Contact Sync Complete - {{salesforce_contact.Name}}"`
+</ParamField>
+
+<ParamField path="Body" type="string" required="yes">
+  Email body content. Supports both plain text and HTML formatting with dynamic variables. Example: `"Contact {{salesforce_contact.Name}} has been successfully synced to Salesforce."`
+</ParamField>
+
+<ParamField path="Attachments" type="string" required="optional">
+  URLs of files to attach. Multiple URLs separated by commas. Maximum file size: 25MB per attachment. Example: `https://example.com/report.pdf,https://example.com/data.csv`
+</ParamField>
+
+<Callout type="info">
+**Note**: If SMTP credentials are configured in admin settings, node-level SMTP configuration is optional. Node-level settings will override admin settings when provided.
+</Callout>
+
+## Output
+
+The Email Node outputs email delivery information and status.
+
+### Output Structure
+
+```json
+{
+  "email_sent": true,
+  "message_id": "msg_12345abc",
+  "recipients": {
+    "to": ["team@company.com"],
+    "cc": ["manager@company.com"],
+    "bcc": ["archive@company.com"]
+  },
+  "subject": "Salesforce Contact Sync Complete - John Doe",
+  "sent_at": "2024-01-15T10:30:00Z",
+  "attachments_processed": 2,
+  "smtp_host": "smtp.gmail.com"
+}
+```
+
+### Status Types
+
+- **sent**: Email successfully delivered to SMTP server
+- **failed**: Email delivery failed due to SMTP errors
+- **partial**: Email sent but some attachments failed to load
+- **error**: Configuration or validation errors
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Email Node to canvas">
+    From the **Utility Nodes** section, drag the Email Node to your workflow canvas where you need to send notifications.
+    
+    <img height="200" src="/images/workflow/nodes/email-node-drag-drop.png" alt="Dragging Email Node from utility nodes"/>
+  </Step>
+
+  <Step title="Configure SMTP settings (if needed)">
+    If not configured in admin settings, provide SMTP credentials:
+    - SMTP Host, Port, Username, Password
+    - Enable TLS encryption if required
+    
+    <img height="200" src="/images/workflow/nodes/email-node-smtp-configuration.png" alt="Configuring SMTP settings"/>
+  </Step>
+
+  <Step title="Configure email parameters">
+    Set up your email details:
+    - From/To addresses with variables if needed
+    - Subject and body with dynamic content
+    - Optional CC, BCC, and attachments
+    
+    <img height="200" src="/images/workflow/nodes/email-node-email-configuration.png" alt="Configuring email parameters"/>
+  </Step>
+
+  <Step title="Run/Test Node">
+    Test your email configuration to verify delivery and formatting work correctly.
+    
+    <img height="200" src="/images/workflow/nodes/email-node-test-execution.png" alt="Testing email node configuration"/>
+  </Step>
+</Steps>
+
+<Callout type="info">
+**Note**: Cobalt acts as a middle layer for email delivery. Rate limiting and deliverability depend on your SMTP provider settings.
+</Callout>
+
+## Examples
+
+### Example 1: Salesforce Sync Notification
+
+This example sends a notification when Salesforce contact sync completes:
+
+```javascript
+// Workflow configuration
+{
+  "name": "email_task",
+  "taskReferenceName": "sync_notification",
+  "type": "EMAIL",
+  "inputParameters": {
+    "fromAddress": "notifications@company.com",
+    "toAddress": "sales-team@company.com",
+    "subject": "Salesforce Contact Sync Complete - {{salesforce_contact.Name}}",
+    "body": "Hello Team,\n\nThe contact {{salesforce_contact.Name}} ({{salesforce_contact.Email}}) has been successfully synced to Salesforce.\n\nContact Details:\n- Status: {{salesforce_contact.Status}}\n- Lead Source: {{salesforce_contact.LeadSource}}\n- Created: {{salesforce_contact.CreatedDate}}\n\nBest regards,\nAutomation System",
+    "ccAddress": "manager@company.com"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "email_sent": true,
+  "message_id": "msg_sf_sync_12345",
+  "recipients": {
+    "to": ["sales-team@company.com"],
+    "cc": ["manager@company.com"],
+    "bcc": []
+  },
+  "subject": "Salesforce Contact Sync Complete - John Doe",
+  "sent_at": "2024-01-15T14:30:00Z",
+  "attachments_processed": 0,
+  "smtp_host": "smtp.gmail.com"
+}
+```
+
+### Example 2: HTML Report with Attachment
+
+This example sends an HTML-formatted report with attachment:
+
+```javascript
+// Workflow configuration
+{
+  "name": "email_task",
+  "taskReferenceName": "weekly_report",
+  "type": "EMAIL", 
+  "inputParameters": {
+    "fromAddress": "reports@company.com",
+    "toAddress": "executives@company.com",
+    "subject": "Weekly Salesforce Sync Report - {{event.week_ending}}",
+    "body": "<html><body><h2>Weekly Sync Report</h2><p>This week we processed <strong>{{sync_stats.total_contacts}}</strong> contacts:</p><ul><li>Successfully synced: {{sync_stats.successful}}</li><li>Failed: {{sync_stats.failed}}</li><li>Skipped: {{sync_stats.skipped}}</li></ul><p>Detailed report attached.</p></body></html>",
+    "attachments": "{{report_generator.download_url}}"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "email_sent": true,
+  "message_id": "msg_report_67890",
+  "recipients": {
+    "to": ["executives@company.com"],
+    "cc": [],
+    "bcc": []
+  },
+  "subject": "Weekly Salesforce Sync Report - 2024-01-15",
+  "sent_at": "2024-01-15T09:00:00Z",
+  "attachments_processed": 1,
+  "smtp_host": "smtp.office365.com"
+}
+```
+
+## Runtime Behavior
+
+<Callout type="warning">
+**Important**: Cobalt acts as a middle layer for email delivery. Rate limiting, deliverability, and spam filtering depend on your SMTP provider. Maximum attachment size is 25MB per file.
+</Callout>
+
+### Email Processing
+
+The Email Node processes emails in the following order:
+
+1. **SMTP Validation**: Verifies SMTP credentials and connection
+2. **Content Resolution**: Resolves variables in subject, body, and addresses
+3. **Attachment Processing**: Downloads files from provided URLs
+4. **Email Assembly**: Combines content, attachments, and headers
+5. **Delivery**: Sends email through SMTP server
+
+### Variable Support
+
+All email fields support dynamic variables:
+- **Addresses**: `"to": "{{salesforce_contact.Email}}"`
+- **Subject**: `"subject": "Welcome {{salesforce_contact.FirstName}}"`
+- **Body**: HTML and plain text with embedded variables
+- **Attachments**: `"attachments": "{{file_generator.url}}"`
+
+## Troubleshooting
+
+### Email Not Delivered
+
+**Problem**: Email Node succeeds but recipients don't receive email
+
+**Solutions**:
+- Check SMTP provider logs for delivery status
+- Verify recipient email addresses are valid
+- Check spam/junk folders of recipients
+- Review SMTP provider rate limits and quotas
+
+### SMTP Authentication Failed
+
+**Problem**: "SMTP authentication failed" error
+
+**Solutions**:
+- Verify SMTP credentials are correct
+- Check if SMTP provider requires app-specific passwords
+- Ensure SMTP host and port settings match provider requirements
+- Test SMTP connection outside of Cobalt first
+
+### Attachment Not Included
+
+**Problem**: Email sends but attachments are missing
+
+**Solutions**:
+- Verify attachment URLs are publicly accessible
+- Check attachment file size is under 25MB limit
+- Ensure URLs return proper file content-type headers
+- Test URL accessibility from external networks
+
+### Invalid Email Address Format
+
+**Problem**: Email Node completes but some recipients missing
+
+**Solutions**:
+- Validate email address format before Email Node
+- Use Transform Node to clean/format email addresses
+- Check for extra spaces or special characters in addresses
+- Verify multiple addresses are properly comma-separated
+
+<Callout type="info">
+**Tip**: Use the Debug Node before your Email Node to inspect resolved variables and verify email content appears as expected.
+</Callout>
+
+## What's Next?
+
+- Learn about [Transform Node](/nodes/transform-node) to format email content
+- Explore [Rule Node](/nodes/rule-node) to add conditional email sending
+- Check out [Custom Code Node](/nodes/custom-code-node) for advanced email formatting
+- Review [Workflow Testing](/testing/workflow-testing) to test email delivery

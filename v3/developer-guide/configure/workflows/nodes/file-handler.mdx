@@ -1,0 +1,471 @@
+---
+title: "File Handler Node"
+description: "Manage file operations including transfer, deletion, and SFTP interactions for seamless file workflow integration"
+sidebarTitle: "File Handler"
+---
+
+# File Handler Node
+
+## What does it do?
+
+The File Handler Node provides comprehensive file management capabilities for workflows, enabling you to transfer files between different systems, manage files in Cobalt buckets, and interact with SFTP servers. It's essential for workflows that need to process, move, or manage files as part of automated business processes.
+
+**Common use cases:**
+- Delete processed Salesforce documents from Cobalt bucket after attachment
+- Transfer Salesforce reports to downstream SFTP-based analytics systems
+- Upload Salesforce-generated documents to Cobalt bucket for processing
+- Pull daily lead CSV files from partner SFTP servers for Salesforce import
+- Clean up SFTP directories after successful file processing
+- Monitor SFTP folders for new pricing sheets or data dumps
+- Download customer documents from public URLs for Salesforce record updates
+
+## Actions
+
+<Expandable title="Available Actions">
+  <ResponseField name="Move file to Cobalt bucket" type="action">
+    Moves a file to Cobalt bucket storage (deprecated functionality). Legacy action marked for removal in future versions. Use alternative transfer actions for new workflows.
+  </ResponseField>
+  <ResponseField name="Delete file from Cobalt bucket" type="action">
+    Removes a file from Cobalt bucket storage using file key or ID. Permanently deletes file from Cobalt storage. Requires either file key (path) or file ID. Returns success/failure status.
+  </ResponseField>
+  <ResponseField name="Transfer file from source to destination" type="action">
+    Transfers files between different systems using SFTP or URL protocols. Supports SFTP and URL source/destination combinations. Configurable protocol settings for both source and destination. Returns success/failure status for transfer operation.
+  </ResponseField>
+  <ResponseField name="Transfer file from source to cobalt bucket" type="action">
+    Uploads files from external sources to Cobalt bucket storage. Supports SFTP and URL as source protocols. Files stored in Cobalt bucket for further processing. Returns publicly accessible URL of uploaded file.
+  </ResponseField>
+  <ResponseField name="Read file from SFTP" type="action">
+    Downloads and reads files from SFTP servers. Connects to SFTP server with provided credentials. Downloads file content for workflow processing. Returns URL to accessed file content.
+  </ResponseField>
+  <ResponseField name="Delete file from SFTP" type="action">
+    Removes files from SFTP server directories. Connects to SFTP server and deletes specified file. Useful for cleanup after successful processing. Returns success/failure status.
+  </ResponseField>
+  <ResponseField name="List files in SFTP folder" type="action">
+    Retrieves a list of files in an SFTP directory. Connects to SFTP server and lists directory contents. Useful for monitoring new file availability. Returns array of file information.
+  </ResponseField>
+  <ResponseField name="Transfer file from Public URL to Bucket" type="action">
+    Downloads files from public URLs and stores them in cloud storage buckets. Downloads from any publicly accessible URL. Stores in specified cloud storage provider. Configurable storage settings and access permissions. Returns URL to stored file.
+  </ResponseField>
+</Expandable>
+
+## Input Parameters
+
+### Delete file from Cobalt bucket
+<ParamField path="File Key" type="string" required="yes">
+  Path/name of the file to delete from Cobalt bucket. Example: `"documents/invoice_12345.pdf"` or `{{uploaded_file.path}}`
+</ParamField>
+
+<ParamField path="File ID" type="string" required="optional">
+  Optional ID of the file to delete (ETag for S3/MinIO, generation for GCP). Example: `"d41d8cd98f00b204e9800998ecf8427e"`
+</ParamField>
+
+### Transfer file operations
+<ParamField path="Source Protocol" type="dropdown" required="yes">
+  Protocol for source file location. Options: `SFTP`, `URL`. Example: `SFTP`
+</ParamField>
+
+<ParamField path="Destination Protocol" type="dropdown" required="conditional">
+  Protocol for destination file location. Available for source-to-destination transfers. Options: `SFTP`, `URL`. Example: `SFTP`
+</ParamField>
+
+### SFTP Configuration
+<ParamField path="Host" type="string" required="yes">
+  SFTP server hostname or IP address. Example: `"sftp.company.com"` or `{{config.sftp_host}}`
+</ParamField>
+
+<ParamField path="Port" type="number" required="yes">
+  SFTP server port number. Example: `22`
+</ParamField>
+
+<ParamField path="Username" type="string" required="yes">
+  SFTP server username for authentication. Example: `"fileuser"` or `{{credentials.sftp_username}}`
+</ParamField>
+
+<ParamField path="Password" type="string" required="optional">
+  SFTP server password for authentication. Example: `{{credentials.sftp_password}}`
+</ParamField>
+
+<ParamField path="File Path" type="string" required="yes">
+  Path to the file on SFTP server. Example: `"/uploads/data.csv"` or `{{file_location.path}}`
+</ParamField>
+
+<ParamField path="PEM Key" type="string" required="optional">
+  PEM key for SFTP server authentication. Example: `{{credentials.sftp_pem_key}}`
+</ParamField>
+
+### Public URL to Bucket Transfer
+<ParamField path="Source URL" type="string" required="yes">
+  Public URL of the file to download. Example: `"https://example.com/file.pdf"` or `{{document.url}}`
+</ParamField>
+
+<ParamField path="Destination File Name" type="string" required="yes">
+  Name for the file in destination bucket. Example: `"customer-invoice.pdf"` or `{{document.filename}}`
+</ParamField>
+
+<ParamField path="Storage Provider" type="string" required="yes">
+  Cloud storage provider to use. Example: `"AWS S3"`, `"Google Cloud Storage"`, `"Azure Blob"`
+</ParamField>
+
+<ParamField path="Content Type" type="string" required="optional">
+  MIME type of the source file. Example: `"application/pdf"`, `"text/csv"`
+</ParamField>
+
+<ParamField path="Allow Public Access" type="string" required="optional">
+  Configuration for public file access permissions. Example: `"true"` or `"false"`
+</ParamField>
+
+<ParamField path="TTL" type="number" required="optional">
+  Time-to-live for file availability in seconds. Example: `3600`
+</ParamField>
+
+<ParamField path="Bucket Name" type="string" required="optional">
+  Name of storage bucket. Example: `"company-documents"` or `{{config.bucket_name}}`
+</ParamField>
+
+<ParamField path="Access Key ID" type="string" required="optional">
+  Storage provider access key ID. Example: `{{aws_credentials.access_key_id}}`
+</ParamField>
+
+<ParamField path="Secret Access Key" type="string" required="optional">
+  Storage provider secret access key. Example: `{{aws_credentials.secret_access_key}}`
+</ParamField>
+
+<ParamField path="Endpoint" type="string" required="optional">
+  Custom storage endpoint URL. Example: `"https://s3.us-west-2.amazonaws.com"`
+</ParamField>
+
+<ParamField path="Region" type="string" required="optional">
+  Storage provider region. Example: `"us-west-2"`
+</ParamField>
+
+<ParamField path="Project ID" type="string" required="optional">
+  Project ID for cloud storage providers like GCP. Example: `"my-project-123"`
+</ParamField>
+
+<Info>SFTP fields marked as optional in the UI can be left empty. For Public URL to Bucket transfers, only Source URL, Destination File Name, and Storage Provider are mandatory.</Info>
+
+## Output
+
+The File Handler Node outputs different structures based on the selected action.
+
+### Delete Operations Output
+```json
+{
+  "success": true,
+  "message": "File deleted successfully",
+  "file_key": "documents/invoice_12345.pdf",
+  "deleted_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Transfer to Cobalt Bucket Output
+```json
+{
+  "file_url": "https://storage.gocobalt.io/files/abc123/document.pdf",
+  "file_name": "document.pdf",
+  "file_size": 2048576,
+  "uploaded_at": "2024-01-15T14:30:00Z",
+  "content_type": "application/pdf"
+}
+```
+
+### Transfer Between Systems Output
+```json
+{
+  "success": true,
+  "message": "File transferred successfully",
+  "source_path": "/source/data.csv",
+  "destination_path": "/destination/data.csv",
+  "transferred_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Read File from SFTP Output
+```json
+{
+  "file_url": "https://storage.gocobalt.io/temp/abc123/data.csv",
+  "file_name": "data.csv",
+  "file_size": 15420,
+  "content_type": "text/csv",
+  "read_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### List Files Output
+```json
+{
+  "files": [
+    {
+      "name": "data.csv",
+      "size": 15420,
+      "modified_date": "2024-01-15T10:30:00Z",
+      "is_directory": false
+    },
+    {
+      "name": "reports",
+      "size": 0,
+      "modified_date": "2024-01-14T15:20:00Z",
+      "is_directory": true
+    }
+  ],
+  "total_files": 2,
+  "directory_path": "/uploads"
+}
+```
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag File Handler Node to canvas">
+    From the **Utility Nodes** section, drag the File Handler Node to your workflow canvas where you need file operations.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-drag-drop.png" alt="Dragging File Handler Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Select file operation action">
+    Choose the file operation that matches your needs:
+    - **Delete operations** for cleanup tasks
+    - **Transfer operations** for moving files between systems
+    - **Read operations** for accessing file content
+    - **List operations** for monitoring directories
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-action-selection.png" alt="Selecting file operation action" />
+    </Frame>
+  </Step>
+  <Step title="Configure connection parameters">
+    Set up your file system connections:
+    - **SFTP**: Provide host, port, credentials, and file paths
+    - **URL**: Specify source URLs for download operations
+    - **Bucket**: Configure cloud storage settings when needed
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-connection-configuration.png" alt="Configuring connection parameters" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your file operation configuration to verify connectivity and permissions work correctly.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/file-handler-node-test-execution.png" alt="Testing file handler node operation" />
+    </Frame>
+  </Step>
+</Steps>
+
+<Info>Additional Fields toggle controls whether extra configuration options are displayed. SFTP password and PEM key are typically optional if using key-based authentication.</Info>
+
+## Examples
+
+### Example 1: Delete Processed Salesforce Document
+
+This example deletes a processed invoice from Cobalt bucket after attaching it to a Salesforce record:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "cleanup_processed_invoice",
+  "type": "FILE_HANDLER",
+  "action": "Delete file from Cobalt bucket",
+  "inputParameters": {
+    "file_key": "{{document_processor.output_file_path}}",
+    "additional_fields": true
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "success": true,
+  "message": "File deleted successfully",
+  "file_key": "invoices/processed/INV-001-processed.pdf",
+  "deleted_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Example 2: Transfer Salesforce Report to Analytics SFTP
+
+This example transfers a Salesforce-generated CSV report to a downstream analytics system:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "transfer_salesforce_report",
+  "type": "FILE_HANDLER",
+  "action": "Transfer file from source to destination",
+  "inputParameters": {
+    "source_protocol": "URL",
+    "source_url": "{{salesforce_report.download_url}}",
+    "destination_protocol": "SFTP",
+    "destination_host": "analytics.company.com",
+    "destination_port": 22,
+    "destination_username": "analytics_user",
+    "destination_password": "{{sftp_credentials.password}}",
+    "destination_file_path": "/incoming/salesforce_{{current_date}}.csv"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "success": true,
+  "message": "File transferred successfully",
+  "source_path": "https://salesforce.com/reports/download/12345",
+  "destination_path": "/incoming/salesforce_2024-01-15.csv",
+  "transferred_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Example 3: Read Daily Leads from Partner SFTP
+
+This example pulls daily CSV files from channel partner SFTP for Salesforce lead import:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "read_partner_leads",
+  "type": "FILE_HANDLER",
+  "action": "Read file from SFTP",
+  "inputParameters": {
+    "host": "partner-sftp.example.com",
+    "port": 22,
+    "username": "partner_sync",
+    "password": "{{partner_sftp.password}}",
+    "file_path": "/exports/leads_{{current_date}}.csv"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "file_url": "https://storage.gocobalt.io/temp/def456/leads_2024-01-15.csv",
+  "file_name": "leads_2024-01-15.csv",
+  "file_size": 87432,
+  "content_type": "text/csv",
+  "read_at": "2024-01-15T14:30:00Z"
+}
+```
+
+### Example 4: Download Customer Receipt from Public URL
+
+This example pulls customer order receipts from a public URL to update Salesforce Order records:
+
+```javascript
+// Workflow configuration
+{
+  "name": "file_handler_task",
+  "taskReferenceName": "download_customer_receipt",
+  "type": "FILE_HANDLER",
+  "action": "Transfer file from Public URL to Bucket",
+  "inputParameters": {
+    "source_url": "{{order_system.receipt_url}}",
+    "destination_file_name": "receipt_{{order.number}}.pdf",
+    "storage_provider": "AWS S3",
+    "content_type": "application/pdf",
+    "allow_public_access": "false",
+    "ttl": 2592000
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "file_url": "https://s3.amazonaws.com/company-receipts/receipt_ORD-12345.pdf",
+  "file_name": "receipt_ORD-12345.pdf",
+  "file_size": 156789,
+  "uploaded_at": "2024-01-15T14:30:00Z",
+  "content_type": "application/pdf"
+}
+```
+
+## Runtime Behavior
+
+<Warning>File operations may take time depending on file sizes and network conditions. Ensure SFTP credentials are valid and URLs are accessible before workflow execution.</Warning>
+
+### File Processing Flow
+
+The File Handler Node processes operations in the following order:
+
+1. **Connection Validation**: Verifies SFTP credentials or URL accessibility
+2. **Source File Access**: Connects to source system and locates file
+3. **Operation Execution**: Performs delete, transfer, read, or list operation
+4. **Destination Handling**: Stores or transfers file to destination if applicable
+5. **Response Generation**: Returns operation results and file information
+
+### SFTP Connection Management
+
+For SFTP operations:
+- **Authentication**: Supports password and PEM key authentication
+- **Connection Pooling**: Reuses connections for efficiency
+- **Error Handling**: Automatic retry for temporary connection issues
+- **Security**: All credentials encrypted in transit and at rest
+
+### File Storage Behavior
+- **Cobalt Bucket**: Files stored with automatic naming if not specified
+- **Temporary Files**: Read operations create temporary accessible URLs
+- **Public URLs**: Download and process files from any accessible HTTP/HTTPS URL
+- **Cloud Storage**: Supports multiple providers with configurable settings
+
+## Troubleshooting
+
+### SFTP Connection Failures
+
+**Problem**: Cannot connect to SFTP server
+
+**Solutions**:
+- Verify host, port, and credentials are correct
+- Check firewall settings allow SFTP connections
+- Test SFTP connectivity outside of workflow first
+- Ensure PEM key format is correct if using key authentication
+
+### File Not Found Errors
+
+**Problem**: File doesn't exist at specified path
+
+**Solutions**:
+- Verify file path syntax matches SFTP server requirements
+- Check file actually exists at the specified location
+- Ensure proper permissions to access the file
+- Use List Files action to verify directory contents first
+
+### Transfer Operation Failures
+
+**Problem**: File transfer fails between systems
+
+**Solutions**:
+- Verify both source and destination are accessible
+- Check available disk space on destination system
+- Ensure proper write permissions on destination directory
+- Test with smaller files first to isolate issues
+
+### Public URL Access Issues
+
+**Problem**: Cannot download files from public URLs
+
+**Solutions**:
+- Verify URL is publicly accessible without authentication
+- Check URL format and ensure it's a direct file link
+- Test URL accessibility in browser first
+- Ensure content-type headers are correctly set
+
+### Cloud Storage Configuration Errors
+
+**Problem**: Bucket operations fail with permission errors
+
+**Solutions**:
+- Verify storage provider credentials are correct
+- Check bucket name exists and is accessible
+- Ensure proper IAM permissions for bucket operations
+- Confirm region and endpoint settings match provider requirements
+
+<Tip>Use the Debug Node after File Handler operations to inspect returned URLs and file information for troubleshooting integration issues.</Tip>
+
+## What's Next?
+
+- Learn about [Custom Code Node](/nodes/custom-code-node) for advanced file processing
+- Explore [HTTP Request Node](/nodes/http-request-node) to trigger file operations via APIs
+- Check out [Loop Node](/nodes/loop-node) to process multiple files in batches
+- Review [Workflow Testing](/testing/workflow-testing) to test file operations

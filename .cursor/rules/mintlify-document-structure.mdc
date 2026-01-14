@@ -1,0 +1,1055 @@
+---
+alwaysApply: true
+---
+
+# Refold Documentation - Cursor Rules
+
+> **URL:** docs.refold.ai  
+> **Version:** v3.0  
+> **Platform:** Mintlify
+
+---
+
+## Project Context
+
+You are writing developer documentation for **Refold**, an enterprise integration platform with three core use cases:
+
+| Use Case | Description | Target Customer |
+|----------|-------------|-----------------|
+| **Embedded Integration** | Build native integration experiences for SaaS products | Product companies |
+| **Integration Projects** | AI-powered bespoke integrations (4-8 weeks → 30 minutes) | ISVs & Enterprises |
+| **MCP (Model Context Protocol)** | AI agents interact with 200+ external systems | Enterprise AI teams |
+
+**Workflows are the center of everything.** The core problem Refold solves is field mapping between enterprise systems and DAG (Directed Acyclic Graph) generation.
+
+---
+
+## Documentation Structure (7 Tabs)
+
+### Tab 1: Developer Guide (Core/Common)
+
+```
+├── Getting Started
+│   ├── Overview
+│   │   ├── What is Refold
+│   │   ├── Three Core Use Cases
+│   │   └── How Refold Works
+│   ├── Quick Start
+│   │   ├── Prerequisites
+│   │   ├── Get Your API Key
+│   │   ├── Your First Integration (10-min win)
+│   │   └── Test End-to-End
+│   ├── Core Concepts
+│   │   ├── Workflows (The Heart of Refold)
+│   │   ├── Linked Accounts
+│   │   ├── Field Mapping
+│   │   └── Triggers & Actions
+│   └── Terminology
+│
+├── Platform
+│   ├── Authentication
+│   │   ├── API Keys
+│   │   ├── Session Tokens
+│   │   └── Token Management
+│   ├── Linked Accounts
+│   │   ├── Overview
+│   │   ├── Creating Linked Accounts
+│   │   ├── Managing Connections
+│   │   └── Multi-Tenant vs Single-Tenant
+│   ├── Events
+│   │   ├── Overview
+│   │   ├── App Events
+│   │   └── Event Payloads
+│   ├── API Proxies
+│   │   ├── Overview
+│   │   ├── Creating API Proxies
+│   │   └── Using in Workflows
+│   ├── Variables
+│   │   ├── Environment Variables
+│   │   ├── Workflow Variables
+│   │   └── Data Slots
+│   └── Webhooks
+│       ├── Overview
+│       ├── Webhook Events
+│       └── Webhook Security
+│
+├── Workflows
+│   ├── Fundamentals
+│   │   ├── Overview
+│   │   ├── Workflow Builder
+│   │   └── DAG Architecture
+│   ├── Triggers
+│   │   ├── Event Triggers
+│   │   ├── Webhook Triggers
+│   │   ├── Schedule Triggers
+│   │   └── Manual Triggers
+│   ├── Nodes
+│   │   ├── Start Node
+│   │   ├── Response Node
+│   │   ├── Merge Node
+│   │   ├── Transform Node
+│   │   ├── Rule Node
+│   │   ├── Data Mapper Node
+│   │   ├── Loop Node
+│   │   ├── Switch Case Node
+│   │   ├── HTTP Request Node
+│   │   ├── Email Node
+│   │   ├── Wait for Webhook Node
+│   │   ├── Delay Node
+│   │   ├── Custom Code Node
+│   │   ├── Agent Node
+│   │   ├── PDF Node
+│   │   ├── File Handler Node
+│   │   ├── Data Converter Node
+│   │   ├── Data Refs Node
+│   │   ├── Sub Flows Node
+│   │   ├── Human Task Node
+│   │   ├── Functions Node
+│   │   ├── Log Node
+│   │   └── Terminate Node
+│   ├── Advanced Features
+│   │   ├── Error Handling
+│   │   ├── Parallel Execution
+│   │   ├── Data Slots & Variables
+│   │   ├── Internal Functions
+│   │   ├── Tables
+│   │   └── User Forms
+│   ├── Testing
+│   │   ├── Workflow Testing
+│   │   ├── Debug Workflows
+│   │   └── Test Data
+│   └── AI-Powered Workflow Generation
+│       ├── Overview
+│       └── [→ Link to Integration Projects]
+│
+├── Custom Apps
+│   ├── Overview
+│   ├── Building Methods
+│   │   ├── From Scratch
+│   │   ├── Using OpenAPI Spec
+│   │   └── AI-Assisted Building
+│   ├── Configuration
+│   │   ├── Authentication Setup
+│   │   ├── Action Configuration
+│   │   └── Field Configuration
+│   └── Testing & Publishing
+│
+├── Platform Administration
+│   ├── Dashboard
+│   │   ├── Admin Dashboard
+│   │   ├── Analytics Overview
+│   │   └── Usage Metrics
+│   ├── User Management
+│   │   ├── User Roles
+│   │   ├── Permissions
+│   │   └── Team Management
+│   ├── Organization
+│   │   ├── Organization Settings
+│   │   ├── Billing & Usage
+│   │   └── Subscription Management
+│   └── Customization
+│       ├── Branding
+│       ├── Custom Domains
+│       └── White-labeling
+│
+├── Monitoring & Logs
+│   ├── Log Types
+│   │   ├── Event Logs
+│   │   ├── Workflow Logs
+│   │   ├── Webhook Logs
+│   │   └── Integration Logs
+│   ├── Monitoring
+│   │   ├── Real-time Monitoring
+│   │   ├── Performance Metrics
+│   │   └── Health Checks
+│   └── Troubleshooting
+│       ├── Error Tracking
+│       ├── Debug Tools
+│       └── Common Issues
+│
+├── Deployment
+│   ├── Overview
+│   └── Hosting Solutions
+│       ├── AWS
+│       ├── Azure
+│       ├── GCP
+│       └── Standalone
+│
+└── Security & Compliance
+    ├── Application Security
+    ├── Certifications
+    ├── Privacy
+    └── Terms of Use
+```
+
+### Tab 2: Embedded Integration
+
+```
+├── Overview
+│   ├── What is Embedded Integration
+│   ├── How It Works
+│   ├── Architecture
+│   └── Use Cases
+│
+├── Getting Started
+│   ├── Prerequisites
+│   ├── Enable Your First App
+│   └── Quick Start (SAP/NetSuite)
+│
+├── Building Integrations
+│   ├── Integration Settings
+│   │   ├── Authentication
+│   │   └── Scopes & Permissions
+│   ├── Config Fields
+│   │   ├── Field Types
+│   │   ├── Dependent Fields
+│   │   └── Dynamic Fields
+│   ├── Field Mapping
+│   ├── Custom Actions
+│   └── Testing Integrations
+│
+├── Frontend (Auth Flows)
+│   ├── Overview
+│   ├── Hosted Flow
+│   ├── React SDK Flow
+│   ├── Build Your Own
+│   ├── Customization
+│   │   ├── Custom Styling
+│   │   └── White-label Flows
+│   └── Management
+│       ├── Re-authentication
+│       ├── Token Refresh
+│       └── Connection Status
+│
+├── Implementation Examples
+│   ├── Sync Data from SAP
+│   ├── Push Data to NetSuite
+│   └── Bi-directional Sync
+│
+└── Best Practices
+    ├── Error Handling
+    ├── Rate Limiting
+    └── Data Validation
+```
+
+### Tab 3: Integration Projects
+
+```
+├── Overview
+│   ├── What is Integration Project
+│   ├── Value Proposition (4-8 weeks → 30 min)
+│   ├── Target Use Cases
+│   └── Supported Systems
+│
+├── Getting Started
+│   ├── Creating a Project
+│   ├── Adding Applications
+│   ├── Single-Tenant vs Multi-Tenant
+│   └── Quick Start
+│
+├── Project Lifecycle
+│   ├── Overview (6 Stages)
+│   ├── Stage 1: FSD
+│   ├── Stage 2: TSD
+│   ├── Stage 3: Field Mapping
+│   ├── Stage 4: Workflow Generation
+│   ├── Stage 5: Testing
+│   └── Stage 6: Go Live
+│
+├── Dashboard
+│   ├── Project Overview
+│   ├── Needs Attention System
+│   ├── BUILD Section
+│   ├── OPERATIONS Section
+│   └── Value Delivered Metrics
+│
+├── Knowledge Base
+│   ├── Overview
+│   ├── Artifacts
+│   ├── Memories
+│   └── Lookups
+│
+├── Field Mapping Workbench
+│   ├── Overview
+│   ├── Mapping Modes
+│   │   ├── Chat Guided
+│   │   ├── Hybrid
+│   │   └── Workbench (Expert)
+│   ├── AI Confidence Scoring
+│   ├── Transformation Builder
+│   ├── Lookups Integration
+│   └── Validation Gates
+│
+├── Workflow Agent
+│   ├── Overview
+│   ├── The 4-Step Pipeline
+│   │   ├── Step 1: Scoping
+│   │   ├── Step 2: Mapping Generation
+│   │   ├── Step 3: Todo Creation
+│   │   └── Step 4: Workflow Creation
+│   ├── Memory System
+│   │   ├── 5-Tier Architecture
+│   │   ├── Global vs Private Knowledge
+│   │   └── Pattern Learning
+│   ├── Agent Ecosystem
+│   │   ├── Plan Mode Agent
+│   │   ├── Workflow Agent
+│   │   └── Custom App Agent
+│   └── Evaluation Framework
+│
+├── Testing & Validation
+│   ├── Test Cases Overview
+│   ├── Creating Test Cases
+│   ├── Running Tests
+│   └── Pass/Fail Analysis
+│
+├── Operations & Monitoring
+│   ├── Health Metrics
+│   ├── Alerts
+│   ├── Logs
+│   ├── API Contracts
+│   └── Token Usage
+│
+└── Enterprise Examples
+    ├── SAP → Tipalti (Purchase Orders)
+    ├── NetSuite → SAP (Invoices)
+    └── Multi-System Orchestration
+```
+
+### Tab 4: MCP & AI Agents
+
+```
+├── Overview
+│   ├── What is MCP
+│   ├── Why MCP for Enterprise
+│   └── Core Capabilities
+│
+├── Getting Started
+│   ├── Prerequisites
+│   ├── Creating Your First MCP Server
+│   └── Quick Start
+│
+├── MCP Setup
+│   ├── Creating MCP Servers
+│   ├── Adding APIs
+│   ├── Adding Workflows
+│   └── Configuration
+│
+├── Chains
+│   ├── What are Chains
+│   ├── Creating Chains
+│   └── Chain Examples
+│
+├── Workflow as MCP
+│   ├── The Agent Reliability Problem
+│   ├── The Solution
+│   ├── Exposing Workflows as MCP Actions
+│   ├── Real-World Example: SAP Procurement
+│   └── Core Benefits
+│
+├── Use Cases
+│   ├── Salesforce CRM Operations
+│   ├── NetSuite Financial Management
+│   ├── SAP ERP
+│   └── Multi-System Orchestration
+│
+└── Security
+    ├── Authentication & Authorization
+    ├── Scope Management
+    └── Audit Trails
+```
+
+### Tab 5: API Reference
+
+```
+├── Overview
+│   ├── Authentication
+│   ├── Base URL
+│   ├── Rate Limits
+│   └── Error Handling
+│
+├── Linked Accounts
+├── Applications
+├── Config
+├── Workflows
+├── Events
+├── Integration Projects
+│   ├── Projects
+│   ├── Deliverables (FSD/TSD)
+│   ├── Field Mapping
+│   ├── Knowledge Base
+│   ├── Test Cases
+│   └── Health Metrics
+└── MCP
+```
+
+### Tab 6: SDKs
+
+```
+├── Overview
+├── Client-Side SDKs
+│   ├── JavaScript SDK
+│   └── React SDK
+└── Server-Side SDKs
+    └── Node.js SDK
+```
+
+### Tab 7: Resources
+
+```
+├── Integration Providers (200+)
+├── Examples & Tutorials
+├── Migration Guide
+├── Troubleshooting
+└── Changelog
+```
+
+---
+
+## Writing Guidelines
+
+### Author Mindset
+
+- Write for **smart, busy developers** who want to get things done
+- Assume they **don't know Refold**, but they **know how to code**
+- **Guide, don't impress**
+- Every sentence should **help the reader move forward**
+
+### Tone & Style Rules
+
+| Rule | Do | Don't |
+|------|-----|-------|
+| **Voice** | Second person ("you") + active voice | Passive voice |
+| **Tone** | Friendly, not casual | Jokey or robotic |
+| **Language** | Plain English | Jargon without definition |
+| **Tense** | Present tense | Past or future when describing actions |
+| **Sentences** | Short (1 idea, 3-4 sentences/paragraph) | Long, complex sentences |
+| **Fluff** | Remove entirely | "just", "easily", "simply", "obviously" |
+
+### Examples
+
+✅ **DO:**
+```
+You can test your API key using the Workbench tool.
+```
+
+❌ **DON'T:**
+```
+In order to easily get started with your journey, we offer an intuitive and flexible Workbench feature.
+```
+
+✅ **DO:**
+```
+Create a workflow that syncs purchase orders from SAP to Tipalti.
+```
+
+❌ **DON'T:**
+```
+A workflow can be created which will be used for the syncing of purchase orders from SAP to Tipalti.
+```
+
+---
+
+## Example Scenarios
+
+### Primary Systems (Always Use These)
+
+| System | Example Data |
+|--------|--------------|
+| **SAP S/4HANA** | Purchase Orders, Vendors, Materials, Company Codes |
+| **NetSuite** | Invoices, Customers, Sales Orders, Payments |
+| **Tipalti** | Payments, Vendor Management, Payment Terms |
+| **Oracle** | Financial Data, ERP Operations |
+
+### Standard Example Scenario
+
+```
+"Sync Purchase Orders from SAP to Tipalti every 15 minutes. 
+Only include POs from company codes 1000 and 2000 that are in 'Approved' status."
+```
+
+### Example Data Objects
+
+```json
+{
+  "sap_purchase_order": {
+    "po_number": "4500012345",
+    "vendor_id": "V001",
+    "company_code": "1000",
+    "status": "Approved",
+    "amount": 15000,
+    "currency": "USD",
+    "created_date": "2026-01-15"
+  }
+}
+```
+
+```json
+{
+  "netsuite_invoice": {
+    "invoice_id": "INV-2026-001234",
+    "customer_id": "CUST-5678",
+    "total_amount": 25000.00,
+    "currency": "USD",
+    "due_date": "2026-02-15",
+    "status": "Open"
+  }
+}
+```
+
+### ⚠️ DO NOT Use
+
+- Salesforce contacts as primary examples (use only for CRM-specific use cases)
+- Generic placeholder data like "example.com" or "test123"
+- Non-enterprise scenarios
+
+---
+
+## Node Documentation Template
+
+Every node documentation page **MUST** follow this exact structure:
+
+```markdown
+---
+title: "[Node Name] Node"
+description: "[One-line description of what the node does]"
+---
+
+## What does it do?
+
+[2-3 sentence description of the node's purpose and when to use it]
+
+**Common use cases:**
+- [Use case 1 - enterprise focused]
+- [Use case 2 - enterprise focused]
+- [Use case 3 - enterprise focused]
+
+---
+
+## Actions
+
+<Accordion title="[Action Name]">
+
+### Input Parameters
+
+<ParamField path="field_name" type="string" required>
+  [Description of the field. Be specific about format and constraints.]
+</ParamField>
+
+<ParamField path="optional_field" type="number">
+  [Description]. Default: `[default_value]`
+</ParamField>
+
+### Output
+
+```json
+{
+  "status": "success",
+  "data": {
+    "field": "value"
+  },
+  "metadata": {
+    "execution_time_ms": 245
+  }
+}
+```
+
+</Accordion>
+
+---
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Add the node">
+    Drag the **[Node Name]** node from the **[Category]** section onto your workflow canvas.
+    <Frame>
+      <img src="/images/workflow/nodes/[node-name]-drag-drop.png" alt="Adding [Node Name] node to workflow" />
+    </Frame>
+  </Step>
+  <Step title="Configure [primary setting]">
+    [Specific configuration instructions]
+    <Frame>
+      <img src="/images/workflow/nodes/[node-name]-config.png" alt="Configuring [Node Name] node" />
+    </Frame>
+  </Step>
+  <Step title="Test the node">
+    Click **Run/Test Node** to verify your configuration works correctly.
+    <Frame>
+      <img src="/images/workflow/nodes/[node-name]-test.png" alt="Testing [Node Name] node" />
+    </Frame>
+  </Step>
+</Steps>
+
+---
+
+## Examples
+
+### [Descriptive Title: e.g., "Sync SAP Purchase Orders to Tipalti"]
+
+**Scenario:** [Describe the real-world business scenario]
+
+**Workflow Configuration:**
+```json
+{
+  "node_type": "[node_name]",
+  "config": {
+    "setting": "value"
+  }
+}
+```
+
+**Input:**
+```json
+{
+  "sap_purchase_order": {
+    "po_number": "4500012345",
+    "vendor_id": "V001",
+    "amount": 15000
+  }
+}
+```
+
+**Output:**
+```json
+{
+  "status": "success",
+  "tipalti_payment": {
+    "payment_id": "PAY-98765",
+    "amount": 15000
+  }
+}
+```
+
+---
+
+## Runtime Behavior
+
+<Info>
+[Important information about how the node executes, timing, async behavior, etc.]
+</Info>
+
+<Warning>
+[Critical warnings, limitations, or gotchas users must know]
+</Warning>
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| [Specific error message] | [Step-by-step solution] |
+| [Common issue description] | [How to resolve] |
+| [Edge case scenario] | [Workaround or fix] |
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="[Related Node Name]" icon="[icon]" href="/workflows/nodes/[node-slug]">
+    [One-line description of when to use this related node]
+  </Card>
+  <Card title="[Related Guide]" icon="[icon]" href="/[path]">
+    [One-line description of what this guide covers]
+  </Card>
+</CardGroup>
+```
+
+---
+
+## Mintlify Components Reference
+
+### Steps (Sequential Guides)
+
+```markdown
+<Steps>
+  <Step title="Step title here">
+    Step content with instructions.
+    <Frame>
+      <img src="/images/path/image.png" alt="Descriptive alt text" />
+    </Frame>
+  </Step>
+  <Step title="Next step title">
+    More instructions here.
+  </Step>
+</Steps>
+```
+
+### ParamField (API/Node Parameters)
+
+```markdown
+<ParamField path="field_name" type="string" required>
+  Description of what this field does and any constraints.
+</ParamField>
+
+<ParamField path="optional_field" type="number">
+  Optional field description. Default: `100`
+</ParamField>
+
+<ParamField path="enum_field" type="string" required>
+  Choose the operation type. Options: `create`, `update`, `delete`
+</ParamField>
+```
+
+### Callouts
+
+```markdown
+<Info>
+Important context the user should know before proceeding.
+</Info>
+
+<Tip>
+Helpful hint or best practice that improves the experience.
+</Tip>
+
+<Warning>
+Critical information about potential issues or breaking changes.
+</Warning>
+
+<Note>
+Additional context or clarification that's good to know.
+</Note>
+```
+
+### Accordions (Expandable Sections)
+
+```markdown
+<Accordion title="Section Title">
+  Expandable content goes here. Good for optional details.
+</Accordion>
+
+<AccordionGroup>
+  <Accordion title="Option 1">
+    First option content.
+  </Accordion>
+  <Accordion title="Option 2">
+    Second option content.
+  </Accordion>
+</AccordionGroup>
+```
+
+### Tabs
+
+```markdown
+<Tabs>
+  <Tab title="JavaScript">
+    ```javascript
+    const refold = require('@refold/sdk');
+    // JavaScript code here
+    ```
+  </Tab>
+  <Tab title="cURL">
+    ```bash
+    curl -X POST https://api.refold.ai/v2/workflows/execute \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
+```
+
+### Code Groups
+
+```markdown
+<CodeGroup>
+```javascript JavaScript
+const Refold = require('@refold/sdk');
+const client = new Refold({ apiKey: 'YOUR_API_KEY' });
+```
+
+```python Python
+import refold
+client = refold.Client(api_key='YOUR_API_KEY')
+```
+
+```bash cURL
+curl -X GET https://api.refold.ai/v2/workflows \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+</CodeGroup>
+```
+
+### Cards (Navigation)
+
+```markdown
+<CardGroup cols={2}>
+  <Card title="Card Title" icon="rocket" href="/path/to/page">
+    Brief description of what this card links to.
+  </Card>
+  <Card title="Another Card" icon="code" href="/another/path">
+    Another brief description.
+  </Card>
+</CardGroup>
+```
+
+### Images with Frames
+
+```markdown
+<Frame>
+  <img src="/images/workflow/nodes/node-name-action.png" alt="Descriptive alt text for accessibility" />
+</Frame>
+
+<Frame caption="Optional caption text below the image">
+  <img src="/images/path/image.png" alt="Alt text" />
+</Frame>
+```
+
+### Tables
+
+```markdown
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Data 1   | Data 2   | Data 3   |
+| Data 4   | Data 5   | Data 6   |
+```
+
+---
+
+## Code Example Standards
+
+### Rule: Always Provide Complete, Runnable Examples
+
+✅ **DO - Complete Example:**
+```javascript
+const Refold = require('@refold/sdk');
+
+const refold = new Refold({
+  apiKey: process.env.REFOLD_API_KEY
+});
+
+async function syncPurchaseOrders() {
+  try {
+    const result = await refold.workflows.execute({
+      workflowId: 'wf_sap_po_sync',
+      linkedAccountId: 'la_acme_corp',
+      data: {
+        company_codes: ['1000', '2000'],
+        status: 'Approved'
+      }
+    });
+    
+    console.log(`Synced ${result.records_processed} purchase orders`);
+    return result;
+  } catch (error) {
+    console.error('Sync failed:', error.message);
+    throw error;
+  }
+}
+
+syncPurchaseOrders();
+```
+
+❌ **DON'T - Partial Snippet:**
+```javascript
+// Just call the execute method
+refold.workflows.execute(...)
+```
+
+### Code Languages Priority
+
+1. **JavaScript** (Node.js) - Primary
+2. **cURL** - Secondary (always include for API endpoints)
+3. **Python** - When relevant for data/ML use cases
+
+### cURL Example Format
+
+```bash
+curl -X POST https://api.refold.ai/v2/workflows/execute \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "workflow_id": "wf_sap_po_sync",
+    "linked_account_id": "la_acme_corp",
+    "data": {
+      "company_codes": ["1000", "2000"],
+      "status": "Approved"
+    }
+  }'
+```
+
+---
+
+## File Naming Conventions
+
+### Documentation Files
+
+```
+/getting-started/overview.mdx
+/getting-started/quick-start.mdx
+/platform/authentication.mdx
+/workflows/fundamentals/overview.mdx
+/workflows/triggers/event-triggers.mdx
+/workflows/nodes/merge-node.mdx
+/workflows/nodes/http-request-node.mdx
+/integration-projects/overview.mdx
+/integration-projects/field-mapping-workbench.mdx
+/mcp/overview.mdx
+/mcp/workflow-as-mcp.mdx
+/api-reference/workflows/execute.mdx
+```
+
+### Image Files
+
+```
+/images/workflow/nodes/[node-name]-drag-drop.png
+/images/workflow/nodes/[node-name]-config.png
+/images/workflow/nodes/[node-name]-test.png
+/images/workflow/nodes/[node-name]-[action-name].png
+/images/integration-projects/dashboard-overview.png
+/images/integration-projects/field-mapping-workbench.png
+```
+
+---
+
+## Pre-Commit Checklist
+
+Before committing any documentation file, verify:
+
+- [ ] Clear, descriptive title
+- [ ] One task/concept per guide
+- [ ] Copy-paste runnable code examples (JavaScript + cURL)
+- [ ] Simple, helpful language (no fluff words)
+- [ ] All technical terms defined or linked to Terminology
+- [ ] Consistent tone and formatting throughout
+- [ ] "What's Next?" section with relevant links
+- [ ] Enterprise examples used (SAP, NetSuite, Tipalti)
+- [ ] Mintlify components used correctly
+- [ ] All images have descriptive alt text
+- [ ] All internal links verified and working
+- [ ] No instances of: "just", "easily", "simply", "obviously"
+- [ ] No passive voice in instructions
+- [ ] Error handling shown in code examples
+
+---
+
+## Quick Reference
+
+### Workflow Nodes (23 Total)
+
+```
+Start, Response, Merge, Transform, Rule, Data Mapper, Loop, Switch Case,
+HTTP Request, Email, Wait for Webhook, Delay, Custom Code, Agent, PDF,
+File Handler, Data Converter, Data Refs, Sub Flows, Human Task, Functions,
+Log, Terminate
+```
+
+### Trigger Types (4 Total)
+
+```
+Event Triggers, Webhook Triggers, Schedule Triggers, Manual Triggers
+```
+
+### Integration Project Stages (6 Total)
+
+```
+1. FSD (Functional Specification Document)
+2. TSD (Technical Specification Document)
+3. Field Mapping
+4. Workflow Generation
+5. Testing
+6. Live
+```
+
+### Memory System Tiers (5 Total)
+
+```
+1. Immediate (Current conversation)
+2. Working (Active task)
+3. Episodic (Past experiences)
+4. Semantic (Structured knowledge)
+5. Procedural (How-to knowledge)
+```
+
+### Pipeline Status Icons
+
+```
+⬜ Not Started
+🔄 In Progress
+⚠️ Pending Review
+✅ Complete
+🔴 Failed/Blocked
+```
+
+---
+
+## Brand Guidelines
+
+| Element | Value |
+|---------|-------|
+| **Product Name** | Refold (not Cobalt) |
+| **Documentation URL** | docs.refold.ai |
+| **API Base URL** | api.refold.ai |
+| **Sandbox URL** | sandbox.api.refold.ai |
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | Correct Approach |
+|---------|------------------|
+| Partial code snippets | Always show complete, runnable code |
+| Passive voice | Use active voice ("Create a workflow" not "A workflow can be created") |
+| Jargon without definition | Define technical terms or link to Terminology page |
+| Missing error handling | Show try/catch and error scenarios in examples |
+| Outdated screenshots | Ensure images match current UI exactly |
+| Dead links | Verify all internal and external links before commit |
+| Inconsistent naming | Use exact field names as they appear in UI |
+| Salesforce examples | Use SAP/NetSuite/Tipalti for enterprise scenarios |
+| Missing "What's Next" | Every page needs navigation to related content |
+| Fluff words | Remove "just", "easily", "simply", "obviously", "very" |
+| Long paragraphs | Keep to 3-4 sentences max per paragraph |
+| Complex sentences | One idea per sentence |
+
+---
+
+## Section-Specific Guidelines
+
+### Getting Started / Quick Start
+
+- Deliver a win in **5-10 minutes**
+- Minimal prerequisites (only what's absolutely required)
+- One complete, working example
+- Clear "What's Next" navigation
+- Use `<Steps>` component
+
+### Conceptual Guides
+
+- Explain **what** and **why**
+- Use diagrams when they add clarity
+- Link to related quickstarts and API references
+- Keep explanations concise
+
+### How-To Guides
+
+- Task-based walkthroughs
+- Use imperative verbs ("Create", "Configure", "Test")
+- Show the full flow with `<Steps>` component
+- Include gotchas with `<Warning>` callouts
+- End with verification step
+
+### API Reference
+
+- Endpoint, method, path clearly stated
+- Required vs optional parameters clearly marked
+- Request body example (complete JSON)
+- Response example (complete JSON)
+- Error codes with descriptions
+- Rate limit information where applicable
+
+### Node Documentation
+
+- Follow the Node Template exactly
+- Include all actions if node has multiple
+- Real enterprise examples (SAP/NetSuite)
+- Screenshots for each step
+- Troubleshooting table with common issues
+
+---
+
+## Version Information
+
+- **Documentation Version:** v3.0
+- **Last Updated:** January 2026
+- **Platform:** Mintlify
+- **Primary URL:** docs.refold.ai

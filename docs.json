@@ -1,10 +1,10 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "theme": "mint",
-  "name": "Cobalt",
+  "name": "Refold",
   "logo": {
-    "dark": "/logo/white-icon.svg",
-    "light": "/logo/black-icon.svg"
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
   },
   "colors": {
     "primary": "#9563FF",
@@ -66,121 +66,151 @@
                 "group": "Getting Started",
                 "pages": [
                   "v3/developer-guide/getting-started/overview",
-                  "v3/developer-guide/getting-started/quick-start",
-                  {
-                    "group": "Core Concepts",
-                    "pages": [
-                      "v3/developer-guide/workflows/fundamentals",
-                      "v3/developer-guide/platform/linked-accounts",
-                      "v3/developer-guide/getting-started/core-concepts/auth-configs",
-                      "v3/developer-guide/getting-started/core-concepts/user-configs",
-                      "v3/developer-guide/integrations/field-mapping",
-                      "v3/developer-guide/getting-started/core-concepts/triggers-actions",
-                      "v3/developer-guide/getting-started/core-concepts/applications-connectors"
-                    ]
-                  },
-                  "v3/developer-guide/getting-started/terminology"
+                  "v3/developer-guide/getting-started/quickstart"
                 ]
               },
               {
-                "group": "Platform",
+                "group": "Configure",
                 "pages": [
-                  "v3/developer-guide/platform/authentication",
-                  "v3/developer-guide/platform/linked-accounts",
-                  "v3/developer-guide/platform/events",
-                  "v3/developer-guide/platform/api-proxies",
-                  "v3/developer-guide/platform/variables",
-                  "v3/developer-guide/platform/webhooks"
-                ]
-              },
-              {
-                "group": "Workflows",
-                "pages": [
-                  "v3/developer-guide/workflows/fundamentals",
+                  "v3/developer-guide/configure/linked-account",
                   {
-                    "group": "Triggers",
+                    "group": "Basic",
                     "pages": [
-                      "v3/developer-guide/workflows/triggers/event-triggers",
-                      "v3/developer-guide/workflows/triggers/webhook-triggers",
-                      "v3/developer-guide/workflows/triggers/schedule-triggers",
-                      "v3/developer-guide/workflows/triggers/manual-triggers"
+                      "v3/developer-guide/configure/basic/api-key",
+                      "v3/developer-guide/configure/basic/events",
+                      "v3/developer-guide/configure/basic/api-proxy"
                     ]
                   },
                   {
-                    "group": "Nodes",
+                    "group": "App Configuration",
                     "pages": [
-                      "v3/developer-guide/workflows/nodes/start-node",
-                      "v3/developer-guide/workflows/nodes/response-node",
-                      "v3/developer-guide/workflows/nodes/merge-node",
-                      "v3/developer-guide/workflows/nodes/transform-node",
-                      "v3/developer-guide/workflows/nodes/rule-node",
-                      "v3/developer-guide/workflows/nodes/mapping-node",
-                      "v3/developer-guide/workflows/nodes/loop-node",
-                      "v3/developer-guide/workflows/nodes/switch-node",
-                      "v3/developer-guide/workflows/nodes/http-request-node",
-                      "v3/developer-guide/workflows/nodes/email-node",
-                      "v3/developer-guide/workflows/nodes/webhook-node",
-                      "v3/developer-guide/workflows/nodes/delay-node",
-                      "v3/developer-guide/workflows/nodes/custom-code-node",
-                      "v3/developer-guide/workflows/nodes/agent-node",
-                      "v3/developer-guide/workflows/nodes/pdf-node",
-                      "v3/developer-guide/workflows/nodes/file-handler-node",
-                      "v3/developer-guide/workflows/nodes/data-converter-node",
-                      "v3/developer-guide/workflows/nodes/data-ref-node",
-                      "v3/developer-guide/workflows/nodes/sub-flows-node",
-                      "v3/developer-guide/workflows/nodes/human-task-node",
-                      "v3/developer-guide/workflows/nodes/function-node",
-                      "v3/developer-guide/workflows/nodes/log-node",
-                      "v3/developer-guide/workflows/nodes/terminate-node"
+                      "v3/developer-guide/configure/app-configuration/overview",
+                      "v3/developer-guide/configure/app-configuration/auth-config",
+                      "v3/developer-guide/configure/app-configuration/multi-auth",
+                      "v3/developer-guide/configure/app-configuration/authentication"
                     ]
                   },
-                  "v3/developer-guide/workflows/advanced-features",
-                  "v3/developer-guide/workflows/testing",
-                  "v3/developer-guide/workflows/ai-powered"
-                ]
-              },
-              {
-                "group": "Custom Apps",
-                    "pages": [
-                  "v3/developer-guide/custom-apps/overview",
                   {
-                    "group": "Building Methods",
+                    "group": "Workflows",
                     "pages": [
-                      "v3/developer-guide/custom-apps/building/building-from-scratch",
-                      "v3/developer-guide/custom-apps/building/openapi-integration",
-                      "v3/developer-guide/custom-apps/building/ai-assisted-building"
+                      "v3/developer-guide/configure/workflows/overview",
+                      {
+                        "group": "Triggers",
+                        "pages": [
+                          "v3/developer-guide/configure/workflows/triggers/event",
+                          "v3/developer-guide/configure/workflows/triggers/webhook",
+                          "v3/developer-guide/configure/workflows/triggers/schedule",
+                          "v3/developer-guide/configure/workflows/triggers/manual"
+                        ]
+                      },
+                      {
+                        "group": "Nodes",
+                        "pages": [
+                          "v3/developer-guide/configure/workflows/nodes/start-node",
+                          "v3/developer-guide/configure/workflows/nodes/response-node",
+                          "v3/developer-guide/configure/workflows/nodes/merge-node",
+                          "v3/developer-guide/configure/workflows/nodes/transform-node",
+                          "v3/developer-guide/configure/workflows/nodes/rule-node",
+                          "v3/developer-guide/configure/workflows/nodes/data-mapper",
+                          "v3/developer-guide/configure/workflows/nodes/loop-node",
+                          "v3/developer-guide/configure/workflows/nodes/switch-case",
+                          "v3/developer-guide/configure/workflows/nodes/http",
+                          "v3/developer-guide/configure/workflows/nodes/send-email",
+                          "v3/developer-guide/configure/workflows/nodes/wait-for-webhook",
+                          "v3/developer-guide/configure/workflows/nodes/delay",
+                          "v3/developer-guide/configure/workflows/nodes/custom-code",
+                          "v3/developer-guide/configure/workflows/nodes/agent-node",
+                          "v3/developer-guide/configure/workflows/nodes/pdf",
+                          "v3/developer-guide/configure/workflows/nodes/file-handler",
+                          "v3/developer-guide/configure/workflows/nodes/csv-excel",
+                          "v3/developer-guide/configure/workflows/nodes/data-ref-node",
+                          "v3/developer-guide/configure/workflows/nodes/sub-flows",
+                          "v3/developer-guide/configure/workflows/nodes/human-task",
+                          "v3/developer-guide/configure/workflows/nodes/function-node",
+                          "v3/developer-guide/configure/workflows/nodes/log-node",
+                          "v3/developer-guide/configure/workflows/nodes/terminate-node",
+                          "v3/developer-guide/configure/workflows/nodes/conditional-node",
+                          "v3/developer-guide/configure/workflows/nodes/filter-node",
+                          "v3/developer-guide/configure/workflows/nodes/debug-node",
+                          "v3/developer-guide/configure/workflows/nodes/tables"
+                        ]
+                      }
+                    ]
+                  },
+                  "v3/developer-guide/configure/webhooks",
+                  {
+                    "group": "Settings",
+                    "pages": [
+                      {
+                        "group": "User",
+                        "pages": [
+                          "v3/developer-guide/configure/settings/user/profile",
+                          "v3/developer-guide/configure/settings/user/authentication"
+                        ]
+                      },
+                      {
+                        "group": "Organization",
+                        "pages": [
+                          "v3/developer-guide/configure/settings/organization/overview",
+                          "v3/developer-guide/configure/settings/organization/users",
+                          "v3/developer-guide/configure/settings/organization/roles",
+                          "v3/developer-guide/configure/settings/organization/email",
+                          "v3/developer-guide/configure/settings/organization/connect-portal",
+                          "v3/developer-guide/configure/settings/organization/workspaces",
+                          "v3/developer-guide/configure/settings/organization/environment-variables",
+                          "v3/developer-guide/configure/settings/organization/certificates",
+                          "v3/developer-guide/configure/settings/organization/credentials",
+                          "v3/developer-guide/configure/settings/organization/policy"
+                        ]
+                      }
                     ]
                   }
                 ]
               },
               {
-                "group": "Platform Administration",
-                    "pages": [
-                  "v3/developer-guide/platform-administration/dashboard",
-                  "v3/developer-guide/platform-administration/user-management",
-                  "v3/developer-guide/platform-administration/organization",
-                  "v3/developer-guide/platform-administration/customization"
-                ]
-              },
-              {
-                "group": "Monitoring & Logs",
+                "group": "Deploy",
                 "pages": [
-                  "v3/developer-guide/monitoring-logs/log-types",
-                  "v3/developer-guide/monitoring-logs/monitoring",
-                  "v3/developer-guide/monitoring-logs/troubleshooting"
-                ]
-              },
-              {
-                "group": "Deployment",
-                "pages": [
-                  "v3/developer-guide/deployment/overview",
-                  "v3/developer-guide/deployment/aws",
-                  "v3/developer-guide/deployment/gcp"
-                ]
-              },
-              {
-                "group": "Guides",
+                  "v3/developer-guide/deploy/overview",
+                  {
+                    "group": "Hosting Solutions",
                     "pages": [
+                      "v3/developer-guide/deploy/hosting-solutions/aws",
+                      "v3/developer-guide/deploy/hosting-solutions/azure",
+                      "v3/developer-guide/deploy/hosting-solutions/gcp",
+                      "v3/developer-guide/deploy/hosting-solutions/standalone"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Monitor",
+                "pages": [
+                  "v3/developer-guide/monitor/logs",
+                  "v3/developer-guide/monitor/reliability",
+                  "v3/developer-guide/monitor/testing"
+                ]
+              },
+              {
+                "group": "Advanced",
+                "pages": [
+                  "v3/developer-guide/advanced/custom-apps",
+                  "v3/developer-guide/advanced/tables",
+                  "v3/developer-guide/advanced/internal-functions",
+                  "v3/developer-guide/advanced/user-forms",
+                  "v3/developer-guide/configure/workflows/nodes/data-ref-node"
+                ]
+              },
+              {
+                "group": "Security",
+                "pages": [
+                  "v3/developer-guide/security/application-security",
+                  "v3/developer-guide/security/certifications",
+                  "v3/developer-guide/security/privacy"
+                ]
+              },
+              {
+                "group": "Guide",
+                "pages": [
                   {
                     "group": "Catalogue",
                     "pages": [
