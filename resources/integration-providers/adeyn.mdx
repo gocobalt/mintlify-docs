@@ -1,0 +1,107 @@
+---
+title: "Connect"
+description: "Connect to your Adyen app for API Key"
+---
+
+To setup your Adyen app in Refold for API Key, you will need the following credentials from your Adyen account:
+
+- API Key
+
+### Pre-requisites
+
+1. Adyen account with API credentials access.
+
+<Info>
+  If you haven't already created an API Key in Adyen, you'd need to create one. You must have an Admin, API credentials, or specific management role to generate API keys.
+</Info>
+
+### Creating an API Key in Adyen
+
+To create an Adyen API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Adyen Customer Area at [https://ca-test.adyen.com](https://ca-test.adyen.com) (test) or [https://ca-live.adyen.com](https://ca-live.adyen.com) (live).
+2. Navigate to `Developers` → `API credentials` in the left sidebar.
+
+<img
+  height="200"
+  src="/images/adyen/adyen_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Select the API credential username for your integration (e.g., `ws@Company.[YourCompanyAccount]`).
+4. Under `Server settings` → `Authentication`, select the `API key` tab.
+5. Click `Generate API key` to create a new API key.
+6. Copy the generated **API Key** using the copy icon and store it securely in your system.
+
+<img
+  height="200"
+  src="/images/adyen/adyen_config.png"
+  alt="Setting up Adyen API Key"
+/>
+
+7. Click `Save changes` at the bottom of the page to save your configuration.
+
+<img
+  height="200"
+  src="/images/adyen/adyen_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  You cannot copy the API key again after you leave the page. If your API key is lost or compromised, you will need to generate a new one. When you generate a new API key, the old key remains valid for 24 hours, allowing you to update your systems with the new key.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/adyen/adyen_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Adyen actions and triggers. Following are the set of Adyen actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Company">
+        1. **List Companies** - Get a list of company accounts in Adyen.
+        2. **Get Company By ID** - Get a company account by ID in Adyen.
+        3. **List Users Of A Company** - Get a list of users for a company in Adyen.
+        4. **Create User Of A Company** - Create a new user for a company in Adyen.
+        5. **Update User Of A Company** - Update user details for a company in Adyen.
+      </Accordion>
+      <Accordion title="Merchant">
+        6. **Get Merchants** - Get a list of merchant accounts in Adyen.
+        7. **Create Merchant** - Create a merchant account in Adyen.
+        8. **Get Merchant By ID** - Get a merchant account by ID in Adyen.
+        9. **List Users Of A Merchant** - Get a list of users for a merchant in Adyen.
+        10. **Create User Of A Merchant** - Create a new user for a merchant in Adyen.
+        11. **Update User Of A Merchant** - Update a user for a merchant in Adyen.
+      </Accordion>
+      <Accordion title="Order">
+        12. **Create Order** - Create an order in Adyen.
+        13. **Cancel Order** - Cancel an order in Adyen.
+      </Accordion>
+      <Accordion title="Transaction">
+        14. **List Transactions** - Get all transactions in Adyen.
+      </Accordion>
+      <Accordion title="Others">
+        15. **HTTP Request** - Make HTTP API calls to any Adyen documented REST APIs.
+        16. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Refund Successful** - Triggers when a refund is successful in Adyen.
+    2. **Order Opened** - Triggers when the first partial payment is made and the order is created in Adyen.
+    3. **Order Closed** - Triggers when the last partial payment for the order is made in Adyen.
+    4. **Refund Reversed** - Triggers when the refunded amount is reversed and returned to your bank account in Adyen.
+  </Tab>
+</Tabs>

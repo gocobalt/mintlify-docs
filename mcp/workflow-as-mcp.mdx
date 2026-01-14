@@ -42,33 +42,33 @@ When agents handle complex processes directly:
   <Tab title="Traditional Process">
     **8-Step SAP Procurement Process:**
 
-         ```mermaid
-     flowchart TD
-         A["Agent Request:<br/>Buy laptop from Dell, $1,200"] --> B["1. Vendor Validation<br/>Check master data, compliance"]
-         B --> C["2. Budget Authorization<br/>Validate availability, get approvals"]
-         C --> D["3. Purchase Requisition<br/>Create PR with cost center"]
-         D --> E["4. Approval Routing<br/>Route through hierarchy"]
-         E --> F["5. Purchase Order Creation<br/>Generate PO with release strategy"]
-         F --> G["6. Vendor Notification<br/>Send PO with requirements"]
-         G --> H["7. Goods Receipt Processing<br/>Three-way matching"]
-         H --> I["8. Exception Handling<br/>Manage variances, delays"]
-         
-         B --> J["❌ Skip compliance checks"]
-         C --> K["❌ Missing budget approval"]
-         E --> L["❌ Miss approval workflows"]
-         H --> M["❌ Fail exception handling"]
-         
-         J --> N["🚨 COMPLIANCE RISK"]
-         K --> O["🚨 BUDGET OVERRUN"]
-         L --> P["🚨 UNAUTHORIZED PO"]
-         M --> Q["🚨 PAYMENT ISSUES"]
-         
-         style A fill:#e1f5fe
-         style N fill:#ffebee
-         style O fill:#ffebee
-         style P fill:#ffebee
-         style Q fill:#ffebee
-     ```
+    ```mermaid
+    flowchart TD
+        A["Agent Request:<br/>Buy laptop from Dell, $1,200"] --> B["1. Vendor Validation<br/>Check master data, compliance"]
+        B --> C["2. Budget Authorization<br/>Validate availability, get approvals"]
+        C --> D["3. Purchase Requisition<br/>Create PR with cost center"]
+        D --> E["4. Approval Routing<br/>Route through hierarchy"]
+        E --> F["5. Purchase Order Creation<br/>Generate PO with release strategy"]
+        F --> G["6. Vendor Notification<br/>Send PO with requirements"]
+        G --> H["7. Goods Receipt Processing<br/>Three-way matching"]
+        H --> I["8. Exception Handling<br/>Manage variances, delays"]
+        
+        B --> J["❌ Skip compliance checks"]
+        C --> K["❌ Missing budget approval"]
+        E --> L["❌ Miss approval workflows"]
+        H --> M["❌ Fail exception handling"]
+        
+        J --> N["🚨 COMPLIANCE RISK"]
+        K --> O["🚨 BUDGET OVERRUN"]
+        L --> P["🚨 UNAUTHORIZED PO"]
+        M --> Q["🚨 PAYMENT ISSUES"]
+        
+        style A fill:#e1f5fe
+        style N fill:#ffebee
+        style O fill:#ffebee
+        style P fill:#ffebee
+        style Q fill:#ffebee
+    ```
      
      <Warning>
      **Agent Failure Points**: When agents handle this process directly, they often skip critical steps, leading to compliance risks and operational failures.

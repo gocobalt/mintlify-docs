@@ -1,0 +1,185 @@
+---
+title: "Setup"
+description: "Connect to your Ironclad app for API Key or OAuth"
+---
+
+To setup your Ironclad app in Refold, you can use one of the following authentication methods:
+
+**API Key Authentication:**
+- API Key
+
+**OAuth 2.0 Authentication:**
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Ironclad account with API access enabled.
+
+<Info>
+  If you haven't already created API credentials in Ironclad, you'd need to create them. Contact your Ironclad account manager if API access is not enabled for your instance.
+</Info>
+
+---
+
+## API Key Authentication
+
+### Creating an API Key in Ironclad
+
+To create an Ironclad API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Ironclad account at your environment URL (e.g., [https://na1.ironcladapp.com](https://na1.ironcladapp.com) for US or [https://eu1.ironcladapp.com](https://eu1.ironcladapp.com) for EU).
+2. Click on your user profile dropdown at the top-right corner and select `Company Settings`.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Select the `API` tab on the left sidebar.
+4. Navigate to the `Tokens` section and click `Create Token` or the plus sign to open the "Register an API Key" modal.
+5. Enter a name and description for your API Key (e.g., "Refold Integration").
+6. Click `Register` or `Create` to generate your API Key.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_apikey_config.png"
+  alt="Setting up Ironclad API Key"
+/>
+
+7. Copy the generated **API Key** immediately and store it securely.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_apikey_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  Please keep your API key secure! Do not use your API key within client-side code and do not share it publicly or store it in any git repositories. Legacy bearer tokens have been deprecated as of November 2024, and OAuth 2.0 is now the recommended authentication method.
+</Warning>
+
+#### Configuring API Key credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_apikey_refold.png"
+  alt="Setting up API Key application client credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+---
+
+## OAuth 2.0 Authentication
+
+### Creating an OAuth app in Ironclad
+
+To create an Ironclad OAuth app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Ironclad account at your environment URL (e.g., [https://na1.ironcladapp.com](https://na1.ironcladapp.com) for US or [https://eu1.ironcladapp.com](https://eu1.ironcladapp.com) for EU).
+2. Click on your user profile dropdown at the top-right corner and select `Company Settings`.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_oauth_navigation.png"
+  alt="Navigation for OAuth App setup"
+/>
+
+3. Select the `API` tab on the left sidebar.
+4. In the `Apps` section, click on `Create new app` button.
+5. Enter a name for your OAuth application (e.g., "Refold Integration") and click `Create app`.
+6. Go to your [`Apps catalog`](https://app.refold.ai/apps) in **Refold** \> Search for `Ironclad` \> `Settings` \> `Use your credentials` \> `Callback Url` \> Copy it.
+7. In your Ironclad OAuth app settings, add the Callback URL to the `Redirect URIs` field. When developing, "http://localhost" is also a valid redirect URI.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_oauth_config.png"
+  alt="Setting up Ironclad OAuth App"
+/>
+
+8. Copy the **Client ID** and **Client Secret** immediately. Store the Client Secret securely as you won't be able to view it again.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_oauth_credentials.png"
+  alt="Getting OAuth Credentials"
+/>
+
+<Warning>
+  Make sure you copy the Client Secret before clicking "Continue" because you won't be able to view it again. If you don't save the Client Secret, you'll need to reset it. Each Ironclad environment (na1, eu1, demo) operates independently, so credentials from one environment cannot be used with another.
+</Warning>
+
+#### Configuring OAuth credentials in Refold
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_oauth_refold.png"
+  alt="Setting up OAuth application client credentials"
+/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes` section.
+
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any custom scopes supported by the respective platform.
+
+<img
+  height="200"
+  src="/images/ironclad/ironclad_scopes.png"
+  alt="OAuth Scopes"
+/>
+
+Once the scopes has been added to the application in Refold, go to your Ironclad OAuth app settings and ensure the same scopes are configured in the `Scopes` section of your app.
+
+<Warning>
+  If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are identical to the ones selected in the platform.
+</Warning>
+
+---
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Ironclad actions and triggers. Following are the set of Ironclad actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Group">
+        1. **List Groups** - List all groups in Ironclad.
+        2. **Get Group** - Get a group by ID in Ironclad.
+      </Accordion>
+      <Accordion title="Record">
+        3. **List Records** - List all records in Ironclad.
+        4. **Get Record** - Get a record by ID in Ironclad.
+        5. **Create Record** - Create a new record in Ironclad.
+        6. **Delete Record** - Delete an existing record by ID in Ironclad.
+      </Accordion>
+      <Accordion title="User">
+        7. **List Users** - List all users in Ironclad.
+        8. **Get User** - Get a user by ID in Ironclad.
+      </Accordion>
+      <Accordion title="Workflow">
+        9. **List Workflows** - List all workflows in Ironclad.
+        10. **Get Workflow** - Get a workflow by ID in Ironclad.
+        11. **Create Workflow** - Create a new workflow synchronously in Ironclad.
+      </Accordion>
+      <Accordion title="Others">
+        12. **HTTP Request** - Make HTTP API calls to any Ironclad documented REST APIs.
+        13. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Workflow Completed** - Triggers when a workflow is completed in Ironclad.
+    2. **Workflow Signature Packet Fully Signed** - Triggers when a workflow signature packet is fully signed in Ironclad.
+  </Tab>
+</Tabs>

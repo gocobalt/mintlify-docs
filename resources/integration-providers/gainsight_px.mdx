@@ -1,0 +1,103 @@
+---
+title: "Setup"
+description: "Connect to your Gainsight PX app for API Key"
+---
+
+To setup your Gainsight PX app in Refold for API Key, you will need the following credentials from your Gainsight PX account:
+
+- API Key
+- Base Endpoint URL
+
+### Pre-requisites
+
+1. Gainsight PX account with administrative access.
+
+<Info>
+  If you don't have administrative access to create API keys, contact your Gainsight PX administrator to generate the required credentials.
+</Info>
+
+### Getting API credentials in Gainsight PX
+
+To acquire the above mentioned credentials from Gainsight PX, please follow the steps mentioned below:
+
+1. Log in to your Gainsight PX account at `https://app.aptrinsic.com`.
+2. Navigate to **Administration** by clicking on the settings icon, then select **REST API** from the menu.
+
+<img
+  height="200"
+  src="/images/gainsightpx/gainsightpx_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Click on the **New API Key** button to create a new API key.
+4. Enter a descriptive **Name** for your API key (e.g., "Refold Integration").
+5. Select the required checkboxes under the **API Permissions** section based on the actions you need to perform.
+6. Click **Create & View** to generate the API key.
+7. Copy the generated **API Key** immediately and store it securely.
+
+<img
+  height="200"
+  src="/images/gainsightpx/gainsightpx_config.png"
+  alt="Setting up Gainsight PX API Key"
+/>
+
+8. Note your **Base Endpoint URL** based on your data center location:
+   - **US Server:** `https://api.aptrinsic.com/v1` or `https://api-us2.aptrinsic.com/v1`
+   - **EU Server:** `https://api-eu.aptrinsic.com/v1`
+
+<img
+  height="200"
+  src="/images/gainsightpx/gainsightpx_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  The API Key is only displayed once at the time of creation. Store it securely as you cannot retrieve it again. If lost, you will need to generate a new API key.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/gainsightpx/gainsightpx_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key and Base Endpoint URL under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Gainsight PX actions and triggers. Following are the set of Gainsight PX actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Account">
+        1. **List Accounts** - Retrieve accounts with support for filtering, sorting and paging in Gainsight PX.
+        2. **Get Account by ID** - Retrieve an account by ID in Gainsight PX.
+      </Accordion>
+      <Accordion title="Article">
+        3. **List Articles** - Retrieve all articles in Gainsight PX.
+        4. **Get Article by ID** - Retrieve an article by ID in Gainsight PX.
+      </Accordion>
+      <Accordion title="Segment">
+        5. **List Segments** - Retrieve all segments in Gainsight PX.
+        6. **Get Segment by ID** - Retrieve a segment by ID in Gainsight PX.
+      </Accordion>
+      <Accordion title="User">
+        7. **List Users** - Retrieve all users in Gainsight PX.
+        8. **Get User by ID** - Retrieve a user by ID in Gainsight PX.
+        9. **Delete User** - Delete a user in Gainsight PX.
+      </Accordion>
+      <Accordion title="Others">
+        10. **HTTP Request** - Make HTTP API calls to any Gainsight PX documented REST APIs.
+        11. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
