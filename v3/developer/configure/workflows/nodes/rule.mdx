@@ -1,82 +1,78 @@
 ---
 title: "Rule Node"
-description: "Add conditional logic to workflows with if/else statements and multiple condition evaluation"
+description: "Add conditional logic to workflows with if/else branching based on condition evaluation"
 sidebarTitle: "Rule"
 ---
 
-## What does it do?
+The Rule Node enables conditional logic in workflows by evaluating conditions and creating different execution paths. It acts as an if/else statement, routing workflow execution down different branches depending on whether defined conditions are met.
 
-The Rule Node enables you to add conditional logic to workflows by evaluating conditions and creating different execution paths based on the results. It acts as an if/else statement, routing workflow execution down different branches depending on whether your defined conditions are met.
+## When to Use
 
-**Common use cases:**
-- Filter Salesforce contacts based on criteria (lead score, status, region)
-- Route data to different systems based on contact properties
-- Skip processing for contacts that don't meet requirements
+- Filter records based on criteria (status, score, region)
+- Route data to different systems based on properties
+- Skip processing for records that do not meet requirements
 - Create approval workflows with conditional branching
 - Validate data before proceeding with sync operations
 
 ## Actions
 
-<ResponseField name="Action Name" type="string">
-  <Expandable title="Available Actions">
-    <ResponseField name="`Match All Conditions`" type="action">
-      Evaluates to true only when ALL defined conditions are met (AND logic).
-      
-      **Behavior:**
-      - Uses AND logic between multiple conditions
-      - All conditions must be true for the rule to pass
-      - Use when you need strict criteria matching
-      - More restrictive filtering approach
-    </ResponseField>
-    <ResponseField name="`Match Any Condition`" type="action">
-      Evaluates to true when ANY of the defined conditions are met (OR logic).
-      
-      **Behavior:**
-      - Uses OR logic between multiple conditions
-      - Only one condition needs to be true for the rule to pass
-      - Use when you have alternative criteria paths
-      - More flexible filtering approach
-    </ResponseField>
-  </Expandable>
-</ResponseField>
+### Match All Conditions
 
-## Input Parameters
+Evaluates to true only when ALL defined conditions are met (AND logic). Use when you need strict criteria matching where every condition must pass.
 
-<ParamField path="Variable" type="string" required="yes">
-  The field or data point you want to evaluate. Can be from previous nodes, event data, or static values. Example: `{{salesforce_contact.Status}}` or `{{event.lead_score}}`
-</ParamField>
+**Parameters:**
 
-<ParamField path="Operator" type="dropdown" required="yes">
-  The comparison operator to use for evaluation. Available options: `equals`, `not equals`, `greater than`, `less than`, `greater than or equal`, `less than or equal`, `contains`, `does not contain`, `is empty`, `is not empty`. Example: `equals`
-</ParamField>
+| Field | Required | Description |
+|-------|----------|-------------|
+| Variable | Yes | The field or data point to evaluate |
+| Operator | Yes | Comparison operator for evaluation |
+| Value | Conditional | Value to compare against. Not required for Is Empty or Is Not Empty operators |
 
-<ParamField path="Value" type="string" required="conditional">
-  The value to compare against. Can be static text, numbers, or variables from other nodes. Not required for `is empty` and `is not empty` operators. Example: `"Qualified"` or `{{event.minimum_score}}`
-</ParamField>
+Click **Add Condition** to add multiple conditions. All must be true for the rule to pass.
 
-<Callout type="info">
-**Note**: You can add multiple conditions by clicking the `+ Add Condition` button. Each condition follows the same Variable → Operator → Value structure.
-</Callout>
+### Match Any Condition
+
+Evaluates to true when ANY of the defined conditions are met (OR logic). Use when you have alternative criteria where only one condition needs to pass.
+
+**Parameters:**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Variable | Yes | The field or data point to evaluate |
+| Operator | Yes | Comparison operator for evaluation |
+| Value | Conditional | Value to compare against. Not required for Is Empty or Is Not Empty operators |
+
+Click **Add Condition** to add multiple conditions. Any one being true passes the rule.
+
+### Available Operators
+
+| Operator | Description |
+|----------|-------------|
+| Equals | Exact text or number match |
+| Not Equals | Value does not match |
+| Greater Than | Numeric comparison |
+| Less Than | Numeric comparison |
+| Greater Than or Equal | Inclusive numeric comparison |
+| Less Than or Equal | Inclusive numeric comparison |
+| Contains | Text substring match |
+| Does Not Contain | Text substring not present |
+| Is Empty | Value is null or empty |
+| Is Not Empty | Value exists and is not empty |
 
 ## Output
 
 The Rule Node creates two execution paths based on condition evaluation:
 
-### Output Paths
-
-- **True Path (Left)**: Executes when conditions are met
-- **False Path (Right)**: Executes when conditions are not met
-
-### Output Structure
-
+- **Left Path (True)**: Executes when conditions are met
+- **Right Path (False)**: Executes when conditions are not met
 ```json
 {
   "condition_result": true,
   "evaluated_conditions": [
     {
-      "variable": "{{salesforce_contact.Status}}",
+      "variable": "sap_vendor.STATUS",
       "operator": "equals",
-      "value": "Qualified",
+      "value": "Active",
       "result": true
     }
   ],
@@ -84,165 +80,111 @@ The Rule Node creates two execution paths based on condition evaluation:
 }
 ```
 
-### Condition Results
+<Warning>Both left (true) and right (false) paths must be connected to prevent workflow execution errors. If you do not need actions on the false path, connect it directly to the next shared node or end the branch.</Warning>
 
-- **True**: All conditions met (Match All) or any condition met (Match Any)
-- **False**: Conditions not satisfied based on selected logic
-- **Error**: Invalid variable reference or evaluation failure
-
-## Adding to Workflow
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag Rule Node to canvas">
-    From the **Utility Nodes** section, drag the Rule Node to your workflow canvas where you need conditional branching.
-    
-    <img height="200" src="/images/workflow/nodes/rule-node-drag-drop.png" alt="Dragging Rule Node from utility nodes"/>
+  <Step title="Add the node">
+    Click **Add Node** in the workflow canvas, select **Rule** from the list of available nodes, then position it in your workflow.
   </Step>
-
   <Step title="Select condition logic">
-    Click on the Rule Node to open configuration. Choose your condition evaluation strategy:
-    - **Match All Conditions**: AND logic (all conditions must be true)
-    - **Match Any Condition**: OR logic (any condition can be true)
-    
-    <img height="200" src="/images/workflow/nodes/rule-node-action-selection.png" alt="Selecting rule condition logic"/>
+    Choose your evaluation strategy: **Match All Conditions** (AND logic) or **Match Any Condition** (OR logic). AND logic is selected by default.
   </Step>
-
-  <Step title="Configure condition parameters">
-    Add your conditions by clicking `+ Add Condition`:
-    1. **Variable**: Select the data field to evaluate
-    2. **Operator**: Choose comparison method
-    3. **Value**: Set the comparison value
-    
-    <img height="200" src="/images/workflow/nodes/rule-node-condition-configuration.png" alt="Configuring rule conditions"/>
+  <Step title="Configure conditions">
+    Set Variable, Operator, and Value for each condition.
+    <Frame>
+      <img height="200" src="/images/v3/workflow/nodes/rule-node-status-configuration.png" alt="Configuring rule code conditions" />
+    </Frame>
   </Step>
-
   <Step title="Connect execution paths">
-    Connect nodes to both output paths:
-    - **Left (True)**: Actions when conditions are met
-    - **Right (False)**: Actions when conditions fail
-    
-    <img height="200" src="/images/workflow/nodes/rule-node-path-connections.png" alt="Connecting true/false execution paths"/>
+    Connect nodes to both output paths: **Left (True)** and **Right (False)**.
   </Step>
-
-  <Step title="Run/Test Node">
-    Test your rule configuration with sample data to verify conditions evaluate correctly.
-    
-    <img height="200" src="/images/workflow/nodes/rule-node-test-execution.png" alt="Testing rule node conditions"/>
+  <Step title="Test the node">
+    Run the workflow with sample data to verify conditions evaluate correctly.
   </Step>
 </Steps>
 
-<Callout type="info">
-**Note**: The Rule Node automatically creates two output connections (true/false). You must connect both paths for the workflow to execute properly.
-</Callout>
-
 ## Examples
 
-### Example 1: Match All Conditions (Qualified Salesforce Contact)
+### Filter Active High-Value SAP Vendors
 
-This example routes only contacts that are both qualified and have a high lead score:
+Route only vendors that are both active and have purchase volume above threshold.
 
-```javascript
-// Workflow configuration
-{
-  "name": "rule_task",
-  "taskReferenceName": "qualify_contact_rule",
-  "type": "RULE",
-  "action": "Match All Conditions",
-  "conditions": [
-    {
-      "variable": "{{salesforce_contact.Status}}",
-      "operator": "equals", 
-      "value": "Qualified"
-    },
-    {
-      "variable": "{{salesforce_contact.Lead_Score__c}}",
-      "operator": "greater than or equal",
-      "value": "80"
-    }
-  ]
-}
-```
+**Action:** Match All Conditions
 
-**Expected Output (True Path):**
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| sap_vendor.STATUS | Equals | Active |
+| sap_vendor.PURCHASE_VOLUME | Greater Than or Equal | 100000 |
+
+**Left Path (True):** Proceed to sync vendor to internal system
+
+**Right Path (False):** Skip vendor, log to monitoring
+
+**Result (True Path):**
 ```json
 {
   "condition_result": true,
   "evaluated_conditions": [
-    {
-      "variable": "Qualified",
-      "operator": "equals",
-      "value": "Qualified", 
-      "result": true
-    },
-    {
-      "variable": "85",
-      "operator": "greater than or equal",
-      "value": "80",
-      "result": true
-    }
+    {"variable": "Active", "operator": "equals", "value": "Active", "result": true},
+    {"variable": "250000", "operator": "greater than or equal", "value": "100000", "result": true}
   ],
   "execution_path": "true"
 }
 ```
 
-### Example 2: Match Any Condition (Multiple Contact Sources)
+### Process Multiple Order Sources
 
-This example processes contacts from multiple lead sources:
+Process orders from any of the approved channels.
 
-```javascript
-// Workflow configuration
-{
-  "name": "rule_task", 
-  "taskReferenceName": "source_filter_rule",
-  "type": "RULE",
-  "action": "Match Any Condition",
-  "conditions": [
-    {
-      "variable": "{{salesforce_contact.LeadSource}}",
-      "operator": "equals",
-      "value": "Website"
-    },
-    {
-      "variable": "{{salesforce_contact.LeadSource}}",
-      "operator": "equals", 
-      "value": "Webinar"
-    },
-    {
-      "variable": "{{salesforce_contact.LeadSource}}",
-      "operator": "equals",
-      "value": "Trade Show"
-    }
-  ]
-}
-```
+**Action:** Match Any Condition
 
-**Expected Output (True Path):**
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| netsuite_order.source | Equals | Web |
+| netsuite_order.source | Equals | EDI |
+| netsuite_order.source | Equals | API |
+
+**Left Path (True):** Process order through fulfillment workflow
+
+**Right Path (False):** Route to manual review queue
+
+**Result (True Path when source is EDI):**
 ```json
 {
   "condition_result": true,
   "evaluated_conditions": [
-    {
-      "variable": "Webinar",
-      "operator": "equals",
-      "value": "Website",
-      "result": false
-    },
-    {
-      "variable": "Webinar", 
-      "operator": "equals",
-      "value": "Webinar",
-      "result": true
-    }
+    {"variable": "EDI", "operator": "equals", "value": "Web", "result": false},
+    {"variable": "EDI", "operator": "equals", "value": "EDI", "result": true}
   ],
   "execution_path": "true"
 }
 ```
+
+### Validate Required Fields Before Sync
+
+Ensure required fields are populated before syncing to Tipalti.
+
+**Action:** Match All Conditions
+
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| event.vendor.tax_id | Is Not Empty | - |
+| event.vendor.bank_account | Is Not Empty | - |
+| event.vendor.email | Contains | @ |
+
+**Left Path (True):** Create vendor in Tipalti
+
+**Right Path (False):** Return validation error via Response Node
 
 ## Runtime Behavior
-
-<Callout type="warning">
-**Important**: Both true and false paths must be connected to prevent workflow execution errors. If you don't need actions on the false path, connect it to an End Node.
-</Callout>
 
 ### Condition Evaluation
 
@@ -251,52 +193,25 @@ The Rule Node evaluates conditions in the following order:
 1. **Variable Resolution**: Resolves variables from previous nodes or event data
 2. **Type Conversion**: Automatically converts data types for comparison
 3. **Condition Checking**: Applies the specified operator logic
-4. **Path Selection**: Routes to true or false branch based on result
+4. **Path Selection**: Routes to left (true) or right (false) branch based on result
 
-### Available Operators
+### Evaluation Logic
 
-- **equals / not equals**: Exact text or number matching
-- **greater than / less than**: Numeric comparisons
-- **greater than or equal / less than or equal**: Inclusive numeric comparisons  
-- **contains / does not contain**: Text substring matching
-- **is empty / is not empty**: Null or empty value checking
+- **Match All Conditions**: All conditions must evaluate to true (AND logic)
+- **Match Any Condition**: At least one condition must evaluate to true (OR logic)
 
 ## Troubleshooting
 
-### Rule Always Goes to False Path
+| Problem | Solution |
+|---------|----------|
+| Rule always goes to false path | Verify variable references are correct. Check data types match (numbers vs strings). |
+| Variable not found error | Confirm referenced node executed successfully. Check variable path syntax. |
+| Unexpected data type comparison | Use text operators (Contains, Equals) for string fields. Add Transform Node to convert types. |
 
-**Problem**: Conditions never evaluate to true
-**Solutions**:
-- Check variable references are correct (use Debug Node to inspect values)
-- Verify data types match (numbers vs strings)
-- Ensure operator logic matches your intent
-- Test with known good data first
+<Tip>Add a Custom Code Node after your Rule Node during testing to inspect condition evaluation results and understand path selection.</Tip>
 
-### Variable Not Found Error
+## What's Next
 
-**Problem**: "Variable not found" during rule evaluation
-**Solutions**:
-- Confirm the referenced node executed successfully
-- Check variable path syntax: `{{node_name.field_name}}`
-- Verify upstream nodes have the expected output structure
-- Use the variable picker instead of typing manually
-
-### Unexpected Data Type Comparison
-
-**Problem**: Numeric comparisons failing on text fields
-**Solutions**:
-- Use text operators (contains, equals) for string fields
-- Convert numeric strings before comparison
-- Check Salesforce field types in your data source
-- Add data transformation before the Rule Node if needed
-
-<Callout type="info">
-**Tip**: Use the Debug Node after your Rule Node to inspect the condition evaluation results and understand why certain paths were taken.
-</Callout>
-
-## What's Next?
-
-- Learn about [Switch Node](/nodes/switch-node) for multiple condition branches
-- Explore [Transform Node](/nodes/transform-node) to prepare data before rule evaluation
-- Check out [Conditional Node](/nodes/conditional-node) for advanced condition logic
-- Review [Workflow Testing](/testing/workflow-testing) to validate rule behavior
+- [Transform Node](/developer-guide/workflows/nodes/transform) to prepare data before rule evaluation
+- [Response Node](/developer-guide/workflows/nodes/response) for conditional response paths
+- [Loop Node](/developer-guide/workflows/nodes/loop) to apply rules across multiple records

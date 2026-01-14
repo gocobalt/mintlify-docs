@@ -1,84 +1,82 @@
 ---
-title: "Email Node"
-description: "Send emails during workflow execution with dynamic content and SMTP configuration"
-sidebarTitle: "Email"
+title: "Send Email Node"
+description: "Send emails during workflow execution with dynamic content, attachments, and SMTP configuration"
+sidebarTitle: "Send Email"
 ---
 
+The Send Email Node sends emails directly from your workflow using SMTP. It supports dynamic content from previous nodes, multiple recipients, and file attachments. Use it for internal notifications, alerts, and automated communications triggered by workflow events.
 
-## What does it do?
+## When to Use
 
-The Email Node allows you to send emails directly through a workflow in Cobalt. It's designed for internal notifications and alerts, such as notifying your team when a Salesforce contact sync is completed or when workflow processes finish successfully.
+- Send notifications when workflow processes complete or fail
+- Alert teams about sync errors or data validation issues
+- Deliver automated reports with dynamic data
+- Notify stakeholders when records are created or updated in enterprise systems
+- Send confirmation emails after payment processing
 
-**Common use cases:**
-- Send notifications when Salesforce contact sync completes
-- Alert teams about workflow completion status
-- Send internal reports with dynamic data from previous nodes
-- Notify stakeholders about data processing results
+<Info>This node uses SMTP for email delivery. Rate limiting and deliverability depend on your SMTP provider settings.</Info>
 
 ## Input Parameters
 
-### SMTP Configuration (Optional)
+### SMTP Configuration
 
-<ParamField path="SMTP Host" type="string" required="conditional">
-  SMTP server hostname. Required only if not configured in admin settings. Example: `smtp.gmail.com`
+<ParamField path="Use Organization SMTP Settings" type="boolean">
+  Enable to use SMTP credentials configured at the organization level under **Organization > Settings > Email**. When disabled, configure SMTP settings directly in this node.
 </ParamField>
 
-<ParamField path="SMTP Port" type="number" required="conditional">
-  SMTP server port number. Required only if not configured in admin settings. Example: `587`
+<ParamField path="SMTP Host" type="string">
+  SMTP server hostname. Example: `smtp.gmail.com`, `smtp.office365.com`
 </ParamField>
 
-<ParamField path="SMTP Username" type="string" required="conditional">
-  SMTP authentication username. Required only if not configured in admin settings. Example: `notifications@company.com`
+<ParamField path="SMTP Port" type="number">
+  SMTP server port. Common values: `25`, `465` (SSL), `587` (TLS). Example: `587`
 </ParamField>
 
-<ParamField path="SMTP Password" type="string" required="conditional">
-  SMTP authentication password. Required only if not configured in admin settings. Secured field.
+<ParamField path="SMTP Username" type="string">
+  Authentication username for the SMTP server. Example: `notifications@company.com`
 </ParamField>
 
-<ParamField path="TLS Encryption" type="boolean" required="optional">
-  Enable TLS encryption for secure connection. Example: `true`
+<ParamField path="SMTP Password" type="string">
+  Authentication password for the SMTP server. This field is masked for security.
+</ParamField>
+
+<ParamField path="TLS Encryption" type="boolean">
+  Enable TLS encryption for secure email transmission. Recommended for port 587.
 </ParamField>
 
 ### Email Configuration
 
-<ParamField path="From Address" type="string" required="yes">
-  Sender email address. Can be static or variable from previous nodes. Example: `notifications@company.com` or `{{config.from_email}}`
+<ParamField path="From Address" type="string" required>
+  Sender email address. Supports dynamic variables. Example: `notifications@company.com` or `{{config.from_email}}`
 </ParamField>
 
-<ParamField path="To Address" type="string" required="yes">
-  Recipient email address(es). Multiple addresses separated by commas. Example: `team@company.com` or `{{salesforce_contact.Email}}`
+<ParamField path="To Address" type="string" required>
+  Recipient email addresses. Separate multiple addresses with commas. Supports dynamic variables. Example: `team@company.com, team2@company.com` or `{{contact.email}}`
 </ParamField>
 
-<ParamField path="CC Address" type="string" required="optional">
-  Carbon copy email address(es). Multiple addresses separated by commas. Example: `manager@company.com,admin@company.com`
+<ParamField path="CC Address" type="string">
+  Carbon copy recipients. Separate multiple addresses with commas. Example: `manager@company.com, admin@company.com`
 </ParamField>
 
-<ParamField path="BCC Address" type="string" required="optional">
-  Blind carbon copy email address(es). Multiple addresses separated by commas. Example: `archive@company.com`
+<ParamField path="BCC Address" type="string">
+  Blind carbon copy recipients. Separate multiple addresses with commas. Example: `archive@company.com`
 </ParamField>
 
-<ParamField path="Subject" type="string" required="yes">
-  Email subject line. Supports dynamic variables. Example: `"Salesforce Contact Sync Complete - {{salesforce_contact.Name}}"`
+<ParamField path="Subject" type="string" required>
+  Email subject line. Supports dynamic variables. Example: `SAP Purchase Order Created - {{po_number}}`
 </ParamField>
 
-<ParamField path="Body" type="string" required="yes">
-  Email body content. Supports both plain text and HTML formatting with dynamic variables. Example: `"Contact {{salesforce_contact.Name}} has been successfully synced to Salesforce."`
+<ParamField path="Body" type="text area" required>
+  Email body content. Supports plain text, HTML, and dynamic variables. Example: `Purchase order {{po_number}} has been created for vendor {{vendor_name}}.`
 </ParamField>
 
-<ParamField path="Attachments" type="string" required="optional">
-  URLs of files to attach. Multiple URLs separated by commas. Maximum file size: 25MB per attachment. Example: `https://example.com/report.pdf,https://example.com/data.csv`
+<ParamField path="Attachments" type="code editor">
+  File attachments to include with the email.
 </ParamField>
-
-<Callout type="info">
-**Note**: If SMTP credentials are configured in admin settings, node-level SMTP configuration is optional. Node-level settings will override admin settings when provided.
-</Callout>
 
 ## Output
 
-The Email Node outputs email delivery information and status.
-
-### Output Structure
-
+The node returns email delivery status and metadata.
 ```json
 {
   "email_sent": true,
@@ -88,206 +86,270 @@ The Email Node outputs email delivery information and status.
     "cc": ["manager@company.com"],
     "bcc": ["archive@company.com"]
   },
-  "subject": "Salesforce Contact Sync Complete - John Doe",
+  "subject": "SAP Purchase Order Created - PO-2024-001",
   "sent_at": "2024-01-15T10:30:00Z",
-  "attachments_processed": 2,
+  "attachments_processed": 1,
   "smtp_host": "smtp.gmail.com"
 }
 ```
 
-### Status Types
-
-- **sent**: Email successfully delivered to SMTP server
-- **failed**: Email delivery failed due to SMTP errors
-- **partial**: Email sent but some attachments failed to load
-- **error**: Configuration or validation errors
-
-## Adding to Workflow
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag Email Node to canvas">
-    From the **Utility Nodes** section, drag the Email Node to your workflow canvas where you need to send notifications.
-    
-    <img height="200" src="/images/workflow/nodes/email-node-drag-drop.png" alt="Dragging Email Node from utility nodes"/>
+  <Step title="Add the Send Email Node">
+    In the workflow editor, click **Add Node** and select **Send Email** from the Utility Nodes section.
   </Step>
-
-  <Step title="Configure SMTP settings (if needed)">
-    If not configured in admin settings, provide SMTP credentials:
-    - SMTP Host, Port, Username, Password
-    - Enable TLS encryption if required
-    
-    <img height="200" src="/images/workflow/nodes/email-node-smtp-configuration.png" alt="Configuring SMTP settings"/>
+  
+  <Step title="Configure SMTP settings">
+    Either enable **Use Organization SMTP Settings** to use preconfigured credentials, or enter SMTP details directly:
+    - SMTP Host and Port
+    - Username and Password
+    - TLS Encryption (recommended)
   </Step>
-
-  <Step title="Configure email parameters">
-    Set up your email details:
-    - From/To addresses with variables if needed
-    - Subject and body with dynamic content
-    - Optional CC, BCC, and attachments
-    
-    <img height="200" src="/images/workflow/nodes/email-node-email-configuration.png" alt="Configuring email parameters"/>
+  
+  <Step title="Set email addresses">
+    Configure the sender and recipients:
+    - **From Address**: Your sending email address
+    - **To Address**: Primary recipients (comma-separated for multiple)
+    - **CC/BCC**: Optional additional recipients
   </Step>
-
-  <Step title="Run/Test Node">
-    Test your email configuration to verify delivery and formatting work correctly.
-    
-    <img height="200" src="/images/workflow/nodes/email-node-test-execution.png" alt="Testing email node configuration"/>
+  
+  <Step title="Compose email content">
+    Enter the subject and body. Use `{{variable}}` syntax to include dynamic data from previous nodes.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to send a test email and verify delivery.
   </Step>
 </Steps>
 
-<Callout type="info">
-**Note**: Cobalt acts as a middle layer for email delivery. Rate limiting and deliverability depend on your SMTP provider settings.
-</Callout>
-
 ## Examples
 
-### Example 1: Salesforce Sync Notification
+<AccordionGroup>
+  <Accordion title="SAP Purchase Order Notification">
+    Notify the procurement team when a new purchase order is created in SAP.
 
-This example sends a notification when Salesforce contact sync completes:
+    **Configuration:**
 
-```javascript
-// Workflow configuration
-{
-  "name": "email_task",
-  "taskReferenceName": "sync_notification",
-  "type": "EMAIL",
-  "inputParameters": {
-    "fromAddress": "notifications@company.com",
-    "toAddress": "sales-team@company.com",
-    "subject": "Salesforce Contact Sync Complete - {{salesforce_contact.Name}}",
-    "body": "Hello Team,\n\nThe contact {{salesforce_contact.Name}} ({{salesforce_contact.Email}}) has been successfully synced to Salesforce.\n\nContact Details:\n- Status: {{salesforce_contact.Status}}\n- Lead Source: {{salesforce_contact.LeadSource}}\n- Created: {{salesforce_contact.CreatedDate}}\n\nBest regards,\nAutomation System",
-    "ccAddress": "manager@company.com"
-  }
-}
+    | Field | Value |
+    |-------|-------|
+    | From Address | `sap-notifications@company.com` |
+    | To Address | `procurement@company.com` |
+    | CC Address | `finance@company.com` |
+    | Subject | `New SAP Purchase Order - {{sap_response.PurchaseOrder}}` |
+
+    **Body:**
+```
+    A new purchase order has been created in SAP.
+
+    PO Number: {{sap_response.PurchaseOrder}}
+    Vendor: {{sap_response.Supplier}}
+    Total Amount: {{sap_response.TotalNetAmount}} {{sap_response.DocumentCurrency}}
+    Created By: {{sap_response.CreatedByUser}}
+    Created At: {{sap_response.CreationDate}}
+
+    Please review and approve in SAP.
 ```
 
-**Expected Output:**
+    **Output:**
 ```json
-{
-  "email_sent": true,
-  "message_id": "msg_sf_sync_12345",
-  "recipients": {
-    "to": ["sales-team@company.com"],
-    "cc": ["manager@company.com"],
-    "bcc": []
-  },
-  "subject": "Salesforce Contact Sync Complete - John Doe",
-  "sent_at": "2024-01-15T14:30:00Z",
-  "attachments_processed": 0,
-  "smtp_host": "smtp.gmail.com"
-}
+    {
+      "email_sent": true,
+      "message_id": "msg_sap_po_78901",
+      "recipients": {
+        "to": ["procurement@company.com"],
+        "cc": ["finance@company.com"],
+        "bcc": []
+      },
+      "subject": "New SAP Purchase Order - 4500012345",
+      "sent_at": "2024-01-15T14:30:00Z"
+    }
+```
+  </Accordion>
+
+  <Accordion title="NetSuite Sync Error Alert">
+    Alert the integration team when a NetSuite record sync fails.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | From Address | `integrations@company.com` |
+    | To Address | `integration-team@company.com` |
+    | Subject | `[ALERT] NetSuite Sync Failed - {{record_type}}` |
+
+    **Body:**
+```
+    NetSuite sync encountered an error.
+
+    Record Type: {{record_type}}
+    Record ID: {{record_id}}
+    Error Code: {{error.code}}
+    Error Message: {{error.message}}
+
+    Workflow Execution ID: {{workflow_execution_id}}
+    Timestamp: {{timestamp}}
+
+    Please investigate and retry the sync.
 ```
 
-### Example 2: HTML Report with Attachment
-
-This example sends an HTML-formatted report with attachment:
-
-```javascript
-// Workflow configuration
-{
-  "name": "email_task",
-  "taskReferenceName": "weekly_report",
-  "type": "EMAIL", 
-  "inputParameters": {
-    "fromAddress": "reports@company.com",
-    "toAddress": "executives@company.com",
-    "subject": "Weekly Salesforce Sync Report - {{event.week_ending}}",
-    "body": "<html><body><h2>Weekly Sync Report</h2><p>This week we processed <strong>{{sync_stats.total_contacts}}</strong> contacts:</p><ul><li>Successfully synced: {{sync_stats.successful}}</li><li>Failed: {{sync_stats.failed}}</li><li>Skipped: {{sync_stats.skipped}}</li></ul><p>Detailed report attached.</p></body></html>",
-    "attachments": "{{report_generator.download_url}}"
-  }
-}
-```
-
-**Expected Output:**
+    **Output:**
 ```json
-{
-  "email_sent": true,
-  "message_id": "msg_report_67890",
-  "recipients": {
-    "to": ["executives@company.com"],
-    "cc": [],
-    "bcc": []
-  },
-  "subject": "Weekly Salesforce Sync Report - 2024-01-15",
-  "sent_at": "2024-01-15T09:00:00Z",
-  "attachments_processed": 1,
-  "smtp_host": "smtp.office365.com"
-}
+    {
+      "email_sent": true,
+      "message_id": "msg_ns_error_45678",
+      "recipients": {
+        "to": ["integration-team@company.com"],
+        "cc": [],
+        "bcc": []
+      },
+      "subject": "[ALERT] NetSuite Sync Failed - Customer",
+      "sent_at": "2024-01-15T09:15:00Z"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Tipalti Payment Confirmation">
+    Send confirmation when a payment is successfully submitted to Tipalti.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | From Address | `ap-notifications@company.com` |
+    | To Address | `{{vendor_email}}` |
+    | CC Address | `accounts-payable@company.com` |
+    | Subject | `Payment Submitted - {{invoice_number}}` |
+
+    **Body (HTML):**
+```html
+    <html>
+    <body>
+      <h2>Payment Confirmation</h2>
+      <p>Your payment has been submitted for processing.</p>
+      
+      <table>
+        <tr><td><strong>Invoice Number:</strong></td><td>{{invoice_number}}</td></tr>
+        <tr><td><strong>Payment Amount:</strong></td><td>{{currency}} {{payment_amount}}</td></tr>
+        <tr><td><strong>Payment Method:</strong></td><td>{{payment_method}}</td></tr>
+        <tr><td><strong>Estimated Arrival:</strong></td><td>{{estimated_arrival}}</td></tr>
+        <tr><td><strong>Reference ID:</strong></td><td>{{tipalti_response.paymentId}}</td></tr>
+      </table>
+      
+      <p>If you have questions, contact accounts-payable@company.com.</p>
+    </body>
+    </html>
 ```
 
-## Runtime Behavior
+    **Output:**
+```json
+    {
+      "email_sent": true,
+      "message_id": "msg_tipalti_12345",
+      "recipients": {
+        "to": ["vendor@acme.com"],
+        "cc": ["accounts-payable@company.com"],
+        "bcc": []
+      },
+      "subject": "Payment Submitted - INV-2024-0042",
+      "sent_at": "2024-01-15T16:00:00Z"
+    }
+```
+  </Accordion>
 
-<Callout type="warning">
-**Important**: Cobalt acts as a middle layer for email delivery. Rate limiting, deliverability, and spam filtering depend on your SMTP provider. Maximum attachment size is 25MB per file.
-</Callout>
+  <Accordion title="Daily Sync Summary Report">
+    Send a daily summary of all sync operations to stakeholders.
 
-### Email Processing
+    **Configuration:**
 
-The Email Node processes emails in the following order:
+    | Field | Value |
+    |-------|-------|
+    | From Address | `reports@company.com` |
+    | To Address | `operations@company.com, management@company.com` |
+    | Subject | `Daily Integration Summary - {{report_date}}` |
 
-1. **SMTP Validation**: Verifies SMTP credentials and connection
-2. **Content Resolution**: Resolves variables in subject, body, and addresses
-3. **Attachment Processing**: Downloads files from provided URLs
-4. **Email Assembly**: Combines content, attachments, and headers
-5. **Delivery**: Sends email through SMTP server
+    **Body:**
+```
+    Daily Integration Summary for {{report_date}}
 
-### Variable Support
+    SYNC STATISTICS
+    ---------------
+    Total Records Processed: {{stats.total}}
+    Successful: {{stats.success}}
+    Failed: {{stats.failed}}
+    Skipped: {{stats.skipped}}
 
-All email fields support dynamic variables:
-- **Addresses**: `"to": "{{salesforce_contact.Email}}"`
-- **Subject**: `"subject": "Welcome {{salesforce_contact.FirstName}}"`
-- **Body**: HTML and plain text with embedded variables
-- **Attachments**: `"attachments": "{{file_generator.url}}"`
+    SYSTEMS SYNCED
+    --------------
+    - SAP: {{stats.sap_count}} records
+    - NetSuite: {{stats.netsuite_count}} records
+    - Tipalti: {{stats.tipalti_count}} payments
+
+    ERRORS (if any)
+    ---------------
+    {{error_summary}}
+
+    Full report available in the dashboard.
+```
+
+    **Output:**
+```json
+    {
+      "email_sent": true,
+      "message_id": "msg_daily_report_99999",
+      "recipients": {
+        "to": ["operations@company.com", "management@company.com"],
+        "cc": [],
+        "bcc": []
+      },
+      "subject": "Daily Integration Summary - 2024-01-15",
+      "sent_at": "2024-01-16T06:00:00Z"
+    }
+```
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### Email Not Delivered
+<AccordionGroup>
+  <Accordion title="SMTP Connection Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Connection refused | Verify SMTP host and port are correct. Common ports: 25, 465, 587. |
+    | Connection timeout | Check network connectivity. Verify SMTP server is accessible from your environment. |
+    | TLS handshake failed | Enable or disable TLS Encryption based on your SMTP provider requirements. |
+  </Accordion>
 
-**Problem**: Email Node succeeds but recipients don't receive email
+  <Accordion title="Authentication Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Authentication failed | Verify SMTP username and password are correct. |
+    | App password required | Some providers (Gmail, Microsoft 365) require app-specific passwords instead of account passwords. |
+    | Account locked | Check if too many failed attempts triggered a security lock on your SMTP account. |
+  </Accordion>
 
-**Solutions**:
-- Check SMTP provider logs for delivery status
-- Verify recipient email addresses are valid
-- Check spam/junk folders of recipients
-- Review SMTP provider rate limits and quotas
+  <Accordion title="Delivery Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Email not received | Check recipient spam/junk folders. Verify email addresses are valid. |
+    | Bounced emails | Confirm recipient addresses exist and accept external email. |
+    | Rate limited | Check SMTP provider sending limits. Spread bulk sends across multiple workflow executions. |
+  </Accordion>
 
-### SMTP Authentication Failed
+  <Accordion title="Content Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Variables not resolved | Verify variable syntax uses double curly braces: `{{node_name.field}}` |
+    | HTML not rendering | Ensure email client supports HTML. Some recipients may have HTML disabled. |
+    | Missing recipients | Verify comma separation for multiple addresses with no extra spaces. |
+  </Accordion>
+</AccordionGroup>
 
-**Problem**: "SMTP authentication failed" error
+<Tip>Configure organization-level SMTP settings under **Organization > Settings > Email** to avoid repeating SMTP configuration in every workflow.</Tip>
 
-**Solutions**:
-- Verify SMTP credentials are correct
-- Check if SMTP provider requires app-specific passwords
-- Ensure SMTP host and port settings match provider requirements
-- Test SMTP connection outside of Cobalt first
+## What's Next
 
-### Attachment Not Included
-
-**Problem**: Email sends but attachments are missing
-
-**Solutions**:
-- Verify attachment URLs are publicly accessible
-- Check attachment file size is under 25MB limit
-- Ensure URLs return proper file content-type headers
-- Test URL accessibility from external networks
-
-### Invalid Email Address Format
-
-**Problem**: Email Node completes but some recipients missing
-
-**Solutions**:
-- Validate email address format before Email Node
-- Use Transform Node to clean/format email addresses
-- Check for extra spaces or special characters in addresses
-- Verify multiple addresses are properly comma-separated
-
-<Callout type="info">
-**Tip**: Use the Debug Node before your Email Node to inspect resolved variables and verify email content appears as expected.
-</Callout>
-
-## What's Next?
-
-- Learn about [Transform Node](/nodes/transform-node) to format email content
-- Explore [Rule Node](/nodes/rule-node) to add conditional email sending
-- Check out [Custom Code Node](/nodes/custom-code-node) for advanced email formatting
-- Review [Workflow Testing](/testing/workflow-testing) to test email delivery
+- [Rule Node](/developer-guide/workflows/nodes/rule) to send emails conditionally based on workflow data
+- [Loop Node](/developer-guide/workflows/nodes/loop) to send personalized emails to multiple recipients
+- [Transform Node](/developer-guide/workflows/nodes/transform) to format email content dynamically
+- [Human Task Node](/developer-guide/workflows/nodes/human-task) to pause workflows for email-based approvals
