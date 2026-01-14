@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Refold",
-  "theme": "venus",
+  "theme": "mint",
   "versions": ["v2", "v1"],
   "logo": {
     "dark": "/logo/white-icon.svg",
@@ -12,18 +12,11 @@
   "colors": {
     "primary": "#9563FF",
     "light": "#AE87FF",
-    "dark": "#0D001D",
-    "background": {
-      "dark": "#090014"
-    },
-    "anchors": {
-      "from": "#FF7F57",
-      "to": "#9563FF"
-    }
+    "dark": "#0D001D"
   },
   "modeToggle": {
     "default": "dark"
-  },
+  },    
   "topbarLinks": [
     {
       "name": "Contact Us",
@@ -184,35 +177,32 @@
                   {
                     "group": "Kubernetes",
                     "pages": [
-                      "v3/developer/kubernetes/helm",
-                      "v3/developer/kubernetes/refold-cp"
+                      "v3/developer/deploy/kubernetes/helm",
+                      "v3/developer/deploy/kubernetes/refold-cp"
                     ]
                   },
-                  "v3/developer/deploy/checklist",
-                  "v3/developer/deploy/environment-variables",
-                  "v3/developer/deploy/telemetry",
+                  "v3/developer/deploy/deployment-variables",
                   "v3/developer/deploy/hardware-requirements",
+                  "v3/developer/deploy/network-requirements",
                   {
-                    "group": "How tos",
+                    "group": "How-tos",
                     "pages": [
-                      "v3/developer/how-tos/setup-https",
-                      "v3/developer/how-tos/setup-open-telemetry",
-                      "v3/developer/how-tos/storage-minio"
+                      "v3/developer/deploy/how-tos/setup-https",
+                      "v3/developer/deploy/how-tos/setup-opentelemetry",
+                      "v3/developer/deploy/how-tos/storage-minio"
                     ]
                   },
-                  {
-                    "group": "Troubleshoot",
-                    "pages": [
-                      "v3/developer/troubleshoot/queues"
-                    ]
-                  },
+                  "v3/developer/deploy/upgrades",
+                  "v3/developer/deploy/backup-restore",
+                  "v3/developer/deploy/troubleshooting",
                   {
                     "group": "Architecture",
                     "pages": [
-                      "v3/developer/architecture/overview",
-                      "v3/developer/architecture/benchmarking"
+                      "v3/developer/deploy/architecture/overview",
+                      "v3/developer/deploy/architecture/benchmarking"
                     ]
-                  }
+                  },
+                  "v3/developer/deploy/go-live-checklist"
                 ]
               },
               {
@@ -1940,7 +1930,6 @@
       }
     ]
   },
-  "openapi": "api-reference/openapi.yaml",
   "api": {
     "baseUrl": "https://api.gocobalt.io",
     "auth": {
@@ -1955,5 +1944,14 @@
   "footerSocials": {
     "linkedin": "https://www.linkedin.com/company/gocobalt/",
     "twitter": "https://x.com/gocobaltio"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity"
+    ]
   }
 }
