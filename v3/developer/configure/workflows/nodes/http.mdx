@@ -1,336 +1,379 @@
 ---
-title: "HTTP Request Node"
-description: "Make HTTP requests to external APIs with dynamic parameters, authentication, and response handling"
-sidebarTitle: "HTTP Request"
+title: "HTTP Node"
+description: "Make HTTP requests to external APIs with configurable methods, headers, authentication, and pagination support"
+sidebarTitle: "HTTP"
 ---
 
-## What does it do?
+The HTTP Node enables you to make HTTP requests to external REST APIs and webhook endpoints during workflow execution. It supports all standard HTTP methods, custom headers, query parameters, request bodies, and built-in pagination handling for APIs that return paginated responses.
 
-The HTTP Request Node allows you to make HTTP requests to external APIs during workflow execution. It acts as an external API call function within your workflow, enabling you to interact with any REST API or webhook endpoint with dynamic parameters from previous nodes.
+## When to Use
 
-**Common use cases:**
-- Call internal APIs to create records after Salesforce contact sync
-- Send contact data to external webhook endpoints
-- Fetch additional data from third-party services using contact information
-- Trigger notifications in external systems when workflow events occur
-- Integrate with custom applications and microservices
+- Call external APIs to fetch or send data during workflow execution
+- Integrate with third-party services that expose REST endpoints
+- Send webhook notifications to external systems
+- Retrieve additional data from microservices based on workflow context
+- Interact with enterprise systems (SAP, NetSuite, Tipalti) via their REST APIs
+
+<Info>For file transfers over SFTP or large file operations, use the [File Handler Node](/developer-guide/workflows/nodes/file-handler) instead.</Info>
 
 ## Input Parameters
 
 ### Request Configuration
 
-<ParamField path="Method" type="dropdown" required="yes">
-  HTTP method for the request. Options: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `OPTIONS`. Example: `POST`
+<ParamField path="Method" type="dropdown" required>
+  HTTP method for the request. Options: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
 </ParamField>
 
-<ParamField path="URL" type="string" required="yes">
-  Target API endpoint URL. Supports dynamic variables from previous nodes. Example: `https://api.company.com/contacts` or `{{config.api_base_url}}/users`
+<ParamField path="Base URL" type="string" required>
+  The base URL of the API endpoint. Example: `https://api.example.com`
 </ParamField>
 
-<ParamField path="Params" type="object" required="optional">
-  Query parameters as key-value pairs. Supports dynamic variables. Example: `{"limit": "10", "email": "{{salesforce_contact.Email}}"}`
+<ParamField path="Path" type="string" required>
+  The API path appended to the base URL. Supports dynamic variables. Example: `/v1/users` or `/vendors/{{vendor_id}}`
 </ParamField>
 
-<ParamField path="Headers" type="object" required="optional">
-  Custom HTTP headers as key-value pairs. Supports dynamic variables. Example: `{"Authorization": "Bearer {{config.api_token}}", "Content-Type": "application/json"}`
+### Query Params
+
+Add query parameters as key-value pairs. Click the **+** button to add additional parameters.
+
+| Field | Description |
+|-------|-------------|
+| Name | Parameter name. Example: `limit`, `page`, `filter` |
+| Value | Parameter value. Supports dynamic variables. Example: `10`, `{{page_number}}` |
+
+### Headers
+
+Add HTTP headers as key-value pairs. Click the **+** button to add additional headers.
+
+| Field | Description |
+|-------|-------------|
+| Name | Header name. Example: `Authorization`, `Content-Type`, `X-API-Key` |
+| Value | Header value. Supports dynamic variables. Example: `Bearer {{api_token}}`, `application/json` |
+
+### Body
+
+<ParamField path="Body" type="code editor">
+  Request body for POST, PUT, and PATCH requests. Enter JSON, XML, or other formats as required by the target API. Supports dynamic variables using `{{variable}}` syntax.
 </ParamField>
 
-<ParamField path="Body" type="string" required="conditional">
-  Request body for POST/PUT/PATCH requests. Supports JSON, form-data, or raw text with dynamic variables. Example: `{"name": "{{salesforce_contact.Name}}", "email": "{{salesforce_contact.Email}}"}`
-</ParamField>
-
-### Scripts
-
-<ParamField path="Pre Script" type="string" required="optional">
-  JavaScript code that runs before the HTTP request. Can modify request parameters, headers, or body. Example: `console.log("Making request to: " + url);`
-</ParamField>
-
-<ParamField path="Post Script" type="string" required="optional">
-  JavaScript code that runs after receiving the HTTP response. Can process or transform response data. Example: `response.processed_at = new Date().toISOString();`
-</ParamField>
+<Info>The Body field only appears when the method is set to POST, PUT, or PATCH.</Info>
 
 ### Settings
 
-<ParamField path="Response Format" type="dropdown" required="optional">
-  Format for response handling. Options: `Default`, `Stream`. Default processes full response, Stream handles large responses incrementally. Example: `Default`
+<ParamField path="Use mTLS" type="boolean">
+  Enable mutual TLS authentication for secure API connections. When enabled, select the certificate source.
 </ParamField>
 
-<ParamField path="Use mTLS" type="boolean" required="optional">
-  Enable mutual TLS authentication for secure connections. Example: `false`
+<ParamField path="Certificate Source" type="toggle">
+  Choose between `truststore` or `certificate` as the source for mTLS credentials.
 </ParamField>
 
-<ParamField path="Save Response to Bucket" type="boolean" required="optional">
-  Save response data to cloud storage bucket for large responses. Example: `false`
+<ParamField path="Select Trust Store / Select Certificate Store" type="dropdown">
+  Select the configured trust store or certificate store from your organization settings. Configure stores under **Settings > Organization > Certificates**.
 </ParamField>
 
-<ParamField path="Use Public URL" type="boolean" required="optional">
-  Make request accessible via public URL for webhook callbacks. Example: `false`
+<ParamField path="Use Server Trust Store" type="boolean">
+  Use the server's trust store for SSL certificate validation.
 </ParamField>
 
-<ParamField path="Enable Pagination" type="boolean" required="optional">
-  Automatically handle paginated API responses. Supports multiple pagination methods. Example: `true`
+### Pagination
+
+<ParamField path="type" type="dropdown">
+  Select pagination handling method for APIs that return paginated responses. Options: `No pagination`, `Page Based`, `Offset Based`, `Cursor Based`, `Time Based`, `SQL Query Based`, `Custom`.
 </ParamField>
 
-<Note>
-All parameter fields support dynamic variables from previous nodes using `{{node_name.field}}` syntax. Authentication can be handled through headers or pre-scripts.
-</Note>
+<AccordionGroup>
+  <Accordion title="Pagination Types">
+    | Type | Description |
+    |------|-------------|
+    | No pagination | Single request, no automatic pagination |
+    | Page Based | Uses page number parameter to fetch subsequent pages |
+    | Offset Based | Uses offset and limit parameters for pagination |
+    | Cursor Based | Uses cursor tokens returned by the API for next page |
+    | Time Based | Paginates based on timestamp ranges |
+    | SQL Query Based | Uses SQL-style LIMIT and OFFSET for pagination |
+    | Custom | Define custom pagination logic |
+  </Accordion>
+</AccordionGroup>
 
 ## Output
 
-The HTTP Request Node outputs complete response information including status, headers, and body data.
+The node returns the complete API response. The output structure depends on the target API's response format.
 
-### Output Structure
-
+**Success Response Example:**
 ```json
 {
-  "status_code": 200,
-  "status_text": "OK",
+  "status": 200,
   "headers": {
     "content-type": "application/json",
-    "content-length": "156"
+    "x-request-id": "abc123"
   },
   "body": {
     "id": "12345",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "created_at": "2024-01-15T10:30:00Z"
-  },
-  "response_time": 245,
-  "request_url": "https://api.company.com/contacts",
-  "pagination": {
-    "has_more": true,
-    "next_page": "https://api.company.com/contacts?page=2"
+    "name": "Acme Corporation",
+    "status": "active"
   }
 }
 ```
 
-### Status Types
+**Error Response Example:**
+```json
+{
+  "status": "Errored",
+  "node_id": "16",
+  "node_name": "Send GET request",
+  "body": {
+    "message": "Invalid URL",
+    "error": {
+      "code": "ERR_INVALID_URL",
+      "input": "//jsonplaceholder.typicode.com/todos/1"
+    },
+    "status": 500
+  }
+}
+```
 
-- **2xx Success**: Request completed successfully
-- **4xx Client Error**: Invalid request, authentication, or authorization issues
-- **5xx Server Error**: External API server errors
-- **Timeout**: Request exceeded timeout limits
-- **Network Error**: Connection or DNS resolution failures
-
-## Adding to Workflow
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag HTTP Request Node to canvas">
-    From the **Utility Nodes** section, drag the HTTP Request Node to your workflow canvas where you need to make API calls.
-    
-    <img height="200" src="/images/workflow/nodes/http-request-node-drag-drop.png" alt="Dragging HTTP Request Node from utility nodes"/>
+  <Step title="Add the HTTP Node">
+    In the workflow editor, click **Add Node** and select **HTTP Node** from the Utility Nodes section.
   </Step>
-
-  <Step title="Configure request details">
-    Set up your HTTP request:
-    - Method (GET, POST, etc.)
-    - URL with dynamic variables if needed
-    - Headers for authentication and content-type
-    
-    <img height="200" src="/images/workflow/nodes/http-request-node-basic-configuration.png" alt="Configuring basic HTTP request details"/>
+  
+  <Step title="Select HTTP method">
+    Choose the appropriate method from the dropdown:
+    - **GET** for retrieving data
+    - **POST** for creating resources
+    - **PUT/PATCH** for updating resources
+    - **DELETE** for removing resources
   </Step>
-
-  <Step title="Add parameters and body">
-    Configure additional request details:
+  
+  <Step title="Configure URL">
+    Enter the base URL and path for your API endpoint. Use dynamic variables to include data from previous nodes.
+  </Step>
+  
+  <Step title="Add headers and parameters">
+    Switch between the **Query Params** and **Headers** sub-tabs to configure:
+    - Authentication headers (Bearer tokens, API keys)
+    - Content-Type headers
     - Query parameters for filtering or pagination
-    - Request body for POST/PUT operations
-    - Custom headers for API requirements
-    
-    <img height="200" src="/images/workflow/nodes/http-request-node-parameters-configuration.png" alt="Configuring HTTP request parameters and body"/>
   </Step>
-
-  <Step title="Configure advanced settings">
-    Set up advanced options if needed:
-    - Pre/Post scripts for custom processing
-    - Response format and storage options
-    - Pagination and security settings
-    
-    <img height="200" src="/images/workflow/nodes/http-request-node-advanced-configuration.png" alt="Configuring advanced HTTP request settings"/>
+  
+  <Step title="Configure body (if applicable)">
+    For POST, PUT, or PATCH requests, enter the request body in JSON format. Reference data from previous nodes using `{{node_name.field}}` syntax.
   </Step>
-
-  <Step title="Run/Test Node">
-    Test your HTTP request configuration to verify connectivity and response handling work correctly.
-    
-    <img height="200" src="/images/workflow/nodes/http-request-node-test-execution.png" alt="Testing HTTP request node configuration"/>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute a test request and verify the response structure.
   </Step>
 </Steps>
 
-<Note>
-Use the Debug Node after HTTP Request to inspect response data structure and verify API integration works as expected.
-</Note>
-
 ## Examples
 
-### Example 1: Create Contact in Internal System
+<AccordionGroup>
+  <Accordion title="Fetch Vendor from NetSuite">
+    Retrieve vendor details from NetSuite using their REST API.
 
-This example sends Salesforce contact data to your internal API after sync completion:
+    **Configuration:**
 
-```javascript
-// Workflow configuration
-{
-  "name": "http_request_task",
-  "taskReferenceName": "create_internal_contact",
-  "type": "HTTP_REQUEST",
-  "inputParameters": {
-    "method": "POST",
-    "url": "https://internal-api.company.com/contacts",
-    "headers": {
-      "Authorization": "Bearer {{config.internal_api_token}}",
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "external_id": "{{salesforce_contact.Id}}",
-      "name": "{{salesforce_contact.Name}}",
-      "email": "{{salesforce_contact.Email}}",
-      "phone": "{{salesforce_contact.Phone}}",
-      "source": "salesforce",
-      "lead_score": "{{salesforce_contact.Lead_Score__c}}"
+    | Field | Value |
+    |-------|-------|
+    | Method | `GET` |
+    | Base URL | `https://{{netsuite_account_id}}.suitetalk.api.netsuite.com` |
+    | Path | `/services/rest/record/v1/vendor/{{vendor_internal_id}}` |
+
+    **Headers:**
+
+    | Name | Value |
+    |------|-------|
+    | Authorization | `Bearer {{netsuite_token}}` |
+    | Content-Type | `application/json` |
+
+    **Output:**
+```json
+    {
+      "status": 200,
+      "body": {
+        "id": "12345",
+        "entityId": "VEND-001",
+        "companyName": "Acme Supplies",
+        "email": "accounts@acme.com",
+        "subsidiary": {
+          "id": "1",
+          "refName": "Parent Company"
+        }
+      }
     }
-  }
-}
 ```
+  </Accordion>
 
-**Expected Output:**
+  <Accordion title="Create SAP Business Partner">
+    Create a new business partner in SAP S/4HANA via OData API.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Method | `POST` |
+    | Base URL | `https://{{sap_host}}/sap/opu/odata/sap` |
+    | Path | `/API_BUSINESS_PARTNER/A_BusinessPartner` |
+
+    **Headers:**
+
+    | Name | Value |
+    |------|-------|
+    | Authorization | `Basic {{sap_credentials}}` |
+    | Content-Type | `application/json` |
+    | X-CSRF-Token | `{{csrf_token}}` |
+
+    **Body:**
 ```json
-{
-  "status_code": 201,
-  "status_text": "Created",
-  "headers": {
-    "content-type": "application/json",
-    "location": "/contacts/67890"
-  },
-  "body": {
-    "id": "67890",
-    "external_id": "003xx000002ABC",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "created_at": "2024-01-15T14:30:00Z"
-  },
-  "response_time": 156,
-  "request_url": "https://internal-api.company.com/contacts"
-}
+    {
+      "BusinessPartnerCategory": "2",
+      "BusinessPartnerFullName": "{{company_name}}",
+      "BusinessPartnerIsBlocked": false,
+      "Industry": "{{industry_code}}",
+      "LegalForm": "{{legal_form}}"
+    }
 ```
 
-### Example 2: Webhook Notification with Pre-Script
-
-This example sends a notification webhook with custom processing:
-
-```javascript
-// Workflow configuration
-{
-  "name": "http_request_task",
-  "taskReferenceName": "webhook_notification",
-  "type": "HTTP_REQUEST",
-  "inputParameters": {
-    "method": "POST",
-    "url": "{{config.webhook_url}}",
-    "headers": {
-      "X-Webhook-Secret": "{{config.webhook_secret}}",
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "event": "contact_synced",
-      "contact": "{{salesforce_contact}}",
-      "timestamp": "{{instance_meta_data.instance_created_time}}"
-    },
-    "preScript": "const timestamp = new Date().toISOString(); body.processed_at = timestamp; console.log('Sending webhook for contact:', body.contact.Name);",
-    "postScript": "if (response.status_code === 200) { console.log('Webhook delivered successfully'); } else { console.error('Webhook delivery failed:', response.status_code); }"
-  }
-}
-```
-
-**Expected Output:**
+    **Output:**
 ```json
-{
-  "status_code": 200,
-  "status_text": "OK",
-  "headers": {
-    "content-type": "application/json"
-  },
-  "body": {
-    "message": "Webhook received",
-    "webhook_id": "wh_12345"
-  },
-  "response_time": 89,
-  "request_url": "https://webhooks.external-service.com/cobalt"
-}
+    {
+      "status": 201,
+      "body": {
+        "d": {
+          "BusinessPartner": "1000001",
+          "BusinessPartnerFullName": "Tech Solutions Inc",
+          "CreationDate": "/Date(1705276800000)/"
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Submit Payment to Tipalti">
+    Submit a payment request to Tipalti's payment API.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Method | `POST` |
+    | Base URL | `https://api.tipalti.com` |
+    | Path | `/v1/payments` |
+
+    **Headers:**
+
+    | Name | Value |
+    |------|-------|
+    | Authorization | `Bearer {{tipalti_api_key}}` |
+    | Content-Type | `application/json` |
+    | Idempotency-Key | `{{idempotency_key}}` |
+
+    **Body:**
+```json
+    {
+      "payeeId": "{{vendor_id}}",
+      "amount": {{payment_amount}},
+      "currency": "USD",
+      "description": "Invoice {{invoice_number}}",
+      "paymentMethod": "ACH"
+    }
 ```
 
-## Runtime Behavior
+    **Output:**
+```json
+    {
+      "status": 200,
+      "body": {
+        "paymentId": "PAY-78901",
+        "status": "pending",
+        "payeeId": "VEND-456",
+        "amount": 5000.00,
+        "currency": "USD",
+        "estimatedArrival": "2024-01-20"
+      }
+    }
+```
+  </Accordion>
 
-<Warning>
-HTTP Request Node respects external API rate limits and timeout settings. Failed requests will retry based on workflow retry configuration. Large responses may impact workflow performance.
-</Warning>
+  <Accordion title="GET with Pagination (Offset Based)">
+    Fetch all invoices from an API using offset-based pagination.
 
-### Request Processing
+    **Configuration:**
 
-The HTTP Request Node processes requests in the following order:
+    | Field | Value |
+    |-------|-------|
+    | Method | `GET` |
+    | Base URL | `https://api.accounting-system.com` |
+    | Path | `/v2/invoices` |
+    | Pagination Type | `Offset Based` |
 
-1. **Variable Resolution**: Resolves dynamic variables in URL, headers, params, and body
-2. **Pre-Script Execution**: Runs custom JavaScript before request
-3. **Request Assembly**: Builds complete HTTP request with all parameters
-4. **API Call**: Sends request to target endpoint
-5. **Response Processing**: Captures status, headers, and body
-6. **Post-Script Execution**: Runs custom JavaScript on response
-7. **Pagination Handling**: Processes additional pages if enabled
+    **Query Params:**
 
-### Authentication Methods
+    | Name | Value |
+    |------|-------|
+    | status | `unpaid` |
+    | date_from | `{{start_date}}` |
 
-Common authentication patterns:
-- **Bearer Token**: `"Authorization": "Bearer {{token}}"`
-- **API Key**: `"X-API-Key": "{{api_key}}"` or as query parameter
-- **Basic Auth**: `"Authorization": "Basic {{base64_credentials}}"`
-- **Custom Headers**: Any custom authentication scheme
+    **Output (aggregated from all pages):**
+```json
+    {
+      "status": 200,
+      "body": {
+        "invoices": [
+          { "id": "INV-001", "amount": 1500.00 },
+          { "id": "INV-002", "amount": 2300.00 },
+          { "id": "INV-003", "amount": 890.00 }
+        ],
+        "total": 3
+      }
+    }
+```
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### HTTP Request Timeout
+<AccordionGroup>
+  <Accordion title="Connection Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Invalid URL error | Verify the base URL includes the protocol (`https://`). Check for typos in the URL or path. |
+    | Connection timeout | Verify the target API is accessible. Check network connectivity and firewall rules. |
+    | DNS resolution failed | Verify the hostname is correct. Check if the API endpoint is publicly accessible. |
+  </Accordion>
 
-**Problem**: Request fails with timeout error
+  <Accordion title="Authentication Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | 401 Unauthorized | Verify API credentials are correct and not expired. Check the Authorization header format. |
+    | 403 Forbidden | Confirm the API key or token has permissions for the requested resource. |
+    | Invalid token format | Ensure Bearer tokens include the `Bearer ` prefix. Verify base64 encoding for Basic auth. |
+  </Accordion>
 
-**Solutions**:
-- Check if external API endpoint is accessible
-- Verify network connectivity and DNS resolution
-- Increase timeout settings in workflow configuration
-- Check external API response times and performance
+  <Accordion title="Request Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | 400 Bad Request | Verify request body format matches API requirements. Check Content-Type header. |
+    | 404 Not Found | Verify the API path is correct. Check if the resource exists. |
+    | 405 Method Not Allowed | Verify the HTTP method is supported by the endpoint. |
+  </Accordion>
 
-### Authentication Failed (401/403)
+  <Accordion title="mTLS Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Certificate not found | Verify the trust store or certificate is configured under **Settings > Organization > Certificates**. |
+    | SSL handshake failed | Check certificate validity and expiration. Ensure the certificate matches the API requirements. |
+  </Accordion>
+</AccordionGroup>
 
-**Problem**: Request fails with authentication or authorization errors
+<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) after the HTTP Node to inspect and transform response data before passing it to subsequent nodes.</Tip>
 
-**Solutions**:
-- Verify API credentials are correct and not expired
-- Check authentication method matches API requirements
-- Ensure required headers or parameters are included
-- Test credentials outside of workflow first
+## What's Next
 
-### Invalid Request Format (400)
-
-**Problem**: Request fails with bad request error
-
-**Solutions**:
-- Validate request body format matches API expectations
-- Check Content-Type header matches body format
-- Verify required parameters are included
-- Use Debug Node to inspect resolved request parameters
-
-### Response Parsing Error
-
-**Problem**: Cannot process API response data
-
-**Solutions**:
-- Check if API returns valid JSON format
-- Verify response Content-Type header
-- Use Post-Script to handle non-standard response formats
-- Enable response streaming for large responses
-
-<Tip>
-Use Pre/Post Scripts to add custom logging and inspect request/response data for debugging API integration issues.
-</Tip>
-
-## What's Next?
-
-- Learn about [Transform Node](/nodes/transform-node) to format data before HTTP requests
-- Explore [Rule Node](/nodes/rule-node) to add conditional API calls
-- Check out [Custom Code Node](/nodes/custom-code-node) for advanced request processing
-- Review [Error Handling](/advanced/error-handling) for robust API integration
+- [Transform Node](/developer-guide/workflows/nodes/transform) to restructure API response data using JSONata
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on HTTP response status
+- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over paginated results
+- [Data Mapper Node](/developer-guide/workflows/nodes/data-mapper) to map API response fields to your internal schema
