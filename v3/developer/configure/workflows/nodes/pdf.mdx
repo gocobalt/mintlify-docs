@@ -1,8 +1,443 @@
 ---
 title: "PDF Node"
-description: "Generate and manipulate PDF documents"
+description: "Generate PDFs from HTML content or merge multiple PDF files into a single document"
+sidebarTitle: "PDF"
 ---
 
-# PDF Node
+The PDF Node creates PDF documents from HTML content or URLs and merges multiple PDF files into a single document. Generated PDFs are stored in cloud storage with configurable expiration, and the node returns a URL to access the file.
 
-Content coming soon.
+## When to Use
+
+- Generate invoices, reports, or statements from dynamic HTML templates
+- Convert web pages to PDF for archival or distribution
+- Merge multiple PDF documents into a single file
+- Create password-protected PDFs for secure document delivery
+- Add headers, footers, and page numbers to generated documents
+
+## Actions
+
+<AccordionGroup>
+  <Accordion title="Create PDF from HTML">
+    Converts HTML content or a web page URL into a PDF document with customizable layout, styling, and security options.
+
+    ### Primary Input
+
+    <ParamField path="HTML (or URL)" type="code editor" required>
+      HTML content to convert, or a URL to a web page. When providing a URL, the page is rendered and converted to PDF.
+    </ParamField>
+
+    <ParamField path="Script on html (DOM JS)" type="code editor">
+      JavaScript code that executes on the HTML DOM before PDF generation. Use this to manipulate content, hide elements, or modify styles dynamically.
+    </ParamField>
+
+    ### Page Configuration
+
+    <ParamField path="Page Layout" type="dropdown">
+      Page orientation for the PDF. Options include portrait and landscape layouts. Default: `None (Default)`
+    </ParamField>
+
+    <ParamField path="Format" type="dropdown">
+      Standard paper size preset (A4, Letter, Legal, etc.). When set to `None`, custom dimensions are used instead.
+    </ParamField>
+
+    <ParamField path="Height" type="string">
+      Custom page height when Format is set to None. Accepts values in inches (`11in`) or pixels (`792px`).
+    </ParamField>
+
+    <ParamField path="Width" type="string">
+      Custom page width when Format is set to None. Accepts values in inches (`8.5in`) or pixels (`612px`).
+    </ParamField>
+
+    <ParamField path="Margin" type="code editor">
+      Page margins as a JSON object with `top`, `right`, `bottom`, and `left` properties.
+    </ParamField>
+
+    **Margin Example:**
+```json
+    {
+      "top": "1in",
+      "right": "0.5in",
+      "bottom": "1in",
+      "left": "0.5in"
+    }
+```
+
+    ### Header and Footer
+
+    <ParamField path="Header Template" type="code editor">
+      HTML template for the page header. Supports special CSS classes for dynamic content.
+    </ParamField>
+
+    <ParamField path="Footer Template" type="code editor">
+      HTML template for the page footer. Use special CSS classes to insert page numbers and totals.
+    </ParamField>
+
+    **Footer Template Example (Page Numbers):**
+```html
+    <div style="font-size: 9px; text-align: center;">
+      Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+    </div>
+```
+
+    **Available CSS Classes for Headers/Footers:**
+
+    | Class | Description |
+    |-------|-------------|
+    | `pageNumber` | Current page number |
+    | `totalPages` | Total number of pages |
+    | `date` | Current date |
+    | `title` | Document title |
+    | `url` | Source URL (if applicable) |
+
+    ### Security and Metadata
+
+    <ParamField path="Set Password" type="string">
+      Password to protect the PDF. Recipients must enter this password to open the document.
+    </ParamField>
+
+    <ParamField path="Metadata" type="code editor">
+      PDF metadata as a JSON object. Common fields include `title`, `author`, `subject`, and `keywords`.
+    </ParamField>
+
+    **Metadata Example:**
+```json
+    {
+      "title": "Monthly Invoice",
+      "author": "Finance Department",
+      "subject": "Invoice for January 2025",
+      "keywords": "invoice, billing, January"
+    }
+```
+
+    ### Storage Settings
+
+    <ParamField path="Infinite Expiry" type="toggle">
+      Enable to keep the PDF URL accessible indefinitely. When disabled, the URL expires based on the TTL value.
+    </ParamField>
+
+    <ParamField path="TTL" type="number">
+      Time-to-live in seconds for the PDF URL. After this period, the URL expires and the file becomes inaccessible.
+    </ParamField>
+
+    <ParamField path="Preserve Cloud Provider Presigned URL" type="toggle">
+      Enable to return the cloud provider's presigned URL directly instead of a proxied URL.
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Merge PDFs">
+    Combines multiple PDF files into a single document with optional page numbering and password protection.
+
+    <ParamField path="PDFs" type="code editor" required>
+      JSON array of PDF URLs to merge. PDFs are combined in the order specified.
+    </ParamField>
+
+    **PDFs Input Example:**
+```json
+    [
+      "https://storage.example.com/invoice-jan.pdf",
+      "https://storage.example.com/invoice-feb.pdf",
+      "https://storage.example.com/invoice-mar.pdf"
+    ]
+```
+
+    <ParamField path="Set Password" type="string">
+      Password to protect the merged PDF.
+    </ParamField>
+
+    <ParamField path="Page Numbers" type="string">
+      Set to `true` to add page numbers to the merged document.
+    </ParamField>
+
+    <ParamField path="Template for page numbers" type="string">
+      Format string for page numbers. Use `{{page}}` for current page and `{{total_pages}}` for total pages.
+    </ParamField>
+
+    **Page Number Template Example:**
+```
+    Page {{page}} of {{total_pages}}
+```
+
+    ### Storage Settings
+
+    <ParamField path="Infinite Expiry" type="toggle">
+      Enable to keep the merged PDF URL accessible indefinitely.
+    </ParamField>
+
+    <ParamField path="TTL" type="number">
+      Time-to-live in seconds for the merged PDF URL.
+    </ParamField>
+
+    <ParamField path="Preserve Cloud Provider Presigned URL" type="toggle">
+      Enable to return the cloud provider's presigned URL directly.
+    </ParamField>
+  </Accordion>
+</AccordionGroup>
+
+## Output
+
+Both actions return a URL to the generated PDF stored in cloud storage.
+
+**Success Response:**
+```json
+{
+  "status": "Success",
+  "node_id": "15",
+  "node_name": "PDF",
+  "body": {
+    "url": "https://storage.gocobalt.io/pdfs/abc123/invoice-2025-01.pdf",
+    "expires_at": "2025-02-15T00:00:00Z"
+  }
+}
+```
+
+**Error Response:**
+```json
+{
+  "status": "Errored",
+  "node_id": "15",
+  "node_name": "PDF",
+  "body": "Invalid HTML: Unexpected end of input"
+}
+```
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the PDF Node">
+    In the workflow editor, click **Add Node** and select **PDF** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select an action">
+    Choose **Create PDF from HTML** to generate a new PDF, or **Merge PDFs** to combine existing documents.
+  </Step>
+  
+  <Step title="Configure the input">
+    For **Create PDF from HTML**, enter your HTML content or URL. For **Merge PDFs**, provide an array of PDF URLs.
+  </Step>
+  
+  <Step title="Set page options (Create PDF)">
+    Configure page layout, dimensions, margins, and header/footer templates as needed.
+  </Step>
+  
+  <Step title="Configure security (optional)">
+    Add a password to protect the PDF if the document contains sensitive information.
+  </Step>
+  
+  <Step title="Set storage options">
+    Configure TTL or enable Infinite Expiry based on how long the PDF URL should remain accessible.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to generate a test PDF and verify the output URL works correctly.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Generate SAP Purchase Order PDF">
+    Create a professional PDF from SAP purchase order data using an HTML template.
+
+    **Action:** Create PDF from HTML
+
+    **HTML (or URL):**
+```html
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        .header { border-bottom: 2px solid #333; padding-bottom: 20px; }
+        .po-number { font-size: 24px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f5f5f5; }
+        .total { font-size: 18px; font-weight: bold; text-align: right; margin-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="po-number">Purchase Order: {{sap_po.PONumber}}</div>
+        <div>Vendor: {{sap_po.VendorName}}</div>
+        <div>Date: {{sap_po.CreatedDate}}</div>
+      </div>
+      <table>
+        <tr><th>Item</th><th>Description</th><th>Qty</th><th>Price</th><th>Total</th></tr>
+        {{#each sap_po.LineItems}}
+        <tr>
+          <td>{{this.ItemNumber}}</td>
+          <td>{{this.Description}}</td>
+          <td>{{this.Quantity}}</td>
+          <td>${{this.UnitPrice}}</td>
+          <td>${{this.LineTotal}}</td>
+        </tr>
+        {{/each}}
+      </table>
+      <div class="total">Total: ${{sap_po.TotalAmount}}</div>
+    </body>
+    </html>
+```
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Format | `A4` |
+    | Set Password | `{{linked_account.udf.pdf_password}}` |
+    | TTL | `86400` (24 hours) |
+
+    **Footer Template:**
+```html
+    <div style="font-size: 8px; text-align: center; color: #666;">
+      {{sap_po.CompanyName}} | Confidential | Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+    </div>
+```
+  </Accordion>
+
+  <Accordion title="NetSuite Monthly Statement">
+    Generate a monthly account statement from NetSuite transaction data.
+
+    **Action:** Create PDF from HTML
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | HTML (or URL) | `{{custom_code.statement_html}}` |
+    | Format | `Letter` |
+    | Margin | `{"top": "1in", "right": "0.75in", "bottom": "1in", "left": "0.75in"}` |
+    | Infinite Expiry | Enabled |
+
+    **Header Template:**
+```html
+    <div style="font-size: 10px; border-bottom: 1px solid #ccc; padding: 10px;">
+      <strong>{{netsuite_customer.companyName}}</strong> - Account Statement
+    </div>
+```
+
+    **Metadata:**
+```json
+    {
+      "title": "Account Statement - {{netsuite_customer.companyName}}",
+      "author": "Finance Team",
+      "subject": "Monthly Statement for {{statement_month}}"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Merge Tipalti Payment Documentation">
+    Combine multiple payment-related PDFs into a single document for vendor records.
+
+    **Action:** Merge PDFs
+
+    **PDFs:**
+```json
+    [
+      "{{tipalti_payment.invoice_url}}",
+      "{{tipalti_payment.receipt_url}}",
+      "{{tipalti_payment.tax_form_url}}"
+    ]
+```
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Page Numbers | `true` |
+    | Template for page numbers | `Payment Documentation - Page {{page}} of {{total_pages}}` |
+    | Set Password | `{{tipalti_vendor.document_password}}` |
+    | TTL | `604800` (7 days) |
+
+    **Use Case:** Creates a complete payment package containing the original invoice, payment receipt, and tax documentation for vendor compliance records.
+  </Accordion>
+
+  <Accordion title="Dynamic Invoice with DOM Manipulation">
+    Use JavaScript to modify HTML content before PDF generation.
+
+    **Action:** Create PDF from HTML
+
+    **HTML (or URL):**
+```html
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        .draft-watermark { display: none; }
+        .final-badge { display: none; }
+      </style>
+    </head>
+    <body>
+      <div class="draft-watermark">DRAFT</div>
+      <div class="final-badge">FINAL</div>
+      <h1>Invoice #{{invoice.number}}</h1>
+      <!-- Invoice content -->
+    </body>
+    </html>
+```
+
+    **Script on html (DOM JS):**
+```javascript
+    // Show appropriate badge based on invoice status
+    if ("{{invoice.status}}" === "final") {
+      document.querySelector('.final-badge').style.display = 'block';
+    } else {
+      document.querySelector('.draft-watermark').style.display = 'block';
+    }
+
+    // Format currency values
+    document.querySelectorAll('.currency').forEach(el => {
+      el.textContent = '$' + parseFloat(el.textContent).toFixed(2);
+    });
+```
+
+    **Use Case:** Dynamically modify the PDF appearance based on workflow data without creating multiple HTML templates.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="HTML Rendering Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Styles not applied | Ensure CSS is included in a `<style>` tag within the HTML. External stylesheets may not load. |
+    | Images not appearing | Use absolute URLs for images. Relative paths or base64 data URIs work best. |
+    | Page breaks in wrong places | Use CSS `page-break-before` and `page-break-after` properties to control page breaks. |
+    | Fonts not rendering correctly | Use web-safe fonts or embed fonts as base64 in your CSS. Custom fonts may not be available. |
+  </Accordion>
+
+  <Accordion title="Page Layout Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Content cut off | Check margin settings. Increase margins or reduce content width to fit within printable area. |
+    | Header/footer overlapping content | Ensure margins are large enough to accommodate header and footer templates. |
+    | Wrong page size | Verify Format selection or custom Height/Width values. Use consistent units (all inches or all pixels). |
+    | Landscape not working | Check Page Layout setting. Ensure it's set to landscape orientation. |
+  </Accordion>
+
+  <Accordion title="Merge Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | PDF URL not accessible | Verify the source PDF URLs are publicly accessible or use presigned URLs with sufficient TTL. |
+    | Merge order incorrect | PDFs are merged in array order. Verify the order of URLs in the PDFs input array. |
+    | Page numbers not appearing | Ensure Page Numbers is set to `true` (as a string). Check the template syntax uses `{{page}}` and `{{total_pages}}`. |
+    | Large file timeout | For many PDFs or large files, increase workflow timeout settings. Consider merging in batches. |
+  </Accordion>
+
+  <Accordion title="Storage and Access Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | URL expired before use | Increase the TTL value or enable Infinite Expiry for URLs that need longer availability. |
+    | Cannot access generated PDF | Check if TTL has expired. Verify network connectivity to the storage endpoint. |
+    | Password not working | Ensure the password doesn't contain special characters that may be escaped. Test with a simple alphanumeric password. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to build complex HTML templates with loops and conditionals before passing to the PDF Node.</Tip>
+
+## What's Next
+
+- [Send Email Node](/developer-guide/workflows/nodes/send-email) to email generated PDFs as attachments
+- [HTTP Node](/developer-guide/workflows/nodes/http) to upload PDFs to external systems
+- [File Handler Node](/developer-guide/workflows/nodes/file-handler) for additional file operations
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to build dynamic HTML templates
