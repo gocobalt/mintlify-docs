@@ -1,8 +1,450 @@
 ---
 title: "Tables Node"
-description: "Work with tables in workflows"
+description: "Store, retrieve, and manage structured data within your workflows using persistent or temporary tables"
+sidebarTitle: "Tables"
 ---
 
-# Tables Node
+The Tables Node provides in-workflow data storage with a structured row-and-column format. You can create temporary tables for processing data within a single execution, or persistent tables that store data across all workflows in your account. This enables use cases like collecting loop results, maintaining lookup data, tracking processing state, and building cross-workflow data pipelines.
 
-Content coming soon.
+## When to Use
+
+- Collect and aggregate data from loop iterations for batch processing
+- Store intermediate results when processing data in multiple stages
+- Maintain lookup tables for reference data like currency codes or status mappings
+- Track processed records to prevent duplicate operations
+- Share data between different workflows using persistent tables
+- Cache API responses to reduce external calls
+
+<Info>Persistent tables can be created and managed from the dashboard at **More > Tables**. Non-persistent tables are created within workflows and exist only for the duration of the execution.</Info>
+
+## Table Types
+
+| Type | Scope | Lifespan | Dashboard Visible |
+|------|-------|----------|-------------------|
+| **Persistent** | All workflows | Until explicitly deleted | Yes |
+| **Non-Persistent** | Single workflow execution | Deleted when execution completes | No |
+
+<Warning>Tables have the following constraints: maximum **10 columns** per table and maximum **50,000 rows** per table.</Warning>
+
+## Actions
+
+<AccordionGroup>
+  <Accordion title="Create Table">
+    Creates a new table with a defined column structure.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Type | Dropdown | Yes | `Persistent` or `Non Persistent`. Persistent tables are available across all workflows. |
+    | Name | Text | Yes | Unique name for the table. |
+    | Columns | List | Yes | Column definitions. Click **+ Add Item** to add columns, **× Remove All** to clear. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "table_created": true,
+        "already_exists": null,
+        "table_id": "696d3d98b46e93331ac69c36"
+      }
+    }
+```
+
+    <Tip>Store the `table_id` from the output to reference this table in subsequent nodes using `{{tables_node.body.table_id}}`.</Tip>
+  </Accordion>
+
+  <Accordion title="Delete Table">
+    Permanently removes a table and all its records.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table id to be deleted | Text | Yes | The ID of the table to delete. Use templating to reference a table ID from a previous node. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "table_deleted": true
+      }
+    }
+```
+
+    <Warning>This action permanently deletes the table and all its records. This cannot be undone.</Warning>
+  </Accordion>
+
+  <Accordion title="Get Tables">
+    Retrieves a list of all tables of a specified type.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Type | Dropdown | Yes | `Persistent` or `Non Persistent`. Filters which tables to retrieve. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "tables": [
+          {
+            "id": "696d3c65b46e93331ac68dae",
+            "name": "vendor_lookup",
+            "createdAt": "2026-01-18T20:02:45.403Z",
+            "records": "2"
+          },
+          {
+            "id": "696d3d98b46e93331ac69c36",
+            "name": "payment_tracking",
+            "createdAt": "2026-01-18T20:07:52.084Z",
+            "records": "0"
+          }
+        ]
+      }
+    }
+```
+
+    <Info>The `records` field shows the current row count for each table as a string.</Info>
+  </Accordion>
+
+  <Accordion title="Add Table Record">
+    Inserts a new record into an existing table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table | Dropdown | Yes | Select from available persistent tables. Shows table name with type label. |
+    | Record Data | Dynamic | Yes | Column fields appear based on the selected table's schema. Enter values for each column. |
+    | Table ID | Text | Yes | The table ID. Must be entered manually or use templating like `{{create_table.body.table_id}}`. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "record": [
+          {
+            "record_id": "96b0b7ae-48e4-4011-a887-c28f3d5636f6",
+            "vendor_id": "V001",
+            "vendor_name": "Acme Corp"
+          }
+        ]
+      }
+    }
+```
+
+    <Tip>The `record_id` is auto-generated and returned in the response. Store it if you need to update or delete this record later.</Tip>
+  </Accordion>
+
+  <Accordion title="Search Table Records">
+    Finds records matching specified criteria using exact match.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table | Dropdown | Yes | Select the table to search. |
+    | Search Data | Dynamic | No | Search criteria fields including Record ID and all table columns. Enter values for fields you want to match. |
+    | Table ID | Text | Yes | The table ID. Must be entered manually or use templating. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "records": [
+          {
+            "record_id": "96b0b7ae-48e4-4011-a887-c28f3d5636f6",
+            "vendor_id": "V001",
+            "vendor_name": "Acme Corp"
+          }
+        ]
+      }
+    }
+```
+
+    <Info>Search performs **exact matching** on the provided field values. Leave fields empty to exclude them from the search criteria. You can search by `record_id` or any column value.</Info>
+  </Accordion>
+
+  <Accordion title="Get Table Records">
+    Retrieves all records from a table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table ID | Text | Yes | The ID of the table to retrieve records from. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "records": [
+          {
+            "record_id": "96b0b7ae-48e4-4011-a887-c28f3d5636f6",
+            "vendor_id": "V001",
+            "vendor_name": "Acme Corp"
+          },
+          {
+            "record_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "vendor_id": "V002",
+            "vendor_name": "Global Industries"
+          }
+        ]
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Update Table Record">
+    Modifies an existing record in a table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table | Dropdown | Yes | Select the table containing the record. |
+    | Record ID | Text | Yes | The unique identifier of the record to update. |
+    | Update Data | Dynamic | Yes | Column fields appear based on the table schema. Enter new values for columns you want to update. |
+    | Table ID | Text | Yes | The table ID. Must be entered manually or use templating. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "record": {
+          "record_id": "3c2cc5c8-432c-4d97-934d-ed80f2ff9816",
+          "vendor_id": "V001",
+          "status": "active"
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Delete Table Record">
+    Removes a specific record from a table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table ID | Text | Yes | The ID of the table containing the record. |
+    | Record ID | Text | Yes | The unique identifier of the record to delete. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "28",
+      "node_name": "Tables",
+      "body": {
+        "record_deleted": true
+      }
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Tables Node">
+    In the workflow editor, click **Add Node** and select **Tables** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select an action">
+    Choose the action you want to perform from the Action dropdown.
+  </Step>
+  
+  <Step title="Configure table reference">
+    For record operations, select a table from the **Table** dropdown to load the column schema. The dropdown shows persistent tables with a "(Persistent)" label.
+  </Step>
+  
+  <Step title="Enter the Table ID">
+    The **Table ID** field must be entered manually. For persistent tables, copy the ID from **More > Tables** in the dashboard. For tables created in the same workflow, use templating like `{{create_table.body.table_id}}`.
+  </Step>
+  
+  <Step title="Enter data fields">
+    For actions like Add Table Record or Update Table Record, column fields appear dynamically based on the selected table's schema. Enter values directly or use templating to reference data from previous nodes.
+  </Step>
+  
+  <Step title="Use the response">
+    Access table data in subsequent nodes. For example, after Get Table Records, use `{{tables_node.body.records}}` to access the records array.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Collecting Loop Results for NetSuite Batch Processing">
+    When fetching multiple contacts from NetSuite in a loop, store each result in a non-persistent table for batch processing afterward.
+
+    **Workflow Structure:**
+    1. **Create Table Node** - Create a non-persistent table before the loop
+    2. **Loop Node** - Iterate over NetSuite contact IDs
+    3. **NetSuite Node** (inside loop) - Fetch contact details
+    4. **Tables Node** (inside loop) - Add each contact to the table
+    5. **Tables Node** (after loop) - Get all records for batch processing
+
+    **Step 1 - Create Table:**
+    | Field | Value |
+    |-------|-------|
+    | Action | Create Table |
+    | Type | Non Persistent |
+    | Name | `contact_batch` |
+    | Columns | `contact_id`, `email`, `company_name` |
+
+    **Step 2 - Add Record (inside Loop):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Add Table Record |
+    | Table | Select `contact_batch` |
+    | contact_id | `{{netsuite_node.body.id}}` |
+    | email | `{{netsuite_node.body.email}}` |
+    | company_name | `{{netsuite_node.body.companyName}}` |
+    | Table ID | `{{create_table.body.table_id}}` |
+
+    **Step 3 - Get All Records (after Loop):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Get Table Records |
+    | Table ID | `{{create_table.body.table_id}}` |
+
+    **Use Case:** Non-persistent tables are ideal for temporary storage during a single execution. The table and all records are automatically cleaned up when the workflow completes.
+  </Accordion>
+
+  <Accordion title="Vendor Lookup Table for SAP Invoice Processing">
+    Maintain a persistent lookup table mapping vendor codes to payment terms and use it during invoice processing.
+
+    **Creating the Lookup Table (Dashboard):**
+    1. Navigate to **More > Tables** in the dashboard
+    2. Click **New Table** and name it `vendor_payment_terms`
+    3. Add columns: `vendor_code`, `payment_terms_days`, `currency`
+    4. Copy the Table ID for use in workflows
+
+    **Using in Workflow - Search for Vendor:**
+    | Field | Value |
+    |-------|-------|
+    | Action | Search Table Records |
+    | Table | `vendor_payment_terms (Persistent)` |
+    | vendor_code | `{{sap_invoice.vendorCode}}` |
+    | Table ID | `696d3c65b46e93331ac68dae` |
+
+    **Conditional Processing with Rule Node:**
+    
+    Condition: `{{search_records.body.records.length}}` greater than `0`
+    - **True branch:** Use `{{search_records.body.records[0].payment_terms_days}}`
+    - **False branch:** Use default 30 days
+
+    **Use Case:** Persistent tables allow you to maintain reference data that multiple workflows can access, reducing API calls and centralizing business logic.
+  </Accordion>
+
+  <Accordion title="Duplicate Detection for Tipalti Payments">
+    Track processed payment IDs to prevent duplicate payment submissions.
+
+    **Workflow Logic:**
+    1. Search for existing payment ID in tracking table
+    2. If found, skip processing (already submitted)
+    3. If not found, process payment and add to tracking table
+
+    **Step 1 - Search for Existing:**
+    | Field | Value |
+    |-------|-------|
+    | Action | Search Table Records |
+    | Table | `processed_payments (Persistent)` |
+    | payment_id | `{{tipalti_payment.paymentId}}` |
+    | Table ID | `696d3c65b46e93331ac68dae` |
+
+    **Step 2 - Rule Node (Check if exists):**
+    
+    Condition: `{{search_records.body.records.length}}` equals `0`
+    - **True branch:** Continue to process payment
+    - **False branch:** Skip (already processed)
+
+    **Step 3 - Add to Tracking (after successful payment):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Add Table Record |
+    | Table | `processed_payments (Persistent)` |
+    | payment_id | `{{tipalti_payment.paymentId}}` |
+    | processed_at | `{{instance_meta_data.instance_created_time}}` |
+    | status | `submitted` |
+    | Table ID | `696d3c65b46e93331ac68dae` |
+
+    **Use Case:** Persistent tables provide a simple mechanism for idempotency checks across workflow executions.
+  </Accordion>
+
+  <Accordion title="Dynamic Table Creation for Multi-Tenant Processing">
+    Create tenant-specific tables dynamically when processing data for different linked accounts.
+
+    **Create Table with Dynamic Name:**
+    | Field | Value |
+    |-------|-------|
+    | Action | Create Table |
+    | Type | Persistent |
+    | Name | `sync_log_{{linked_account.id}}` |
+    | Columns | `record_type`, `source_id`, `target_id`, `synced_at` |
+
+    **Output Handling:**
+    The create action returns `already_exists: true` if the table already exists, allowing your workflow to handle both first-run and subsequent runs:
+```json
+    {
+      "body": {
+        "table_created": false,
+        "already_exists": true,
+        "table_id": "696d3d98b46e93331ac69c36"
+      }
+    }
+```
+
+    **Use Case:** Create isolated data storage for each customer without manual table setup.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Table Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | Table ID is invalid | Verify the table ID exists. For persistent tables, check **More > Tables** in the dashboard. |
+    | Non-persistent table not accessible | Non-persistent tables only exist during the workflow execution that created them. Ensure the Create Table node executed in the same run. |
+    | Table ID not entered | The Table ID field does not auto-populate. Copy the ID from the dashboard or use templating like `{{create_table.body.table_id}}`. |
+  </Accordion>
+
+  <Accordion title="Record Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | Record ID is invalid | Record IDs are UUIDs generated when records are created. Verify you're using the correct ID from a previous Add Table Record or Search Table Records output. |
+    | Search returns empty results | Search uses exact matching. Verify the search value exactly matches the stored value, including case and whitespace. |
+    | Record was deleted | Check if another workflow or process deleted the record. |
+  </Accordion>
+
+  <Accordion title="Column Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Column limit exceeded | Tables support a maximum of 10 columns. Consolidate data or use multiple tables. |
+    | Column not appearing | After selecting a table from the dropdown, column fields appear in the Record Data section. If columns don't appear, verify the table has a defined schema. |
+    | Data type mismatch | Table columns store values as strings or numbers. Ensure your data format is compatible. |
+  </Accordion>
+
+  <Accordion title="Capacity Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Row limit exceeded | Tables support a maximum of 50,000 rows. Implement cleanup logic to remove old records, or archive data to external storage. |
+    | Performance degradation | Large tables may impact query performance. Consider partitioning data across multiple tables or implementing periodic cleanup. |
+  </Accordion>
+</AccordionGroup>
+
+## What's Next
+
+- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over table records or collect data into tables
+- [Rule Node](/developer-guide/workflows/nodes/rule) to implement conditional logic based on table search results
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to transform table data before processing
