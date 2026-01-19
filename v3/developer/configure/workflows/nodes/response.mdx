@@ -1,335 +1,261 @@
 ---
 title: "Response Node"
-description: "Store and format the final response of a workflow instance with customizable status codes and data formats"
+description: "Store and format the final response of a workflow for API access and logging"
 sidebarTitle: "Response"
 ---
 
-## What does it do?
+The Response Node serves as the final output handler for workflow executions. It stores and formats response data returned via the Workflow API, allowing you to define custom status codes and format output data for external consumption. Use this node to make workflow results accessible when calling workflows programmatically.
 
-The Response Node serves as the final output handler for workflow instances, storing and formatting the response data that will be returned via the Workflow API. It allows you to define custom status codes, format output data, and make workflow results accessible for subsequent actions or external consumption.
+## When to Use
 
-**Common use cases:**
-- Return structured Salesforce contact data after sync completion
+- Return structured data after workflow completion via Workflow API
 - Format API responses with custom status codes for different outcomes
-- Store workflow results for access via Workflow API calls
-- Create standardized response formats for external integrations
+- Store workflow results for access via Workflow API calls with `sync_execution: true`
 - Provide data for Config DataSource listings
+
+<Info>The Response Node should typically be the last node in your workflow. All workflow branches should eventually connect to a Response Node to ensure proper API responses.</Info>
 
 ## Input Parameters
 
-### Response Configuration
-
-<ParamField path="Status Code" type="number" required="yes">
-  HTTP status code to return with the response. Common values: `200` (success), `201` (created), `400` (bad request), `500` (error). Example: `200`
+<ParamField path="Status Code" type="number" required>
+  HTTP status code to return with the response. Common values: `200` (success), `201` (created), `400` (bad request), `500` (error).
 </ParamField>
 
-<ParamField path="Output Format" type="dropdown" required="yes">
-  Format for the response data. Options: `JSON`, `Form Data`. Example: `JSON`
+<ParamField path="Data" type="textarea" required>
+  Response data to return from the workflow. Supports JSON objects and variables from previous nodes. Use templating syntax to include dynamic values like `{{node_name.body.field}}`.
 </ParamField>
 
-<ParamField path="Data" type="object" required="yes">
-  The response data to store and return. Can include variables from previous nodes, DataSlots, or static values. Example: `{"contact": "{{salesforce_contact}}", "status": "synced"}`
-</ParamField>
-
-<Info>The Response Node captures the final output of your workflow and makes it accessible via the Workflow API. Choose appropriate status codes to indicate success or failure conditions.</Info>
+<Info>Status codes and response data are not visible during node-level testing in the workflow builder. They become available when testing the workflow using **Try API** in the dashboard or when executing the workflow through the Workflow API.</Info>
 
 ## Output
 
-The Response Node stores the formatted response data and makes it available through the Workflow API and Cobalt logs.
+The Response Node stores formatted response data accessible through the Workflow API.
 
-### Output Structure
-
+**When called with `sync_execution: true`:**
 ```json
 {
-  "status_code": 200,
-  "format": "JSON",
-  "response_data": {
-    "contact": {
-      "id": "003xx000002ABC",
-      "name": "John Doe",
-      "email": "john@example.com",
+  "return_value": {
+    "vendor": {
+      "id": "V001234",
+      "name": "Acme Corporation",
       "sync_status": "completed"
     },
     "timestamp": "2024-01-15T14:30:00Z"
   },
-  "workflow_instance_id": "inst_12345"
+  "execution_id": "66e404464f475f36c0c95b5d"
 }
 ```
 
-### Response Accessibility
+**Response Accessibility:**
+| Method | Availability |
+|--------|--------------|
+| Workflow API with `sync_execution: true` | Response returned in `return_value` field |
+| Workflow API with `sync_execution: false` | Use `/response` API with `execution_id` to fetch |
+| Try API in Dashboard | Response visible in test results |
+| Node-level testing | Status code and data not visible |
 
-- **Workflow API**: Response data returned when calling workflow via API
-- **Cobalt Logs**: Stored response viewable in workflow execution logs
-- **DataSource**: Available for use in Config DataSource configurations
-- **External Systems**: Accessible via webhook callbacks or API polling
-
-## Adding to Workflow
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag Response Node to canvas">
-    From the **Utility Nodes** section, drag the Response Node to your workflow canvas as the final step in your workflow.
-    
-    <img height="200" src="/images/workflow/nodes/response-node-drag-drop.png" alt="Dragging Response Node from utility nodes"/>
+  <Step title="Add Response Node">
+    In the workflow editor, click **Add Node** and select **Response** from the Utility Nodes section. Place it as the final step in your workflow.
   </Step>
-
   <Step title="Configure status code">
-    Set the appropriate HTTP status code for your response:
+    Set the appropriate HTTP status code:
     - **200**: Successful completion
-    - **201**: Resource created successfully
-    - **400**: Client error or validation failure
-    - **500**: Server error or processing failure
-    
-    <img height="200" src="/images/workflow/nodes/response-node-status-configuration.png" alt="Configuring response status code"/>
+    - **201**: Resource created
+    - **400**: Validation failure
+    - **500**: Processing error
   </Step>
-
-  <Step title="Select output format">
-    Choose the format for your response data:
-    - **JSON**: Structured data format (recommended)
-    - **Form Data**: Key-value pairs format
-    
-    <img height="200" src="/images/workflow/nodes/response-node-format-selection.png" alt="Selecting response output format"/>
-  </Step>
-
   <Step title="Configure response data">
-    Define the data to include in your response:
-    - Select variables from previous nodes
-    - Include DataSlot values
-    - Add static response fields
-    
-    <img height="200" src="/images/workflow/nodes/response-node-data-configuration.png" alt="Configuring response data content"/>
+    In the **Data** field, enter the JSON structure to return. Use templating to include values from previous nodes:
+```json
+    {
+      "success": true,
+      "contact_id": "{{salesforce_node.body.id}}",
+      "message": "Contact created successfully"
+    }
+```
   </Step>
-
-  <Step title="Run/Test Node">
-    Test your response configuration to verify the output format and data structure are correct.
-    
-    <img height="200" src="/images/workflow/nodes/response-node-test-execution.png" alt="Testing response node configuration"/>
+  <Step title="Test via Try API">
+    Use the **Try API** section in the dashboard to test your workflow and verify the response structure. Node-level testing does not display response data.
   </Step>
 </Steps>
 
-<Info>The Response Node should typically be the last node in your workflow. All workflow branches should eventually connect to a Response Node to provide proper closure.</Info>
-
 ## Examples
 
-### Example 1: Successful Salesforce Contact Sync Response
+<AccordionGroup>
+  <Accordion title="Success Response: SAP Vendor Sync">
+    Returns a successful response after completing SAP vendor synchronization.
 
-This example returns a successful response after completing Salesforce contact synchronization:
-
-```javascript
-// Workflow configuration
-{
-  "name": "response_task",
-  "taskReferenceName": "sync_success_response",
-  "type": "RESPONSE",
-  "inputParameters": {
-    "statusCode": 200,
-    "outputFormat": "JSON",
-    "data": {
+    **Configuration:**
+    | Field | Value |
+    |-------|-------|
+    | Status Code | `200` |
+    | Data | See below |
+```json
+    {
       "success": true,
-      "message": "Contact synchronized successfully",
-      "contact": {
-        "salesforce_id": "{{salesforce_contact.Id}}",
-        "name": "{{salesforce_contact.Name}}",
-        "email": "{{salesforce_contact.Email}}",
-        "status": "{{salesforce_contact.Status}}",
-        "sync_timestamp": "{{instance_meta_data.instance_created_time}}"
+      "message": "Vendor synchronized successfully",
+      "vendor": {
+        "sap_id": "{{sap_vendor.body.LIFNR}}",
+        "name": "{{sap_vendor.body.NAME1}}",
+        "country": "{{sap_vendor.body.LAND1}}"
       },
-      "workflow": {
-        "instance_id": "{{instance_meta_data.instance_id}}",
-        "config_id": "{{instance_meta_data.config_id}}"
+      "sync_timestamp": "{{instance_meta_data.instance_created_time}}"
+    }
+```
+
+    **API Response (sync_execution: true):**
+```json
+    {
+      "return_value": {
+        "success": true,
+        "message": "Vendor synchronized successfully",
+        "vendor": {
+          "sap_id": "V001234",
+          "name": "Acme Corporation",
+          "country": "US"
+        },
+        "sync_timestamp": "2024-01-15T14:30:00Z"
+      },
+      "execution_id": "66e404464f475f36c0c95b5d"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Error Response: Validation Failure">
+    Returns an error response when data validation fails.
+
+    **Configuration:**
+    | Field | Value |
+    |-------|-------|
+    | Status Code | `400` |
+    | Data | See below |
+```json
+    {
+      "success": false,
+      "error": "Validation failed",
+      "details": {
+        "validation_errors": "{{custom_code.body.errors}}",
+        "invalid_fields": "{{custom_code.body.invalid_fields}}"
       }
     }
-  }
-}
 ```
 
-**Expected Output:**
+    **API Response:**
 ```json
-{
-  "status_code": 200,
-  "format": "JSON",
-  "response_data": {
-    "success": true,
-    "message": "Contact synchronized successfully",
-    "contact": {
-      "salesforce_id": "003xx000002ABC",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "status": "Qualified",
-      "sync_timestamp": "2024-01-15T14:30:00Z"
-    },
-    "workflow": {
-      "instance_id": "inst_12345",
-      "config_id": "config_67890"
-    }
-  },
-  "workflow_instance_id": "inst_12345"
-}
-```
-
-### Example 2: Error Response with Validation Failure
-
-This example returns an error response when contact validation fails:
-
-```javascript
-// Workflow configuration
-{
-  "name": "response_task",
-  "taskReferenceName": "validation_error_response",
-  "type": "RESPONSE",
-  "inputParameters": {
-    "statusCode": 400,
-    "outputFormat": "JSON",
-    "data": {
-      "success": false,
-      "error": "Contact validation failed",
-      "details": {
-        "validation_errors": "{{validation_node.errors}}",
-        "invalid_fields": "{{validation_node.invalid_fields}}",
-        "contact_data": {
-          "name": "{{event.contact.name}}",
-          "email": "{{event.contact.email}}"
+    {
+      "return_value": {
+        "success": false,
+        "error": "Validation failed",
+        "details": {
+          "validation_errors": ["Invalid email format", "Phone number required"],
+          "invalid_fields": ["email", "phone"]
         }
       },
-      "timestamp": "{{instance_meta_data.instance_created_time}}",
-      "instance_id": "{{instance_meta_data.instance_id}}"
+      "execution_id": "66e404464f475f36c0c95b5d"
     }
-  }
-}
 ```
+  </Accordion>
 
-**Expected Output:**
+  <Accordion title="NetSuite Contact List for Config DataSource">
+    Returns data formatted for use in Config DataSource dropdown listings.
+
+    **Configuration:**
+    | Field | Value |
+    |-------|-------|
+    | Status Code | `200` |
+    | Data | See below |
 ```json
-{
-  "status_code": 400,
-  "format": "JSON",
-  "response_data": {
-    "success": false,
-    "error": "Contact validation failed",
-    "details": {
-      "validation_errors": ["Invalid email format", "Phone number required"],
-      "invalid_fields": ["email", "phone"],
-      "contact_data": {
-        "name": "John Doe",
-        "email": "invalid-email"
-      }
-    },
-    "timestamp": "2024-01-15T14:30:00Z",
-    "instance_id": "inst_12345"
-  },
-  "workflow_instance_id": "inst_12345"
-}
-```
-
-### Example 3: Form Data Response Format
-
-This example returns response data in Form Data format:
-
-```javascript
-// Workflow configuration
-{
-  "name": "response_task",
-  "taskReferenceName": "form_data_response",
-  "type": "RESPONSE",
-  "inputParameters": {
-    "statusCode": 201,
-    "outputFormat": "Form Data",
-    "data": {
-      "contact_id": "{{salesforce_contact.Id}}",
-      "contact_name": "{{salesforce_contact.Name}}",
-      "contact_email": "{{salesforce_contact.Email}}",
-      "sync_status": "completed",
-      "created_at": "{{instance_meta_data.instance_created_time}}"
+    {
+      "options": "{{netsuite_node.body.records}}",
+      "total_count": "{{netsuite_node.body.totalResults}}"
     }
-  }
-}
 ```
 
-**Expected Output:**
+    **API Response:**
 ```json
-{
-  "status_code": 201,
-  "format": "Form Data",
-  "response_data": {
-    "contact_id": "003xx000002ABC",
-    "contact_name": "John Doe",
-    "contact_email": "john@example.com",
-    "sync_status": "completed",
-    "created_at": "2024-01-15T14:30:00Z"
-  },
-  "workflow_instance_id": "inst_12345"
-}
+    {
+      "return_value": {
+        "options": [
+          {"id": "1", "name": "Parent Company"},
+          {"id": "2", "name": "US Subsidiary"},
+          {"id": "3", "name": "EU Subsidiary"}
+        ],
+        "total_count": 3
+      },
+      "execution_id": "66e404464f475f36c0c95b5d"
+    }
 ```
+  </Accordion>
 
-## Runtime Behavior
+  <Accordion title="Tipalti Payment Confirmation">
+    Returns payment processing confirmation with transaction details.
 
-<Warning>The Response Node should be the final node in your workflow execution path. Multiple Response Nodes in different branches may cause unexpected behavior.</Warning>
+    **Configuration:**
+    | Field | Value |
+    |-------|-------|
+    | Status Code | `201` |
+    | Data | See below |
+```json
+    {
+      "payment_submitted": true,
+      "transaction": {
+        "payment_id": "{{tipalti_node.body.PaymentId}}",
+        "vendor_id": "{{start.body.vendor_id}}",
+        "amount": "{{start.body.amount}}",
+        "currency": "{{start.body.currency}}"
+      },
+      "submitted_at": "{{instance_meta_data.instance_created_time}}"
+    }
+```
+  </Accordion>
+</AccordionGroup>
 
-### Response Processing
+## Data Sources
 
-The Response Node processes responses in the following order:
+Response data can include variables from multiple sources:
 
-1. **Data Resolution**: Resolves variables from previous nodes and DataSlots
-2. **Format Application**: Applies selected output format (JSON/Form Data)
-3. **Status Code Assignment**: Sets the HTTP status code for the response
-4. **Storage**: Stores response data for API access and logging
-5. **Workflow Completion**: Marks the workflow instance as completed
-
-### Data Sources
-
-Response data can include:
-- **Node Variables**: `"{{salesforce_contact.Name}}"`
-- **DataSlot Values**: `"{{dataslot.customer_info}}"`
-- **Instance Metadata**: `"{{instance_meta_data.instance_id}}"`
-- **Event Data**: `"{{event.contact_data}}"`
-- **Static Values**: `"success": true`
+| Source | Syntax | Example |
+|--------|--------|---------|
+| Node Output | `{{node_name.body.field}}` | `{{sap_vendor.body.NAME1}}` |
+| Start Node Payload | `{{start.body.field}}` | `{{start.body.vendor_id}}` |
+| Instance Metadata | `{{instance_meta_data.field}}` | `{{instance_meta_data.instance_id}}` |
+| DataSlot Values | `{{dataslot.field}}` | `{{dataslot.customer_info}}` |
+| Static Values | Direct value | `"success": true` |
 
 ## Troubleshooting
 
-### Response Data Not Available in API
+<AccordionGroup>
+  <Accordion title="Response Data Not Returned">
+    | Problem | Solution |
+    |---------|----------|
+    | Response not in API call | Ensure `sync_execution: true` is set in the Workflow API request header |
+    | Empty return_value | Verify Response Node is connected and executed in the workflow path |
+    | Testing in workflow builder | Use Try API or Workflow API to see response data. Node-level testing does not display responses. |
+  </Accordion>
 
-**Problem**: Workflow completes but response data not returned by Workflow API
+  <Accordion title="Variable Resolution Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Variables showing as undefined | Verify referenced nodes completed successfully before Response Node |
+    | Incorrect variable syntax | Use `{{node_name.body.field}}` format. Check node output structure in logs. |
+    | Nested field access | Use dot notation: `{{node.body.data.nested.field}}` |
+  </Accordion>
 
-**Solutions**:
-- Verify Response Node is connected as the final workflow step
-- Check that all workflow branches lead to a Response Node
-- Ensure Response Node execution completes successfully
-- Review workflow execution logs for Response Node errors
+  <Accordion title="Multiple Response Nodes">
+    | Problem | Solution |
+    |---------|----------|
+    | Unexpected response data | Use Rule Node to direct workflow to a single Response Node based on conditions |
+    | Conflicting responses | Ensure only one Response Node executes per workflow path |
+  </Accordion>
+</AccordionGroup>
 
-### Variable Resolution Errors
+<Warning>When using Response Node with Sub Flows, the response data from the sub flow is returned to the parent workflow. Use `sync_execution: true` in the Sub Flows node configuration to access sub flow responses.</Warning>
 
-**Problem**: Variables in response data showing as undefined or null
+## What's Next
 
-**Solutions**:
-- Verify referenced nodes completed successfully before Response Node
-- Check variable syntax matches node output structure
-- Use Debug Node before Response Node to inspect available data
-- Ensure DataSlot references are correct and populated
-
-### Invalid Status Code
-
-**Problem**: Response returns unexpected status code
-
-**Solutions**:
-- Verify status code is a valid HTTP status code (100-599)
-- Check that status code matches the actual workflow outcome
-- Use conditional Response Nodes for different success/error scenarios
-- Review status code conventions for your API design
-
-### Format Conversion Issues
-
-**Problem**: Response data format doesn't match expected structure
-
-**Solutions**:
-- Verify output format selection matches consuming system requirements
-- Check that complex objects are properly structured for Form Data format
-- Test response format with external systems before deployment
-- Use JSON format for complex nested data structures
-
-<Tip>Use the workflow execution logs to inspect the exact response data stored by the Response Node. This helps verify the format and content match your expectations.</Tip>
-
-## What's Next?
-
-- Learn about [Workflow API](/workflow/workflow-api) to call workflows and receive responses
-- Explore [Debug Node](/nodes/debug-node) to inspect data before Response Node
-- Check out [Rule Node](/nodes/rule-node) to create conditional response paths
-- Review [Error Handling](/advanced/error-handling) for robust response management
+- [Workflow API](/developer-guide/workflows/workflow-api) to call workflows and receive responses
+- [Rule Node](/developer-guide/workflows/nodes/rule) to create conditional response paths
+- [Terminate Node](/developer-guide/workflows/nodes/terminate) to end workflows early without a response
