@@ -1,471 +1,593 @@
 ---
 title: "File Handler Node"
-description: "Manage file operations including transfer, deletion, and SFTP interactions for seamless file workflow integration"
+description: "Transfer, read, delete, and manage files across SFTP servers and cloud storage buckets"
 sidebarTitle: "File Handler"
 ---
 
-# File Handler Node
+The File Handler Node performs file operations across SFTP servers and cloud storage buckets (AWS S3, GCP, MinIO). Use it to transfer files between systems, read file contents, manage files on remote servers, and extract compressed archives within your workflows.
 
-## What does it do?
+## When to Use
 
-The File Handler Node provides comprehensive file management capabilities for workflows, enabling you to transfer files between different systems, manage files in Cobalt buckets, and interact with SFTP servers. It's essential for workflows that need to process, move, or manage files as part of automated business processes.
+- Transfer files from SFTP servers to cloud storage buckets
+- Move files between different SFTP servers
+- Read file contents from SFTP for processing in workflows
+- Delete processed files from SFTP servers or cloud buckets
+- Extract compressed archives (zip, tar, gz, tgz) on remote servers
+- List files in SFTP directories for batch processing
 
-**Common use cases:**
-- Delete processed Salesforce documents from Cobalt bucket after attachment
-- Transfer Salesforce reports to downstream SFTP-based analytics systems
-- Upload Salesforce-generated documents to Cobalt bucket for processing
-- Pull daily lead CSV files from partner SFTP servers for Salesforce import
-- Clean up SFTP directories after successful file processing
-- Monitor SFTP folders for new pricing sheets or data dumps
-- Download customer documents from public URLs for Salesforce record updates
+<Info>This node is recommended for files **greater than 5MB**. For smaller files, use the [CSV/Excel Node](/developer-guide/workflows/nodes/csv-excel) instead.</Info>
+
+## Common Parameters
+
+Several actions share common SFTP connection parameters. These are documented once here for reference.
+
+<AccordionGroup>
+  <Accordion title="SFTP Connection Parameters">
+    <ParamField path="Host" type="string" required>
+      SFTP server hostname or IP address. Example: `sftp.example.com` or `{{config.sftp_host}}`
+    </ParamField>
+
+    <ParamField path="Port" type="integer" required>
+      SFTP server port. Default: `22`
+    </ParamField>
+
+    <ParamField path="Username" type="string" required>
+      SFTP username for authentication. Supports dynamic variables. Example: `sftp_user` or `{{env.SFTP_USERNAME}}`
+    </ParamField>
+
+    <ParamField path="Password" type="string">
+      Password for SFTP authentication. Use this if not using PEM key authentication. Supports dynamic variables. Example: `{{env.SFTP_PASSWORD}}`
+    </ParamField>
+
+    <ParamField path="PEM Key" type="string">
+      RSA private key for key-based authentication. Use this if not using password authentication. Supports dynamic variables.
+    </ParamField>
+
+    <Tip>Store SFTP credentials as environment variables under **Organization > Settings > Environment Variable** for secure, reusable configuration.</Tip>
+  </Accordion>
+
+  <Accordion title="Source/Destination File Details">
+    Used in transfer actions to specify file locations.
+
+    <ParamField path="Protocol" type="dropdown" required>
+      The protocol for accessing the file. Options: `SFTP`, `URL`
+    </ParamField>
+
+    **When Protocol is SFTP:**
+    - Host, Port, Username, Password, File Path, PEM Key (see SFTP Connection Parameters)
+
+    **When Protocol is URL:**
+    <ParamField path="URL" type="string" required>
+      Public URL of the file to transfer. Example: `https://example.com/files/export.csv` or `{{previous_node.file_url}}`
+    </ParamField>
+  </Accordion>
+</AccordionGroup>
 
 ## Actions
 
-<Expandable title="Available Actions">
-  <ResponseField name="Move file to Cobalt bucket" type="action">
-    Moves a file to Cobalt bucket storage (deprecated functionality). Legacy action marked for removal in future versions. Use alternative transfer actions for new workflows.
-  </ResponseField>
-  <ResponseField name="Delete file from Cobalt bucket" type="action">
-    Removes a file from Cobalt bucket storage using file key or ID. Permanently deletes file from Cobalt storage. Requires either file key (path) or file ID. Returns success/failure status.
-  </ResponseField>
-  <ResponseField name="Transfer file from source to destination" type="action">
-    Transfers files between different systems using SFTP or URL protocols. Supports SFTP and URL source/destination combinations. Configurable protocol settings for both source and destination. Returns success/failure status for transfer operation.
-  </ResponseField>
-  <ResponseField name="Transfer file from source to cobalt bucket" type="action">
-    Uploads files from external sources to Cobalt bucket storage. Supports SFTP and URL as source protocols. Files stored in Cobalt bucket for further processing. Returns publicly accessible URL of uploaded file.
-  </ResponseField>
-  <ResponseField name="Read file from SFTP" type="action">
-    Downloads and reads files from SFTP servers. Connects to SFTP server with provided credentials. Downloads file content for workflow processing. Returns URL to accessed file content.
-  </ResponseField>
-  <ResponseField name="Delete file from SFTP" type="action">
-    Removes files from SFTP server directories. Connects to SFTP server and deletes specified file. Useful for cleanup after successful processing. Returns success/failure status.
-  </ResponseField>
-  <ResponseField name="List files in SFTP folder" type="action">
-    Retrieves a list of files in an SFTP directory. Connects to SFTP server and lists directory contents. Useful for monitoring new file availability. Returns array of file information.
-  </ResponseField>
-  <ResponseField name="Transfer file from Public URL to Bucket" type="action">
-    Downloads files from public URLs and stores them in cloud storage buckets. Downloads from any publicly accessible URL. Stores in specified cloud storage provider. Configurable storage settings and access permissions. Returns URL to stored file.
-  </ResponseField>
-</Expandable>
+<AccordionGroup>
+  <Accordion title="Delete file from Cobalt bucket">
+    Deletes a file from the Cobalt-managed cloud storage bucket (AWS S3, GCP, or MinIO) using the file key or file ID.
 
-## Input Parameters
+    <ParamField path="File Key" type="string" required>
+      The file path/name in the bucket. Example: `uploads/contacts/export-2024.csv` or `{{uploaded_file.key}}`
+    </ParamField>
 
-### Delete file from Cobalt bucket
-<ParamField path="File Key" type="string" required="yes">
-  Path/name of the file to delete from Cobalt bucket. Example: `"documents/invoice_12345.pdf"` or `{{uploaded_file.path}}`
-</ParamField>
+    <ParamField path="File ID" type="string">
+      The file identifier (ETag for S3/MinIO, generation for GCP). Use this for version-specific deletion. Example: `33a64df551425fcc55e4d42a148795d9f25f89d4`
+    </ParamField>
+  </Accordion>
 
-<ParamField path="File ID" type="string" required="optional">
-  Optional ID of the file to delete (ETag for S3/MinIO, generation for GCP). Example: `"d41d8cd98f00b204e9800998ecf8427e"`
-</ParamField>
+  <Accordion title="Transfer file from source to destination">
+    Transfers a file from one location to another. Supports SFTP-to-SFTP, URL-to-SFTP, SFTP-to-URL, or URL-to-URL transfers.
 
-### Transfer file operations
-<ParamField path="Source Protocol" type="dropdown" required="yes">
-  Protocol for source file location. Options: `SFTP`, `URL`. Example: `SFTP`
-</ParamField>
+    <ParamField path="Source File Details" type="object" required>
+      Configuration for the source file location. Select protocol (SFTP or URL) and provide corresponding connection details.
+    </ParamField>
 
-<ParamField path="Destination Protocol" type="dropdown" required="conditional">
-  Protocol for destination file location. Available for source-to-destination transfers. Options: `SFTP`, `URL`. Example: `SFTP`
-</ParamField>
+    <ParamField path="Destination File Details" type="object" required>
+      Configuration for the destination file location. Select protocol (SFTP or URL) and provide corresponding connection details.
+    </ParamField>
 
-### SFTP Configuration
-<ParamField path="Host" type="string" required="yes">
-  SFTP server hostname or IP address. Example: `"sftp.company.com"` or `{{config.sftp_host}}`
-</ParamField>
+    **SFTP Protocol Fields:**
 
-<ParamField path="Port" type="number" required="yes">
-  SFTP server port number. Example: `22`
-</ParamField>
+    | Field | Required | Description |
+    |-------|----------|-------------|
+    | Protocol | Yes | Select `SFTP` |
+    | Host | Yes | SFTP server hostname |
+    | Port | Yes | SFTP port (default: 22) |
+    | Username | Yes | SFTP username |
+    | Password | No | Password (if not using PEM key) |
+    | File Path | Yes | Full path to the file |
+    | PEM Key | No | RSA private key (if not using password) |
 
-<ParamField path="Username" type="string" required="yes">
-  SFTP server username for authentication. Example: `"fileuser"` or `{{credentials.sftp_username}}`
-</ParamField>
+    **URL Protocol Fields:**
 
-<ParamField path="Password" type="string" required="optional">
-  SFTP server password for authentication. Example: `{{credentials.sftp_password}}`
-</ParamField>
+    | Field | Required | Description |
+    |-------|----------|-------------|
+    | Protocol | Yes | Select `URL` |
+    | URL | Yes | Public URL of the file |
+  </Accordion>
 
-<ParamField path="File Path" type="string" required="yes">
-  Path to the file on SFTP server. Example: `"/uploads/data.csv"` or `{{file_location.path}}`
-</ParamField>
+  <Accordion title="Transfer file from source to cobalt bucket">
+    Transfers a file from an SFTP server or URL to the Cobalt-managed cloud storage bucket and returns a presigned URL for access.
 
-<ParamField path="PEM Key" type="string" required="optional">
-  PEM key for SFTP server authentication. Example: `{{credentials.sftp_pem_key}}`
-</ParamField>
+    <ParamField path="Source File Details" type="object" required>
+      Configuration for the source file. Select protocol (SFTP or URL) and provide corresponding connection details.
+    </ParamField>
 
-### Public URL to Bucket Transfer
-<ParamField path="Source URL" type="string" required="yes">
-  Public URL of the file to download. Example: `"https://example.com/file.pdf"` or `{{document.url}}`
-</ParamField>
+    <ParamField path="Bucket Object Settings" type="object">
+      Configuration for the uploaded file in the bucket.
+    </ParamField>
 
-<ParamField path="Destination File Name" type="string" required="yes">
-  Name for the file in destination bucket. Example: `"customer-invoice.pdf"` or `{{document.filename}}`
-</ParamField>
+    **Bucket Object Settings:**
 
-<ParamField path="Storage Provider" type="string" required="yes">
-  Cloud storage provider to use. Example: `"AWS S3"`, `"Google Cloud Storage"`, `"Azure Blob"`
-</ParamField>
+    | Field | Type | Description |
+    |-------|------|-------------|
+    | Infinite Expiry | Toggle | When enabled, the file does not expire. |
+    | TTL | Integer | Time-to-live in seconds before the file is deleted. Only applies when Infinite Expiry is disabled. |
+    | Preserve Cloud Provider Presigned URL | Toggle | When enabled, returns the cloud provider's native presigned URL instead of Cobalt's URL. |
+  </Accordion>
 
-<ParamField path="Content Type" type="string" required="optional">
-  MIME type of the source file. Example: `"application/pdf"`, `"text/csv"`
-</ParamField>
+  <Accordion title="Read file from SFTP">
+    Reads and downloads a file from an SFTP server. The file content is returned for use in subsequent workflow steps.
 
-<ParamField path="Allow Public Access" type="string" required="optional">
-  Configuration for public file access permissions. Example: `"true"` or `"false"`
-</ParamField>
+    <ParamField path="Host" type="string" required>
+      SFTP server hostname. Example: `sftp.example.com`
+    </ParamField>
 
-<ParamField path="TTL" type="number" required="optional">
-  Time-to-live for file availability in seconds. Example: `3600`
-</ParamField>
+    <ParamField path="Port" type="integer" required>
+      SFTP server port. Default: `22`
+    </ParamField>
 
-<ParamField path="Bucket Name" type="string" required="optional">
-  Name of storage bucket. Example: `"company-documents"` or `{{config.bucket_name}}`
-</ParamField>
+    <ParamField path="Username" type="string" required>
+      SFTP username for authentication.
+    </ParamField>
 
-<ParamField path="Access Key ID" type="string" required="optional">
-  Storage provider access key ID. Example: `{{aws_credentials.access_key_id}}`
-</ParamField>
+    <ParamField path="Password" type="string">
+      Password for SFTP authentication (if not using PEM key).
+    </ParamField>
 
-<ParamField path="Secret Access Key" type="string" required="optional">
-  Storage provider secret access key. Example: `{{aws_credentials.secret_access_key}}`
-</ParamField>
+    <ParamField path="File Path" type="string" required>
+      Full path to the file on the SFTP server. Example: `/uploads/exports/contacts-2024.csv`
+    </ParamField>
 
-<ParamField path="Endpoint" type="string" required="optional">
-  Custom storage endpoint URL. Example: `"https://s3.us-west-2.amazonaws.com"`
-</ParamField>
+    <ParamField path="PEM Key" type="string">
+      RSA private key for key-based authentication (if not using password).
+    </ParamField>
+  </Accordion>
 
-<ParamField path="Region" type="string" required="optional">
-  Storage provider region. Example: `"us-west-2"`
-</ParamField>
+  <Accordion title="Delete file from SFTP">
+    Deletes a file from an SFTP server.
 
-<ParamField path="Project ID" type="string" required="optional">
-  Project ID for cloud storage providers like GCP. Example: `"my-project-123"`
-</ParamField>
+    <ParamField path="Host" type="string" required>
+      SFTP server hostname. Example: `sftp.example.com`
+    </ParamField>
 
-<Info>SFTP fields marked as optional in the UI can be left empty. For Public URL to Bucket transfers, only Source URL, Destination File Name, and Storage Provider are mandatory.</Info>
+    <ParamField path="Port" type="integer" required>
+      SFTP server port. Default: `22`
+    </ParamField>
+
+    <ParamField path="Username" type="string" required>
+      SFTP username for authentication.
+    </ParamField>
+
+    <ParamField path="Password" type="string">
+      Password for SFTP authentication (if not using PEM key).
+    </ParamField>
+
+    <ParamField path="File Path" type="string" required>
+      Full path to the file to delete. Example: `/uploads/exports/contacts-2024.csv`
+    </ParamField>
+
+    <ParamField path="PEM Key" type="string">
+      RSA private key for key-based authentication (if not using password).
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Extract file on SFTP server">
+    Extracts a compressed archive file directly on the SFTP server. Supports zip, tar, gz, and tgz formats.
+
+    <ParamField path="Host" type="string" required>
+      SFTP server hostname. Example: `sftp.example.com`
+    </ParamField>
+
+    <ParamField path="Port" type="integer" required>
+      SFTP server port. Default: `22`
+    </ParamField>
+
+    <ParamField path="Username" type="string" required>
+      SFTP username for authentication.
+    </ParamField>
+
+    <ParamField path="Password" type="string">
+      Password for SFTP authentication (if not using PEM key).
+    </ParamField>
+
+    <ParamField path="File Path" type="string" required>
+      Full path to the compressed file. Example: `/uploads/archive.zip`
+    </ParamField>
+
+    <ParamField path="Extract To" type="string">
+      Destination directory for extracted files. Example: `/downloads/extracted-files/`
+    </ParamField>
+
+    <ParamField path="PEM Key" type="string">
+      RSA private key for key-based authentication (if not using password).
+    </ParamField>
+
+    <Info>Supported archive formats: `zip`, `tar`, `gz`, `tgz`</Info>
+  </Accordion>
+
+  <Accordion title="List files in SFTP folder">
+    Lists all files in a specified folder on an SFTP server. Use this to discover files for batch processing.
+
+    <ParamField path="Host" type="string" required>
+      SFTP server hostname. Example: `sftp.example.com`
+    </ParamField>
+
+    <ParamField path="Port" type="integer" required>
+      SFTP server port. Default: `22`
+    </ParamField>
+
+    <ParamField path="Username" type="string" required>
+      SFTP username for authentication.
+    </ParamField>
+
+    <ParamField path="Password" type="string">
+      Password for SFTP authentication (if not using PEM key).
+    </ParamField>
+
+    <ParamField path="Folder Path" type="string" required>
+      Path to the folder to list. Example: `/uploads/exports/`
+    </ParamField>
+
+    <ParamField path="PEM Key" type="string">
+      RSA private key for key-based authentication (if not using password).
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Move file to Cobalt bucket (deprecated)">
+    <Warning>This action is **deprecated** and will be removed in a future version. Use **Transfer file from source to cobalt bucket** instead.</Warning>
+
+    Moves a file from a URL to the Cobalt bucket.
+
+    <ParamField path="Source File URL" type="string" required>
+      Public URL of the file to move. Example: `https://example.com/files/document-2024.pdf`
+    </ParamField>
+
+    <ParamField path="TTL" type="integer">
+      Time-to-live in seconds for the file in the bucket. Example: `86400` (24 hours)
+    </ParamField>
+
+    <ParamField path="File Name" type="string">
+      Destination path/name in the bucket. Example: `uploads/documents/document-2024.pdf`
+    </ParamField>
+
+    <ParamField path="Presign URL" type="toggle">
+      When enabled, returns a presigned URL for the uploaded file.
+    </ParamField>
+
+    <ParamField path="Presigned URL TTL" type="integer">
+      Time-to-live in seconds for the presigned URL. Example: `3600` (1 hour)
+    </ParamField>
+  </Accordion>
+</AccordionGroup>
 
 ## Output
 
-The File Handler Node outputs different structures based on the selected action.
-
-### Delete Operations Output
+<AccordionGroup>
+  <Accordion title="Delete file from Cobalt bucket">
 ```json
-{
-  "success": true,
-  "message": "File deleted successfully",
-  "file_key": "documents/invoice_12345.pdf",
-  "deleted_at": "2024-01-15T14:30:00Z"
-}
-```
-
-### Transfer to Cobalt Bucket Output
-```json
-{
-  "file_url": "https://storage.gocobalt.io/files/abc123/document.pdf",
-  "file_name": "document.pdf",
-  "file_size": 2048576,
-  "uploaded_at": "2024-01-15T14:30:00Z",
-  "content_type": "application/pdf"
-}
-```
-
-### Transfer Between Systems Output
-```json
-{
-  "success": true,
-  "message": "File transferred successfully",
-  "source_path": "/source/data.csv",
-  "destination_path": "/destination/data.csv",
-  "transferred_at": "2024-01-15T14:30:00Z"
-}
-```
-
-### Read File from SFTP Output
-```json
-{
-  "file_url": "https://storage.gocobalt.io/temp/abc123/data.csv",
-  "file_name": "data.csv",
-  "file_size": 15420,
-  "content_type": "text/csv",
-  "read_at": "2024-01-15T14:30:00Z"
-}
-```
-
-### List Files Output
-```json
-{
-  "files": [
     {
-      "name": "data.csv",
-      "size": 15420,
-      "modified_date": "2024-01-15T10:30:00Z",
-      "is_directory": false
-    },
-    {
-      "name": "reports",
-      "size": 0,
-      "modified_date": "2024-01-14T15:20:00Z",
-      "is_directory": true
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "File deleted successfully",
+        "file_key": "uploads/contacts/export-2024.csv"
+      }
     }
-  ],
-  "total_files": 2,
-  "directory_path": "/uploads"
-}
 ```
+  </Accordion>
 
-## Adding to Workflow
+  <Accordion title="Transfer file from source to cobalt bucket">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "File transferred successfully",
+        "presigned_url": "https://storage.googleapis.com/cobalt-bucket/...",
+        "file_key": "uploads/vendors/payment-data.csv",
+        "expires_at": "2026-01-20T10:30:00Z"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Read file from SFTP">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "File read successfully",
+        "file_name": "contacts-2024.csv",
+        "file_size": 245678,
+        "content": "base64_encoded_content..."
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Delete file from SFTP">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "File deleted successfully",
+        "file_path": "/uploads/exports/contacts-2024.csv"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Extract file on SFTP server">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "File extracted successfully",
+        "source_path": "/uploads/archive.zip",
+        "extract_path": "/downloads/extracted-files/",
+        "files_extracted": 15
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="List files in SFTP folder">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": {
+        "message": "Files listed successfully",
+        "folder_path": "/uploads/exports/",
+        "files": [
+          {
+            "name": "contacts-2024-01.csv",
+            "size": 125430,
+            "modified": "2026-01-15T08:30:00Z"
+          },
+          {
+            "name": "contacts-2024-02.csv",
+            "size": 98765,
+            "modified": "2026-01-16T14:22:00Z"
+          }
+        ],
+        "total_files": 2
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Error Response">
+```json
+    {
+      "status": "Errored",
+      "node_id": "5",
+      "node_name": "File Handler",
+      "body": "SFTP connection failed: Authentication failed for user sftp_user"
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag File Handler Node to canvas">
-    From the **Utility Nodes** section, drag the File Handler Node to your workflow canvas where you need file operations.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/file-handler-node-drag-drop.png" alt="Dragging File Handler Node from utility nodes" />
-    </Frame>
+  <Step title="Add the File Handler Node">
+    In the workflow editor, click **Add Node** and select **File Handler** from the Utility Nodes section.
   </Step>
-  <Step title="Select file operation action">
-    Choose the file operation that matches your needs:
-    - **Delete operations** for cleanup tasks
-    - **Transfer operations** for moving files between systems
-    - **Read operations** for accessing file content
-    - **List operations** for monitoring directories
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/file-handler-node-action-selection.png" alt="Selecting file operation action" />
-    </Frame>
+  
+  <Step title="Select an action">
+    Choose the action that matches your use case from the action dropdown.
   </Step>
-  <Step title="Configure connection parameters">
-    Set up your file system connections:
-    - **SFTP**: Provide host, port, credentials, and file paths
-    - **URL**: Specify source URLs for download operations
-    - **Bucket**: Configure cloud storage settings when needed
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/file-handler-node-connection-configuration.png" alt="Configuring connection parameters" />
-    </Frame>
+  
+  <Step title="Configure connection details">
+    For SFTP actions, provide host, port, username, and authentication (password or PEM key). Use environment variables for secure credential management.
   </Step>
-  <Step title="Run/Test Node">
-    Test your file operation configuration to verify connectivity and permissions work correctly.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/file-handler-node-test-execution.png" alt="Testing file handler node operation" />
-    </Frame>
+  
+  <Step title="Specify file paths">
+    Enter the source and/or destination file paths based on the selected action.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute and verify the file operation completes successfully.
   </Step>
 </Steps>
 
-<Info>Additional Fields toggle controls whether extra configuration options are displayed. SFTP password and PEM key are typically optional if using key-based authentication.</Info>
-
 ## Examples
 
-### Example 1: Delete Processed Salesforce Document
+<AccordionGroup>
+  <Accordion title="Process SAP Export Files from SFTP">
+    Download daily SAP export files from an SFTP server for processing.
 
-This example deletes a processed invoice from Cobalt bucket after attaching it to a Salesforce record:
+    **Action:** Read file from SFTP
 
-```javascript
-// Workflow configuration
-{
-  "name": "file_handler_task",
-  "taskReferenceName": "cleanup_processed_invoice",
-  "type": "FILE_HANDLER",
-  "action": "Delete file from Cobalt bucket",
-  "inputParameters": {
-    "file_key": "{{document_processor.output_file_path}}",
-    "additional_fields": true
-  }
-}
-```
+    | Field | Value |
+    |-------|-------|
+    | Host | `{{env.SAP_SFTP_HOST}}` |
+    | Port | `22` |
+    | Username | `{{env.SAP_SFTP_USER}}` |
+    | Password | `{{env.SAP_SFTP_PASSWORD}}` |
+    | File Path | `/exports/sap/vendors-{{today}}.csv` |
 
-**Expected Output:**
-```json
-{
-  "success": true,
-  "message": "File deleted successfully",
-  "file_key": "invoices/processed/INV-001-processed.pdf",
-  "deleted_at": "2024-01-15T14:30:00Z"
-}
-```
+    **Use Case:** A scheduled workflow runs daily to read vendor export files from SAP's SFTP server, then processes the data through a Data Converter node before syncing to your application.
+  </Accordion>
 
-### Example 2: Transfer Salesforce Report to Analytics SFTP
+  <Accordion title="Archive NetSuite Reports to Cloud Storage">
+    Transfer NetSuite financial reports from SFTP to Cobalt bucket for long-term storage.
 
-This example transfers a Salesforce-generated CSV report to a downstream analytics system:
+    **Action:** Transfer file from source to cobalt bucket
 
-```javascript
-// Workflow configuration
-{
-  "name": "file_handler_task",
-  "taskReferenceName": "transfer_salesforce_report",
-  "type": "FILE_HANDLER",
-  "action": "Transfer file from source to destination",
-  "inputParameters": {
-    "source_protocol": "URL",
-    "source_url": "{{salesforce_report.download_url}}",
-    "destination_protocol": "SFTP",
-    "destination_host": "analytics.company.com",
-    "destination_port": 22,
-    "destination_username": "analytics_user",
-    "destination_password": "{{sftp_credentials.password}}",
-    "destination_file_path": "/incoming/salesforce_{{current_date}}.csv"
-  }
-}
-```
+    **Source File Details:**
 
-**Expected Output:**
-```json
-{
-  "success": true,
-  "message": "File transferred successfully",
-  "source_path": "https://salesforce.com/reports/download/12345",
-  "destination_path": "/incoming/salesforce_2024-01-15.csv",
-  "transferred_at": "2024-01-15T14:30:00Z"
-}
-```
+    | Field | Value |
+    |-------|-------|
+    | Protocol | `SFTP` |
+    | Host | `sftp.netsuite-exports.com` |
+    | Port | `22` |
+    | Username | `{{env.NS_SFTP_USER}}` |
+    | File Path | `/reports/financial/{{report_date}}.xlsx` |
+    | PEM Key | `{{env.NS_SFTP_PEM_KEY}}` |
 
-### Example 3: Read Daily Leads from Partner SFTP
+    **Bucket Object Settings:**
 
-This example pulls daily CSV files from channel partner SFTP for Salesforce lead import:
+    | Field | Value |
+    |-------|-------|
+    | Infinite Expiry | Enabled |
+    | Preserve Cloud Provider Presigned URL | Disabled |
 
-```javascript
-// Workflow configuration
-{
-  "name": "file_handler_task",
-  "taskReferenceName": "read_partner_leads",
-  "type": "FILE_HANDLER",
-  "action": "Read file from SFTP",
-  "inputParameters": {
-    "host": "partner-sftp.example.com",
-    "port": 22,
-    "username": "partner_sync",
-    "password": "{{partner_sftp.password}}",
-    "file_path": "/exports/leads_{{current_date}}.csv"
-  }
-}
-```
+    **Use Case:** After NetSuite generates monthly financial reports, transfer them to cloud storage with permanent retention for compliance purposes.
+  </Accordion>
 
-**Expected Output:**
-```json
-{
-  "file_url": "https://storage.gocobalt.io/temp/def456/leads_2024-01-15.csv",
-  "file_name": "leads_2024-01-15.csv",
-  "file_size": 87432,
-  "content_type": "text/csv",
-  "read_at": "2024-01-15T14:30:00Z"
-}
-```
+  <Accordion title="Batch Process Tipalti Payment Files">
+    List and process all payment files in a Tipalti SFTP folder.
 
-### Example 4: Download Customer Receipt from Public URL
+    **Action:** List files in SFTP folder
 
-This example pulls customer order receipts from a public URL to update Salesforce Order records:
+    | Field | Value |
+    |-------|-------|
+    | Host | `{{env.TIPALTI_SFTP_HOST}}` |
+    | Port | `22` |
+    | Username | `{{env.TIPALTI_SFTP_USER}}` |
+    | Password | `{{env.TIPALTI_SFTP_PASSWORD}}` |
+    | Folder Path | `/outbound/payments/` |
 
-```javascript
-// Workflow configuration
-{
-  "name": "file_handler_task",
-  "taskReferenceName": "download_customer_receipt",
-  "type": "FILE_HANDLER",
-  "action": "Transfer file from Public URL to Bucket",
-  "inputParameters": {
-    "source_url": "{{order_system.receipt_url}}",
-    "destination_file_name": "receipt_{{order.number}}.pdf",
-    "storage_provider": "AWS S3",
-    "content_type": "application/pdf",
-    "allow_public_access": "false",
-    "ttl": 2592000
-  }
-}
-```
+    **Use Case:** Use with a Loop Node to iterate through all payment files, read each one, process the payments, then delete the processed files.
 
-**Expected Output:**
-```json
-{
-  "file_url": "https://s3.amazonaws.com/company-receipts/receipt_ORD-12345.pdf",
-  "file_name": "receipt_ORD-12345.pdf",
-  "file_size": 156789,
-  "uploaded_at": "2024-01-15T14:30:00Z",
-  "content_type": "application/pdf"
-}
-```
+    **Follow-up Workflow:**
+    1. List files in SFTP folder → Get file list
+    2. Loop Node → Iterate through files
+    3. Read file from SFTP → Get file content
+    4. Process payments → Your business logic
+    5. Delete file from SFTP → Clean up processed files
+  </Accordion>
 
-## Runtime Behavior
+  <Accordion title="Extract Compressed Vendor Data">
+    Extract a compressed archive containing multiple vendor data files on the SFTP server.
 
-<Warning>File operations may take time depending on file sizes and network conditions. Ensure SFTP credentials are valid and URLs are accessible before workflow execution.</Warning>
+    **Action:** Extract file on SFTP server
 
-### File Processing Flow
+    | Field | Value |
+    |-------|-------|
+    | Host | `sftp.vendor-portal.com` |
+    | Port | `22` |
+    | Username | `{{env.VENDOR_SFTP_USER}}` |
+    | Password | `{{env.VENDOR_SFTP_PASSWORD}}` |
+    | File Path | `/incoming/vendor-data-2026-01.tar.gz` |
+    | Extract To | `/incoming/extracted/2026-01/` |
 
-The File Handler Node processes operations in the following order:
+    **Use Case:** Vendors upload compressed archives containing multiple CSV files. Extract them on the server, then use "List files in SFTP folder" to discover and process each file individually.
+  </Accordion>
 
-1. **Connection Validation**: Verifies SFTP credentials or URL accessibility
-2. **Source File Access**: Connects to source system and locates file
-3. **Operation Execution**: Performs delete, transfer, read, or list operation
-4. **Destination Handling**: Stores or transfers file to destination if applicable
-5. **Response Generation**: Returns operation results and file information
+  <Accordion title="Clean Up Processed Files">
+    Delete files from Cobalt bucket after they've been successfully processed.
 
-### SFTP Connection Management
+    **Action:** Delete file from Cobalt bucket
 
-For SFTP operations:
-- **Authentication**: Supports password and PEM key authentication
-- **Connection Pooling**: Reuses connections for efficiency
-- **Error Handling**: Automatic retry for temporary connection issues
-- **Security**: All credentials encrypted in transit and at rest
+    | Field | Value |
+    |-------|-------|
+    | File Key | `{{processed_file.key}}` |
+    | File ID | `{{processed_file.etag}}` |
 
-### File Storage Behavior
-- **Cobalt Bucket**: Files stored with automatic naming if not specified
-- **Temporary Files**: Read operations create temporary accessible URLs
-- **Public URLs**: Download and process files from any accessible HTTP/HTTPS URL
-- **Cloud Storage**: Supports multiple providers with configurable settings
+    **Use Case:** After successfully syncing file data to SAP, delete the temporary file from the Cobalt bucket to manage storage costs.
+  </Accordion>
+
+  <Accordion title="Transfer Files Between SFTP Servers">
+    Move files from a vendor's SFTP server to your internal SFTP server.
+
+    **Action:** Transfer file from source to destination
+
+    **Source File Details:**
+
+    | Field | Value |
+    |-------|-------|
+    | Protocol | `SFTP` |
+    | Host | `sftp.vendor.com` |
+    | Port | `22` |
+    | Username | `{{env.VENDOR_USER}}` |
+    | Password | `{{env.VENDOR_PASSWORD}}` |
+    | File Path | `/outbound/invoices/{{invoice_id}}.pdf` |
+
+    **Destination File Details:**
+
+    | Field | Value |
+    |-------|-------|
+    | Protocol | `SFTP` |
+    | Host | `sftp.internal.yourcompany.com` |
+    | Port | `22` |
+    | Username | `{{env.INTERNAL_SFTP_USER}}` |
+    | PEM Key | `{{env.INTERNAL_SFTP_PEM}}` |
+    | File Path | `/incoming/vendor-invoices/{{invoice_id}}.pdf` |
+
+    **Use Case:** Automatically transfer vendor invoices from their SFTP server to your internal server for processing by your AP system.
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### SFTP Connection Failures
+<AccordionGroup>
+  <Accordion title="SFTP Connection Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Authentication failed | Verify username and password/PEM key. Check if the account is locked or credentials have expired. |
+    | Connection refused | Confirm the host and port are correct. Check if the SFTP server is running and accessible from Cobalt's network. |
+    | Host key verification failed | The SFTP server's host key may have changed. Contact your server administrator to verify the new key. |
+    | Connection timeout | Check network connectivity. The SFTP server may be behind a firewall blocking Cobalt's IP addresses. |
+  </Accordion>
 
-**Problem**: Cannot connect to SFTP server
+  <Accordion title="File Operation Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | File not found | Verify the file path is correct and the file exists. Check for case sensitivity in file names. |
+    | Permission denied | The SFTP user may not have read/write/delete permissions for the specified path. Contact your server administrator. |
+    | Disk quota exceeded | The destination server or bucket has reached its storage limit. Free up space or increase quota. |
+    | File already exists | The destination file path already contains a file. Delete it first or use a unique file name. |
+  </Accordion>
 
-**Solutions**:
-- Verify host, port, and credentials are correct
-- Check firewall settings allow SFTP connections
-- Test SFTP connectivity outside of workflow first
-- Ensure PEM key format is correct if using key authentication
+  <Accordion title="Transfer Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Transfer timeout | The file may be too large. Check network stability and consider splitting large files. |
+    | Invalid URL | For URL protocol, ensure the source URL is publicly accessible and returns the file directly. |
+    | Presigned URL expired | Increase the TTL value or use the presigned URL immediately after generation. |
+  </Accordion>
 
-### File Not Found Errors
+  <Accordion title="Archive Extraction Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Unsupported format | Only zip, tar, gz, and tgz formats are supported. Convert the archive to a supported format. |
+    | Corrupt archive | The archive file may be damaged. Request a new file from the source. |
+    | Insufficient space | The extraction destination doesn't have enough disk space. Free up space or use a different directory. |
+  </Accordion>
+</AccordionGroup>
 
-**Problem**: File doesn't exist at specified path
+<Tip>Store SFTP credentials securely as environment variables under **Organization > Settings > Environment Variable** rather than hardcoding them in workflows.</Tip>
 
-**Solutions**:
-- Verify file path syntax matches SFTP server requirements
-- Check file actually exists at the specified location
-- Ensure proper permissions to access the file
-- Use List Files action to verify directory contents first
+## What's Next
 
-### Transfer Operation Failures
-
-**Problem**: File transfer fails between systems
-
-**Solutions**:
-- Verify both source and destination are accessible
-- Check available disk space on destination system
-- Ensure proper write permissions on destination directory
-- Test with smaller files first to isolate issues
-
-### Public URL Access Issues
-
-**Problem**: Cannot download files from public URLs
-
-**Solutions**:
-- Verify URL is publicly accessible without authentication
-- Check URL format and ensure it's a direct file link
-- Test URL accessibility in browser first
-- Ensure content-type headers are correctly set
-
-### Cloud Storage Configuration Errors
-
-**Problem**: Bucket operations fail with permission errors
-
-**Solutions**:
-- Verify storage provider credentials are correct
-- Check bucket name exists and is accessible
-- Ensure proper IAM permissions for bucket operations
-- Confirm region and endpoint settings match provider requirements
-
-<Tip>Use the Debug Node after File Handler operations to inspect returned URLs and file information for troubleshooting integration issues.</Tip>
-
-## What's Next?
-
-- Learn about [Custom Code Node](/nodes/custom-code-node) for advanced file processing
-- Explore [HTTP Request Node](/nodes/http-request-node) to trigger file operations via APIs
-- Check out [Loop Node](/nodes/loop-node) to process multiple files in batches
-- Review [Workflow Testing](/testing/workflow-testing) to test file operations
+- [Loop Node](/developer-guide/workflows/nodes/loop) to process multiple files from a directory listing
+- [Data Converter Node](/developer-guide/workflows/nodes/data-converter) to parse CSV/Excel files after reading
+- [CSV/Excel Node](/developer-guide/workflows/nodes/csv-excel) for files smaller than 5MB
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on file operations

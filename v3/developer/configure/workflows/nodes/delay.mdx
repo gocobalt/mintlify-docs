@@ -1,276 +1,262 @@
 ---
 title: "Delay Node"
-description: "Pause workflow execution for a specific time period or until a target date and time"
+description: "Pause workflow execution for a specified duration or until a calculated target time"
 sidebarTitle: "Delay"
 ---
 
-# Delay Node
+The Delay Node pauses workflow execution for a specified duration before proceeding to subsequent steps. Use it to introduce waiting periods between actions, schedule follow-ups relative to dates, or add time buffers for external processes to complete.
 
-## What does it do?
+## When to Use
 
-The Delay Node allows you to pause workflow execution for a specific time period or until a target date and time. This gives you precise control over when subsequent actions occur in your workflow.
+- Add a waiting period before sending follow-up notifications
+- Schedule actions relative to a base date (e.g., 2 days before a due date)
+- Introduce time buffers between API calls to respect rate limits
+- Delay processing until a specific time window
+- Coordinate timing between dependent workflow steps
 
-**Common use cases:**
-- Wait 24 hours before sending follow-up emails to new Salesforce contacts
-- Delay sync operations until specific business hours
-- Space out API calls to avoid rate limiting
-- Schedule workflows to run at optimal times
-- Create cooling-off periods between automated actions
+<Info>The maximum delay duration is **30 days**. All duration fields accept only integer values.</Info>
 
 ## Actions
 
-<ResponseField name="Action Name" type="string">
-  <Expandable title="Available Actions">
-    <ResponseField name="`Wait For`" type="action">
-      Pauses workflow execution for a specified duration from the current time.
-      
-      **Behavior:**
-      - Adds delay relative to current execution time
-      - Use for fixed waiting periods
-      - Simple duration-based delays
-      - Best for consistent timing requirements
-    </ResponseField>
-    <ResponseField name="`Wait Till`" type="action">
-      Pauses workflow execution until a specific date and time is reached.
-      
-      **Behavior:**
-      - Calculates delay based on target datetime
-      - Can wait before or after a base date
-      - Use for scheduled execution at specific times
-      - Best for time-sensitive operations
-    </ResponseField>
-  </Expandable>
-</ResponseField>
+<AccordionGroup>
+  <Accordion title="Wait For">
+    Pauses the workflow for a fixed duration from the current execution time.
 
-## Input Parameters
+    <ParamField path="Days" type="integer" required>
+      Number of days to wait. Range: 0-30. Supports dynamic variables. Example: `0` or `{{workflow.delay_days}}`
+    </ParamField>
 
-<ParamField path="Days" type="number" required="conditional">
-  Number of days to delay (0-30). Can be a static value or variable from previous nodes. Example: `1` or `{{salesforce_contact.follow_up_days}}`
-</ParamField>
+    <ParamField path="Hours" type="integer" required>
+      Number of hours to wait. Supports dynamic variables. Example: `2` or `{{config.wait_hours}}`
+    </ParamField>
 
-<ParamField path="Hours" type="number" required="conditional">
-  Number of hours to delay (0-23). Can be a static value or variable from previous nodes. Example: `2` or `{{event.delay_hours}}`
-</ParamField>
+    <ParamField path="Minutes" type="integer" required>
+      Number of minutes to wait. Supports dynamic variables. Example: `30` or `{{trigger.minutes}}`
+    </ParamField>
 
-<ParamField path="Minutes" type="number" required="conditional">
-  Number of minutes to delay (0-59). Can be a static value or variable from previous nodes. Example: `30` or `{{config.delay_minutes}}`
-</ParamField>
+    <ParamField path="Seconds" type="integer" required>
+      Number of seconds to wait. Supports dynamic variables. Example: `0` or `{{delay_seconds}}`
+    </ParamField>
+  </Accordion>
 
-<ParamField path="Seconds" type="number" required="conditional">
-  Number of seconds to delay (0-59). Can be a static value or variable from previous nodes. Example: `45` or `{{workflow.delay_seconds}}`
-</ParamField>
+  <Accordion title="Wait Till">
+    Pauses the workflow until a calculated target time relative to a base date. Use this to schedule actions before or after a specific date.
 
-<ParamField path="Before/After" type="dropdown" required="conditional">
-  Available only for `Wait Till` action. Choose whether to wait before or after the base date. Options: `Before`, `After`. Example: `After`
-</ParamField>
+    <ParamField path="Before or After Base Date" type="dropdown" required>
+      Whether to wait until before or after the base date. Options: `Before`, `After`
+    </ParamField>
 
-<ParamField path="Base Date" type="string" required="conditional">
-  Available only for `Wait Till` action. Target date in valid ISO format. Can be static or variable from previous nodes. Example: `"2024-12-25T09:00:00Z"` or `{{salesforce_contact.follow_up_date}}`
-</ParamField>
+    <ParamField path="Base Date" type="string" required>
+      The reference date for calculating the wait time. Accepts valid JavaScript date formats: ISO format, `YYYY/MM/DD`, or `MM/DD/YYYY`. Supports dynamic variables. Example: `2026/01/19` or `{{order.due_date}}`
+    </ParamField>
 
-<Callout type="info">
-**Note**: All time calculations use UTC timezone. Maximum delay period is 30 days. At least one time unit (days, hours, minutes, or seconds) must be specified and greater than 0.
-</Callout>
+    <ParamField path="Days" type="integer" required>
+      Number of days before or after the base date. Range: 0-30. Supports dynamic variables.
+    </ParamField>
+
+    <ParamField path="Hours" type="integer" required>
+      Number of hours offset from the calculated date. Supports dynamic variables.
+    </ParamField>
+
+    <ParamField path="Minutes" type="integer" required>
+      Number of minutes offset from the calculated date. Supports dynamic variables.
+    </ParamField>
+
+    <ParamField path="Seconds" type="integer" required>
+      Number of seconds offset from the calculated date. Supports dynamic variables.
+    </ParamField>
+
+    <Warning>`DD/MM/YYYY` is **not** a valid JavaScript date format. Use `YYYY/MM/DD` or `MM/DD/YYYY` instead.</Warning>
+  </Accordion>
+</AccordionGroup>
 
 ## Output
 
-The Delay Node outputs timing information and delay calculation details.
-
-### Output Structure
-
+<AccordionGroup>
+  <Accordion title="Wait For">
 ```json
-{
-  "delay_started_at": "2024-01-15T10:30:00Z",
-  "delay_duration": {
-    "days": 1,
-    "hours": 2, 
-    "minutes": 30,
-    "seconds": 0
-  },
-  "delay_until": "2024-01-16T13:00:00Z",
-  "action_type": "Wait For",
-  "status": "completed"
-}
+    {
+      "status": "Success",
+      "node_id": "6",
+      "node_name": "Delay for 5d",
+      "body": "Waited for 432000 seconds."
+    }
+```
+  </Accordion>
+
+  <Accordion title="Wait Till">
+```json
+    {
+      "status": "Success",
+      "node_id": "6",
+      "node_name": "Delay for 1d",
+      "body": {
+        "days": 1,
+        "hours": 0,
+        "minutes": 0,
+        "seconds": 0,
+        "base_date": "2026/01/19",
+        "operand": "-"
+      }
+    }
 ```
 
-### Status Types
+    | Field | Description |
+    |-------|-------------|
+    | `days`, `hours`, `minutes`, `seconds` | The configured offset values |
+    | `base_date` | The reference date used for calculation |
+    | `operand` | `-` for Before, `+` for After |
+  </Accordion>
 
-- **waiting**: Delay is currently active, workflow paused
-- **completed**: Delay period finished, workflow continuing
-- **skipped**: Delay was bypassed due to conditions
-- **error**: Invalid delay configuration or calculation failure
+  <Accordion title="Sync Execution">
+    When the workflow runs in sync execution mode, delays are skipped:
+```json
+    {
+      "status": "Success",
+      "node_id": "6",
+      "node_name": "Delay for 5d",
+      "body": "Waited for 0 seconds since sync execution is true."
+    }
+```
+  </Accordion>
+</AccordionGroup>
 
-## Adding to Workflow
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag Delay Node to canvas">
-    From the **Utility Nodes** section, drag the Delay Node to your workflow canvas where you need to pause execution.
-    
-    <img height="200" src="/images/workflow/nodes/delay-node-drag-drop.png" alt="Dragging Delay Node from utility nodes"/>
+  <Step title="Add the Delay Node">
+    In the workflow editor, click **Add Node** and select **Delay** from the Utility Nodes section.
   </Step>
-
-  <Step title="Select delay action">
-    Click on the Delay Node to open configuration. Choose your delay strategy:
-    - **Wait For**: Pause for a specific duration from now
-    - **Wait Till**: Pause until a target date/time
-    
-    <img height="200" src="/images/workflow/nodes/delay-node-action-selection.png" alt="Selecting delay action type"/>
+  
+  <Step title="Select an action">
+    Choose the action based on your use case:
+    - **Wait For** to pause for a fixed duration from now
+    - **Wait Till** to pause until a time relative to a specific date
   </Step>
-
-  <Step title="Configure delay parameters">
-    Set your delay timing:
-    - **For Wait For**: Specify days, hours, minutes, seconds
-    - **For Wait Till**: Set base date and before/after timing
-    
-    <img height="200" src="/images/workflow/nodes/delay-node-parameter-configuration.png" alt="Configuring delay timing parameters"/>
+  
+  <Step title="Configure the duration">
+    Enter the delay duration using Days, Hours, Minutes, and Seconds fields. For **Wait Till**, also specify the base date and whether to wait until before or after that date.
   </Step>
-
-  <Step title="Run/Test Node">
-    Test your delay configuration to verify timing calculations work as expected.
-    
-    <img height="200" src="/images/workflow/nodes/delay-node-test-execution.png" alt="Testing delay node configuration"/>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute. Note that delays may be skipped in sync execution mode for testing purposes.
   </Step>
 </Steps>
 
-<Callout type="info">
-**Note**: During delay periods, the workflow will show as "running" but paused. You can monitor delay status in the workflow execution logs.
-</Callout>
-
 ## Examples
 
-### Example 1: Wait For Action (Follow-up Delay)
+<AccordionGroup>
+  <Accordion title="Rate Limit Buffer Between API Calls">
+    Add a 5-second delay between SAP API calls to avoid rate limiting.
 
-This example waits 24 hours before sending a follow-up email to a new Salesforce contact:
+    **Action:** Wait For
 
-```javascript
-// Workflow configuration
-{
-  "name": "delay_task",
-  "taskReferenceName": "followup_delay", 
-  "type": "DELAY",
-  "action": "Wait For",
-  "inputParameters": {
-    "days": 1,
-    "hours": 0,
-    "minutes": 0, 
-    "seconds": 0
-  }
-}
-```
+    | Field | Value |
+    |-------|-------|
+    | Days | `0` |
+    | Hours | `0` |
+    | Minutes | `0` |
+    | Seconds | `5` |
 
-**Expected Output:**
-```json
-{
-  "delay_started_at": "2024-01-15T14:30:00Z",
-  "delay_duration": {
-    "days": 1,
-    "hours": 0,
-    "minutes": 0,
-    "seconds": 0
-  },
-  "delay_until": "2024-01-16T14:30:00Z",
-  "action_type": "Wait For",
-  "status": "completed"
-}
-```
+    **Use Case:** Place this node between consecutive SAP API calls in a Loop Node to prevent 429 errors.
+  </Accordion>
 
-### Example 2: Wait Till Action (Business Hours Sync)
+  <Accordion title="Send Payment Reminder Before Due Date">
+    Send a payment reminder to vendors 2 days before their invoice due date.
 
-This example delays Salesforce sync until 9 AM the next business day:
+    **Action:** Wait Till
 
-```javascript
-// Workflow configuration
-{
-  "name": "delay_task",
-  "taskReferenceName": "business_hours_delay",
-  "type": "DELAY", 
-  "action": "Wait Till",
-  "inputParameters": {
-    "days": 0,
-    "hours": 9,
-    "minutes": 0,
-    "seconds": 0,
-    "beforeAfter": "After",
-    "baseDate": "{{event.next_business_day}}"
-  }
-}
-```
+    | Field | Value |
+    |-------|-------|
+    | Before or After Base Date | `Before` |
+    | Base Date | `{{invoice.due_date}}` |
+    | Days | `2` |
+    | Hours | `9` |
+    | Minutes | `0` |
+    | Seconds | `0` |
 
-**Expected Output:**
-```json
-{
-  "delay_started_at": "2024-01-15T16:45:00Z",
-  "delay_duration": {
-    "calculated_wait": "16 hours 15 minutes"
-  },
-  "delay_until": "2024-01-16T09:00:00Z", 
-  "action_type": "Wait Till",
-  "base_date": "2024-01-16T00:00:00Z",
-  "status": "completed"
-}
-```
+    **Use Case:** Workflow triggers when an invoice is created in NetSuite. The Delay node waits until 2 days and 9 hours before the due date, then sends a reminder email.
+  </Accordion>
 
-## Runtime Behavior
+  <Accordion title="Follow-Up After Order Delivery">
+    Send a feedback request 3 days after an order's expected delivery date.
 
-<Callout type="warning">
-**Important**: Workflows with active delays will continue running and consuming resources. Maximum delay period is 30 days. All times are calculated in UTC timezone.
-</Callout>
+    **Action:** Wait Till
 
-### Delay Calculation
+    | Field | Value |
+    |-------|-------|
+    | Before or After Base Date | `After` |
+    | Base Date | `{{order.estimated_delivery}}` |
+    | Days | `3` |
+    | Hours | `0` |
+    | Minutes | `0` |
+    | Seconds | `0` |
 
-The Delay Node calculates wait times as follows:
+    **Use Case:** After syncing an order to SAP, wait until 3 days after delivery to trigger a customer satisfaction survey.
+  </Accordion>
 
-1. **Wait For**: Adds specified duration to current execution time
-2. **Wait Till**: Calculates difference between current time and target datetime
-3. **Validation**: Ensures delay doesn't exceed 30-day maximum
-4. **Execution**: Pauses workflow thread until target time reached
+  <Accordion title="Dynamic Delay from Configuration">
+    Use customer-configurable delay values from workflow settings.
 
-### Variable Resolution
+    **Action:** Wait For
 
-All timing parameters support variables from previous nodes:
-- **Static values**: `"days": 2`
-- **Node variables**: `"hours": "{{salesforce_contact.priority_hours}}"`
-- **Event data**: `"baseDate": "{{event.scheduled_date}}"`
+    | Field | Value |
+    |-------|-------|
+    | Days | `{{config.retry_delay_days}}` |
+    | Hours | `{{config.retry_delay_hours}}` |
+    | Minutes | `0` |
+    | Seconds | `0` |
+
+    **Use Case:** Allow linked accounts to customize retry timing for failed Tipalti payment processing through workflow configuration.
+  </Accordion>
+
+  <Accordion title="Batch Processing Window">
+    Wait for 1 hour to accumulate records before batch processing.
+
+    **Action:** Wait For
+
+    | Field | Value |
+    |-------|-------|
+    | Days | `0` |
+    | Hours | `1` |
+    | Minutes | `0` |
+    | Seconds | `0` |
+
+    **Use Case:** Collect multiple incoming webhook events, then process them as a batch to optimize NetSuite API usage.
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### Delay Never Completes
+<AccordionGroup>
+  <Accordion title="Delay Not Working">
+    | Problem | Solution |
+    |---------|----------|
+    | Delay is skipped (0 seconds) | Check if the workflow is running in sync execution mode. Delays are skipped during sync execution for testing. |
+    | Delay duration incorrect | Verify all fields contain integer values. Decimal values are not supported. |
+    | Dynamic variable not resolving | Ensure the variable path is correct and the source node has executed successfully. |
+  </Accordion>
 
-**Problem**: Workflow stuck in delay state indefinitely
+  <Accordion title="Date Format Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Invalid date error | Use valid JavaScript date formats: ISO format, `YYYY/MM/DD`, or `MM/DD/YYYY`. The format `DD/MM/YYYY` is not valid. |
+    | Base date not parsing | Check that dynamic date variables return strings in a valid format. Use a Custom Code node to format dates if needed. |
+  </Accordion>
 
-**Solutions**: 
-- Check that delay duration is reasonable (under 30 days)
-- Verify base date is valid ISO format for Wait Till actions
-- Ensure calculated target time is in the future
-- Review workflow execution logs for delay calculation errors
+  <Accordion title="Duration Limits">
+    | Problem | Solution |
+    |---------|----------|
+    | Delay exceeds maximum | The maximum delay is 30 days. Split longer delays into multiple Delay nodes or use a Loop with scheduled triggers. |
+    | Negative duration | Ensure all duration fields contain non-negative integers. |
+  </Accordion>
+</AccordionGroup>
 
-### Invalid Date Format Error
+<Tip>For delays longer than 30 days, consider using a [Schedule Trigger](/developer-guide/workflows/triggers/schedule) to re-trigger the workflow at specific intervals.</Tip>
 
-**Problem**: "Invalid base date format" error in Wait Till action
+## What's Next
 
-**Solutions**:
-- Use valid ISO 8601 format: `2024-01-15T09:00:00Z`
-- Ensure date variables from previous nodes are properly formatted
-- Test date format with Debug Node before Delay Node
-- Add date transformation if needed
-
-### Delay Duration Too Long
-
-**Problem**: "Maximum delay exceeded" validation error
-
-**Solutions**:
-- Reduce total delay to under 30 days
-- Break long delays into multiple shorter Delay Nodes
-- Use Wait Till action with nearer target dates
-- Check variable values don't create excessive delays
-
-<Callout type="info">
-**Tip**: Use the Debug Node before your Delay Node to inspect timing variables and verify calculations before the delay executes.
-</Callout>
-
-## What's Next?
-
-- Learn about [Schedule Triggers](/triggers/schedule-triggers) for recurring timed workflows
-- Explore [Transform Node](/nodes/transform-node) to format dates for delay calculations
-- Check out [Rule Node](/nodes/rule-node) to add conditional delays
-- Review [Workflow Testing](/testing/workflow-testing) to test delay behavior
+- [Wait for Webhook Node](/developer-guide/workflows/nodes/wait-for-webhook) to pause until an external event occurs
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic before or after delays
+- [Loop Node](/developer-guide/workflows/nodes/loop) to add delays between batch iterations
+- [Send Email Node](/developer-guide/workflows/nodes/send-email) to send notifications after delays

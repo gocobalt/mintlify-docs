@@ -1,456 +1,395 @@
 ---
 title: "Functions Node"
-description: "Execute pre-built JavaScript utility functions for data transformation, calculations, and processing without writing custom code"
+description: "Execute reusable JavaScript functions for data transformation, array operations, encryption, and custom logic"
 sidebarTitle: "Functions"
 ---
 
-# Functions Node
+The Functions Node executes reusable JavaScript functions within your workflows. Instead of writing the same code in multiple Custom Code nodes, create functions once and call them across any workflow. Functions can be organization-specific custom functions you create, or pre-defined library functions provided by Refold.
 
-## What does it do?
+## When to Use
 
-The Functions Node provides a lightweight, plug-and-play way to run pre-built JavaScript utility functions inside workflows without writing custom code from scratch. Instead of using a full Custom Code node for simple operations, you can select from a library of pre-built functions and simply configure the required parameters.
-
-**Common use cases:**
-- Convert Salesforce date formats for downstream systems (ISO to MM/dd/yyyy)
-- Generate unique tracking IDs for record creation and integration workflows
-- Perform mathematical operations on arrays of numbers from API responses
-- Find specific elements in data arrays returned from Salesforce queries
-- Group objects by key values for data organization and reporting
+- Execute reusable logic across multiple workflows without duplicating code
+- Find specific elements in arrays from API responses
+- Group data by key values for organization and reporting
 - Encrypt sensitive data before sending to external systems
-- Extract specific date components (year, month, day) for filtering
-- Add or subtract time periods for SLA calculations and scheduling
+- Convert data formats (EDI, X12, cXML) for enterprise integrations
+- Perform common operations without writing custom code each time
 
-## Actions
-
-<Expandable title="Available Functions">
-  <ResponseField name="Find element in array" type="function">
-    Searches through an array to locate specific elements based on criteria. Useful for finding specific records in Salesforce query results or API responses. Returns the matching element or null if not found.
-  </ResponseField>
-  <ResponseField name="Group objects by a key" type="function">
-    Groups an array of objects by a specified key field. Essential for organizing Salesforce records by status, type, or any custom field. Returns an object with grouped arrays.
-  </ResponseField>
-  <ResponseField name="Encrypt a string" type="function">
-    Encrypts sensitive text data using standard encryption algorithms. Critical for securing PII, API keys, or confidential data before external transmission. Returns encrypted string.
-  </ResponseField>
-  <ResponseField name="Get current date" type="function">
-    Retrieves the current date and time in various formats. Useful for timestamping records, calculating relative dates, or workflow scheduling. Returns formatted date string.
-  </ResponseField>
-  <ResponseField name="Convert date from one format to another" type="function">
-    Transforms dates between different format patterns. Essential for integrating Salesforce dates with external systems that expect specific formats. Returns converted date string.
-  </ResponseField>
-  <ResponseField name="Extract date units" type="function">
-    Parses dates to extract specific components like year, month, day, hour, etc. Useful for date-based filtering, reporting, and conditional logic. Returns object with date components.
-  </ResponseField>
-  <ResponseField name="Add/Subtract time" type="function">
-    Performs time arithmetic by adding or subtracting days, hours, minutes from dates. Critical for SLA calculations, scheduling, and deadline management. Returns modified date.
-  </ResponseField>
-  <ResponseField name="Generate UUID" type="function">
-    Creates unique identifiers for tracking, record linking, or external system integration. Ensures uniqueness across distributed systems. Returns UUID string.
-  </ResponseField>
-  <ResponseField name="Math Operations" type="function">
-    Performs various mathematical calculations including sum, average, min, max on arrays of numbers. Essential for calculating totals from Salesforce line items or metrics aggregation. Returns calculation results.
-  </ResponseField>
-  <ResponseField name="Custom Functions" type="function">
-    Execute user-defined functions created in the Cobalt dashboard. Allows for organization-specific logic and reusable business rules. Returns custom-defined output structure.
-  </ResponseField>
-</Expandable>
-
-## Adding to Workflow
-
-<Steps>
-  <Step title="Drag Functions Node to canvas">
-    From the **Utility Nodes** section, drag the Functions Node to your workflow canvas where you need to transform or process data.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/functions-node-drag-drop.png" alt="Dragging Functions Node from utility nodes" />
-    </Frame>
-  </Step>
-  <Step title="Select function from dropdown">
-    Select a function that has already been defined in **More > Functions**. The dropdown shows all available template functions and custom functions created for your organization.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/functions-node-function-selection.png" alt="Selecting function from dropdown" />
-    </Frame>
-  </Step>
-  <Step title="Configure input data">
-    Enter the data that needs to be passed to the selected function. Input fields are automatically generated based on the function's parameter requirements and may include data from previous workflow steps.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/functions-node-parameter-configuration.png" alt="Configuring function input data" />
-    </Frame>
-  </Step>
-  <Step title="Test the function">
-    Run a test to verify the function executes correctly with your input parameters and returns the expected output format.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/functions-node-test-execution.png" alt="Testing functions node operation" />
-    </Frame>
-  </Step>
-</Steps>
-
-<Info>Parameter requirements vary by function. Some functions have all optional parameters while others require specific inputs. Refer to individual function documentation or code to understand parameter requirements.</Info>
-
-## Examples
-
-### Example 1: Convert Salesforce Date Format
-
-Convert Salesforce `CreatedDate` from ISO format to a format expected by downstream ERP systems:
-
-```javascript
-// Workflow configuration
-{
-  "name": "functions_task",
-  "taskReferenceName": "convert_salesforce_date",
-  "type": "FUNCTIONS",
-  "inputParameters": {
-    "date": "{{salesforce_lead.CreatedDate}}",
-    "from_format": "yyyy-MM-dd'T'HH:mm:ssX",
-    "to_format": "dd/MM/yyyy"
-  }
-}
-```
-
-**Expected Output:**
-```json
-{
-  "converted_date": "01-05-2025"
-}
-```
-
-### Example 2: Find Specific Opportunity in Salesforce Results
-
-Locate a specific opportunity from Salesforce query results based on stage criteria:
-
-```javascript
-// Workflow configuration
-{
-  "name": "functions_task",
-  "taskReferenceName": "find_closed_won_opportunity",
-  "type": "FUNCTIONS",
-  "inputParameters": {
-    "function_name": "Find element in array",
-    "array": "{{salesforce_query.opportunities}}",
-    "search_key": "StageName",
-    "search_value": "Closed Won",
-    "return_first": true
-  }
-}
-```
-
-**Expected Output:**
-```json
-{
-  "found_element": {
-    "Id": "0063000000ABC123",
-    "Name": "Acme Corp - 1000 Licenses",
-    "StageName": "Closed Won",
-    "Amount": 50000
-  },
-  "index": 2
-}
-```
-
-### Example 3: Group Salesforce Cases by Status
-
-Organize Salesforce cases by their status for dashboard reporting:
-
-```javascript
-// Workflow configuration
-{
-  "name": "functions_task",
-  "taskReferenceName": "group_cases_by_status",
-  "type": "FUNCTIONS",
-  "inputParameters": {
-    "function_name": "Group objects by a key",
-    "array": "{{salesforce_cases.records}}",
-    "group_key": "Status",
-    "include_count": true
-  }
-}
-```
-
-**Expected Output:**
-```json
-{
-  "grouped_data": {
-    "New": [
-      {"Id": "5003000000XYZ123", "Subject": "Login Issue", "Status": "New"},
-      {"Id": "5003000000XYZ124", "Subject": "Password Reset", "Status": "New"}
-    ],
-    "In Progress": [
-      {"Id": "5003000000XYZ125", "Subject": "Data Import", "Status": "In Progress"}
-    ],
-    "Closed": [
-      {"Id": "5003000000XYZ126", "Subject": "Account Setup", "Status": "Closed"}
-    ]
-  },
-  "counts": {
-    "New": 2,
-    "In Progress": 1,
-    "Closed": 1
-  }
-}
-```
-
-### Example 4: Calculate SLA Deadline
-
-Add business days to a Salesforce case creation date to calculate SLA deadline:
-
-```javascript
-// Workflow configuration
-{
-  "name": "functions_task",
-  "taskReferenceName": "calculate_sla_deadline",
-  "type": "FUNCTIONS",
-  "inputParameters": {
-    "function_name": "Add/Subtract time",
-    "date": "{{salesforce_case.CreatedDate}}",
-    "operation": "add",
-    "amount": 5,
-    "unit": "business_days",
-    "timezone": "America/New_York"
-  }
-}
-```
-
-**Expected Output:**
-```json
-{
-  "result_date": "2025-08-06T14:23:11Z",
-  "original_date": "2025-07-30T14:23:11Z",
-  "days_added": 5,
-  "business_days_only": true
-}
-```
-
-### Example 5: Generate Unique Tracking ID
-
-Create unique identifiers for tracking Salesforce integrations with external systems:
-
-```javascript
-// Workflow configuration
-{
-  "name": "functions_task",
-  "taskReferenceName": "generate_tracking_id",
-  "type": "FUNCTIONS",
-  "inputParameters": {
-    "function_name": "Generate UUID",
-    "include_timestamp": true,
-    "prefix": "SF-SYNC"
-  }
-}
-```
-
-**Expected Output:**
-```json
-{
-  "uuid": "SF-SYNC-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-  "timestamp": "2025-07-30T14:23:11Z",
-  "short_id": "SF-SYNC-a1b2c3d4"
-}
-```
-
-## Creating Custom Functions
-
-### Function Management
-
-Custom functions are created and managed in the main Cobalt dashboard:
-
-1. Navigate to **More > Functions > Create Function**
-2. Write your JavaScript function following the required structure
-3. Test and save the function
-4. Use the function in any workflow via the Functions Node
-
-### Function Structure
-
-All custom functions must follow this structure:
-
-```javascript
-// Import required libraries at the top
-const { parse, format } = require("date-fns");
-
-function yourFunctionName(params) {
-    // Destructure input parameters
-    const { param1, param2, param3 } = params;
-    
-    try {
-        // Your function logic here
-        const result = processData(param1, param2, param3);
-        
-        // Return your custom output structure
-        return {
-            result: result,
-            status: "success"
-        };
-    } catch (error) {
-        // Always handle errors gracefully
-        return { 
-            error: error.message,
-            status: "failed"
-        };
-    }
-}
-```
-
-### Available Libraries
-
-Custom functions support these JavaScript libraries:
-- **date-fns** - Date parsing and formatting
-- **lodash** - Utility functions for data manipulation
-- **uuid** - Unique identifier generation
-- **crypto** - Cryptographic functions
-- **moment** - Date/time manipulation (legacy support)
+<Info>Functions are organization-specific. Create and manage functions under **More > Functions** in your dashboard.</Info>
 
 ## Input Parameters
 
-### Function Selection
-<ParamField path="function_name" type="dropdown" required="yes">
-  Select a function that has already been defined in More -> Functions. The dropdown shows all available template functions and custom functions created for your organization.
-  Example: `"Convert date from one format to another"` or `"Find element in array"`
+<ParamField path="Select internal function" type="dropdown" required>
+  Choose the function to execute from your organization's Functions Library. Functions are created and managed in **More > Functions**. After selecting a function, input fields are dynamically generated based on the function's parameter requirements.
+</ParamField>
+
+<ParamField path="Custom Output" type="dynamic fields">
+  Map function output to custom field names. Click **+ Add Field** to define additional output fields that will be included in the node's response alongside the function result.
 </ParamField>
 
 ### Dynamic Input Fields
-Input fields are automatically generated based on the selected function. For example, when selecting "Convert date from one format to another", you get these input fields:
 
-<ParamField path="date" type="string" required="yes">
-  The date value to convert. Example: `"2025-05-01"` or `{{salesforce_record.CreatedDate}}`
-</ParamField>
+When you select a function, input fields are automatically generated based on that function's parameters. For example, selecting "Find element in array" displays:
 
-<ParamField path="from_format" type="string" required="yes">
-  Source date format pattern. Example: `"yyyy-MM-dd"` for the input date format
-</ParamField>
+| Field | Description |
+|-------|-------------|
+| array | The array to search through |
+| element | The element to find |
 
-<ParamField path="to_format" type="string" required="yes">
-  Target date format pattern. Example: `"dd-MM-yyyy"` for the desired output format
-</ParamField>
+<Tip>Refer to the function's code in **More > Functions** to understand which parameters are required and which are optional.</Tip>
 
-<Info>Input parameters vary by selected function. Each function shows only the relevant input fields required for that specific operation. Parameter requirements depend on the function's implementation.</Info>
+## Pre-defined Library Functions
+
+Refold provides several pre-defined library functions that are available by default. These functions cannot be edited but can be used immediately in any workflow.
+
+<AccordionGroup>
+  <Accordion title="Array Operations">
+    | Function | Description |
+    |----------|-------------|
+    | **Find element in array** | Searches through an array to locate a specific element. Returns the index of the element, or -1 if not found. |
+    | **Group objects by a key** | Groups an array of objects by a specified key field. Returns an object with grouped arrays. |
+  </Accordion>
+
+  <Accordion title="Encryption">
+    | Function | Description |
+    |----------|-------------|
+    | **Encrypt a string** | Encrypts sensitive text data using standard encryption algorithms. Returns the encrypted string. |
+  </Accordion>
+
+  <Accordion title="Date Helper">
+    | Function | Description |
+    |----------|-------------|
+    | **Get current date** | Retrieves the current date and time. Useful for timestamping records or calculating relative dates. |
+    | **Convert date from one format to another** | Transforms dates between different format patterns (e.g., ISO to MM/DD/YYYY). Essential for integrating systems with different date formats. |
+    | **Extract date units** | Parses dates to extract specific components like year, month, day, hour. Useful for date-based filtering and conditional logic. |
+    | **Add/Subtract time** | Performs time arithmetic by adding or subtracting days, hours, minutes from dates. Critical for SLA calculations and deadline management. |
+  </Accordion>
+
+  <Accordion title="Miscellaneous">
+    | Function | Description |
+    |----------|-------------|
+    | **Generate UUID** | Creates unique identifiers (UUIDs) for tracking, record linking, or external system integration. |
+  </Accordion>
+
+  <Accordion title="Math Helper">
+    | Function | Description |
+    |----------|-------------|
+    | **Math Operations** | Performs mathematical calculations on numeric values. Supports common operations like sum, average, min, max, and more. |
+  </Accordion>
+</AccordionGroup>
+
+<Info>Your organization may have additional custom functions created for specific use cases. Check **More > Functions** to see all available functions.</Info>
+
+## Creating Custom Functions
+
+Create reusable functions for your organization that can be called from any workflow.
+
+<Steps>
+  <Step title="Navigate to Functions">
+    In the Refold dashboard, go to **More > Functions**.
+  </Step>
+
+  <Step title="Create a new function">
+    Click **+ Create Function** and provide a name for your function.
+  </Step>
+
+  <Step title="Write your function">
+    Define your function code, input parameters, and output fields. You can use supported JavaScript libraries in your function code.
+  </Step>
+
+  <Step title="Save the function">
+    Click **Create** to save. The function is now available in the Functions Node dropdown across all workflows.
+  </Step>
+</Steps>
+
+### Supported JavaScript Libraries
+
+The following npm modules can be used in your custom function code:
+
+| Library | Description |
+|---------|-------------|
+| [axios](https://www.npmjs.com/package/axios) | HTTP client for API requests |
+| [cheerio](https://www.npmjs.com/package/cheerio) | HTML parsing and manipulation |
+| [date-fns](https://www.npmjs.com/package/date-fns) | Date utility functions |
+| [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser) | XML parsing and building |
+| [fuse.js](https://www.npmjs.com/package/fuse.js) | Fuzzy search library |
+| [lodash](https://www.npmjs.com/package/lodash) | Utility functions for arrays, objects, strings |
+| [mime](https://www.npmjs.com/package/mime/v/3.0.0) | MIME type detection |
+| [number-to-words](https://www.npmjs.com/package/number-to-words) | Number to text conversion |
+| [url](https://www.npmjs.com/package/url) | URL parsing utilities |
+| [uuid](https://www.npmjs.com/package/uuid) | UUID generation |
+| [danfo](https://danfo.jsdata.org/getting-started) | Data analysis and manipulation |
+
+<Tip>Need a library that's not listed? [Contact support](mailto:integrations@gocobalt.io) to request additional libraries.</Tip>
+
+### Library Usage Examples
+
+<AccordionGroup>
+  <Accordion title="Using axios for HTTP requests">
+```javascript
+    const axios = require('axios');
+
+    async function yourFunction(params) {
+      const res = await axios.get("https://api.example.com/data");
+      return {
+        data: res.data
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Using lodash for data manipulation">
+```javascript
+    const _ = require('lodash');
+
+    function yourFunction(params) {
+      const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+      const sortedData = _.sortBy(array, "id");
+      return {
+        data: sortedData
+      };
+    }
+```
+  </Accordion>
+
+  <Accordion title="Using danfo for data analysis">
+```javascript
+    const dfd = require('dfd');
+
+    function yourFunction(params) {
+      const s = new dfd.Series([1, 3, 5, undefined, 6, 8]);
+      return dfd.toJSON(s);
+    }
+```
+  </Accordion>
+</AccordionGroup>
 
 ## Output
 
-Functions Node output varies significantly based on the selected function. Each function returns a custom structure:
+The output structure depends on the function being executed. Each function returns its result in the `body` field.
 
-### Date Conversion Output
+<AccordionGroup>
+  <Accordion title="Find element in array (found)">
 ```json
-{
-  "converted_date": "01-05-2025"
-}
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": 1
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Find element in array (not found)">
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": -1
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Custom function output">
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "result": "your_function_output",
+        "custom_field": "mapped_value"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Error response">
+```json
+    {
+      "status": "Errored",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": "Function execution failed: undefined is not a function"
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Functions Node">
+    In the workflow editor, click **Add Node** and select **Functions** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select a function">
+    Choose a function from the **Select internal function** dropdown. This list includes pre-defined library functions and any custom functions created in your organization.
+  </Step>
+  
+  <Step title="Configure input parameters">
+    Fill in the dynamically generated input fields based on the selected function's requirements. Use dynamic variables from previous nodes where needed.
+  </Step>
+  
+  <Step title="Configure custom output (optional)">
+    Click **+ Add Field** under Custom Output to map function results to custom field names for use in subsequent nodes.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute and verify the function returns the expected output.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Find Vendor in SAP Response Array">
+    Search for a specific vendor in an array returned from an SAP API call.
+
+    **Function:** Find element in array
+
+    | Field | Value |
+    |-------|-------|
+    | array | `{{sap_get_vendors.body.vendors}}` |
+    | element | `{{webhook.vendor_id}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": 3
+      }
+    }
 ```
 
-### Array Search Output
+    **Use Case:** Use the returned index with a Rule Node to check if the vendor exists (index >= 0) before proceeding with updates.
+  </Accordion>
+
+  <Accordion title="Group Invoices by Status">
+    Organize NetSuite invoices by their payment status for processing.
+
+    **Function:** Group objects by a key
+
+    | Field | Value |
+    |-------|-------|
+    | array | `{{netsuite_get_invoices.body.invoices}}` |
+    | key | `payment_status` |
+
+    **Output:**
 ```json
-{
-  "found_element": {
-    "Id": "123456",
-    "Name": "Found Record"
-  },
-  "index": 2
-}
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "paid": [
+          {"id": "INV-001", "payment_status": "paid", "amount": 1500},
+          {"id": "INV-003", "payment_status": "paid", "amount": 2200}
+        ],
+        "pending": [
+          {"id": "INV-002", "payment_status": "pending", "amount": 3000}
+        ],
+        "overdue": [
+          {"id": "INV-004", "payment_status": "overdue", "amount": 750}
+        ]
+      }
+    }
 ```
 
-### UUID Generation Output
+    **Use Case:** Process each status group differently, such as sending reminders for pending invoices or escalations for overdue ones.
+  </Accordion>
+
+  <Accordion title="Encrypt Sensitive Vendor Data">
+    Encrypt vendor bank account information before storing or transmitting.
+
+    **Function:** Encrypt a string
+
+    | Field | Value |
+    |-------|-------|
+    | string | `{{vendor.bank_account_number}}` |
+
+    **Output:**
 ```json
-{
-  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-}
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "encrypted": "aGVsbG8gd29ybGQ=..."
+      }
+    }
 ```
 
-### Math Operations Output
+    **Use Case:** Encrypt PII or financial data before sending to external systems or storing in logs.
+  </Accordion>
+
+  <Accordion title="Convert Purchase Order to EDI X12 Format">
+    Transform a JSON purchase order into EDI X12 format for transmission to trading partners.
+
+    **Function:** Convert JSON to X12 EDI string (custom function)
+
+    | Field | Value |
+    |-------|-------|
+    | jsonData | `{{purchase_order}}` |
+    | transaction_type | `850` |
+
+    **Output:**
 ```json
-{
-  "sum": 150.75,
-  "average": 30.15,
-  "count": 5
-}
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "edi_string": "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *...",
+        "transaction_type": "850"
+      }
+    }
 ```
 
-## Runtime Behavior
-
-### Function Execution Process
-
-The Functions Node processes operations in this order:
-
-1. **Function Validation**: Verifies selected function exists in the function library
-2. **Parameter Processing**: Resolves dynamic values and validates input data
-3. **Function Execution**: Runs the JavaScript function with provided inputs
-4. **Output Processing**: Formats and returns the function result
-5. **Error Handling**: Captures and returns any execution errors
-
-### Performance Characteristics
-- **Execution Time**: Most template functions complete quickly
-- **Memory Usage**: Lightweight execution with minimal memory footprint
-- **Concurrency**: Functions run independently and support parallel execution
-- **Caching**: Function definitions are cached for improved performance
-
-### Parameter Resolution
-- **Dynamic Values**: Variables like `{{previous_node.output}}` are resolved before execution
-- **Type Conversion**: Automatic conversion between string and numeric types when possible
-- **Null Handling**: Graceful handling of null or undefined parameter values
-- **Array Processing**: Efficient handling of large arrays from Salesforce queries
+    **Use Case:** Generate EDI documents for B2B transactions with trading partners who require X12 format.
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### Function Not Available
+<AccordionGroup>
+  <Accordion title="Function Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | Function not in dropdown | Verify the function exists in **More > Functions**. Check if it was created in the correct organization. |
+    | Function was deleted | Recreate the function or select an alternative function. Workflows using deleted functions will fail. |
+  </Accordion>
 
-**Problem**: Required function doesn't appear in dropdown
+  <Accordion title="Execution Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "undefined is not a function" | Check the function code for syntax errors. Verify all required libraries are imported correctly. |
+    | Function returns unexpected output | Review the function's input parameters and ensure values are passed correctly. Check the function code logic. |
+    | Timeout errors | Optimize the function code. Avoid long-running operations or external API calls with slow response times. |
+  </Accordion>
 
-**Solutions**:
-- Verify function was created and saved in **More > Functions** in main dashboard
-- Check function follows required JavaScript structure
-- Ensure function name doesn't conflict with existing template functions
-- Refresh the workflow editor to reload the function library
+  <Accordion title="Input Parameter Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Required parameter missing | Refer to the function code in **More > Functions** to identify required parameters. |
+    | Invalid data type | Ensure input values match expected types (string, array, object). Use a Custom Code node to transform data if needed. |
+    | Dynamic variable not resolving | Verify the source node has executed successfully and the variable path is correct. |
+  </Accordion>
+</AccordionGroup>
 
-### Parameter Validation Errors
+<Tip>Use the [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off logic that doesn't need to be reused. Reserve functions for code that will be used across multiple workflows.</Tip>
 
-**Problem**: Function fails with "missing required parameter" errors
+## What's Next
 
-**Solutions**:
-- Review the function code to identify truly required vs optional parameters
-- Verify dynamic parameter values (e.g., `{{variable}}`) resolve correctly
-- Test with static values first to isolate dynamic data issues
-- Check previous workflow steps provide expected output structure
-
-### Date Format Conversion Issues
-
-**Problem**: Date conversion returns invalid date errors
-
-**Solutions**:
-- Verify input date exactly matches the specified `from_format` pattern
-- Handle timezone indicators (Z, +00:00) correctly in format patterns
-- Test format patterns using date-fns documentation for reference
-- Add null/empty date validation in custom functions
-
-### Array Processing Failures
-
-**Problem**: Array functions fail with undefined or null errors
-
-**Solutions**:
-- Verify the input is actually an array before processing
-- Check that Salesforce queries return expected array structure
-- Handle empty arrays gracefully in function logic
-- Use Debug Node to inspect actual data structure from previous steps
-
-### Custom Function Execution Errors
-
-**Problem**: Custom functions throw runtime errors
-
-**Solutions**:
-- Add comprehensive error handling with try-catch blocks
-- Test functions with edge cases (null, empty, large data sets)
-- Use console.log for debugging during function development
-- Ensure all required parameters are handled properly
-
-### Library Import Issues
-
-**Problem**: Required JavaScript libraries are not available
-
-**Solutions**:
-- Use only supported libraries (date-fns, lodash, uuid, crypto, moment)
-- Check require() syntax matches Node.js patterns exactly
-- Verify library methods are called correctly
-- Contact support if additional libraries are needed for your use case
-
-<Tip>Use the Functions Node test functionality to debug parameter resolution and output formatting before deploying workflows to production environments.</Tip>
-
-## What's Next?
-
-- Learn about [Custom Code Node](/nodes/custom-code-node) for complex logic requiring full JavaScript flexibility beyond pre-built functions
-- Explore [Conditional Node](/nodes/conditional-node) to create workflow branches based on function outputs and results
-- Check out [Loop Node](/nodes/loop-node) to apply functions across arrays of Salesforce records or API responses
-- Review [Workflow Testing](/testing/workflow-testing) to validate function behavior across different data scenarios
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off custom logic
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on function output
+- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over grouped data from functions
+- [Transform Node](/developer-guide/workflows/nodes/transform) for JSONata-based data transformation

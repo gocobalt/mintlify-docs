@@ -1,297 +1,331 @@
 ---
-title: "Human Task Node"
-description: "Documentation for the Human Task Node in Cobalt Workflows."
-sidebarTitle: "Human Task"
+title: "Human Intervention Node"
+description: "Pause workflow execution and collect input from users via customizable forms delivered by email"
+sidebarTitle: "Human Intervention"
 ---
 
-# Human Task Node
+The Human Intervention Node pauses workflow execution and sends an email containing a link to a customizable form. The workflow remains paused until a recipient submits the form or the timeout period expires. This enables approval workflows, manual data entry, and human decision points within automated processes.
 
-## What does it do?
+## When to Use
 
-The Human Task Node allows you to pause workflow execution and wait for human intervention or approval before continuing. This node is essential for workflows that require manual review, approval, or data entry from users.
+- Require manager approval before processing large transactions
+- Collect missing data from users during workflow execution
+- Enable manual review checkpoints for compliance workflows
+- Request human decisions at critical workflow branch points
+- Gather feedback or confirmation before completing integrations
 
-**Common use cases:**
-- Require manager approval for large deals or contracts
-- Manual review of data quality before processing
-- Human verification of critical business decisions
-- Manual data entry for missing information
-- Approval workflows for expense reports or invoices
-- Quality assurance checks before data synchronization
-
-## Actions
-
-<ResponseField name="Action" type="string">
-  <Expandable title="Available Actions">
-    <ResponseField name="Create Human Task" type="action">
-      Creates a human task that pauses workflow execution and waits for user input or approval. Takes task configuration as input, sends notifications to assigned users, and resumes workflow when task is completed.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
+<Info>Forms must be created in **More > User Forms** before they can be used in this node. Each form can include Text, Number, Date, Dropdown, and Radio input fields.</Info>
 
 ## Input Parameters
 
-### Create Human Task
-<ParamField path="task_name" type="string" required="yes">
-  A descriptive name for the human task that will be displayed to users.
-  Example: `"Approve Large Deal"` or `"Review Data Quality"`
+### SMTP Configuration
+
+You can either use organization-level SMTP settings or configure custom SMTP credentials for sending the form email.
+
+<ParamField path="Use Org SMTP" type="toggle">
+  Enable to use SMTP settings configured at the organization level. When enabled, the SMTP Settings section is hidden.
 </ParamField>
 
-<ParamField path="task_description" type="string" required="yes">
-  Detailed description of what the user needs to do or review.
-  Example: `"Please review the deal details and approve if all terms are acceptable"`
+<AccordionGroup>
+  <Accordion title="SMTP Settings (Custom Configuration)">
+    Configure custom SMTP credentials when **Use Org SMTP** is disabled.
+
+    <ParamField path="SMTP Host" type="string">
+      Hostname or IP address of your SMTP server.
+    </ParamField>
+
+    <ParamField path="SMTP Port" type="number">
+      Port number for the SMTP server. Common ports: `587` (TLS), `465` (SSL), `25` (unencrypted).
+    </ParamField>
+
+    <ParamField path="SMTP Username" type="string">
+      Username for SMTP server authentication.
+    </ParamField>
+
+    <ParamField path="SMTP Password" type="string">
+      Password for SMTP server authentication.
+    </ParamField>
+
+    <ParamField path="Use TLS Encryption" type="toggle">
+      Enable TLS encryption for secure email transmission.
+    </ParamField>
+  </Accordion>
+</AccordionGroup>
+
+### Form and Email Configuration
+
+<ParamField path="Forms" type="dropdown" required>
+  Select the form to send to recipients. Forms are created and managed in **More > User Forms**.
 </ParamField>
 
-<ParamField path="assigned_users" type="array" required="yes">
-  Array of user IDs or email addresses who should receive the task.
-  Example: `["user@company.com", "manager@company.com"]` or `{{workflow_config.approvers}}`
+<ParamField path="Sender Email" type="string" required>
+  Email address that appears as the sender. Must be a valid address authorized by your SMTP server.
 </ParamField>
 
-<ParamField path="task_data" type="object" required="optional">
-  Additional data to provide to the user for review or decision making.
-  Example: `{"deal_amount": 50000, "customer_name": "Acme Corp", "terms": "Net 30"}`
+<ParamField path="Receiver Emails" type="string" required>
+  Comma-separated list of recipient email addresses. If multiple recipients are specified, only the first person to submit the form will complete the task.
 </ParamField>
 
-<ParamField path="timeout_hours" type="number" required="optional">
-  Number of hours before the task times out. If not specified, task will wait indefinitely.
-  Example: `24` or `48`
+<ParamField path="Subject" type="string" required>
+  Email subject line. Supports dynamic variables using `{{variable}}` syntax.
 </ParamField>
 
-<ParamField path="approval_required" type="boolean" required="optional">
-  Whether the task requires explicit approval or just completion. Default is true.
-  Example: `true` or `false`
+<ParamField path="Body" type="textarea" required>
+  Email body content. Use `[[form_url]]` to insert the form link. Supports dynamic variables using `{{variable}}` syntax.
 </ParamField>
 
-<Info>Human tasks can be configured to require approval, allow comments, and include custom data for review. Tasks will pause workflow execution until completed or timed out.</Info>
+<ParamField path="Timeout" type="number" required>
+  Time in minutes within which the form must be submitted. Minimum value: `1`. If the timeout expires before submission, the form is marked as timed out and the workflow continues.
+</ParamField>
+
+<Warning>The `[[form_url]]` placeholder must be included in the Body field. Without it, recipients will not receive the link to submit the form.</Warning>
 
 ## Output
 
-The Human Task Node outputs the result of the human task completion.
+The node returns the form submission data when completed successfully.
 
-### Human Task Response
-
+**Success Response:**
 ```json
 {
-  "task_id": "task_12345",
-  "status": "approved",
-  "approved_by": "user@company.com",
-  "approved_at": "2024-01-15T14:30:00Z",
-  "comments": "All terms look good, approved for processing",
-  "task_data": {
-    "deal_amount": 50000,
-    "customer_name": "Acme Corp"
+  "status": "Success",
+  "node_id": "12",
+  "node_name": "Human Intervention",
+  "body": {
+    "approval_decision": "approved",
+    "reviewer_comments": "All details verified, approved for processing",
+    "reviewed_amount": 75000
   }
 }
 ```
 
-## Adding to Workflow
+**Timeout Response:**
+```json
+{
+  "status": "Success",
+  "node_id": "12",
+  "node_name": "Human Intervention",
+  "body": {
+    "form_status": "timed_out"
+  }
+}
+```
+
+**Error Response:**
+```json
+{
+  "status": "Errored",
+  "node_id": "12",
+  "node_name": "Human Intervention",
+  "body": "SMTP authentication failed"
+}
+```
+
+## Adding to Your Workflow
 
 <Steps>
-  <Step title="Drag Human Task Node to canvas">
-    From the **Control Nodes** section, drag the Human Task Node to your workflow canvas where you need human intervention.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/human-task-node-drag-drop.png" alt="Dragging Human Task Node from control nodes" />
-    </Frame>
+  <Step title="Create a form">
+    Navigate to **More > User Forms** and create a new form. Add input fields (Text, Number, Date, Dropdown, Radio) that capture the information you need from reviewers.
   </Step>
-  <Step title="Configure task details">
-    Set up the task name, description, and assign users who will receive the task notification.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/human-task-node-configuration.png" alt="Configuring human task details" />
-    </Frame>
+  
+  <Step title="Add the Human Intervention Node">
+    In the workflow editor, click **Add Node** and select **Human Intervention** from the Utility Nodes section.
   </Step>
-  <Step title="Add task data">
-    Include any relevant data that users need to review or make decisions about.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/human-task-node-data-configuration.png" alt="Adding data for human task review" />
-    </Frame>
+  
+  <Step title="Configure SMTP settings">
+    Enable **Use Org SMTP** to use organization-level settings, or expand **SMTP Settings** to configure custom credentials.
   </Step>
-  <Step title="Set timeout and approval settings">
-    Configure how long the task can wait and whether approval is required.
-    <Frame>
-      <img height="200" src="/images/workflow/nodes/human-task-node-settings.png" alt="Setting timeout and approval requirements" />
-    </Frame>
+  
+  <Step title="Select the form">
+    Choose the form you created from the **Forms** dropdown.
+  </Step>
+  
+  <Step title="Configure email details">
+    Enter the **Sender Email**, **Receiver Emails**, **Subject**, and **Body**. Include `[[form_url]]` in the body to insert the form link.
+  </Step>
+  
+  <Step title="Set timeout">
+    Enter the **Timeout** value in minutes. The workflow will continue after this period if no submission is received.
+  </Step>
+  
+  <Step title="Handle the response">
+    Add subsequent nodes to process the form submission data. Use a [Rule Node](/developer-guide/workflows/nodes/rule) to branch based on approval decisions or timeout status.
   </Step>
 </Steps>
 
-<Info>Human tasks will pause workflow execution until the assigned users complete the task or the timeout period expires.</Info>
-
 ## Examples
 
-### Example 1: Manager Approval for Large Deals
+<AccordionGroup>
+  <Accordion title="SAP Purchase Order Approval">
+    Require manager approval for SAP purchase orders above a threshold before syncing to the ERP system.
 
-This example creates a human task requiring manager approval for deals over $50,000:
+    **Form Configuration (User Forms):**
 
-```javascript
-// Workflow configuration
-{
-  "name": "human_task",
-  "taskReferenceName": "manager_approval",
-  "type": "HUMAN_TASK",
-  "action": "Create Human Task",
-  "inputParameters": {
-    "task_name": "Approve Large Deal",
-    "task_description": "Please review and approve this deal for Acme Corp worth $75,000",
-    "assigned_users": ["manager@company.com", "director@company.com"],
-    "task_data": {
-      "deal_amount": 75000,
-      "customer_name": "Acme Corp",
-      "deal_type": "Enterprise License",
-      "payment_terms": "Net 30"
-    },
-    "timeout_hours": 48,
-    "approval_required": true
-  }
-}
+    | Field Name | Type | Options |
+    |------------|------|---------|
+    | Approval Decision | Dropdown | Approve, Reject, Request Changes |
+    | Reviewer Comments | Text | - |
+    | Approved Amount | Number | - |
+
+    **Node Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Forms | `PO Approval Form` |
+    | Sender Email | `workflows@yourcompany.com` |
+    | Receiver Emails | `{{sap_po.approver_email}}` |
+    | Subject | `Approval Required: SAP PO #{{sap_po.PONumber}} - {{sap_po.VendorName}}` |
+    | Timeout | `1440` (24 hours) |
+
+    **Body:**
+```
+    A new purchase order requires your approval.
+
+    PO Number: {{sap_po.PONumber}}
+    Vendor: {{sap_po.VendorName}}
+    Total Amount: ${{sap_po.TotalAmount}}
+    
+    Please review and submit your decision: [[form_url]]
 ```
 
-### Example 2: Data Quality Review
+    **Post-Processing:**
+    Use a Rule Node to check `{{human_intervention.body.approval_decision}}` and route to either the SAP sync node or a rejection notification.
+  </Accordion>
 
-This example creates a task for manual review of data quality issues:
+  <Accordion title="NetSuite Journal Entry Review">
+    Enable finance team review of journal entries before posting to NetSuite.
 
-```javascript
-// Workflow configuration
-{
-  "name": "human_task",
-  "taskReferenceName": "data_quality_review",
-  "type": "HUMAN_TASK",
-  "action": "Create Human Task",
-  "inputParameters": {
-    "task_name": "Review Data Quality Issues",
-    "task_description": "Please review and fix the data quality issues found in the customer import",
-    "assigned_users": ["data_analyst@company.com"],
-    "task_data": {
-      "import_id": "imp_12345",
-      "issues_found": [
-        {"field": "email", "issue": "Invalid format", "count": 15},
-        {"field": "phone", "issue": "Missing country code", "count": 8}
-      ],
-      "total_records": 500
-    },
-    "timeout_hours": 24,
-    "approval_required": false
-  }
-}
+    **Form Configuration (User Forms):**
+
+    | Field Name | Type | Options |
+    |------------|------|---------|
+    | Review Status | Radio | Verified, Needs Correction |
+    | Correction Notes | Text | - |
+    | Posting Date | Date | - |
+
+    **Node Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Forms | `Journal Entry Review` |
+    | Sender Email | `netsuite-integrations@yourcompany.com` |
+    | Receiver Emails | `finance-review@yourcompany.com,controller@yourcompany.com` |
+    | Subject | `Review Required: Journal Entry {{journal.reference}} - ${{journal.total}}` |
+    | Timeout | `2880` (48 hours) |
+
+    **Body:**
 ```
+    A journal entry is pending review before posting to NetSuite.
 
-### Example 3: Expense Report Approval
+    Reference: {{journal.reference}}
+    Total Debits: ${{journal.total_debits}}
+    Total Credits: ${{journal.total_credits}}
+    Description: {{journal.memo}}
+    
+    Review and confirm: [[form_url]]
 
-This example creates an approval task for expense reports:
-
-```javascript
-// Workflow configuration
-{
-  "name": "human_task",
-  "taskReferenceName": "expense_approval",
-  "type": "HUMAN_TASK",
-  "action": "Create Human Task",
-  "inputParameters": {
-    "task_name": "Approve Expense Report",
-    "task_description": "Please review and approve the expense report for John Doe",
-    "assigned_users": ["finance@company.com"],
-    "task_data": {
-      "employee_name": "John Doe",
-      "expense_amount": 1250.75,
-      "expense_items": [
-        {"item": "Conference Registration", "amount": 800},
-        {"item": "Travel Expenses", "amount": 450.75}
-      ],
-      "report_id": "EXP-2024-001"
-    },
-    "timeout_hours": 72,
-    "approval_required": true
-  }
-}
+    This request will expire in 48 hours.
 ```
+  </Accordion>
 
-## Runtime Behavior
+  <Accordion title="Tipalti Vendor Onboarding Verification">
+    Collect additional verification from compliance team before activating new vendors in Tipalti.
 
-<Warning>Human tasks will pause workflow execution indefinitely until completed or timed out. Ensure proper timeout settings and user notifications are configured.</Warning>
+    **Form Configuration (User Forms):**
 
-### Task Lifecycle
+    | Field Name | Type | Options |
+    |------------|------|---------|
+    | Verification Status | Dropdown | Verified, Failed, Pending Documents |
+    | Risk Level | Dropdown | Low, Medium, High |
+    | Compliance Notes | Text | - |
+    | Verification Date | Date | - |
 
-The Human Task Node manages tasks through the following lifecycle:
+    **Node Configuration:**
 
-1. **Task Creation**: Task is created and assigned to specified users
-2. **Notification**: Users receive notifications about the pending task
-3. **User Action**: Users review data and take required action (approve/reject/complete)
-4. **Task Completion**: Task is marked as complete with user response
-5. **Workflow Resume**: Workflow execution continues with task results
+    | Field | Value |
+    |-------|-------|
+    | Forms | `Vendor Verification Form` |
+    | Sender Email | `vendor-onboarding@yourcompany.com` |
+    | Receiver Emails | `compliance@yourcompany.com` |
+    | Subject | `Vendor Verification: {{tipalti_vendor.name}} ({{tipalti_vendor.country}})` |
+    | Timeout | `4320` (72 hours) |
 
-### User Experience
+    **Body:**
+```
+    A new vendor requires compliance verification before activation in Tipalti.
 
-Users assigned to human tasks will:
+    Vendor Name: {{tipalti_vendor.name}}
+    Country: {{tipalti_vendor.country}}
+    Tax ID: {{tipalti_vendor.tax_id}}
+    Bank Country: {{tipalti_vendor.bank_country}}
+    
+    Please complete the verification: [[form_url]]
+```
+  </Accordion>
 
-- **Receive notifications** via email and in-app notifications
-- **Access task details** including description and review data
-- **Take action** by approving, rejecting, or completing the task
-- **Add comments** to provide context for their decision
-- **View task history** and previous actions taken
+  <Accordion title="Handling Timeout with Escalation">
+    Configure a workflow that escalates to a backup approver when the primary approver times out.
 
-### Timeout Handling
+    **Workflow Pattern:**
 
-If a task times out:
+    1. **First Human Intervention Node** - Send to primary approver with 24-hour timeout
+    2. **Rule Node** - Check if `{{node.body.form_status}}` equals `timed_out`
+    3. **Second Human Intervention Node** (on timeout branch) - Send to backup approver or manager
 
-- **Workflow continues** with timeout status
-- **Timeout notification** is sent to workflow owner
-- **Default action** can be configured (approve/reject/error)
-- **Audit trail** is maintained for compliance
+    **First Node Timeout Check (Rule Node):**
+
+    | Condition | Value |
+    |-----------|-------|
+    | Field | `{{human_intervention_1.body.form_status}}` |
+    | Operator | `equals` |
+    | Value | `timed_out` |
+
+    This pattern ensures critical approvals are never blocked by unresponsive reviewers.
+  </Accordion>
+</AccordionGroup>
 
 ## Troubleshooting
 
-### Task Not Assigned
+<AccordionGroup>
+  <Accordion title="Email Delivery Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Email not received | Verify SMTP credentials are correct. Check spam/junk folders. Confirm sender email is authorized by the SMTP server. |
+    | SMTP authentication failed | Verify username and password. Some providers require app-specific passwords. Check if 2FA is blocking the connection. |
+    | TLS connection errors | Ensure **Use TLS Encryption** matches your SMTP server requirements. Verify the port number is correct for TLS (typically 587). |
+    | Emails going to spam | Configure SPF, DKIM, and DMARC records for your sending domain. Use a verified sender address. |
+  </Accordion>
 
-**Problem**: Users don't receive task notifications
+  <Accordion title="Form Submission Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Form link not in email | Ensure `[[form_url]]` is included in the Body field. The placeholder is case-sensitive. |
+    | Form shows "expired" message | The timeout period has elapsed. Increase the **Timeout** value or ensure recipients respond promptly. |
+    | Multiple people trying to submit | Only the first submission is accepted. Subsequent recipients will see a "form already submitted" message. |
+    | Form fields not appearing | Verify the form was saved correctly in **More > User Forms**. Check that fields were added to the form canvas. |
+  </Accordion>
 
-**Solutions**:
-- Verify user email addresses are correct and active
-- Check user permissions and access to the workflow
-- Ensure notification settings are properly configured
-- Review task assignment logic and user availability
+  <Accordion title="Workflow Continuation Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Workflow stuck waiting | Check if the timeout has been reached. Verify the form was submitted by checking **Logs > Executions**. |
+    | Form data not accessible | Reference form fields using `{{node_name.body.field_name}}` syntax. Verify field names match exactly as defined in the form. |
+    | Timeout not triggering | Confirm the **Timeout** value is in minutes. Minimum value is 1 minute. |
+  </Accordion>
 
-### Task Timeout Issues
+  <Accordion title="SMTP Configuration Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Org SMTP not working | Verify SMTP settings are configured in **Organization > Settings**. Check that the Org SMTP is properly authenticated. |
+    | Connection refused | Verify the SMTP host and port are correct. Check firewall rules. Confirm the SMTP server is accessible from Refold's infrastructure. |
+    | Sender address rejected | Use an email address that belongs to a domain authorized in your SMTP server configuration. |
+  </Accordion>
+</AccordionGroup>
 
-**Problem**: Tasks timeout unexpectedly or don't timeout when expected
+<Tip>Create dedicated forms for different approval types rather than reusing generic forms. This keeps form fields relevant and improves completion rates.</Tip>
 
-**Solutions**:
-- Verify timeout_hours parameter is set correctly
-- Check timezone settings for timeout calculations
-- Review workflow execution logs for timeout events
-- Ensure proper error handling for timeout scenarios
+## What's Next
 
-### User Access Problems
-
-**Problem**: Users cannot access or complete assigned tasks
-
-**Solutions**:
-- Verify user has proper permissions to view and complete tasks
-- Check if user account is active and not suspended
-- Review task access controls and security settings
-- Ensure proper authentication and session management
-
-### Workflow Continuation Issues
-
-**Problem**: Workflow doesn't resume after task completion
-
-**Solutions**:
-- Check task completion status and response format
-- Verify workflow execution logs for continuation events
-- Review conditional logic that depends on task results
-- Ensure proper error handling for task completion
-
-### Data Access Problems
-
-**Problem**: Users cannot see task data or relevant information
-
-**Solutions**:
-- Verify task_data parameter includes all necessary information
-- Check data formatting and structure for user interface
-- Review data access permissions and security settings
-- Ensure sensitive data is properly handled and displayed
-
-<Tip>Use the Debug Node after Human Task nodes to inspect task completion data and ensure proper workflow continuation based on user decisions.</Tip>
-
-## What's Next?
-
-- Learn about [Conditional Node](/nodes/conditional-node) to create different workflow paths based on task approval/rejection
-- Explore [Email Node](/nodes/email-node) to send additional notifications about task status
-- Check out [Delay Node](/nodes/delay-node) to add time-based logic around human tasks
-- Review [Workflow Testing](/testing/workflow-testing) to test human task scenarios 
+- [User Forms](/developer-guide/advanced/user-forms) to learn how to create and manage forms
+- [Rule Node](/developer-guide/workflows/nodes/rule) to branch workflows based on form responses
+- [Send Email Node](/developer-guide/workflows/nodes/send-email) for follow-up notifications after form submission
+- [Delay Node](/developer-guide/workflows/nodes/delay) to add waiting periods before escalation

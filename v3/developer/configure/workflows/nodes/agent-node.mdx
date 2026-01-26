@@ -1,8 +1,398 @@
 ---
 title: "Agent Node"
-description: "Configure and use the Agent node in workflows"
+description: "Execute AI-powered tasks using large language models with structured outputs, memory, and MCP server integrations"
+sidebarTitle: "Agent"
 ---
 
-# Agent Node
+The Agent Node enables you to integrate AI capabilities directly into your workflows using large language models (LLMs). It processes prompts with dynamic data from previous nodes, supports structured JSON outputs, maintains conversation memory across executions, and can connect to MCP servers for extended capabilities.
 
-Content coming soon.
+## When to Use
+
+- Analyze and extract insights from enterprise data (invoices, contracts, support tickets)
+- Generate summaries, recommendations, or classifications based on workflow data
+- Transform unstructured text into structured JSON for downstream processing
+- Build conversational workflows that maintain context across multiple interactions
+- Extend agent capabilities with MCP servers for external tool access
+
+<Info>Configure your LLM API keys under **Organization > Settings** before using the Agent Node.</Info>
+
+## Input Parameters
+
+### Core Configuration
+
+<ParamField path="Model" type="dropdown" required>
+  Select the AI model to process prompts. Supports models from OpenAI (GPT-4o, GPT-4.1, GPT-5), Google (Gemini 2.0, Gemini 2.5), and Anthropic (Claude 3.5, Claude 3.7, Claude Opus 4).
+</ParamField>
+
+<ParamField path="User Prompt" type="text area" required>
+  The input text or question to send to the AI model. Supports dynamic variables from previous nodes using `{{variable}}` syntax.
+</ParamField>
+
+<ParamField path="System Prompt" type="text area">
+  Instructions that define the agent's behavior, role, and response style. Sets context before processing the user prompt.
+</ParamField>
+
+<ParamField path="Structured Output" type="code editor">
+  JSON schema that enforces a specific output format from the agent. When defined, the agent returns responses matching this schema structure.
+</ParamField>
+
+**Structured Output Schema Example:**
+```json
+{
+  "name": "analysis_result",
+  "strict": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string",
+        "description": "Brief summary of the analysis"
+      },
+      "confidence_score": {
+        "type": "number",
+        "description": "Confidence level from 0 to 1"
+      },
+      "categories": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Relevant categories identified"
+      }
+    }
+  }
+}
+```
+
+### MCP Servers
+
+<ParamField path="MCP Servers" type="code editor">
+  Configure Model Context Protocol servers to extend the agent's capabilities with external tools and data sources.
+</ParamField>
+
+**MCP Server Configuration Example:**
+```json
+[
+  {
+    "name": "WeatherMCP",
+    "url": "https://api.weather.com/v3/weather/daily",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "query_params": {
+      "apiKey": "your_api_key"
+    }
+  }
+]
+```
+
+### Memory
+
+Enable memory to maintain conversation context across multiple agent interactions within a workflow or across workflow executions.
+
+<ParamField path="Store Chat History" type="boolean">
+  Enable to save conversation history for multi-turn interactions.
+</ParamField>
+
+<ParamField path="Chat History Identifier" type="string">
+  Unique identifier to group related conversations. Use dynamic variables to create user-specific or session-specific histories.
+</ParamField>
+
+<ParamField path="Recent Messages to Include" type="number">
+  Number of previous messages to include in the agent's context. Default: `10`
+</ParamField>
+
+## Output
+
+The node output structure is determined by the **Structured Output** schema you define. If no schema is specified, the agent returns a text response.
+
+**Example Output (with structured schema):**
+```json
+{
+  "summary": "The vendor invoice contains 3 line items totaling $15,420.00",
+  "confidence_score": 0.95,
+  "categories": ["procurement", "accounts_payable", "vendor_management"]
+}
+```
+
+**Error Response:**
+```json
+{
+  "status": "Errored",
+  "node_id": "20",
+  "node_name": "Agent",
+  "body": "No API Key is provided for LLM Node, Please provide API Key in Org Settings"
+}
+```
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Agent Node">
+    In the workflow editor, click **Add Node** and select **Agent** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select a model">
+    Choose an AI model from the dropdown. Different models have varying capabilities, speed, and cost characteristics.
+  </Step>
+  
+  <Step title="Configure prompts">
+    Enter the **User Prompt** with your query or instruction. Use `{{variable}}` syntax to include data from previous nodes. Optionally add a **System Prompt** to define the agent's behavior.
+  </Step>
+  
+  <Step title="Define structured output (optional)">
+    If you need the response in a specific JSON format, define a JSON schema in the **Structured Output** field.
+  </Step>
+  
+  <Step title="Configure MCP servers (optional)">
+    Add MCP server configurations to extend the agent's capabilities with external tools.
+  </Step>
+  
+  <Step title="Enable memory (optional)">
+    Click **Enable** under Memory to maintain conversation history. Configure the **Chat History Identifier** and **Recent Messages to Include**.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute a test and verify the agent's response.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Analyze SAP Purchase Order">
+    Extract key information from an SAP purchase order and classify it for routing.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Model | `openai/gpt-4o` |
+    | User Prompt | `Analyze this SAP purchase order and extract key details: {{sap_po_response}}` |
+
+    **System Prompt:**
+```
+    You are a procurement analyst. Extract purchase order details and classify by urgency and department. Be concise and accurate.
+```
+
+    **Structured Output:**
+```json
+    {
+      "name": "po_analysis",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "po_number": { "type": "string" },
+          "vendor_name": { "type": "string" },
+          "total_amount": { "type": "number" },
+          "currency": { "type": "string" },
+          "urgency": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "department": { "type": "string" },
+          "requires_approval": { "type": "boolean" }
+        }
+      }
+    }
+```
+
+    **Output:**
+```json
+    {
+      "po_number": "4500012345",
+      "vendor_name": "Acme Industrial Supplies",
+      "total_amount": 24500.00,
+      "currency": "USD",
+      "urgency": "high",
+      "department": "Manufacturing",
+      "requires_approval": true
+    }
+```
+  </Accordion>
+
+  <Accordion title="Classify NetSuite Support Tickets">
+    Automatically categorize and prioritize incoming support tickets.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Model | `anthropic/claude-3.7-sonnet` |
+    | User Prompt | `Classify this support ticket: {{netsuite_case.description}}` |
+
+    **System Prompt:**
+```
+    You are a support ticket classifier. Analyze the ticket content and determine category, priority, and suggested routing. Use only the predefined categories.
+```
+
+    **Structured Output:**
+```json
+    {
+      "name": "ticket_classification",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "category": { 
+            "type": "string", 
+            "enum": ["billing", "technical", "account", "feature_request", "general"] 
+          },
+          "priority": { 
+            "type": "string", 
+            "enum": ["low", "medium", "high", "urgent"] 
+          },
+          "sentiment": { 
+            "type": "string", 
+            "enum": ["positive", "neutral", "negative", "angry"] 
+          },
+          "route_to": { "type": "string" },
+          "summary": { "type": "string" }
+        }
+      }
+    }
+```
+
+    **Output:**
+```json
+    {
+      "category": "billing",
+      "priority": "high",
+      "sentiment": "negative",
+      "route_to": "billing_team",
+      "summary": "Customer disputing invoice charges for Q4 services"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Generate Tipalti Payment Summary">
+    Create a human-readable summary of payment batch status.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Model | `google/gemini-2.5-flash` |
+    | User Prompt | `Summarize this payment batch for the finance team: {{tipalti_batch_response}}` |
+
+    **System Prompt:**
+```
+    You are a finance assistant. Create clear, actionable summaries of payment batches. Highlight any issues or items requiring attention.
+```
+
+    **Structured Output:**
+```json
+    {
+      "name": "payment_summary",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "batch_id": { "type": "string" },
+          "total_payments": { "type": "number" },
+          "total_amount": { "type": "number" },
+          "successful": { "type": "number" },
+          "failed": { "type": "number" },
+          "pending_review": { "type": "number" },
+          "executive_summary": { "type": "string" },
+          "action_items": { 
+            "type": "array", 
+            "items": { "type": "string" } 
+          }
+        }
+      }
+    }
+```
+
+    **Output:**
+```json
+    {
+      "batch_id": "BATCH-2024-0142",
+      "total_payments": 47,
+      "total_amount": 128450.00,
+      "successful": 44,
+      "failed": 2,
+      "pending_review": 1,
+      "executive_summary": "Payment batch 94% successful. 2 failures due to invalid bank details, 1 payment pending compliance review.",
+      "action_items": [
+        "Contact vendor VEND-892 to update bank account information",
+        "Contact vendor VEND-1204 to verify routing number",
+        "Review payment to VEND-445 for compliance approval"
+      ]
+    }
+```
+  </Accordion>
+
+  <Accordion title="Conversational Agent with Memory">
+    Build a multi-turn conversation that maintains context across interactions.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Model | `openai/gpt-4.1` |
+    | User Prompt | `{{user_message}}` |
+    | Store Chat History | Enabled |
+    | Chat History Identifier | `{{user_id}}_support_session` |
+    | Recent Messages to Include | `10` |
+
+    **System Prompt:**
+```
+    You are a helpful enterprise support assistant. You have access to the user's account information and can help with integration questions. Maintain context from previous messages in the conversation.
+```
+
+    **Conversation Flow:**
+
+    Turn 1:
+    - User: "I'm having trouble with my SAP integration"
+    - Agent: "I can help with SAP integration issues. Could you describe what specific problem you're experiencing?"
+
+    Turn 2:
+    - User: "The purchase orders aren't syncing"
+    - Agent: "I see you're having PO sync issues. Let me check a few things. Are you seeing any error messages in the workflow logs?"
+
+    Turn 3:
+    - User: "Yes, it says authentication failed"
+    - Agent: "Based on our conversation, it sounds like your SAP credentials may have expired. You can update them under Settings > Credentials > SAP. Would you like me to guide you through the process?"
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="API Key Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | No API Key provided | Configure LLM API keys under **Organization > Settings**. |
+    | Invalid API key | Verify the API key is correct and has not expired. Regenerate if needed. |
+    | Rate limit exceeded | Check your LLM provider's rate limits. Consider using a different model or adding delays between requests. |
+  </Accordion>
+
+  <Accordion title="Response Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Response doesn't match schema | Review your structured output schema for errors. Ensure property types and constraints are valid JSON Schema. |
+    | Empty or incomplete response | Check if the prompt is clear and provides sufficient context. Verify input variables are resolving correctly. |
+    | Timeout errors | Reduce prompt complexity or use a faster model variant. Check if the model is experiencing high load. |
+  </Accordion>
+
+  <Accordion title="Memory Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Conversation history not persisting | Verify **Store Chat History** is enabled and **Chat History Identifier** is consistent across executions. |
+    | Agent losing context | Increase **Recent Messages to Include** value. Check if the identifier is unique per conversation. |
+    | Unexpected context in responses | Verify the **Chat History Identifier** is creating separate histories for different users or sessions. |
+  </Accordion>
+
+  <Accordion title="MCP Server Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | MCP server connection failed | Verify the server URL is correct and accessible. Check authentication headers and query parameters. |
+    | Tool not available | Ensure the MCP server exposes the required tools. Review server documentation for available capabilities. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) before the Agent Node to prepare and format complex input data for better prompt quality.</Tip>
+
+## What's Next
+
+- [MCP Overview](/developer-guide/mcp/overview) to understand how agents interact with enterprise systems
+- [Transform Node](/developer-guide/workflows/nodes/transform) to process agent outputs with JSONata
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on agent responses
+- [Loop Node](/developer-guide/workflows/nodes/loop) to process multiple items with the agent
