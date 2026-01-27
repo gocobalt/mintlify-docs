@@ -1,0 +1,325 @@
+---
+title: "React SDK"
+description: "Embed pre-built integration components in your React application"
+sidebarTitle: "React SDK"
+---
+
+The React SDK provides ready-to-use components for integrating Cobalt into your React application. It includes a pre-built configuration modal that handles connection management and workflow settings with minimal code.
+
+<Tip>
+View the source code and examples on [GitHub](https://github.com/gocobalt/react-cobalt-js).
+</Tip>
+
+## When to Use
+
+- Quickly embed integration UI in a React application
+- Use pre-built components that match common integration patterns
+- Reduce development time with ready-made configuration modals
+- Need a working integration UI with minimal customization
+
+<Info>
+For fully custom UIs, use the [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) which provides the same functionality with complete design control.
+</Info>
+
+## Prerequisites
+
+Before using the React SDK:
+
+1. **Create a Linked Account** for your user using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#createlinkedaccount)
+2. **Generate a Session Token** using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#gettokenforlinkedaccount)
+
+<Warning>
+Session tokens expire after 24 hours. Generate a new token for each user session.
+</Warning>
+
+## Installation
+
+Install both the React SDK and the underlying JavaScript SDK.
+```bash
+npm install --save @cobaltio/react-cobalt-js @cobaltio/cobalt-js@^8
+```
+
+## Components
+
+<AccordionGroup>
+  <Accordion title="Provider">
+    Context provider that supplies the session token to all child components. Wrap your integration components with `Provider` at the appropriate level in your component tree.
+
+    <ParamField path="sessionToken" type="string" required>
+      Session token generated for the linked account.
+    </ParamField>
+```jsx
+import { Provider } from "@cobaltio/react-cobalt-js";
+
+function App() {
+  const [sessionToken, setSessionToken] = useState(null);
+  
+  useEffect(() => {
+    // Fetch token from your backend
+    fetchSessionToken().then(setSessionToken);
+  }, []);
+
+  if (!sessionToken) return <Loading />;
+
+  return (
+    <Provider sessionToken={sessionToken}>
+      <IntegrationsPage />
+    </Provider>
+  );
+}
+```
+
+    <Warning>
+    The `Provider` must wrap any component that uses `Config`. Place it high enough in your component tree to cover all integration-related components.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="Config">
+    Pre-built configuration modal for managing application connections and settings. Renders a complete integration configuration interface including connection status, field inputs, and workflow toggles.
+
+    <ParamField path="slug" type="string" required>
+      Application identifier. The component only renders when `slug` is provided.
+    </ParamField>
+
+    <ParamField path="id" type="string">
+      Unique configuration identifier. Defaults to `linked_account_id` if not provided.
+    </ParamField>
+
+    <ParamField path="labels" type="object">
+      Dynamic labels for field mapping. Used with map-type fields.
+    </ParamField>
+
+    <ParamField path="style" type="object">
+      CSS styles to override the component's container styling.
+    </ParamField>
+```jsx
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+
+function IntegrationModal({ appSlug, onClose }) {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <Provider sessionToken={sessionToken}>
+          <Config
+            slug={appSlug}
+            id="user_config_123"
+            labels={{}}
+            style={{
+              borderRadius: 8,
+              maxWidth: 450,
+            }}
+          />
+        </Provider>
+      </div>
+    </div>
+  );
+}
+```
+
+    <Info>
+    The `Config` component handles the entire integration flow: displaying connection status, initiating OAuth, rendering configuration fields, and saving settings.
+    </Info>
+  </Accordion>
+</AccordionGroup>
+
+## Complete Example
+
+This example shows a typical integration page implementation with the React SDK.
+```jsx
+import React, { useState, useEffect } from "react";
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+import { Cobalt } from "@cobaltio/cobalt-js";
+
+function IntegrationsPage() {
+  const [sessionToken, setSessionToken] = useState(null);
+  const [apps, setApps] = useState([]);
+  const [selectedApp, setSelectedApp] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch session token from your backend
+  useEffect(() => {
+    async function initialize() {
+      try {
+        // Replace with your actual API call
+        const response = await fetch("/api/cobalt/session-token");
+        const { token } = await response.json();
+        setSessionToken(token);
+
+        // Initialize Cobalt to fetch apps
+        const cobalt = new Cobalt({ token });
+        const applications = await cobalt.getApp();
+        setApps(applications);
+      } catch (error) {
+        console.error("Failed to initialize:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initialize();
+  }, []);
+
+  if (loading) {
+    return <div className="loading">Loading integrations...</div>;
+  }
+
+  return (
+    <Provider sessionToken={sessionToken}>
+      <div className="integrations-container">
+        <h1>Integrations</h1>
+        
+        <div className="apps-grid">
+          {apps.map(app => (
+            <div key={app.slug} className="app-card">
+              <img src={app.icon} alt={app.name} />
+              <h3>{app.name}</h3>
+              <p>{app.description}</p>
+              <button onClick={() => setSelectedApp(app.slug)}>
+                Configure
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Configuration Modal */}
+        {selectedApp && (
+          <div className="modal-overlay" onClick={() => setSelectedApp(null)}>
+            <div 
+              className="modal-content" 
+              onClick={e => e.stopPropagation()}
+            >
+              <button 
+                className="close-btn" 
+                onClick={() => setSelectedApp(null)}
+              >
+                ×
+              </button>
+              
+              <Config
+                slug={selectedApp}
+                id="default"
+                style={{
+                  borderRadius: 8,
+                  maxWidth: 450,
+                  padding: 20,
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </Provider>
+  );
+}
+
+export default IntegrationsPage;
+```
+
+## Styling
+
+The `Config` component accepts a `style` prop for basic customization. For more extensive styling, wrap the component and apply CSS to the container.
+```jsx
+<Config
+  slug="slack"
+  style={{
+    borderRadius: 8,
+    maxWidth: 450,
+    padding: 16,
+    backgroundColor: "#ffffff",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  }}
+/>
+```
+```css
+/* Custom modal styling */
+.integration-modal .config-container {
+  font-family: inherit;
+}
+
+.integration-modal button {
+  background-color: #4f46e5;
+  border-radius: 6px;
+}
+```
+
+## Combining with JavaScript SDK
+
+Use the JavaScript SDK alongside React components for additional functionality like programmatic connections or custom flows.
+```jsx
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+import { Cobalt } from "@cobaltio/cobalt-js";
+
+function IntegrationCard({ app, sessionToken }) {
+  const [showConfig, setShowConfig] = useState(false);
+  const cobalt = new Cobalt({ token: sessionToken });
+
+  async function handleQuickConnect() {
+    // Use JS SDK for programmatic connection
+    const success = await cobalt.connect(app.slug);
+    if (success) {
+      setShowConfig(true); // Then show config modal
+    }
+  }
+
+  async function handleDisconnect() {
+    await cobalt.disconnect(app.slug);
+    setShowConfig(false);
+  }
+
+  return (
+    <div className="integration-card">
+      <h3>{app.name}</h3>
+      
+      {!app.connected ? (
+        <button onClick={handleQuickConnect}>Connect</button>
+      ) : (
+        <>
+          <button onClick={() => setShowConfig(true)}>Configure</button>
+          <button onClick={handleDisconnect}>Disconnect</button>
+        </>
+      )}
+
+      {showConfig && (
+        <Provider sessionToken={sessionToken}>
+          <Config slug={app.slug} />
+        </Provider>
+      )}
+    </div>
+  );
+}
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Component Not Rendering">
+    | Problem | Solution |
+    |---------|----------|
+    | Config component shows nothing | Ensure `slug` prop is provided. The component only renders when slug is defined. |
+    | Blank modal after opening | Check that `Provider` wraps the `Config` component with a valid `sessionToken`. |
+    | Components not updating | Session token may have expired. Fetch a new token and update the Provider. |
+  </Accordion>
+
+  <Accordion title="Provider Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | "No provider found" error | Ensure `Config` is a descendant of `Provider` in the component tree. |
+    | Multiple providers causing issues | Use a single `Provider` at the top of your integration component tree. |
+    | Token not being passed | Verify `sessionToken` prop is not `null` or `undefined` when Provider renders. |
+  </Accordion>
+
+  <Accordion title="Styling Problems">
+    | Problem | Solution |
+    |---------|----------|
+    | Styles not applying | Use the `style` prop for inline styles. For CSS classes, wrap the component in a styled container. |
+    | Modal appearing behind other elements | Increase `z-index` on your modal container. The Config component inherits from its parent. |
+    | Responsive issues | Set `maxWidth` in the style prop and use percentage-based widths in your container. |
+  </Accordion>
+</AccordionGroup>
+
+## What's Next
+
+- [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) for building custom UIs with full control
+- [NodeJS SDK](/v3/sdks/server-side/nodejs-sdk) for backend operations
+- [Example Implementation](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) on GitHub
+- [Auth Flows](/v3/developer/guide/concepts/auth-flows/auth-flows) to understand authentication options

@@ -1,6 +1,99 @@
 ---
 title: "Overview"
-description: "Documentation for overview"
+description: "Integrate Refold into your application using client-side and server-side SDKs"
+sidebarTitle: "Overview"
 ---
 
-Content coming soon.
+Refold SDKs enable you to embed third-party integrations into your application with minimal code. The client-side SDKs handle user authentication and configuration in the browser, while the server-side SDK manages secure operations like creating linked accounts and triggering workflows.
+
+<Note>
+Cobalt SDKs are part of the Refold platform. Package names currently use the `@cobaltio` namespace and will be updated in a future release.
+</Note>
+
+## When to Use SDKs
+
+- Build a native integration experience within your application
+- Let users connect their third-party accounts (OAuth, API keys)
+- Manage user configurations and workflow settings
+- Trigger workflows from your backend
+- Create and manage linked accounts programmatically
+
+## Architecture
+
+Your implementation requires both frontend and backend components:
+
+<Frame>
+  <img src="/images/v3/sdk/sdk-architecture.svg" alt="SDK Architecture Diagram" />
+</Frame>
+
+| Layer | SDK | Purpose |
+|-------|-----|---------|
+| **Frontend** | JavaScript SDK | Custom UI for connections and config management |
+| **Frontend** | React SDK | Pre-built components for quick integration |
+| **Backend** | NodeJS SDK | Secure operations, session tokens, workflow triggers |
+
+## Quick Comparison
+
+| Feature | JavaScript SDK | React SDK | NodeJS SDK |
+|---------|---------------|-----------|-------------|
+| **Environment** | Browser | Browser (React) | Server |
+| **Authentication** | Session token | Session token | API key |
+| **User connections** | ✓ | ✓ | ✗ |
+| **Config management** | ✓ | ✓ (pre-built UI) | ✓ |
+| **Linked accounts** | ✗ | ✗ | ✓ |
+| **Trigger workflows** | ✗ | ✗ | ✓ |
+| **Custom UI** | ✓ | Limited | N/A |
+
+## Integration Flow
+
+<Steps>
+  <Step title="Create Linked Account">
+    Use the NodeJS SDK on your backend to create a linked account for your user.
+  </Step>
+  <Step title="Generate Session Token">
+    Generate a session token for the linked account using the NodeJS SDK.
+  </Step>
+  <Step title="Initialize Frontend SDK">
+    Pass the session token to the JavaScript or React SDK in your frontend.
+  </Step>
+  <Step title="Connect Applications">
+    Use the frontend SDK to let users authenticate with third-party applications.
+  </Step>
+  <Step title="Manage Configurations">
+    Allow users to configure workflows and field mappings through your UI.
+  </Step>
+  <Step title="Trigger Workflows">
+    Use the NodeJS SDK to trigger workflows when events occur in your application.
+  </Step>
+</Steps>
+
+## Installation Summary
+
+<CodeGroup>
+```bash JavaScript SDK
+npm install --save @cobaltio/cobalt-js
+```
+```bash React SDK
+npm install --save @cobaltio/react-cobalt-js @cobaltio/cobalt-js@^8
+```
+```bash NodeJS SDK
+npm install @cobaltio/cobalt
+```
+</CodeGroup>
+
+## What's Next
+
+<CardGroup cols={2}>
+  <Card title="JavaScript SDK" icon="js" href="/v3/sdks/client-side/javascript-sdk">
+    Build custom UIs with full control over the integration experience
+  </Card>
+  <Card title="React SDK" icon="react" href="/v3/sdks/client-side/react-sdk">
+    Use pre-built components for quick integration in React apps
+  </Card>
+  <Card title="NodeJS SDK" icon="node-js" href="/v3/sdks/server-side/nodejs-sdk">
+    Manage linked accounts and trigger workflows from your server
+  </Card>
+  <Card title="Auth Flows" icon="key" href="/v3/developer/guide/concepts/auth-flows/auth-flows">
+    Learn about different authentication methods
+  </Card>
+</CardGroup>

@@ -1,0 +1,669 @@
+---
+title: "NodeJS SDK"
+description: "Manage linked accounts, generate tokens, and trigger workflows from your server"
+sidebarTitle: "NodeJS SDK"
+---
+
+The Node.js SDK handles secure server-side operations including linked account management, session token generation, configuration management, and workflow triggering. Use this SDK in your backend to securely interact with the Cobalt API.
+
+<Tip>
+View the source code on [GitHub](https://github.com/gocobalt/cobalt-sdk).
+</Tip>
+
+## When to Use
+
+- Create and manage linked accounts for your users
+- Generate session tokens for frontend SDK initialization
+- Trigger workflows when events occur in your application
+- Manage user configurations from your backend
+- Build server-side integration logic
+
+## Installation
+
+Install the SDK using npm.
+```bash
+npm install @cobaltio/cobalt
+```
+
+### TypeScript Support
+
+The SDK includes TypeScript definitions. For TypeScript projects, ensure you have the Node.js type definitions installed.
+```bash
+npm install --save-dev @types/node
+```
+
+**Requirements for TypeScript:**
+- TypeScript v2.x or higher
+- If targeting ES5, include `es5` and `es2015.promise` in `compilerOptions.lib`
+
+## Initialization
+
+Initialize the SDK with your API key from the [Cobalt Dashboard](https://app.gocobalt.io/developer).
+```javascript
+const Cobalt = require("@cobaltio/cobalt");
+
+const client = new Cobalt({
+  apiKey: "YOUR_API_KEY"
+});
+```
+
+<Warning>
+Never expose your API key in client-side code. The Node.js SDK should only run on your server.
+</Warning>
+
+## Methods
+
+### Linked Account Management
+
+<AccordionGroup>
+  <Accordion title=".createLinkedAccount()">
+    Creates a new linked account for your customer. Linked accounts represent your end users who connect to third-party applications.
+
+    <ParamField path="linked_account_id" type="string" required>
+      Unique identifier for the customer. Use a stable ID from your system (e.g., user ID, email).
+    </ParamField>
+
+    <ParamField path="name" type="string">
+      Display name for the customer.
+    </ParamField>
+
+    <ParamField path="udf" type="object">
+      User-defined fields for storing additional customer data.
+    </ParamField>
+
+    <ParamField path="your_app" type="object">
+      Your application's authentication credentials for this customer.
+    </ParamField>
+
+    <ParamField path="your_app.app_id" type="string">
+      Your application ID from the Cobalt dashboard.
+    </ParamField>
+
+    <ParamField path="your_app.auth_credentials" type="object">
+      Customer's credentials for your API endpoints.
+    </ParamField>
+
+    **Returns:** `Promise<LinkedAccount>`
+```javascript
+try {
+  const linkedAccount = await client.createLinkedAccount({
+    linked_account_id: "user_12345",
+    name: "Acme Corp",
+    udf: {
+      plan: "enterprise",
+      region: "us-west"
+    },
+    your_app: {
+      app_id: "64da0b57c9ae95561bb0a2ea",
+      auth_credentials: {
+        "x-api-key": "customer_api_key_here"
+      }
+    }
+  });
+  
+  console.log("Created:", linkedAccount.account_id);
+} catch (error) {
+  console.error("Failed to create linked account:", error);
+}
+```
+
+    **Example Response:**
+```json
+{
+  "_id": "64cb7c433c6dddda0fb6bde1",
+  "associated_org": "63dba3b4d9c4be8f0f3f1e8f",
+  "account_id": "user_12345",
+  "environment": "production",
+  "name": "Acme Corp",
+  "udf": [
+    {
+      "key_name": "plan",
+      "key_value": "enterprise",
+      "_id": "64d5d69bfb78da0950f5e18f"
+    },
+    {
+      "key_name": "region",
+      "key_value": "us-west",
+      "_id": "64d5d69bfb78da0950f5e190"
+    }
+  ],
+  "createdAt": "2023-08-03T10:06:59.703Z",
+  "updatedAt": "2023-08-03T10:06:59.833Z"
+}
+```
+  </Accordion>
+
+  <Accordion title=".upsertLinkedAccount()">
+    Creates a new linked account or updates an existing one. Use this method when you want to ensure an account exists without checking first.
+
+    <ParamField path="linked_account_id" type="string" required>
+      Unique identifier for the customer.
+    </ParamField>
+
+    <ParamField path="name" type="string">
+      Display name for the customer.
+    </ParamField>
+
+    <ParamField path="udf" type="object">
+      User-defined fields. Existing UDF values are merged with new values.
+    </ParamField>
+
+    <ParamField path="your_app" type="object">
+      Your application's authentication credentials.
+    </ParamField>
+
+    **Returns:** `Promise<LinkedAccount>`
+```javascript
+try {
+  const linkedAccount = await client.upsertLinkedAccount({
+    linked_account_id: "user_12345",
+    name: "Acme Corp - Updated",
+    udf: {
+      plan: "enterprise",
+      region: "us-east"  // Updated region
+    }
+  });
+  
+  console.log("Upserted:", linkedAccount.account_id);
+} catch (error) {
+  console.error("Failed to upsert linked account:", error);
+}
+```
+
+    <Tip>
+    Use `upsertLinkedAccount()` during user signup or login to ensure the linked account always exists and stays synchronized with your user data.
+    </Tip>
+  </Accordion>
+
+  <Accordion title=".getTokenForLinkedAccount()">
+    Generates a session token for frontend SDK initialization. The token provides temporary authenticated access for a specific linked account.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID to generate a token for.
+    </ParamField>
+
+    **Returns:** `Promise<{ token: string }>`
+```javascript
+try {
+  const { token } = await client.getTokenForLinkedAccount({
+    linked_account_id: "user_12345"
+  });
+  
+  // Send token to your frontend
+  return { sessionToken: token };
+} catch (error) {
+  console.error("Failed to generate token:", error);
+}
+```
+
+    **Example Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+    <Warning>
+    Session tokens expire after 24 hours. Generate a new token for each user session.
+    </Warning>
+
+    **Express.js Example:**
+```javascript
+app.get("/api/cobalt/session-token", async (req, res) => {
+  try {
+    const userId = req.user.id; // From your auth middleware
+    
+    const { token } = await client.getTokenForLinkedAccount({
+      linked_account_id: userId
+    });
+    
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to generate token" });
+  }
+});
+```
+  </Accordion>
+</AccordionGroup>
+
+### Application Management
+
+<AccordionGroup>
+  <Accordion title=".getApplications()">
+    Returns all enabled applications for a linked account. Use this to display available integrations or check connection status.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID to get applications for.
+    </ParamField>
+
+    <ParamField path="options.page" type="number">
+      Page number for pagination.
+    </ParamField>
+
+    <ParamField path="options.limit" type="number">
+      Number of results per page.
+    </ParamField>
+
+    **Returns:** `Promise<Application[]>`
+```javascript
+try {
+  const apps = await client.getApplications("user_12345", {
+    page: 1,
+    limit: 10
+  });
+  
+  apps.forEach(app => {
+    console.log(`${app.name}: ${app.connected ? 'Connected' : 'Not connected'}`);
+  });
+} catch (error) {
+  console.error("Failed to get applications:", error);
+}
+```
+
+    **Example Response:**
+```json
+[
+  {
+    "name": "Slack",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+    "description": "Slack is a platform for team communication...",
+    "auth_type": "oauth2",
+    "type": "slack",
+    "app_id": "6463683189cc3cc0379e8e70",
+    "tags": ["Communication"],
+    "version": { "_v": "1.0.0" },
+    "connected": true,
+    "connected_accounts": [
+      {
+        "identifier": "workspace_name",
+        "connectedAt": "2023-06-22T09:25:02.327Z"
+      }
+    ],
+    "slug": "slack"
+  },
+  {
+    "name": "HubSpot",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png",
+    "description": "HubSpot is a CRM platform...",
+    "auth_type": "oauth2",
+    "tags": ["CRM"],
+    "connected": false,
+    "slug": "hubspot"
+  }
+]
+```
+  </Accordion>
+
+  <Accordion title=".getApplicationBySlug()">
+    Returns details for a specific application by its slug.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID.
+    </ParamField>
+
+    <ParamField path="slug" type="string" required>
+      Application identifier (e.g., `slack`, `hubspot`).
+    </ParamField>
+
+    **Returns:** `Promise<Application>`
+```javascript
+try {
+  const slack = await client.getApplicationBySlug("user_12345", "slack");
+  
+  console.log(`Slack connected: ${slack.connected}`);
+  if (slack.connected) {
+    console.log(`Connected at: ${slack.connected_accounts[0].connectedAt}`);
+  }
+} catch (error) {
+  console.error("Failed to get application:", error);
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+### Configuration Management
+
+<AccordionGroup>
+  <Accordion title=".config()">
+    Retrieves or creates a configuration for a linked account. Returns available workflows, settings fields, and current values.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID.
+    </ParamField>
+
+    <ParamField path="slug" type="string" required>
+      Application identifier.
+    </ParamField>
+
+    <ParamField path="config_id" type="string">
+      Unique configuration identifier.
+    </ParamField>
+
+    <ParamField path="labels" type="object">
+      Dynamic labels for field mapping.
+    </ParamField>
+
+    **Returns:** `Promise<ConfigResponse>`
+```javascript
+try {
+  const config = await client.config({
+    linked_account_id: "user_12345",
+    slug: "slack",
+    config_id: "config_123",
+    labels: {}
+  });
+  
+  console.log("Available workflows:", config.workflows.length);
+  config.workflows.forEach(wf => {
+    console.log(`- ${wf.name}: ${wf.enabled ? 'Enabled' : 'Disabled'}`);
+  });
+} catch (error) {
+  console.error("Failed to get config:", error);
+}
+```
+
+    **Example Response:**
+```json
+{
+  "slug": "slack",
+  "config_id": "config_123",
+  "fields": [
+    {
+      "required": false,
+      "id": "64da0b57c9ae95561bb0a24d",
+      "name": "Channel",
+      "field_type": "select",
+      "options": [
+        { "name": "general", "value": "C044U7Q074J" }
+      ],
+      "labels": []
+    }
+  ],
+  "workflows": [
+    {
+      "id": "64d1fac58716dc5065127ffe",
+      "name": "Send message in a channel",
+      "description": "",
+      "enabled": false,
+      "fields": []
+    }
+  ],
+  "field_errors": []
+}
+```
+  </Accordion>
+
+  <Accordion title=".updateConfig()">
+    Updates configuration values including field settings and workflow states.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID.
+    </ParamField>
+
+    <ParamField path="slug" type="string" required>
+      Application identifier.
+    </ParamField>
+
+    <ParamField path="config_id" type="string">
+      Configuration identifier.
+    </ParamField>
+
+    <ParamField path="fields" type="object">
+      Map of field IDs to values.
+    </ParamField>
+
+    <ParamField path="workflows" type="array">
+      Array of workflow configurations with `id`, `enabled`, and `fields`.
+    </ParamField>
+
+    **Returns:** `Promise<ConfigResponse>`
+```javascript
+try {
+  const updatedConfig = await client.updateConfig({
+    linked_account_id: "user_12345",
+    slug: "hubspot",
+    config_id: "config_1",
+    fields: {
+      "670fcb9e023ebc1f370c5139": "John Doe"
+    },
+    workflows: [
+      {
+        id: "67fbc1ec954bde0dcae218c8",
+        enabled: true,
+        fields: {}
+      }
+    ]
+  });
+  
+  console.log("Config updated successfully");
+} catch (error) {
+  console.error("Failed to update config:", error);
+}
+```
+  </Accordion>
+</AccordionGroup>
+
+### Event Triggering
+
+<AccordionGroup>
+  <Accordion title=".event()">
+    Triggers a workflow event for a linked account. Use this to start workflows when events occur in your application.
+
+    <ParamField path="linked_account_id" type="string" required>
+      The linked account ID.
+    </ParamField>
+
+    <ParamField path="event" type="string" required>
+      Event name as configured in the Cobalt dashboard.
+    </ParamField>
+
+    <ParamField path="slug" type="string">
+      Application slug to filter workflows. If omitted, triggers all workflows for the event.
+    </ParamField>
+
+    <ParamField path="config_id" type="string">
+      Configuration identifier.
+    </ParamField>
+
+    <ParamField path="payload" type="object">
+      Event data to pass to the workflow.
+    </ParamField>
+
+    **Returns:** `Promise<{ message: string }>`
+```javascript
+try {
+  const result = await client.event({
+    linked_account_id: "user_12345",
+    event: "New Contact Created",
+    slug: "hubspot",
+    config_id: "config_1",
+    payload: {
+      contact_id: "contact_789",
+      email: "jane@example.com",
+      first_name: "Jane",
+      last_name: "Smith",
+      company: "Tech Corp",
+      created_at: new Date().toISOString()
+    }
+  });
+  
+  console.log(result.message); // "Webhook Fired Success"
+} catch (error) {
+  console.error("Failed to trigger event:", error);
+}
+```
+
+    **Example Response:**
+```json
+{
+  "message": "Webhook Fired Success"
+}
+```
+
+    **Use Case:** Trigger a workflow when a user performs an action in your application.
+```javascript
+// In your application's contact creation handler
+async function onContactCreated(contact, userId) {
+  // Save to your database
+  await saveContact(contact);
+  
+  // Trigger Cobalt workflow
+  await client.event({
+    linked_account_id: userId,
+    event: "New Contact Created",
+    payload: {
+      contact_id: contact.id,
+      email: contact.email,
+      first_name: contact.firstName,
+      last_name: contact.lastName
+    }
+  });
+}
+```
+
+    <Info>
+    Events must be created in the Cobalt dashboard before they can be triggered. The event name must match exactly.
+    </Info>
+  </Accordion>
+</AccordionGroup>
+
+## Complete Example
+
+This example shows a complete Express.js backend implementation.
+```javascript
+const express = require("express");
+const Cobalt = require("@cobaltio/cobalt");
+
+const app = express();
+app.use(express.json());
+
+// Initialize Cobalt client
+const cobalt = new Cobalt({
+  apiKey: process.env.COBALT_API_KEY
+});
+
+// Middleware to get user from your auth system
+const authMiddleware = require("./middleware/auth");
+
+// Create/update linked account on user signup or login
+app.post("/api/users/sync-cobalt", authMiddleware, async (req, res) => {
+  try {
+    const user = req.user;
+    
+    await cobalt.upsertLinkedAccount({
+      linked_account_id: user.id,
+      name: user.name,
+      udf: {
+        email: user.email,
+        plan: user.subscription.plan
+      }
+    });
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Failed to sync user with Cobalt:", error);
+    res.status(500).json({ error: "Failed to sync user" });
+  }
+});
+
+// Generate session token for frontend SDK
+app.get("/api/cobalt/session-token", authMiddleware, async (req, res) => {
+  try {
+    const { token } = await cobalt.getTokenForLinkedAccount({
+      linked_account_id: req.user.id
+    });
+    
+    res.json({ token });
+  } catch (error) {
+    console.error("Failed to generate session token:", error);
+    res.status(500).json({ error: "Failed to generate token" });
+  }
+});
+
+// Get available integrations
+app.get("/api/cobalt/integrations", authMiddleware, async (req, res) => {
+  try {
+    const apps = await cobalt.getApplications(req.user.id);
+    res.json({ integrations: apps });
+  } catch (error) {
+    console.error("Failed to get integrations:", error);
+    res.status(500).json({ error: "Failed to get integrations" });
+  }
+});
+
+// Trigger workflow on business event
+app.post("/api/contacts", authMiddleware, async (req, res) => {
+  try {
+    const contact = req.body;
+    const userId = req.user.id;
+    
+    // Save contact to your database
+    const savedContact = await saveContact(contact);
+    
+    // Trigger Cobalt workflow
+    await cobalt.event({
+      linked_account_id: userId,
+      event: "New Contact Created",
+      payload: {
+        contact_id: savedContact.id,
+        email: savedContact.email,
+        first_name: savedContact.firstName,
+        last_name: savedContact.lastName
+      }
+    });
+    
+    res.json({ contact: savedContact });
+  } catch (error) {
+    console.error("Failed to create contact:", error);
+    res.status(500).json({ error: "Failed to create contact" });
+  }
+});
+
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Authentication Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "Invalid Credentials" error | Verify your API key is correct and active. Check you're using the right key for your environment (test vs production). |
+    | API key not working | Ensure the API key has not been rotated. Generate a new key from the dashboard if needed. |
+    | Environment mismatch | Linked accounts are environment-specific. Ensure you're using the correct environment. |
+  </Accordion>
+
+  <Accordion title="Linked Account Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "Linked account not found" | Create the linked account using `createLinkedAccount()` or `upsertLinkedAccount()` first. |
+    | Duplicate linked account error | Use `upsertLinkedAccount()` instead of `createLinkedAccount()` to handle existing accounts. |
+    | UDF not updating | Check that UDF keys match exactly. UDF updates merge with existing values. |
+  </Accordion>
+
+  <Accordion title="Event Trigger Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "Trigger with name X not found" | Verify the event name matches exactly what's configured in the dashboard (case-sensitive). |
+    | Workflow not executing | Check that the workflow is enabled in the user's configuration. Verify the linked account has connected the required application. |
+    | Payload not reaching workflow | Ensure payload structure matches the expected format. Check workflow variable mappings. |
+  </Accordion>
+
+  <Accordion title="Token Generation Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Token generation fails | Verify the linked account exists. Create it first if needed. |
+    | Token not working in frontend | Tokens are environment-specific. Ensure frontend and backend use the same environment. |
+    | Token expired errors | Generate a new token. Tokens expire after 24 hours. |
+  </Accordion>
+</AccordionGroup>
+
+## What's Next
+
+- [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) for frontend integration
+- [React SDK](/v3/sdks/client-side/react-sdk) for React applications
+- [Events API](/v3/api-reference/event/trigger-event) for detailed event triggering documentation
+- [Linked Accounts](/v3/developer/configure/linked-account) for managing customer accounts
+- [Webhooks](/v3/developer/configure/webhooks) for receiving notifications from Cobalt

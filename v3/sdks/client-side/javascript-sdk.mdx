@@ -1,0 +1,536 @@
+---
+title: "JavaScript SDK"
+description: "Build custom integration UIs with the Refold JavaScript SDK"
+sidebarTitle: "JavaScript SDK"
+---
+
+The JavaScript SDK provides methods to connect users to third-party applications, manage configurations, and build custom integration experiences in your frontend. It gives you full control over the UI while handling OAuth flows, API key authentication, and configuration management.
+
+<Tip>
+View the source code on [GitHub](https://gocobalt.github.io/cobalt-js/).
+</Tip>
+
+## When to Use
+
+- Build a fully custom integration UI matching your application design
+- Implement connection flows without pre-built components
+- Manage configurations programmatically in vanilla JavaScript or any framework
+- Need granular control over the user experience
+
+## Prerequisites
+
+Before using the JavaScript SDK:
+
+1. **Create a Linked Account** for your user using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#createlinkedaccount) or [API](/v3/api-reference/customer/create-linked-account)
+2. **Generate a Session Token** using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#gettokenforlinkedaccount) or [API](/v3/api-reference/session-token/generate-token-for-linked-account)
+
+<Warning>
+Session tokens expire after 24 hours. Generate a new token for each user session.
+</Warning>
+
+## Installation
+
+Install the SDK using npm or include it directly in your browser.
+
+<Tabs>
+  <Tab title="npm">
+```bash
+npm install --save @cobaltio/cobalt-js
+```
+  </Tab>
+  <Tab title="Browser (CDN)">
+```html
+<!-- Production: Use a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@8.0.0"></script>
+
+<!-- Development only: Latest version -->
+<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+```
+
+<Warning>
+Always use a specific version in production to avoid breaking changes.
+</Warning>
+  </Tab>
+</Tabs>
+
+## Initialization
+
+Import and initialize the SDK with your session token.
+
+<CodeGroup>
+```javascript ES Modules
+import { Cobalt } from "@cobaltio/cobalt-js";
+
+const cobalt = new Cobalt({
+  token: "YOUR_SESSION_TOKEN"
+});
+```
+```javascript CommonJS
+const { Cobalt } = require("@cobaltio/cobalt-js");
+
+const cobalt = new Cobalt({
+  token: "YOUR_SESSION_TOKEN"
+});
+```
+```javascript Deferred Token
+import { Cobalt } from "@cobaltio/cobalt-js";
+
+// Initialize without token
+const cobalt = new Cobalt();
+
+// Set token later (e.g., after fetching from your backend)
+cobalt.token = "YOUR_SESSION_TOKEN";
+```
+</CodeGroup>
+
+## Methods
+
+<AccordionGroup>
+  <Accordion title=".getApp()">
+    Returns application details for enabled applications. Use this to display available integrations to your users.
+
+    <ParamField path="slug" type="string">
+      Application identifier. Omit to retrieve all enabled applications.
+    </ParamField>
+
+    **Returns:** `Promise<Application | Application[]>`
+
+    <CodeGroup>
+```javascript Get All Applications
+const apps = await cobalt.getApp();
+console.log(apps);
+// Returns array of all enabled applications
+```
+```javascript Get Single Application
+const slack = await cobalt.getApp("slack");
+console.log(slack);
+```
+    </CodeGroup>
+
+    **Example Response:**
+```json
+{
+  "name": "Slack",
+  "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+  "description": "Slack is a platform for team communication...",
+  "auth_type": "oauth2",
+  "type": "slack",
+  "app_id": "64c357c739ec788238ab5f95",
+  "tags": ["Communication"],
+  "version": {
+    "_v": "1.0.0",
+    "description": "Slack is a platform for team communication..."
+  },
+  "slug": "slack",
+  "reauth_required": false
+}
+```
+
+    **Use Case:** Build an integrations catalog page showing all available applications.
+```javascript
+// Display integration cards
+const apps = await cobalt.getApp();
+
+apps.forEach(app => {
+  console.log(`${app.name} - ${app.auth_type}`);
+  // Render integration card with app.icon, app.name, app.description
+});
+```
+  </Accordion>
+
+  <Accordion title=".connect()">
+    Initiates the authentication flow for an application. For OAuth apps, opens a popup window. For API key apps, saves the provided credentials.
+
+    <ParamField path="slug" type="string" required>
+      Application identifier (e.g., `slack`, `hubspot`).
+    </ParamField>
+
+    <ParamField path="payload" type="object">
+      Authentication credentials for API key-based applications. Not required for OAuth apps.
+    </ParamField>
+
+    **Returns:** `Promise<boolean>` - `true` if connection succeeds
+
+    <CodeGroup>
+```javascript OAuth Application
+// Opens OAuth popup for user authorization
+const success = await cobalt.connect("slack");
+
+if (success) {
+  console.log("Slack connected successfully");
+}
+```
+```javascript API Key Application
+// Saves API credentials directly
+const success = await cobalt.connect("twilio", {
+  number: "1234567890",
+  sid: "ACCOUNT_SID",
+  auth_token: "AUTH_TOKEN"
+});
+
+if (success) {
+  console.log("Twilio connected successfully");
+}
+```
+    </CodeGroup>
+
+    <Info>
+    For OAuth applications, the SDK handles the entire OAuth flow including popup management and token exchange.
+    </Info>
+
+    **Use Case:** Add a "Connect" button to each integration card.
+```javascript
+async function handleConnect(appSlug, authType) {
+  try {
+    if (authType === "oauth2") {
+      await cobalt.connect(appSlug);
+    } else {
+      // Show form for API credentials
+      const credentials = await showCredentialsForm(appSlug);
+      await cobalt.connect(appSlug, credentials);
+    }
+    showSuccessMessage(`${appSlug} connected!`);
+  } catch (error) {
+    showErrorMessage(`Connection failed: ${error.message}`);
+  }
+}
+```
+  </Accordion>
+
+  <Accordion title=".disconnect()">
+    Disconnects an application and removes all associated data including credentials and configurations.
+
+    <ParamField path="slug" type="string" required>
+      Application identifier to disconnect.
+    </ParamField>
+
+    **Returns:** `Promise<boolean>` - `true` if disconnection succeeds
+```javascript
+await cobalt.disconnect("slack");
+console.log("Slack disconnected");
+```
+
+    <Warning>
+    This action is irreversible. All configurations and credentials for the application are permanently deleted.
+    </Warning>
+
+    **Use Case:** Add a "Disconnect" option in your integration settings.
+```javascript
+async function handleDisconnect(appSlug) {
+  const confirmed = await showConfirmDialog(
+    `Disconnect ${appSlug}? All settings will be lost.`
+  );
+  
+  if (confirmed) {
+    await cobalt.disconnect(appSlug);
+    refreshIntegrationList();
+  }
+}
+```
+  </Accordion>
+
+  <Accordion title=".config()">
+    Retrieves or creates a configuration for the linked account. Returns available workflows, settings fields, and current values.
+
+    <ParamField path="options" type="object" required>
+      Configuration options.
+    </ParamField>
+
+    <ParamField path="options.slug" type="string" required>
+      Application identifier.
+    </ParamField>
+
+    <ParamField path="options.config_id" type="string">
+      Unique identifier for this configuration. Defaults to `linked_account_id` if not provided.
+    </ParamField>
+
+    <ParamField path="options.labels" type="object">
+      Dynamic labels for field mapping. Used with map-type fields.
+    </ParamField>
+
+    **Returns:** `Promise<ConfigResponse>`
+```javascript
+const config = await cobalt.config({
+  slug: "slack",
+  config_id: "config_123",
+  labels: {}
+});
+
+console.log(config);
+```
+
+    **Example Response:**
+```json
+{
+  "slug": "slack",
+  "config_id": "config_123",
+  "fields": [
+    {
+      "required": false,
+      "id": "64da0b57c9ae95561bb0a24d",
+      "name": "Channel",
+      "field_type": "select",
+      "options": [
+        { "name": "general", "value": "C044U7Q074J" },
+        { "name": "random", "value": "C044U7Q074K" }
+      ],
+      "labels": []
+    }
+  ],
+  "workflows": [
+    {
+      "id": "64d1fac58716dc5065127ffe",
+      "name": "Send message in a channel",
+      "description": "",
+      "enabled": false,
+      "fields": [
+        {
+          "required": false,
+          "id": "64da0b57c9ae95561bb0a24f",
+          "name": "Channel",
+          "field_type": "select",
+          "options": [
+            { "name": "general", "value": "C044U7Q074J" }
+          ],
+          "labels": []
+        }
+      ]
+    }
+  ],
+  "field_errors": []
+}
+```
+
+    **Use Case:** Build a settings page for users to configure their integration.
+```javascript
+async function loadConfigurationPage(appSlug) {
+  const config = await cobalt.config({ slug: appSlug });
+  
+  // Render global settings fields
+  config.fields.forEach(field => {
+    renderField(field);
+  });
+  
+  // Render workflow toggles and settings
+  config.workflows.forEach(workflow => {
+    renderWorkflowToggle(workflow);
+  });
+}
+```
+  </Accordion>
+
+  <Accordion title=".updateConfig()">
+    Updates configuration values including field settings and workflow states.
+
+    <ParamField path="payload" type="object" required>
+      Configuration update payload.
+    </ParamField>
+
+    <ParamField path="payload.slug" type="string" required>
+      Application identifier.
+    </ParamField>
+
+    <ParamField path="payload.config_id" type="string">
+      Configuration identifier.
+    </ParamField>
+
+    <ParamField path="payload.fields" type="object">
+      Map of field IDs to their values.
+    </ParamField>
+
+    <ParamField path="payload.workflows" type="array">
+      Array of workflow configurations.
+    </ParamField>
+
+    <ParamField path="payload.workflows[].id" type="string" required>
+      Workflow identifier.
+    </ParamField>
+
+    <ParamField path="payload.workflows[].enabled" type="boolean" required>
+      Enable or disable the workflow.
+    </ParamField>
+
+    <ParamField path="payload.workflows[].fields" type="object">
+      Map of workflow field IDs to their values.
+    </ParamField>
+
+    **Returns:** `Promise<ConfigResponse>` - Updated configuration
+```javascript
+const updatedConfig = await cobalt.updateConfig({
+  slug: "slack",
+  config_id: "config_123",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "C044U7Q074J"  // Set channel
+  },
+  workflows: [
+    {
+      id: "64d1fac58716dc5065127ffe",
+      enabled: true,
+      fields: {
+        "64da0b57c9ae95561bb0a24f": "C044U7Q074J"
+      }
+    }
+  ]
+});
+```
+
+    **Use Case:** Save user configuration changes.
+```javascript
+async function saveConfiguration(appSlug, configId, formData) {
+  try {
+    await cobalt.updateConfig({
+      slug: appSlug,
+      config_id: configId,
+      fields: formData.globalFields,
+      workflows: formData.workflows.map(w => ({
+        id: w.id,
+        enabled: w.enabled,
+        fields: w.fieldValues
+      }))
+    });
+    showSuccessMessage("Configuration saved!");
+  } catch (error) {
+    showErrorMessage(`Save failed: ${error.message}`);
+  }
+}
+```
+  </Accordion>
+
+  <Accordion title=".deleteConfig()">
+    Deletes a configuration for the specified application.
+
+    <ParamField path="slug" type="string" required>
+      Application identifier.
+    </ParamField>
+
+    <ParamField path="configId" type="string">
+      Configuration identifier to delete.
+    </ParamField>
+
+    **Returns:** `Promise<void>`
+```javascript
+await cobalt.deleteConfig("slack", "config_123");
+console.log("Configuration deleted");
+```
+
+    <Warning>
+    This permanently deletes all configuration settings for the application.
+    </Warning>
+  </Accordion>
+</AccordionGroup>
+
+## Complete Example
+
+This example demonstrates a full integration page with connection management and configuration.
+```javascript
+import { Cobalt } from "@cobaltio/cobalt-js";
+
+class IntegrationManager {
+  constructor(sessionToken) {
+    this.cobalt = new Cobalt({ token: sessionToken });
+  }
+
+  async loadIntegrations() {
+    // Get all enabled applications
+    const apps = await this.cobalt.getApp();
+    return apps;
+  }
+
+  async connectApp(slug, credentials = null) {
+    try {
+      if (credentials) {
+        // API key authentication
+        return await this.cobalt.connect(slug, credentials);
+      } else {
+        // OAuth authentication
+        return await this.cobalt.connect(slug);
+      }
+    } catch (error) {
+      console.error(`Failed to connect ${slug}:`, error);
+      throw error;
+    }
+  }
+
+  async disconnectApp(slug) {
+    return await this.cobalt.disconnect(slug);
+  }
+
+  async getConfig(slug, configId) {
+    return await this.cobalt.config({
+      slug,
+      config_id: configId
+    });
+  }
+
+  async saveConfig(slug, configId, fields, workflows) {
+    return await this.cobalt.updateConfig({
+      slug,
+      config_id: configId,
+      fields,
+      workflows
+    });
+  }
+}
+
+// Usage
+async function initializeIntegrationPage(sessionToken) {
+  const manager = new IntegrationManager(sessionToken);
+  
+  // Load and display available integrations
+  const apps = await manager.loadIntegrations();
+  
+  apps.forEach(app => {
+    // Render integration card
+    const card = createIntegrationCard(app);
+    
+    // Add connect handler
+    card.querySelector('.connect-btn').onclick = async () => {
+      await manager.connectApp(app.slug);
+      refreshUI();
+    };
+    
+    // Add configure handler
+    card.querySelector('.configure-btn').onclick = async () => {
+      const config = await manager.getConfig(app.slug, 'default');
+      showConfigModal(config);
+    };
+    
+    document.getElementById('integrations').appendChild(card);
+  });
+}
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Authentication Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "Invalid token" error | Generate a new session token. Tokens expire after 24 hours. |
+    | Token not working after page refresh | Store the token and reinitialize the SDK on page load, or fetch a new token from your backend. |
+    | OAuth popup blocked | Ensure `.connect()` is called in response to a user action (click). Browsers block popups not triggered by user interaction. |
+  </Accordion>
+
+  <Accordion title="Connection Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | OAuth popup closes without completing | Check browser popup settings. Ensure your domain is whitelisted in the Cobalt dashboard. |
+    | API key connection fails | Verify credentials are correct. Check the application's required fields in the dashboard. |
+    | `reauth_required: true` in response | The user's credentials have expired. Call `.connect()` again to re-authenticate. |
+  </Accordion>
+
+  <Accordion title="Configuration Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Field options not loading | Ensure the user is connected to the application before calling `.config()`. |
+    | `field_errors` in config response | Check that all required fields have valid values. Review the error messages for specific issues. |
+    | Workflow not triggering | Verify `enabled: true` is set in the workflow configuration. |
+  </Accordion>
+</AccordionGroup>
+
+## What's Next
+
+- [React SDK](/v3/sdks/client-side/react-sdk) for pre-built components in React applications
+- [NodeJS SDK](/v3/sdks/server-side/nodejs-sdk) for backend operations and workflow triggers
+- [Auth Flows](/v3/developer/guide/concepts/auth-flows/auth-flows) to understand different authentication methods
+- [Config API Reference](/v3/api-reference/config/find-or-create-config) for detailed parameter documentation
