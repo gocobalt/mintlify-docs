@@ -1,0 +1,207 @@
+---
+title: Get Hosted Properties
+api: get /api/v2/public/hosted-properties
+description: Retrieve the hosted portal properties saved against a session token.
+---
+
+Retrieve the customization properties (color, background color, customer name) that were saved when creating a hosted URL for a session token.
+
+<Note>
+This API uses Session Token authentication instead of API Key authentication.
+</Note>
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Session token as Bearer token. Generate a session token using the [Generate Session Token](/v3/api-reference/session-token/generate-session-token) endpoint.
+  
+  **Format:** `Bearer {session_token}`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="color" type="string">
+      Text/theme color in hex format
+    </ResponseField>
+
+    <ResponseField name="bgColor" type="string">
+      Background color in hex format
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Customer name
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "color": "#000000",
+  "bgColor": "#00FF23",
+  "name": "Abhishek Kumar"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Authorization Token Missing",
+  "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/hosted-properties" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>
+
+## Example: Get Hosted Properties
+```javascript
+async function getHostedProperties(sessionToken) {
+  const response = await fetch(
+    'https://api.gocobalt.io/api/v2/public/hosted-properties',
+    {
+      headers: {
+        'Authorization': `Bearer ${sessionToken}`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const properties = await getHostedProperties('your_session_token');
+console.log(`Customer: ${properties.name}`);
+console.log(`Theme color: ${properties.color}`);
+console.log(`Background: ${properties.bgColor}`);
+```
+
+## Example: Sync Properties Across Sessions
+```javascript
+async function syncHostedProperties(apiKey, linkedAccountId) {
+  // Step 1: Generate session token
+  const tokenResponse = await fetch(
+    'https://api.gocobalt.io/api/v2/public/session-token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        linked_account_id: linkedAccountId
+      })
+    }
+  );
+
+  const { token: sessionToken } = await tokenResponse.json();
+
+  // Step 2: Get existing properties
+  try {
+    const properties = await getHostedProperties(sessionToken);
+    return {
+      sessionToken,
+      properties,
+      hasExistingProperties: true
+    };
+  } catch (error) {
+    // No properties saved yet
+    return {
+      sessionToken,
+      properties: null,
+      hasExistingProperties: false
+    };
+  }
+}
+
+// Usage
+const { sessionToken, properties, hasExistingProperties } = 
+  await syncHostedProperties('your_api_key', 'user_12345');
+
+if (hasExistingProperties) {
+  console.log(`Existing customization found for ${properties.name}`);
+} else {
+  console.log('No customization saved, using defaults');
+}
+```
+
+## Example: Apply Properties to Custom UI
+```javascript
+async function applyHostedPropertiesToUI(sessionToken, containerElement) {
+  const properties = await getHostedProperties(sessionToken);
+
+  // Apply colors to your custom integration UI
+  containerElement.style.backgroundColor = properties.bgColor;
+  containerElement.style.color = properties.color;
+
+  // Display customer name
+  const headerElement = containerElement.querySelector('.header-title');
+  if (headerElement) {
+    headerElement.textContent = `Integrations for ${properties.name}`;
+  }
+
+  return properties;
+}
+
+// Usage
+const container = document.getElementById('integrations-panel');
+const properties = await applyHostedPropertiesToUI('your_session_token', container);
+```
+
+## Use Cases
+
+| Use Case | Description |
+|----------|-------------|
+| **Branding consistency** | Retrieve saved colors to maintain consistent branding across sessions |
+| **Customer personalization** | Display the customer's name in your custom integration UI |
+| **Session restoration** | Restore previous customization when a user returns |
+| **Multi-tenant theming** | Apply different themes for different customers |
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create Hosted URL" icon="link" href="/v3/api-reference/hosted/create-hosted-url">
+    Generate hosted portal URL
+  </Card>
+  <Card title="Generate Session Token" icon="key" href="/v3/api-reference/session-token/generate-session-token">
+    Create session tokens
+  </Card>
+  <Card title="Auth Flows" icon="shield-check" href="/v3/developer-guide/auth-flows/overview">
+    Learn about authentication options
+  </Card>
+</CardGroup>

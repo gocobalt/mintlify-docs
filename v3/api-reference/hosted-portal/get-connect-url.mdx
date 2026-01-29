@@ -1,0 +1,303 @@
+---
+title: Create Hosted URL
+api: post /api/v2/public/connect-url
+description: Generate a hosted portal URL for your linked accounts to authenticate with third-party applications.
+---
+
+Generate a hosted URL that redirects users to Refold Connect at `https://connect.gocobalt.io`. The hosted portal provides a no-code solution for handling integration authentication and configuration without building your own UI.
+
+The hosted portal handles:
+- Listing all enabled applications
+- Managing OAuth and key-based authentication flows
+- Integration configuration for end users
+
+<Note>
+This API uses Session Token authentication instead of API Key authentication.
+</Note>
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Session token as Bearer token. Generate a session token using the [Generate Session Token](/v3/api-reference/session-token/generate-session-token) endpoint.
+  
+  **Format:** `Bearer {session_token}`
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="config_id" type="string">
+  Config ID to associate with the hosted URL. If the config_id does not exist, a new config is created automatically.
+  
+  **Example:** `config_12345`
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="color" type="string">
+  Text color for the hosted portal in hex format.
+  
+  **Example:** `#000000`, `#333333`
+</ParamField>
+
+<ParamField body="bgColor" type="string">
+  Background color for the hosted portal in hex format.
+  
+  **Example:** `#FFFFFF`, `#F5F5F5`
+</ParamField>
+
+<ParamField body="name" type="string">
+  Customer name to display in the hosted portal.
+  
+  **Example:** `Acme Corporation`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="hosted_url" type="string">
+      The generated hosted portal URL. Redirect users to this URL or embed it in an iframe.
+      
+      **Format:** `https://connect.gocobalt.io/{token}`
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description (e.g., "Authorization Token Missing")
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "hosted_url": "https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Linked account Id and Template Id both are required",
+  "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Authorization Token Missing",
+  "request_id": "d103dc6a-ad03-49f2-b59e-1d7adb9b6324"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.gocobalt.io/api/v2/public/connect-url" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -d '{
+    "color": "#333333",
+    "bgColor": "#FFFFFF",
+    "name": "Acme Corporation"
+  }'
+```
+```bash cURL (with config_id)
+curl -X POST "https://api.gocobalt.io/api/v2/public/connect-url?config_id=config_12345" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -d '{
+    "color": "#1a73e8",
+    "bgColor": "#f8f9fa",
+    "name": "Enterprise Customer"
+  }'
+```
+</RequestExample>
+
+## Example: Generate Hosted URL
+```javascript
+async function createHostedUrl(sessionToken, options = {}) {
+  const params = new URLSearchParams();
+  if (options.configId) params.append('config_id', options.configId);
+
+  const url = `https://api.gocobalt.io/api/v2/public/connect-url${params.toString() ? '?' + params : ''}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${sessionToken}`
+    },
+    body: JSON.stringify({
+      color: options.color || '#333333',
+      bgColor: options.bgColor || '#FFFFFF',
+      name: options.name || 'Customer'
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const result = await createHostedUrl('your_session_token', {
+  color: '#1a73e8',
+  bgColor: '#f8f9fa',
+  name: 'Acme Corporation'
+});
+
+console.log(`Hosted URL: ${result.hosted_url}`);
+// Redirect user to this URL or open in new tab
+window.open(result.hosted_url, '_blank');
+```
+
+## Example: Full Authentication Flow
+```javascript
+async function getHostedAuthUrl(apiKey, linkedAccountId, customization = {}) {
+  // Step 1: Generate session token
+  const tokenResponse = await fetch(
+    'https://api.gocobalt.io/api/v2/public/session-token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      },
+      body: JSON.stringify({
+        linked_account_id: linkedAccountId
+      })
+    }
+  );
+
+  if (!tokenResponse.ok) {
+    throw new Error('Failed to generate session token');
+  }
+
+  const { token: sessionToken } = await tokenResponse.json();
+
+  // Step 2: Generate hosted URL
+  const hostedResponse = await fetch(
+    'https://api.gocobalt.io/api/v2/public/connect-url',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
+      },
+      body: JSON.stringify({
+        color: customization.textColor || '#000000',
+        bgColor: customization.backgroundColor || '#FFFFFF',
+        name: customization.customerName || 'Customer'
+      })
+    }
+  );
+
+  if (!hostedResponse.ok) {
+    const error = await hostedResponse.json();
+    throw new Error(error.message);
+  }
+
+  return hostedResponse.json();
+}
+
+// Usage
+const { hosted_url } = await getHostedAuthUrl(
+  'your_api_key',
+  'user_12345',
+  {
+    textColor: '#1a73e8',
+    backgroundColor: '#f8f9fa',
+    customerName: 'John Smith'
+  }
+);
+
+// Redirect user to authenticate
+window.location.href = hosted_url;
+```
+
+## Example: Embed in iframe
+```javascript
+async function embedHostedPortal(containerId, sessionToken, options = {}) {
+  const result = await createHostedUrl(sessionToken, options);
+
+  const container = document.getElementById(containerId);
+  const iframe = document.createElement('iframe');
+  
+  iframe.src = result.hosted_url;
+  iframe.style.width = '100%';
+  iframe.style.height = '600px';
+  iframe.style.border = 'none';
+  iframe.style.borderRadius = '8px';
+  
+  container.appendChild(iframe);
+  
+  return iframe;
+}
+
+// Usage
+const iframe = await embedHostedPortal('integration-container', 'your_session_token', {
+  name: 'Acme Corp',
+  color: '#333333',
+  bgColor: '#FFFFFF'
+});
+```
+
+## Customization Options
+
+| Property | Description | Example |
+|----------|-------------|---------|
+| `color` | Text/theme color of the portal | `#1a73e8` (blue) |
+| `bgColor` | Background color of the portal | `#f8f9fa` (light gray) |
+| `name` | Customer name displayed in the portal | `Acme Corporation` |
+
+<Warning>
+Session tokens expire after 24 hours. Generate a new token for each user session or before the token expires.
+</Warning>
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Hosted Properties" icon="sliders" href="/v3/api-reference/hosted/get-hosted-properties">
+    Retrieve saved portal properties
+  </Card>
+  <Card title="Generate Session Token" icon="key" href="/v3/api-reference/session-token/generate-session-token">
+    Create session tokens
+  </Card>
+  <Card title="List Applications" icon="grid" href="/v3/api-reference/applications/list-applications">
+    View available integrations
+  </Card>
+</CardGroup>
