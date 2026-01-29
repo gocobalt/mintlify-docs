@@ -1,6 +1,189 @@
 ---
-title: "Delete Linked Account"
-description: "Documentation for delete linked account"
+title: Delete Linked Account
+api: delete /api/v2/public/linked-account/:linked_account_id
+description: Permanently delete a linked account and all associated data.
 ---
 
-Content coming soon.
+Permanently delete a linked account and all its associated data, including configurations, connections, and execution history.
+
+<Warning>
+This action is permanent and cannot be undone. All data associated with this linked account will be deleted, including integration connections, workflow configurations, and execution history.
+</Warning>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="linked_account_id" type="string" required>
+  The unique identifier of the linked account to delete.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a success message confirming deletion.
+
+    <ResponseField name="message" type="string">
+      Confirmation message
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "message": "User deleted successfully"
+}
+```
+```json 400 Missing ID
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Linked account id is required",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500 Not Found
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Linked Account with account id user_99999 for org 65c9ef72f4b95fce32e8ccf8 in environment production not found",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/linked-account/user_12345" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: Delete Linked Account with Confirmation
+```javascript
+async function deleteLinkedAccount(linkedAccountId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/linked-account/${linkedAccountId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Delete with confirmation
+async function removeLinkedAccount(linkedAccountId, apiKey) {
+  // First, verify the account exists
+  const accountResponse = await fetch(
+    `https://api.gocobalt.io/api/v2/public/linked-account/${linkedAccountId}`,
+    { headers: { 'x-api-key': apiKey } }
+  );
+
+  if (!accountResponse.ok) {
+    throw new Error('Account not found');
+  }
+
+  const account = await accountResponse.json();
+  console.log(`Deleting account: ${account.name} (${account.account_id})`);
+
+  // Delete the account
+  const result = await deleteLinkedAccount(linkedAccountId, apiKey);
+  console.log(result.message);
+  
+  return result;
+}
+
+await removeLinkedAccount('user_12345', 'your_api_key');
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create Linked Account" icon="plus" href="/v3/api-reference/customer/create-linked-account">
+    Create a new account
+  </Card>
+  <Card title="List Linked Accounts" icon="list" href="/v3/api-reference/customer/list-linked-accounts">
+    View all accounts
+  </Card>
+  <Card title="Linked Accounts" icon="book" href="/v3/developer/configure/linked-account">
+    Learn about linked accounts
+  </Card>
+</CardGroup>

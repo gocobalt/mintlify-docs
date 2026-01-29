@@ -1,6 +1,180 @@
 ---
-title: "Get Linked Account"
-description: "Documentation for get linked account"
+title: Get Linked Account
+api: get /api/v2/public/linked-account/:linked_account_id
+description: Retrieve details of a specific linked account by its ID.
 ---
 
-Content coming soon.
+Retrieve information about a specific linked account using its unique identifier. Returns the account details including name, environment, user-defined fields, and timestamps.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345` or `markwood@example.com`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the linked account object.
+
+    <ResponseField name="_id" type="string">
+      Internal record ID
+    </ResponseField>
+
+    <ResponseField name="associated_org" type="string">
+      Your organization ID
+    </ResponseField>
+
+    <ResponseField name="account_id" type="string">
+      The linked account ID you provided
+    </ResponseField>
+
+    <ResponseField name="environment" type="string">
+      Environment where the account exists: `test` or `production`
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Display name of the linked account
+    </ResponseField>
+
+    <ResponseField name="udf" type="object">
+      User-defined fields stored with the account
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of last update
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "64cb7c433c6dddda0fb6bde8",
+  "associated_org": "63dba3b4d9c4be8f0f3f5e8f",
+  "account_id": "user_12345",
+  "environment": "production",
+  "name": "Acme Corporation",
+  "udf": {
+    "plan": "enterprise",
+    "region": "us-west"
+  },
+  "createdAt": "2023-08-03T10:06:59.703Z",
+  "updatedAt": "2023-08-03T10:06:59.833Z",
+  "__v": 1
+}
+```
+```json 400 Account Not Found
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Linked account with id user_99999 not found in the production environment",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/linked-account/user_12345" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: Fetch Linked Account Details
+```javascript
+async function getLinkedAccount(linkedAccountId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/linked-account/${linkedAccountId}`,
+    {
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const account = await getLinkedAccount('user_12345', 'your_api_key');
+console.log(`Account: ${account.name}, Environment: ${account.environment}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Linked Accounts" icon="list" href="/v3/api-reference/customer/list-linked-accounts">
+    View all linked accounts
+  </Card>
+  <Card title="Upsert Linked Account" icon="pen" href="/v3/api-reference/customer/upsert-a-linked-account">
+    Create or update an account
+  </Card>
+  <Card title="Delete Linked Account" icon="trash" href="/v3/api-reference/customer/delete-linked-account">
+    Remove an account
+  </Card>
+</CardGroup>
