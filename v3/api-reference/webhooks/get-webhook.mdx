@@ -1,6 +1,209 @@
 ---
-title: "Get Webhook"
-description: "Documentation for get webhook"
+title: List Webhooks
+api: get /api/v2/public/webhook
+description: Retrieve all registered webhooks for your organization.
 ---
 
-Content coming soon.
+Retrieve a list of all webhook subscriptions registered for your organization. Use this to audit webhook configurations or find webhook IDs for management operations.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of webhook objects.
+
+    <ResponseField name="_id" type="string">
+      Unique webhook identifier
+    </ResponseField>
+
+    <ResponseField name="webhook_url" type="string">
+      The registered webhook URL
+    </ResponseField>
+
+    <ResponseField name="webhook_events" type="array">
+      Subscribed event types
+    </ResponseField>
+
+    <ResponseField name="is_enabled" type="boolean">
+      Whether the webhook is active
+    </ResponseField>
+
+    <ResponseField name="webhook_type" type="string">
+      Payload format type: `default` or `slack`
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Multiple Webhooks
+[
+  {
+    "is_enabled": false,
+    "webhook_events": [
+      "Connection Created",
+      "Connection Deleted",
+      "Workflow Completed",
+      "Workflow Errored",
+      "Connection Expired"
+    ],
+    "webhook_url": "https://api.yourapp.com/webhooks/refold",
+    "_id": "66e56d6584659ad40b4a6799",
+    "createdAt": "2024-09-14T11:03:01.877Z",
+    "webhook_type": "default"
+  },
+  {
+    "is_enabled": true,
+    "webhook_events": [
+      "Connection Created",
+      "Connection Deleted",
+      "Connection Expired"
+    ],
+    "webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXX",
+    "_id": "66e5701971ff81574d55b2ba",
+    "createdAt": "2024-09-14T11:14:33.368Z",
+    "webhook_type": "slack"
+  }
+]
+```
+```json 200 Empty List
+[]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Request failed with status code 500",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/webhook" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: List and Filter Webhooks
+```javascript
+async function listWebhooks(apiKey) {
+  const response = await fetch('https://api.gocobalt.io/api/v2/public/webhook', {
+    headers: {
+      'x-api-key': apiKey
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get all webhooks and filter
+const webhooks = await listWebhooks('your_api_key');
+
+// Filter active webhooks
+const activeWebhooks = webhooks.filter(w => w.is_enabled);
+console.log(`Active webhooks: ${activeWebhooks.length}`);
+
+// Filter by event type
+const errorWebhooks = webhooks.filter(w => 
+  w.webhook_events.includes('Workflow Errored')
+);
+console.log(`Webhooks monitoring errors: ${errorWebhooks.length}`);
+```
+
+## Example: Webhook Status Dashboard
+```javascript
+async function getWebhookSummary(apiKey) {
+  const webhooks = await listWebhooks(apiKey);
+  
+  const summary = {
+    total: webhooks.length,
+    active: webhooks.filter(w => w.is_enabled).length,
+    disabled: webhooks.filter(w => !w.is_enabled).length,
+    byType: {
+      default: webhooks.filter(w => w.webhook_type === 'default').length,
+      slack: webhooks.filter(w => w.webhook_type === 'slack').length
+    },
+    eventCoverage: {
+      'Connection Created': webhooks.filter(w => w.webhook_events.includes('Connection Created')).length,
+      'Connection Deleted': webhooks.filter(w => w.webhook_events.includes('Connection Deleted')).length,
+      'Connection Expired': webhooks.filter(w => w.webhook_events.includes('Connection Expired')).length,
+      'Workflow Completed': webhooks.filter(w => w.webhook_events.includes('Workflow Completed')).length,
+      'Workflow Errored': webhooks.filter(w => w.webhook_events.includes('Workflow Errored')).length
+    }
+  };
+
+  return summary;
+}
+
+// Usage
+const summary = await getWebhookSummary('your_api_key');
+// Output: { total: 2, active: 1, disabled: 1, byType: { default: 1, slack: 1 }, eventCoverage: {...} }
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Webhook by ID" icon="magnifying-glass" href="/v3/api-reference/webhooks/get-webhook-by-id">
+    Retrieve specific webhook
+  </Card>
+  <Card title="Create Webhook" icon="plus" href="/v3/api-reference/webhooks/create-webhook">
+    Register a new webhook
+  </Card>
+  <Card title="Update Webhook" icon="pen" href="/v3/api-reference/webhooks/update-webhook">
+    Modify webhook settings
+  </Card>
+</CardGroup>

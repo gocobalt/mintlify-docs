@@ -1,6 +1,152 @@
 ---
-title: "Subscribe Webhook Event"
-description: "Documentation for subscribe webhook event"
+title: Subscribe to Events (Deprecated)
+api: post /api/v2/public/webhook/subscribe
+description: Subscribe to webhook events. This endpoint is deprecated.
 ---
 
-Content coming soon.
+<Warning>
+**This API is deprecated.** Use [Create Webhook](/v3/api-reference/webhooks/create-webhook) instead to register new webhook subscriptions.
+</Warning>
+
+Subscribe to webhook events for an existing webhook URL. This endpoint adds events to your current webhook subscription.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhook_events" type="array" required>
+  Array of event types to subscribe to.
+  
+  **Accepted values (legacy format):**
+  - `connection-created`
+  - `connection-deleted`
+  - `workflow-completed`
+  - `workflow-errored`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated webhook subscription.
+
+    <ResponseField name="webhook_url" type="string">
+      The registered webhook URL
+    </ResponseField>
+
+    <ResponseField name="webhook_events" type="array">
+      Currently subscribed events
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "webhook_url": "https://mysite.com/cobalt/webhook",
+  "webhook_events": [
+    "Workflow Completed",
+    "Workflow Errored"
+  ]
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Request failed with status code 500",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Deprecated)
+curl -X POST "https://api.gocobalt.io/api/v2/public/webhook/subscribe" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_events": ["workflow-errored"]
+  }'
+```
+</RequestExample>
+
+## Migration Guide
+
+Replace this deprecated endpoint with the [Create Webhook](/v3/api-reference/webhooks/create-webhook) endpoint:
+```javascript
+// Old way (deprecated)
+await fetch('https://api.gocobalt.io/api/v2/public/webhook/subscribe', {
+  method: 'POST',
+  headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ webhook_events: ['workflow-errored'] })
+});
+
+// New way (recommended)
+await fetch('https://api.gocobalt.io/api/v2/public/webhook', {
+  method: 'POST',
+  headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    webhook_url: 'https://mysite.com/cobalt/webhook',
+    webhook_events: ['Workflow Errored'],
+    is_enabled: true,
+    webhook_type: 'default'
+  })
+});
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create Webhook" icon="plus" href="/v3/api-reference/webhooks/create-webhook">
+    Use the new endpoint
+  </Card>
+  <Card title="Update Webhook" icon="pen" href="/v3/api-reference/webhooks/update-webhook">
+    Modify existing webhooks
+  </Card>
+  <Card title="Webhooks" icon="book" href="/v3/developer/configure/webhooks">
+    Learn about webhook setup
+  </Card>
+</CardGroup>

@@ -1,6 +1,157 @@
 ---
-title: "Unsubscribe Webhook Event"
-description: "Documentation for unsubscribe webhook event"
+title: Unsubscribe from Events (Deprecated)
+api: post /api/v2/public/webhook/unsubscribe
+description: Unsubscribe from webhook events. This endpoint is deprecated.
 ---
 
-Content coming soon.
+<Warning>
+**This API is deprecated.** Use [Update Webhook](/v3/api-reference/webhooks/update-webhook) to modify subscribed events, or [Delete Webhook](/v3/api-reference/webhooks/delete-webhook) to remove the webhook entirely.
+</Warning>
+
+Unsubscribe from specific webhook events. This endpoint removes events from your current webhook subscription.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhook_event" type="string" required>
+  The event type to unsubscribe from.
+  
+  **Accepted values (legacy format):**
+  - `connection-created`
+  - `connection-deleted`
+  - `workflow-completed`
+  - `workflow-errored`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated webhook subscription.
+
+    <ResponseField name="webhook_url" type="string">
+      The registered webhook URL
+    </ResponseField>
+
+    <ResponseField name="webhook_events" type="array">
+      Remaining subscribed events
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "webhook_url": "https://mysite.com/cobalt/webhook",
+  "webhook_events": [
+    "Workflow Completed",
+    "Workflow Errored"
+  ]
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Request failed with status code 500",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Deprecated)
+curl -X POST "https://api.gocobalt.io/api/v2/public/webhook/unsubscribe" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_event": "connection-created"
+  }'
+```
+</RequestExample>
+
+## Migration Guide
+
+Replace this deprecated endpoint with the [Update Webhook](/v3/api-reference/webhooks/update-webhook) endpoint:
+```javascript
+// Old way (deprecated)
+await fetch('https://api.gocobalt.io/api/v2/public/webhook/unsubscribe', {
+  method: 'POST',
+  headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ webhook_event: 'connection-created' })
+});
+
+// New way (recommended)
+// First, get the webhook to see current events
+const webhook = await fetch(
+  `https://api.gocobalt.io/api/v2/public/webhook/${webhookId}`,
+  { headers: { 'x-api-key': apiKey } }
+).then(r => r.json());
+
+// Remove the event you want to unsubscribe from
+const newEvents = webhook.webhook_events.filter(e => e !== 'Connection Created');
+
+// Update the webhook
+await fetch(`https://api.gocobalt.io/api/v2/public/webhook/${webhookId}`, {
+  method: 'PUT',
+  headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+  body: JSON.stringify({ webhook_events: newEvents })
+});
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Update Webhook" icon="pen" href="/v3/api-reference/webhooks/update-webhook">
+    Use the new endpoint
+  </Card>
+  <Card title="Delete Webhook" icon="trash" href="/v3/api-reference/webhooks/delete-webhook">
+    Remove webhooks entirely
+  </Card>
+  <Card title="Webhooks" icon="book" href="/v3/developer/configure/webhooks">
+    Learn about webhook setup
+  </Card>
+</CardGroup>

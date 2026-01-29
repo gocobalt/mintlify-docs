@@ -1,6 +1,322 @@
 ---
-title: "Create Webhook"
-description: "Documentation for create webhook"
+title: Create Webhook
+api: post /api/v2/public/webhook
+description: Register a new webhook to receive real-time notifications for platform events.
 ---
 
-Content coming soon.
+Create a webhook subscription to receive real-time notifications when events occur in Refold. Webhooks push data to your application immediately when changes happen, eliminating the need to poll for updates.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhook_url" type="string" required>
+  The HTTPS URL where webhook events will be sent. Must be a valid URL that can receive POST requests.
+  
+  **Example:** `https://api.yourapp.com/webhooks/refold`
+</ParamField>
+
+<ParamField body="webhook_events" type="array" required>
+  Array of event types to subscribe to.
+  
+  **Accepted values:**
+  - `Connection Created` - When a linked account connects an integration
+  - `Connection Deleted` - When a linked account disconnects an integration
+  - `Connection Expired` - When an integration's authentication expires
+  - `Workflow Completed` - When a workflow execution succeeds
+  - `Workflow Errored` - When a workflow execution fails
+</ParamField>
+
+<ParamField body="is_enabled" type="boolean" default="true">
+  Whether the webhook is active. Set to `false` to create a disabled webhook.
+</ParamField>
+
+<ParamField body="webhook_type" type="string" default="default">
+  The webhook payload format.
+  
+  **Accepted values:**
+  - `default` - Standard JSON payload
+  - `slack` - Slack-compatible message format
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the created webhook object.
+
+    <ResponseField name="_id" type="string">
+      Unique webhook identifier
+    </ResponseField>
+
+    <ResponseField name="webhook_url" type="string">
+      The registered webhook URL
+    </ResponseField>
+
+    <ResponseField name="webhook_events" type="array">
+      Subscribed event types
+    </ResponseField>
+
+    <ResponseField name="is_enabled" type="boolean">
+      Whether the webhook is active
+    </ResponseField>
+
+    <ResponseField name="webhook_type" type="string">
+      Payload format type
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Webhook Created
+{
+  "is_enabled": true,
+  "webhook_events": [
+    "Connection Created",
+    "Connection Deleted",
+    "Workflow Completed",
+    "Workflow Errored",
+    "Connection Expired"
+  ],
+  "webhook_url": "https://api.yourapp.com/webhooks/refold",
+  "_id": "66e31564c0287b4136f77ef8",
+  "createdAt": "2024-09-12T16:23:00.587Z",
+  "webhook_type": "default"
+}
+```
+```json 200 Slack Webhook
+{
+  "is_enabled": true,
+  "webhook_events": [
+    "Workflow Errored"
+  ],
+  "webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXX",
+  "_id": "66e5963a51b0a208fecbca31",
+  "createdAt": "2024-09-14T13:57:14.398Z",
+  "webhook_type": "slack"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Request failed with status code 500",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.gocobalt.io/api/v2/public/webhook" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_url": "https://api.yourapp.com/webhooks/refold",
+    "webhook_events": [
+      "Connection Created",
+      "Connection Deleted",
+      "Workflow Completed",
+      "Workflow Errored",
+      "Connection Expired"
+    ],
+    "is_enabled": true,
+    "webhook_type": "default"
+  }'
+```
+```bash Slack Integration
+curl -X POST "https://api.gocobalt.io/api/v2/public/webhook" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhook_url": "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXX",
+    "webhook_events": ["Workflow Errored"],
+    "is_enabled": true,
+    "webhook_type": "slack"
+  }'
+```
+</RequestExample>
+
+## Example: Register Webhook Programmatically
+```javascript
+async function createWebhook(webhookUrl, events, apiKey) {
+  const response = await fetch('https://api.gocobalt.io/api/v2/public/webhook', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      webhook_url: webhookUrl,
+      webhook_events: events,
+      is_enabled: true,
+      webhook_type: 'default'
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Subscribe to all events
+const webhook = await createWebhook(
+  'https://api.yourapp.com/webhooks/refold',
+  [
+    'Connection Created',
+    'Connection Deleted',
+    'Workflow Completed',
+    'Workflow Errored',
+    'Connection Expired'
+  ],
+  'your_api_key'
+);
+
+console.log('Webhook created:', webhook._id);
+```
+
+## Webhook Event Payloads
+
+<AccordionGroup>
+  <Accordion title="Connection Created">
+    Triggered when a linked account successfully connects an integration.
+```json
+    {
+      "linked_account_id": "user_12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "production",
+      "type": "General",
+      "event": "Connection Created",
+      "slug": "hubspot",
+      "createdAt": "Tue, 07 Nov 2023 08:03:27 GMT"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Connection Deleted">
+    Triggered when a linked account disconnects an integration.
+```json
+    {
+      "linked_account_id": "user_12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "production",
+      "type": "General",
+      "event": "Connection Deleted",
+      "slug": "hubspot",
+      "createdAt": "Tue, 07 Nov 2023 08:04:27 GMT"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Connection Expired">
+    Triggered when an integration's authentication expires and needs re-authorization.
+```json
+    {
+      "linked_account_id": "user_12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "production",
+      "type": "General",
+      "event": "Connection Expired",
+      "slug": "pipedrive",
+      "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Workflow Completed">
+    Triggered when a workflow execution completes successfully.
+```json
+    {
+      "linked_account_id": "user_12345",
+      "instance_id": "656f30f69144bb8f183c0118",
+      "workflow_id": "6495792b9b6ca6d77a17e513",
+      "config_id": "user_12345",
+      "event": "Workflow Completed",
+      "workflow_name": "Export contact to Hubspot",
+      "status": "COMPLETED"
+    }
+```
+  </Accordion>
+
+  <Accordion title="Workflow Errored">
+    Triggered when a workflow execution fails.
+```json
+    {
+      "linked_account_id": "user_12345",
+      "instance_id": "656f308b9144bb8f183bfc7b",
+      "workflow_id": "6495792b9b6ca6d77a17e513",
+      "config_id": "user_12345",
+      "event": "Workflow Errored",
+      "workflow_name": "Export contact to Hubspot",
+      "status": "ERRORED"
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+<Info>
+When receiving webhook events, respond with HTTP 200 OK to confirm delivery. Refold retries failed deliveries up to 3 times with exponential backoff.
+</Info>
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Webhooks" icon="list" href="/v3/api-reference/webhooks/get-webhook">
+    View all registered webhooks
+  </Card>
+  <Card title="Update Webhook" icon="pen" href="/v3/api-reference/webhooks/update-webhook">
+    Modify webhook settings
+  </Card>
+  <Card title="Webhooks" icon="book" href="/v3/developer/configure/webhooks">
+    Learn about webhook setup
+  </Card>
+</CardGroup>

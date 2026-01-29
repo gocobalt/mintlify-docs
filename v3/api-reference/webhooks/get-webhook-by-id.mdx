@@ -1,6 +1,176 @@
 ---
-title: "Get Webhook By Id"
-description: "Documentation for get webhook by id"
+title: Get Webhook by ID
+api: get /api/v2/public/webhook/:id
+description: Retrieve details of a specific webhook by its ID.
 ---
 
-Content coming soon.
+Retrieve the configuration details of a specific webhook subscription by its unique identifier.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The unique webhook identifier.
+  
+  **Example:** `66e5701971ff81574d55b2ba`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the webhook object.
+
+    <ResponseField name="_id" type="string">
+      Unique webhook identifier
+    </ResponseField>
+
+    <ResponseField name="webhook_url" type="string">
+      The registered webhook URL
+    </ResponseField>
+
+    <ResponseField name="webhook_events" type="array">
+      Subscribed event types
+    </ResponseField>
+
+    <ResponseField name="is_enabled" type="boolean">
+      Whether the webhook is active
+    </ResponseField>
+
+    <ResponseField name="webhook_type" type="string">
+      Payload format type: `default` or `slack`
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of creation
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Internal Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "is_enabled": true,
+  "webhook_events": [
+    "Connection Created",
+    "Connection Deleted",
+    "Workflow Completed",
+    "Workflow Errored",
+    "Connection Expired"
+  ],
+  "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
+  "_id": "66e5701971ff81574d55b2ba",
+  "createdAt": "2024-09-14T11:14:33.368Z",
+  "webhook_type": "slack"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Request failed with status code 500",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/webhook/66e5701971ff81574d55b2ba" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: Verify Webhook Configuration
+```javascript
+async function getWebhook(webhookId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/webhook/${webhookId}`,
+    {
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Verify webhook is properly configured
+const webhook = await getWebhook('66e5701971ff81574d55b2ba', 'your_api_key');
+
+const requiredEvents = ['Workflow Errored', 'Connection Expired'];
+const missingEvents = requiredEvents.filter(
+  event => !webhook.webhook_events.includes(event)
+);
+
+if (missingEvents.length > 0) {
+  console.log('Missing required events:', missingEvents);
+}
+
+if (!webhook.is_enabled) {
+  console.log('Warning: Webhook is disabled');
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Update Webhook" icon="pen" href="/v3/api-reference/webhooks/update-webhook">
+    Modify webhook settings
+  </Card>
+  <Card title="Delete Webhook" icon="trash" href="/v3/api-reference/webhooks/delete-webhook">
+    Remove a webhook
+  </Card>
+  <Card title="List Webhooks" icon="list" href="/v3/api-reference/webhooks/get-webhook">
+    View all webhooks
+  </Card>
+</CardGroup>
