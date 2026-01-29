@@ -1,0 +1,336 @@
+---
+title: Get Action Schema
+api: get /api/v2/integration-schema/:slug/actions/:action_id
+description: Retrieve the parameter schema for a specific action.
+---
+
+Retrieve the parameter schema for a specific action within an integration application. Use this to understand what parameters are required or optional before executing an action.
+
+## Authentication
+
+This API supports two authentication methods. Use either Session Token OR API Key with Linked Account ID.
+
+<Tabs>
+  <Tab title="Session Token">
+    <ParamField header="Authorization" type="string" required>
+      Bearer token for authentication.
+      
+      **Format:** `Bearer YOUR_SESSION_TOKEN`
+    </ParamField>
+  </Tab>
+  <Tab title="API Key + Linked Account">
+    <ParamField header="x-api-key" type="string" required>
+      Your Refold API key. Find it in **Settings → Credentials**.
+    </ParamField>
+    
+    <ParamField header="linked_account_id" type="string" required>
+      The unique identifier for the linked account.
+      
+      **Example:** `user_12345`
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug identifier.
+  
+  **Example:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+<ParamField path="action_id" type="string" required>
+  The unique action identifier obtained from the List Actions endpoint.
+  
+  **Example:** `create_contact`, `create_deal`, `update_account`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of parameter objects.
+
+    <ResponseField name="name" type="string">
+      Parameter name/field identifier used in the request body
+    </ResponseField>
+
+    <ResponseField name="label" type="string">
+      Display label for the parameter
+    </ResponseField>
+
+    <ResponseField name="required" type="boolean">
+      Whether the parameter is required for action execution
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Data type of the parameter: `text`, `number`, `json`, `boolean`, `select`
+    </ResponseField>
+
+    <ResponseField name="options" type="array">
+      Available options for `select` type parameters
+    </ResponseField>
+
+    <ResponseField name="placeholder" type="string">
+      Placeholder text for the input field
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 HubSpot Create Contact
+[
+  {
+    "name": "firstname",
+    "label": "Enter First Name",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "lastname",
+    "label": "Enter Last Name",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "email",
+    "label": "Enter Email",
+    "required": true,
+    "type": "text"
+  },
+  {
+    "name": "phone",
+    "label": "Enter Phone Number",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "company",
+    "label": "Enter Company Name",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "website",
+    "label": "Enter Website URL",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "jobtitle",
+    "label": "Current job title",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "hubspot_owner_id",
+    "label": "Enter Owner Id",
+    "required": false,
+    "type": "text"
+  },
+  {
+    "name": "associations",
+    "label": "Associations",
+    "required": false,
+    "type": "json"
+  },
+  {
+    "name": "additional_fields",
+    "label": "Additional Fields",
+    "required": false,
+    "type": "json"
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid session token",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Action not found for the specified slug and action_id",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X GET "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions/create_contact" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+```bash cURL (API Key)
+curl -X GET "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions/create_contact" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Get Action Parameters
+```javascript
+async function getActionSchema(slug, actionId, linkedAccountId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/integration-schema/${slug}/actions/${actionId}`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get schema for HubSpot create_contact action
+const schema = await getActionSchema('hubspot', 'create_contact', 'user_12345', 'your_api_key');
+
+const requiredFields = schema.filter(p => p.required);
+const optionalFields = schema.filter(p => !p.required);
+
+console.log('Required fields:');
+requiredFields.forEach(f => console.log(`- ${f.name} (${f.type})`));
+
+console.log('\nOptional fields:');
+optionalFields.forEach(f => console.log(`- ${f.name} (${f.type})`));
+```
+
+## Example: Build Dynamic Form
+```javascript
+async function buildActionForm(slug, actionId, linkedAccountId, apiKey) {
+  const schema = await getActionSchema(slug, actionId, linkedAccountId, apiKey);
+
+  // Generate form fields based on schema
+  const formFields = schema.map(param => ({
+    name: param.name,
+    label: param.label,
+    type: mapParamType(param.type),
+    required: param.required,
+    options: param.options || [],
+    placeholder: param.placeholder || ''
+  }));
+
+  return formFields;
+}
+
+function mapParamType(schemaType) {
+  const typeMap = {
+    'text': 'text',
+    'number': 'number',
+    'json': 'textarea',
+    'boolean': 'checkbox',
+    'select': 'select'
+  };
+  return typeMap[schemaType] || 'text';
+}
+
+// Usage: Build form for Salesforce create_account
+const formFields = await buildActionForm('salesforce', 'create_account', 'user_12345', 'your_api_key');
+
+formFields.forEach(field => {
+  console.log(`<input name="${field.name}" type="${field.type}" required="${field.required}" />`);
+});
+```
+
+## Example: Validate Parameters Before Execution
+```javascript
+async function validateActionParams(slug, actionId, params, linkedAccountId, apiKey) {
+  const schema = await getActionSchema(slug, actionId, linkedAccountId, apiKey);
+
+  const errors = [];
+  const requiredFields = schema.filter(p => p.required);
+
+  // Check required fields
+  requiredFields.forEach(field => {
+    if (!params[field.name]) {
+      errors.push(`Missing required field: ${field.label} (${field.name})`);
+    }
+  });
+
+  // Check field types
+  schema.forEach(field => {
+    if (params[field.name] !== undefined) {
+      if (field.type === 'json' && typeof params[field.name] === 'string') {
+        try {
+          JSON.parse(params[field.name]);
+        } catch {
+          errors.push(`Invalid JSON for field: ${field.name}`);
+        }
+      }
+    }
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+
+// Usage: Validate before executing
+const validation = await validateActionParams(
+  'hubspot',
+  'create_contact',
+  { firstname: 'John' }, // Missing required 'email' field
+  'user_12345',
+  'your_api_key'
+);
+
+if (!validation.valid) {
+  console.log('Validation errors:', validation.errors);
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Execute Action" icon="play" href="/v3/api-reference/integration-schema/execute-action">
+    Run the action
+  </Card>
+  <Card title="List Actions" icon="list" href="/v3/api-reference/integration-schema/get-actions-for-an-application">
+    View all actions
+  </Card>
+  <Card title="Get Application" icon="magnifying-glass" href="/v3/api-reference/integration-meta/get-application">
+    View app details
+  </Card>
+</CardGroup>

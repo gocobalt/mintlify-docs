@@ -1,0 +1,308 @@
+---
+title: List Actions
+api: get /api/v2/integration-schema/:slug/actions
+description: Retrieve all available actions for a specific integration application.
+---
+
+Retrieve a list of all available actions for a specific integration application. Each action represents an operation you can execute against the connected application, such as creating contacts, updating records, or fetching data.
+
+## Authentication
+
+This API supports two authentication methods. Use either Session Token OR API Key with Linked Account ID.
+
+<Tabs>
+  <Tab title="Session Token">
+    <ParamField header="Authorization" type="string" required>
+      Bearer token for authentication.
+      
+      **Format:** `Bearer YOUR_SESSION_TOKEN`
+    </ParamField>
+  </Tab>
+  <Tab title="API Key + Linked Account">
+    <ParamField header="x-api-key" type="string" required>
+      Your Refold API key. Find it in **Settings → Credentials**.
+    </ParamField>
+    
+    <ParamField header="linked_account_id" type="string" required>
+      The unique identifier for the linked account.
+      
+      **Example:** `user_12345`
+    </ParamField>
+  </Tab>
+</Tabs>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug identifier.
+  
+  **Example:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of action objects.
+
+    <ResponseField name="name" type="string">
+      Display name of the action
+    </ResponseField>
+
+    <ResponseField name="action_id" type="string">
+      Unique identifier for the action. Use this ID when executing the action or fetching parameters.
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Description of what the action does
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 HubSpot Actions
+[
+  {
+    "name": "HTTP Request",
+    "action_id": "httprequest",
+    "description": "Send an HTTP request to interact with the application's API. The action automatically handles authentication."
+  },
+  {
+    "name": "Create Contact",
+    "action_id": "create_contact",
+    "description": "Creating a contact in Hubspot"
+  },
+  {
+    "name": "Create Task",
+    "action_id": "create_task",
+    "description": "Creating a task in Hubspot"
+  },
+  {
+    "name": "Create Company",
+    "action_id": "create_company",
+    "description": "Creating a Company in Hubspot"
+  },
+  {
+    "name": "Create Deal",
+    "action_id": "create_deal",
+    "description": "Creating a Deal in Hubspot"
+  },
+  {
+    "name": "Update Contact",
+    "action_id": "update_contact",
+    "description": "Updating a contact in Hubspot"
+  },
+  {
+    "name": "Delete Contact",
+    "action_id": "delete_contact",
+    "description": "Deleting a contact in Hubspot"
+  },
+  {
+    "name": "Get Contact",
+    "action_id": "get_contact",
+    "description": "Get all contacts."
+  },
+  {
+    "name": "Get Contact By Id",
+    "action_id": "get_contact_by_id",
+    "description": "Get a contact by id"
+  },
+  {
+    "name": "Search Contact",
+    "action_id": "search_contacts",
+    "description": "Search for contacts matching a criteria"
+  }
+]
+```
+```json 200 Salesforce Actions
+[
+  {
+    "name": "HTTP Request",
+    "action_id": "httprequest",
+    "description": "Send an HTTP request to interact with the application's API."
+  },
+  {
+    "name": "Get entity with SOQL",
+    "action_id": "get_entity_with_soql",
+    "description": "Execute a SOQL query to get data from Salesforce"
+  },
+  {
+    "name": "List Accounts",
+    "action_id": "get_accounts",
+    "description": "Get list of All Accounts"
+  },
+  {
+    "name": "Create Account",
+    "action_id": "create_account",
+    "description": "Create an account in Salesforce"
+  },
+  {
+    "name": "Update Account",
+    "action_id": "update_account",
+    "description": "Update an account in Salesforce"
+  },
+  {
+    "name": "Delete Account",
+    "action_id": "delete_account",
+    "description": "Delete an account in Salesforce"
+  },
+  {
+    "name": "Create Contact",
+    "action_id": "create_contact",
+    "description": "Create a contact in Salesforce"
+  },
+  {
+    "name": "Create Lead",
+    "action_id": "create_lead",
+    "description": "Create a lead in Salesforce"
+  },
+  {
+    "name": "Create Opportunity",
+    "action_id": "create_opportunity",
+    "description": "Create an opportunity in Salesforce"
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid session token",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Integration slug not found",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X GET "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+```bash cURL (API Key)
+curl -X GET "https://api.gocobalt.io/api/v2/integration-schema/hubspot/actions" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: List Available Actions
+```javascript
+async function listActions(slug, linkedAccountId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/integration-schema/${slug}/actions`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get all HubSpot actions
+const actions = await listActions('hubspot', 'user_12345', 'your_api_key');
+
+console.log('Available actions:');
+actions.forEach(action => {
+  console.log(`- ${action.name} (${action.action_id})`);
+});
+```
+
+## Example: Build Action Selector UI
+```javascript
+async function getActionsByCategory(slug, linkedAccountId, apiKey) {
+  const actions = await listActions(slug, linkedAccountId, apiKey);
+
+  // Categorize actions by operation type
+  const categories = {
+    create: actions.filter(a => a.action_id.startsWith('create_')),
+    update: actions.filter(a => a.action_id.startsWith('update_')),
+    delete: actions.filter(a => a.action_id.startsWith('delete_')),
+    get: actions.filter(a => a.action_id.startsWith('get_') || a.action_id.startsWith('search_')),
+    other: actions.filter(a => 
+      !a.action_id.startsWith('create_') && 
+      !a.action_id.startsWith('update_') && 
+      !a.action_id.startsWith('delete_') &&
+      !a.action_id.startsWith('get_') &&
+      !a.action_id.startsWith('search_')
+    )
+  };
+
+  return categories;
+}
+
+// Usage: Build UI with categorized actions
+const categories = await getActionsByCategory('salesforce', 'user_12345', 'your_api_key');
+
+console.log(`Create actions: ${categories.create.length}`);
+console.log(`Read actions: ${categories.get.length}`);
+console.log(`Update actions: ${categories.update.length}`);
+console.log(`Delete actions: ${categories.delete.length}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Action Schema" icon="code" href="/v3/api-reference/integration-schema/get-action-parameters">
+    View action parameters
+  </Card>
+  <Card title="Execute Action" icon="play" href="/v3/api-reference/integration-schema/execute-action">
+    Run an action
+  </Card>
+  <Card title="List Applications" icon="grid" href="/v3/api-reference/integration-meta/list-applications">
+    View available apps
+  </Card>
+</CardGroup>
