@@ -1,0 +1,334 @@
+---
+title: Search Datastore Records
+api: post /api/v2/public/datastore/config/:slug/:datastore_name/search
+description: Search for specific records within a config datastore.
+---
+
+Search for records within a config datastore using filters. You can search by `record_id`, column name (`item`), or column value (`value`). This is useful for finding specific records without retrieving the entire datastore.
+
+<Warning>
+If the request body is empty (`{}`), the API returns an empty array. Always provide at least one search parameter.
+</Warning>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `netsuite`
+</ParamField>
+
+<ParamField path="datastore_name" type="string" required>
+  The name of the datastore to search.
+  
+  **Example:** `customer_sync_store`
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="record_id" type="string">
+  Search by the unique record identifier.
+  
+  **Example:** `fa796472-a22c-4c58-bf4a-cf2809fe4253`
+</ParamField>
+
+<ParamField body="item" type="string">
+  Search by item/key name. This matches records where the column name equals the provided value.
+  
+  **Example:** `customer_id`
+</ParamField>
+
+<ParamField body="value" type="string">
+  Search by value. This matches records where any column value equals the provided value.
+  
+  **Example:** `CUST-001`
+</ParamField>
+
+<Note>
+You can combine multiple search parameters. The API returns records that match all provided criteria (AND logic).
+</Note>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of matching record objects.
+
+    <ResponseField name="record_id" type="string">
+      Unique identifier for the record
+    </ResponseField>
+
+    <ResponseField name="[column_name]" type="string">
+      Dynamic columns based on datastore schema
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Search Results
+[
+  {
+    "record_id": "fa796472-a22c-4c58-bf4a-cf2809fe4253",
+    "customer_id": "CUST-001",
+    "external_id": "sf_contact_12345",
+    "last_sync": "2025-01-28T10:30:00Z",
+    "sync_status": "completed"
+  }
+]
+```
+```json 200 Multiple Results
+[
+  {
+    "record_id": "fa796472-a22c-4c58-bf4a-cf2809fe4253",
+    "item": "Widget Pro",
+    "sku": "WGT-PRO-001",
+    "price": "299.99"
+  },
+  {
+    "record_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "item": "Widget Pro Max",
+    "sku": "WGT-PRO-002",
+    "price": "399.99"
+  }
+]
+```
+```json 200 No Results
+[]
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404 Missing API Key
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "MISSING_REQUIRED_FIELD",
+  "message": "Missing API Key"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL - Search by Record ID
+curl -X POST "https://api.gocobalt.io/api/v2/public/datastore/config/netsuite/customer_sync_store/search" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "record_id": "fa796472-a22c-4c58-bf4a-cf2809fe4253"
+  }'
+```
+```bash cURL - Search by Value
+curl -X POST "https://api.gocobalt.io/api/v2/public/datastore/config/netsuite/customer_sync_store/search" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "value": "CUST-001"
+  }'
+```
+```bash cURL - Search by Item Name
+curl -X POST "https://api.gocobalt.io/api/v2/public/datastore/config/hubspot/product_cache/search" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "item": "Widget Pro"
+  }'
+```
+</RequestExample>
+
+## Example: Search for Specific Record
+```javascript
+async function searchDatastore(linkedAccountId, slug, datastoreName, searchParams, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/datastore/config/${slug}/${datastoreName}/search`,
+    {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(searchParams)
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Find a customer by ID
+const results = await searchDatastore(
+  'user_12345',
+  'netsuite',
+  'customer_sync_store',
+  { value: 'CUST-001' },
+  'your_api_key'
+);
+
+if (results.length > 0) {
+  console.log('Found customer:', results[0]);
+} else {
+  console.log('Customer not found');
+}
+```
+
+## Example: Check Sync Status for External ID
+```javascript
+async function getSyncStatusByExternalId(linkedAccountId, slug, externalId, apiKey) {
+  const results = await searchDatastore(
+    linkedAccountId,
+    slug,
+    'customer_sync_store',
+    { value: externalId },
+    apiKey
+  );
+
+  if (results.length === 0) {
+    return {
+      found: false,
+      externalId,
+      message: 'No sync record found for this external ID'
+    };
+  }
+
+  const record = results[0];
+  return {
+    found: true,
+    externalId,
+    recordId: record.record_id,
+    customerId: record.customer_id,
+    lastSync: record.last_sync,
+    status: record.sync_status
+  };
+}
+
+// Usage
+const syncStatus = await getSyncStatusByExternalId(
+  'user_12345',
+  'netsuite',
+  'sf_contact_12345',
+  'your_api_key'
+);
+// Output: { found: true, externalId: "sf_contact_12345", recordId: "fa796...", customerId: "CUST-001", lastSync: "2025-01-28T10:30:00Z", status: "completed" }
+```
+
+## Example: Find Records by Multiple Criteria
+```javascript
+async function findPendingSyncRecords(linkedAccountId, slug, apiKey) {
+  // First, get all records
+  const allRecords = await fetch(
+    `https://api.gocobalt.io/api/v2/public/datastore/config/${slug}/customer_sync_store/records`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  ).then(r => r.json());
+
+  // Filter for pending status (client-side filtering for complex queries)
+  const pendingRecords = allRecords.filter(r => r.sync_status === 'pending');
+
+  return {
+    total: allRecords.length,
+    pending: pendingRecords.length,
+    records: pendingRecords
+  };
+}
+```
+
+## Search Parameters
+
+| Parameter | Description | Use Case |
+|-----------|-------------|----------|
+| `record_id` | Exact match on record UUID | Retrieve a specific known record |
+| `item` | Match on column/key name | Find records with specific column |
+| `value` | Match on any column value | Find records containing a value |
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Records" icon="table" href="/v3/api-reference/datastore/config-datastore-records">
+    Retrieve all records from a datastore
+  </Card>
+  <Card title="List Datastores" icon="database" href="/v3/api-reference/datastore/list-config-datastores">
+    View all available datastores
+  </Card>
+  <Card title="Tables Guide" icon="book" href="/build/workflow/tables">
+    Learn about Tables and Datastores
+  </Card>
+</CardGroup>

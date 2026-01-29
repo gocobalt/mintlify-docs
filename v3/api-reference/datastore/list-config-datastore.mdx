@@ -1,0 +1,188 @@
+---
+title: List Datastores
+api: get /api/v2/public/datastore/config/:slug
+description: Retrieve all config datastores for an application.
+---
+
+Retrieve a list of all config datastores available for an application. Config datastores persist data across multiple workflow executions and can be accessed by any workflow within the same application.
+
+<Info>
+Config datastores are different from workflow datastores. Config datastores persist across all workflows for an application, while workflow datastores only exist within a single workflow execution.
+</Info>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `netsuite`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of datastore names.
+
+    The response is a simple string array containing the names of all config datastores for the specified application.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Datastores List
+[
+  "customer_sync_store",
+  "invoice_mapping",
+  "product_cache",
+  "sync_state"
+]
+```
+```json 200 Empty List
+[]
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404 Missing API Key
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "MISSING_REQUIRED_FIELD",
+  "message": "Missing API Key"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/datastore/config/hubspot" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: List and Display Datastores
+```javascript
+async function listDatastores(linkedAccountId, slug, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/datastore/config/${slug}`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  const datastoreNames = await response.json();
+  
+  return {
+    application: slug,
+    datastoreCount: datastoreNames.length,
+    datastores: datastoreNames
+  };
+}
+
+// Usage
+const result = await listDatastores('user_12345', 'netsuite', 'your_api_key');
+console.log(`Found ${result.datastoreCount} datastores for ${result.application}`);
+// Output: Found 4 datastores for netsuite
+```
+
+## Datastore Types
+
+| Type | Scope | Persistence |
+|------|-------|-------------|
+| Config | All workflows in application | Persists until explicitly deleted |
+| Workflow | Single workflow execution | Deleted after workflow completes |
+
+<Note>
+This API only returns config-type datastores. Workflow-type datastores are temporary and only accessible within their workflow execution context.
+</Note>
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Datastore Records" icon="table" href="/v3/api-reference/datastore/config-datastore-records">
+    Retrieve all records from a datastore
+  </Card>
+  <Card title="Search Records" icon="magnifying-glass" href="/v3/api-reference/datastore/search-config-records">
+    Search for specific records
+  </Card>
+  <Card title="Tables Guide" icon="book" href="/build/workflow/tables">
+    Learn about Tables and Datastores
+  </Card>
+</CardGroup>

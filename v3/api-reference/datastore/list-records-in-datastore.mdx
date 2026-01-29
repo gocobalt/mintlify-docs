@@ -1,0 +1,251 @@
+---
+title: List Datastore Records
+api: get /api/v2/public/datastore/config/:slug/:datastore/records
+description: Retrieve all records from a specific config datastore.
+---
+
+Retrieve all records from a specified config datastore. Each record contains a unique `record_id` along with the columns defined when the datastore was created.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `netsuite`
+</ParamField>
+
+<ParamField path="datastore" type="string" required>
+  The name of the datastore.
+  
+  **Example:** `customer_sync_store`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of record objects. The structure of each record depends on the columns defined in the datastore.
+
+    <ResponseField name="record_id" type="string">
+      Unique identifier for the record (UUID format)
+    </ResponseField>
+
+    <ResponseField name="[column_name]" type="string">
+      Dynamic columns based on datastore schema. Each column defined when creating the datastore appears as a key-value pair.
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Product Records
+[
+  {
+    "record_id": "ed7cc6d0-e30f-4626-91a8-ede29ebc83c5",
+    "item": "Widget Pro",
+    "sku": "WGT-PRO-001",
+    "price": "299.99",
+    "quantity": "150"
+  },
+  {
+    "record_id": "cb4ee6h0-e30f-4626-91a8-fga15egj78c4d",
+    "item": "Widget Basic",
+    "sku": "WGT-BAS-001",
+    "price": "99.99",
+    "quantity": "500"
+  },
+  {
+    "record_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "item": "Widget Enterprise",
+    "sku": "WGT-ENT-001",
+    "price": "999.99",
+    "quantity": "25"
+  }
+]
+```
+```json 200 Customer Sync Records
+[
+  {
+    "record_id": "fa796472-a22c-4c58-bf4a-cf2809fe4253",
+    "customer_id": "CUST-001",
+    "external_id": "sf_contact_12345",
+    "last_sync": "2025-01-28T10:30:00Z",
+    "sync_status": "completed"
+  },
+  {
+    "record_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "customer_id": "CUST-002",
+    "external_id": "sf_contact_67890",
+    "last_sync": "2025-01-28T10:25:00Z",
+    "sync_status": "completed"
+  }
+]
+```
+```json 200 Empty Datastore
+[]
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404 Missing API Key
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "MISSING_REQUIRED_FIELD",
+  "message": "Missing API Key"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/datastore/config/netsuite/customer_sync_store/records" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Fetch and Process Records
+```javascript
+async function getDatastoreRecords(linkedAccountId, slug, datastoreName, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/datastore/config/${slug}/${datastoreName}/records`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get all sync state records
+const syncRecords = await getDatastoreRecords(
+  'user_12345',
+  'netsuite',
+  'customer_sync_store',
+  'your_api_key'
+);
+
+// Process records
+const pendingSync = syncRecords.filter(r => r.sync_status === 'pending');
+console.log(`Found ${pendingSync.length} records pending sync`);
+```
+
+## Example: Build Sync Status Dashboard
+```javascript
+async function getSyncStatusSummary(linkedAccountId, slug, datastoreName, apiKey) {
+  const records = await getDatastoreRecords(linkedAccountId, slug, datastoreName, apiKey);
+  
+  const summary = records.reduce((acc, record) => {
+    const status = record.sync_status || 'unknown';
+    acc[status] = (acc[status] || 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    totalRecords: records.length,
+    statusBreakdown: summary,
+    lastUpdated: records.length > 0 
+      ? records.sort((a, b) => new Date(b.last_sync) - new Date(a.last_sync))[0].last_sync
+      : null
+  };
+}
+
+// Usage
+const summary = await getSyncStatusSummary(
+  'user_12345',
+  'netsuite',
+  'customer_sync_store',
+  'your_api_key'
+);
+// Output: { totalRecords: 150, statusBreakdown: { completed: 145, pending: 3, failed: 2 }, lastUpdated: "2025-01-28T10:30:00Z" }
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Search Records" icon="magnifying-glass" href="/v3/api-reference/datastore/search-config-records">
+    Search for specific records
+  </Card>
+  <Card title="List Datastores" icon="database" href="/v3/api-reference/datastore/list-config-datastores">
+    View all available datastores
+  </Card>
+  <Card title="Tables Guide" icon="book" href="/build/workflow/tables">
+    Learn about Tables and Datastores
+  </Card>
+</CardGroup>
