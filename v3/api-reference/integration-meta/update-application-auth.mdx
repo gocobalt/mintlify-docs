@@ -1,6 +1,294 @@
 ---
-title: "Update Application Auth"
-description: "Documentation for update application auth"
+title: Migrate Token
+api: put /api/v2/public/migrate-token
+description: Migrate authentication credentials (API keys, access tokens) to Refold for an application.
 ---
 
-Content coming soon.
+Migrate existing authentication credentials to Refold for a specific application and linked account. Use this endpoint when you have pre-existing tokens or API keys that you want to use with Refold integrations, or when programmatically setting up connections without the OAuth redirect flow.
+
+<Info>
+This endpoint creates a new integration connection if one doesn't exist, or updates the existing credentials if a connection is already present.
+</Info>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier of the linked account to migrate credentials for.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="slug" type="string" required>
+  The application slug to migrate credentials for.
+  
+  **Examples:** `slack`, `salesforce`, `hubspot`
+</ParamField>
+
+<ParamField body="auth_object" type="object" required>
+  The authentication credentials to migrate. The structure depends on the application's authentication type.
+  
+  <Warning>
+    For OAuth2 applications, only `access_token` and `refresh_token` are permitted.
+    For key-based applications, use the field names defined in the application's `auth_input_map`.
+  </Warning>
+  
+  <Expandable title="OAuth2 Example">
+```json
+    {
+      "access_token": "xoxb-123456789-abcdefghij",
+      "refresh_token": "xoxr-987654321-zyxwvutsrq"
+    }
+```
+  </Expandable>
+  
+  <Expandable title="Key-based Example (Slack)">
+```json
+    {
+      "bot_token": "xoxb-your-bot-token",
+      "workspace_token": "xoxp-your-workspace-token"
+    }
+```
+  </Expandable>
+  
+  <Expandable title="Key-based Example (Custom)">
+```json
+    {
+      "api_key": "your-api-key",
+      "base_url": "https://api.example.com"
+    }
+```
+  </Expandable>
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a success confirmation.
+
+    <ResponseField name="success" type="boolean">
+      Whether the migration was successful
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Description of the action taken (created or updated)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned when the request contains invalid data.
+
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    Returned when the API key is missing or invalid.
+
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Created
+{
+  "success": true,
+  "message": "Integration - slack created"
+}
+```
+```json 200 Updated
+{
+  "success": true,
+  "message": "Integration - slack updated"
+}
+```
+```json 400 Invalid Auth Object
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "auth_object values must be valid strings",
+  "request_id": "212047f0-df39-4ef2-abc1-7e66495643c4"
+}
+```
+```json 400 Invalid Token Type
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "access_token and/or refresh_token only permitted in auth_object for OAuth2 based applications",
+  "request_id": "ea455085-d124-4cea-aae1-6defe1cc3b30"
+}
+```
+```json 400 Linked Account Not Found
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "linked account with id user_12345 does not exist in test environment",
+  "request_id": "90e83618-5743-4953-92cb-675220470272"
+}
+```
+```json 400 Invalid Fields
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "server_url,api_key only permitted in auth_object of auth_type: key_based for application Copper",
+  "request_id": "4c4a494b-250c-46c5-95d4-b8f1def56f01"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+## Example: Migrate OAuth2 Tokens
+
+Use this when you have existing OAuth tokens from a previous integration system:
+```javascript
+async function migrateOAuthTokens(linkedAccountId, slug, tokens, apiKey) {
+  const response = await fetch(
+    'https://api.gocobalt.io/api/v2/public/migrate-token',
+    {
+      method: 'PUT',
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        slug: slug,
+        auth_object: {
+          access_token: tokens.accessToken,
+          refresh_token: tokens.refreshToken
+        }
+      })
+    }
+  );
+
+  return response.json();
+}
+
+// Usage
+await migrateOAuthTokens(
+  'user_123',
+  'salesforce',
+  {
+    accessToken: 'existing_access_token',
+    refreshToken: 'existing_refresh_token'
+  },
+  'your_api_key'
+);
+```
+
+## Example: Migrate API Keys
+
+Use this for key-based applications:
+```javascript
+async function migrateApiCredentials(linkedAccountId, slug, credentials, apiKey) {
+  const response = await fetch(
+    'https://api.gocobalt.io/api/v2/public/migrate-token',
+    {
+      method: 'PUT',
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        slug: slug,
+        auth_object: credentials
+      })
+    }
+  );
+
+  return response.json();
+}
+
+// Usage for Slack
+await migrateApiCredentials(
+  'user_123',
+  'slack',
+  {
+    bot_token: 'xoxb-your-bot-token',
+    workspace_token: 'xoxp-your-workspace-token'
+  },
+  'your_api_key'
+);
+
+// Usage for a custom key-based app
+await migrateApiCredentials(
+  'user_123',
+  'copper',
+  {
+    api_token: 'your-copper-api-key',
+    email: 'admin@company.com'
+  },
+  'your_api_key'
+);
+```
+
+## Auth Object Requirements
+
+| Auth Type | Permitted Fields | Notes |
+|-----------|-----------------|-------|
+| `oauth2` | `access_token`, `refresh_token` | Only these two fields are allowed |
+| `keybased` | Fields from `auth_input_map` | Use the exact field names defined in the application |
+
+<Warning>
+Mixing OAuth2 and key-based fields in the same request will result in an error. Check the application's `auth_type` before making the request.
+</Warning>
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Application" icon="circle-info" href="/v3/api-reference/integration-meta/get-application">
+    Verify the connection was successful
+  </Card>
+  <Card title="Get Config" icon="gear" href="/v3/api-reference/config/get-config">
+    Configure the integration settings
+  </Card>
+  <Card title="Execute Action" icon="play" href="/v3/api-reference/integration-schema/execute-action">
+    Start using the connected integration
+  </Card>
+</CardGroup>

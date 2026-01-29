@@ -1,6 +1,290 @@
 ---
-title: "List Applications"
-description: "Documentation for list applications"
+title: List Applications
+api: get /api/v2/public/application
+description: Retrieve all enabled applications for a linked account.
 ---
 
-Content coming soon.
+Retrieve a list of all applications enabled for your organization and their connection status for a specific linked account. Use this to build custom integration UIs showing which apps are available and connected.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of application objects.
+
+    <ResponseField name="name" type="string">
+      Application display name
+    </ResponseField>
+
+    <ResponseField name="icon" type="string">
+      URL to the application's logo
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Application description
+    </ResponseField>
+
+    <ResponseField name="auth_type" type="string">
+      Authentication type: `oauth2` or `keybased`
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Application type identifier
+    </ResponseField>
+
+    <ResponseField name="app_id" type="string">
+      Internal application record ID
+    </ResponseField>
+
+    <ResponseField name="slug" type="string">
+      Application slug for API calls
+    </ResponseField>
+
+    <ResponseField name="tags" type="array">
+      Category tags (e.g., `CRM`, `Communication`, `Office`)
+    </ResponseField>
+
+    <ResponseField name="version" type="object">
+      Version information
+      <Expandable title="properties">
+        <ResponseField name="_v" type="string">
+          Application version
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Version description
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="connected" type="boolean">
+      Whether the linked account has connected this application. Only present if connected.
+    </ResponseField>
+
+    <ResponseField name="connected_accounts" type="array">
+      Details of connected accounts. Only present if connected.
+      <Expandable title="properties">
+        <ResponseField name="identifier" type="string">
+          Identifier of the connected account
+        </ResponseField>
+        <ResponseField name="connectedAt" type="string">
+          ISO 8601 timestamp of connection
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="auth_input_map" type="array">
+      Input fields for key-based authentication. Only present for `keybased` auth type.
+      <Expandable title="properties">
+        <ResponseField name="name" type="string">
+          Field name
+        </ResponseField>
+        <ResponseField name="label" type="string">
+          Display label
+        </ResponseField>
+        <ResponseField name="placeholder" type="string">
+          Placeholder text
+        </ResponseField>
+        <ResponseField name="required" type="boolean">
+          Whether the field is required
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Input type: `text`, `number`, `boolean`, `select`
+        </ResponseField>
+        <ResponseField name="options" type="array">
+          Options array for `select` type fields
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="reauth_required" type="boolean">
+      Whether re-authentication is needed
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "name": "Salesforce",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/salesforce/logo.png",
+    "description": "Salesforce is a leading enterprise customer relationship manager (CRM) application.",
+    "auth_type": "oauth2",
+    "type": "salesforce",
+    "app_id": "669e0767d6c828b822c4f650",
+    "tags": ["CRM"],
+    "version": {
+      "_v": "1.0.0",
+      "description": "Salesforce is a leading enterprise customer relationship manager (CRM) application."
+    },
+    "connected": true,
+    "connected_accounts": [
+      {
+        "identifier": "sales@acme.com",
+        "connectedAt": "2023-05-22T07:52:31.270Z"
+      }
+    ],
+    "slug": "salesforce",
+    "reauth_required": false
+  },
+  {
+    "name": "Slack",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+    "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go.",
+    "auth_type": "oauth2",
+    "type": "slack",
+    "app_id": "6463683189cc3cc0379e8e70",
+    "tags": ["Communication"],
+    "version": {
+      "_v": "1.0.0",
+      "description": "Slack is a platform for team communication."
+    },
+    "slug": "slack",
+    "reauth_required": false
+  },
+  {
+    "name": "Copper",
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/copper/logo.png",
+    "description": "Copper is a CRM platform focused on automation and simplicity.",
+    "auth_type": "keybased",
+    "tags": ["CRM"],
+    "auth_input_map": [
+      {
+        "name": "api_token",
+        "label": "API Key",
+        "placeholder": "Please enter the API key",
+        "required": true,
+        "type": "text"
+      },
+      {
+        "name": "email",
+        "label": "Email Address",
+        "placeholder": "Please enter the email of the token owner",
+        "required": true,
+        "type": "text"
+      }
+    ],
+    "version": {
+      "_v": "1.0.0",
+      "description": "Copper is a CRM platform."
+    },
+    "slug": "copper",
+    "reauth_required": false
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/application" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Build Integration Catalog
+```javascript
+async function listApplications(linkedAccountId, apiKey) {
+  const response = await fetch(
+    'https://api.gocobalt.io/api/v2/public/application',
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get all apps and categorize
+const apps = await listApplications('user_12345', 'your_api_key');
+
+const connectedApps = apps.filter(app => app.connected);
+const availableApps = apps.filter(app => !app.connected);
+
+console.log(`Connected: ${connectedApps.length}, Available: ${availableApps.length}`);
+
+// Group by category
+const byCategory = apps.reduce((acc, app) => {
+  const category = app.tags[0] || 'Other';
+  acc[category] = acc[category] || [];
+  acc[category].push(app);
+  return acc;
+}, {});
+
+console.log('Apps by category:', Object.keys(byCategory));
+```
+
+## Example: Check Re-authentication Requirements
+```javascript
+async function getAppsNeedingReauth(linkedAccountId, apiKey) {
+  const apps = await listApplications(linkedAccountId, apiKey);
+  
+  return apps.filter(app => app.connected && app.reauth_required);
+}
+
+// Usage: Alert user about expired connections
+const reauthApps = await getAppsNeedingReauth('user_12345', 'your_api_key');
+
+if (reauthApps.length > 0) {
+  console.log('The following apps need re-authentication:');
+  reauthApps.forEach(app => console.log(`- ${app.name} (${app.slug})`));
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Application" icon="magnifying-glass" href="/v3/api-reference/integration-meta/get-application">
+    Get details for a specific app
+  </Card>
+  <Card title="Migrate Token" icon="key" href="/v3/api-reference/integration-meta/update-application-auth">
+    Migrate authentication tokens
+  </Card>
+  <Card title="Get Config" icon="gear" href="/v3/api-reference/config/get-config">
+    Retrieve app configuration
+  </Card>
+</CardGroup>

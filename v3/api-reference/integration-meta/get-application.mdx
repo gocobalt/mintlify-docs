@@ -1,6 +1,316 @@
 ---
-title: "Get Application"
-description: "Documentation for get application"
+title: Get Application
+api: get /api/v2/public/application/:slug
+description: Retrieve details of a specific application by its slug.
 ---
 
-Content coming soon.
+Retrieve detailed information about a specific application using its slug identifier. Returns connection status, authentication requirements, and configuration details for the linked account.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug identifier.
+  
+  **Example:** `slack`, `salesforce`, `hubspot`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the application object.
+
+    <ResponseField name="name" type="string">
+      Application display name
+    </ResponseField>
+
+    <ResponseField name="icon" type="string">
+      URL to the application's logo
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Application description
+    </ResponseField>
+
+    <ResponseField name="auth_type" type="string">
+      Authentication type: `oauth2` or `keybased`
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      Application type identifier
+    </ResponseField>
+
+    <ResponseField name="app_id" type="string">
+      Internal application record ID
+    </ResponseField>
+
+    <ResponseField name="slug" type="string">
+      Application slug
+    </ResponseField>
+
+    <ResponseField name="tags" type="array">
+      Category tags
+    </ResponseField>
+
+    <ResponseField name="version" type="object">
+      Version information
+      <Expandable title="properties">
+        <ResponseField name="_v" type="string">
+          Application version
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Version description
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="connected" type="boolean">
+      Whether the linked account has connected this application
+    </ResponseField>
+
+    <ResponseField name="connected_accounts" type="array">
+      Details of connected accounts
+      <Expandable title="properties">
+        <ResponseField name="identifier" type="string">
+          Identifier of the connected account
+        </ResponseField>
+        <ResponseField name="connectedAt" type="string">
+          ISO 8601 timestamp of connection
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="auth_input_map" type="array">
+      Input fields for key-based authentication. Only present for `keybased` auth type.
+      <Expandable title="properties">
+        <ResponseField name="name" type="string">
+          Field name
+        </ResponseField>
+        <ResponseField name="label" type="string">
+          Display label
+        </ResponseField>
+        <ResponseField name="placeholder" type="string">
+          Placeholder text
+        </ResponseField>
+        <ResponseField name="required" type="boolean">
+          Whether the field is required
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Input type: `text`, `number`, `boolean`, `select`
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="reauth_required" type="boolean">
+      Whether re-authentication is needed
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 OAuth Application (Connected)
+{
+  "name": "Slack",
+  "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
+  "description": "Slack is a platform for team communication: everything in one place, instantly searchable, available wherever you go. Offering instant messaging, document sharing and knowledge search for modern teams.",
+  "auth_type": "oauth2",
+  "type": "slack",
+  "app_id": "6463683189cc3cc0379e8e70",
+  "tags": ["Communication"],
+  "version": {
+    "_v": "1.0.0",
+    "description": "Slack is a platform for team communication."
+  },
+  "connected": true,
+  "connected_accounts": [
+    {
+      "identifier": "Acme Workspace",
+      "connectedAt": "2023-06-22T09:25:02.327Z"
+    }
+  ],
+  "slug": "slack",
+  "reauth_required": false
+}
+```
+```json 200 Key-Based Application
+{
+  "name": "Copper",
+  "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/copper/logo.png",
+  "description": "Copper is a customer relationship management (CRM) platform focused on automation and simplicity.",
+  "auth_type": "keybased",
+  "tags": ["CRM"],
+  "auth_input_map": [
+    {
+      "name": "api_token",
+      "label": "API Key",
+      "placeholder": "Please enter the API key",
+      "required": true,
+      "type": "text"
+    },
+    {
+      "name": "email",
+      "label": "Email Address",
+      "placeholder": "Please enter the email of the token owner",
+      "required": true,
+      "type": "text"
+    }
+  ],
+  "version": {
+    "_v": "1.0.0",
+    "description": "Copper is a CRM platform."
+  },
+  "slug": "copper",
+  "reauth_required": false
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "error_type": "NOT_FOUND",
+  "message": "Application not found",
+  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/application/slack" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Check Connection Status
+```javascript
+async function getApplication(slug, linkedAccountId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/application/${slug}`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Check if Salesforce is connected
+const salesforce = await getApplication('salesforce', 'user_12345', 'your_api_key');
+
+if (salesforce.connected) {
+  console.log(`Salesforce connected as: ${salesforce.connected_accounts[0].identifier}`);
+  console.log(`Connected at: ${salesforce.connected_accounts[0].connectedAt}`);
+} else {
+  console.log('Salesforce is not connected');
+}
+
+if (salesforce.reauth_required) {
+  console.log('Warning: Re-authentication required');
+}
+```
+
+## Example: Build Auth Form for Key-Based Apps
+```javascript
+async function getAuthFields(slug, linkedAccountId, apiKey) {
+  const app = await getApplication(slug, linkedAccountId, apiKey);
+  
+  if (app.auth_type !== 'keybased') {
+    return { type: 'oauth', app };
+  }
+
+  // Return fields needed for authentication form
+  return {
+    type: 'keybased',
+    app,
+    fields: app.auth_input_map.map(field => ({
+      name: field.name,
+      label: field.label,
+      placeholder: field.placeholder,
+      required: field.required,
+      inputType: field.type,
+      options: field.options || []
+    }))
+  };
+}
+
+// Usage: Get auth requirements for Copper CRM
+const authInfo = await getAuthFields('copper', 'user_12345', 'your_api_key');
+
+if (authInfo.type === 'keybased') {
+  console.log('Required fields:');
+  authInfo.fields.forEach(f => {
+    console.log(`- ${f.label} (${f.required ? 'required' : 'optional'})`);
+  });
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Applications" icon="list" href="/v3/api-reference/integration-meta/list-applications">
+    View all available apps
+  </Card>
+  <Card title="Migrate Token" icon="key" href="/v3/api-reference/integration-meta/update-application-auth">
+    Migrate authentication tokens
+  </Card>
+  <Card title="Get Config" icon="gear" href="/v3/api-reference/config/get-config">
+    Retrieve app configuration
+  </Card>
+</CardGroup>
