@@ -1,6 +1,198 @@
 ---
-title: "Delete Config"
-description: "Documentation for delete config"
+title: Delete Config
+api: delete /api/v2/public/slug/:slug/config/:config_id
+description: Remove a configuration for a linked account and application.
 ---
 
-Content coming soon.
+Delete a configuration for a linked account. This removes all workflow settings and field values associated with the config. Use this when a user disconnects an integration or you need to reset their configuration.
+
+<Warning>
+This action is permanent and cannot be undone. All workflow settings and field values for this config will be lost.
+</Warning>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+<ParamField path="config_id" type="string">
+  The config identifier. If not provided, defaults to the `linked_account_id`.
+  
+  **Example:** `config_hubspot_001`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="message" type="string">
+      Success message confirming deletion
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "message": "Installation Deleted Success"
+}
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 400 Missing Slug
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Missing Slug",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 400 Application Not Found
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Application with slug hubspot not found",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/slug/slack/config/user_12345" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+```bash Delete Default Config
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/slug/hubspot/config/" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Delete Config with Confirmation
+```javascript
+async function deleteConfig(linkedAccountId, slug, configId, apiKey) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/slug/${slug}/config/${configId || ''}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return { success: true, slug, configId };
+}
+
+// Usage with confirmation
+async function disconnectIntegration(linkedAccountId, slug, configId, apiKey) {
+  // First, disable all workflows
+  await fetch('https://api.gocobalt.io/api/v2/public/config', {
+    method: 'PUT',
+    headers: {
+      'x-api-key': apiKey,
+      'linked_account_id': linkedAccountId,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      slug,
+      config_id: configId,
+      workflows: [] // Disable all workflows
+    })
+  });
+
+  // Then delete the config
+  return deleteConfig(linkedAccountId, slug, configId, apiKey);
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Upsert Config" icon="plus" href="/v3/api-reference/config/upsert-config">
+    Create a new config
+  </Card>
+  <Card title="List Applications" icon="grid-2" href="/v3/api-reference/integration-meta/list-applications">
+    View available integrations
+  </Card>
+  <Card title="Delete Linked Account" icon="user-minus" href="/v3/api-reference/customer/delete-linked-account">
+    Remove the linked account
+  </Card>
+</CardGroup>

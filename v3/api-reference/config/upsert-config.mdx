@@ -1,0 +1,328 @@
+---
+title: Upsert Config
+api: post /api/v2/public/config
+description: Find an existing config or create a new one for a linked account and application.
+---
+
+Retrieve an existing configuration or create a new one for a linked account. A config stores the integration settings for each of your end-users, including which workflows are enabled and field values they have configured. If a config with the specified `config_id` exists, it returns the existing setup. Otherwise, it creates a new config.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="slug" type="string" required>
+  The application slug for which to create or retrieve the config.
+  
+  **Examples:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+<ParamField body="config_id" type="string">
+  A unique identifier for this config. If not provided, defaults to the `linked_account_id`.
+  
+  **Example:** `config_hubspot_001`
+</ParamField>
+
+<ParamField body="labels" type="object">
+  Dynamic labels for field mapping. Pass custom field names that your users can map to integration fields.
+  
+  <Expandable title="Example Structure">
+```json
+    {
+      "customer_mapping": [
+        { "name": "Customer Name", "value": "customer_name" },
+        { "name": "Customer Email", "value": "customer_email" }
+      ]
+    }
+```
+  </Expandable>
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the config object with all available fields and workflows.
+
+    <ResponseField name="slug" type="string">
+      Application slug
+    </ResponseField>
+
+    <ResponseField name="config_id" type="string">
+      Unique identifier of the config
+    </ResponseField>
+
+    <ResponseField name="fields" type="array">
+      Global input fields for the application
+      <Expandable title="Field Object">
+        <ResponseField name="id" type="string">
+          Unique field identifier
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Field display name
+        </ResponseField>
+        <ResponseField name="field_type" type="string">
+          Input type: `text`, `number`, `select`, or `map`
+        </ResponseField>
+        <ResponseField name="required" type="boolean">
+          Whether the field is required
+        </ResponseField>
+        <ResponseField name="options" type="array">
+          Available options for `select` or `map` field types
+        </ResponseField>
+        <ResponseField name="labels" type="array">
+          Dynamic labels for mapping
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="workflows" type="array">
+      Published workflows for the application
+      <Expandable title="Workflow Object">
+        <ResponseField name="id" type="string">
+          Workflow ID
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Workflow name
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Workflow description
+        </ResponseField>
+        <ResponseField name="enabled" type="boolean">
+          Whether the workflow is enabled for this linked account
+        </ResponseField>
+        <ResponseField name="fields" type="array">
+          Workflow-specific input fields
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="field_errors" type="array">
+      Any validation errors for field values
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned when required parameters are missing or invalid.
+
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    Returned when authentication credentials are invalid.
+
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Slack Config
+{
+  "slug": "slack",
+  "config_id": "user_12345",
+  "fields": [
+    {
+      "required": false,
+      "id": "64da0b57c9ae95561bb0a24d",
+      "name": "Channel",
+      "field_type": "select",
+      "options": [
+        { "name": "general", "value": "C044U7Q074J" },
+        { "name": "engineering", "value": "C045X8R185K" }
+      ],
+      "labels": []
+    }
+  ],
+  "workflows": [
+    {
+      "id": "64d1fac58716dc5065127ffe",
+      "name": "Send message in a channel",
+      "description": "Posts a message to a Slack channel when triggered",
+      "enabled": false,
+      "fields": [
+        {
+          "required": false,
+          "id": "64da0b57c9ae95561bb0a24f",
+          "name": "Channel",
+          "field_type": "select",
+          "options": [
+            { "name": "general", "value": "C044U7Q074J" }
+          ],
+          "labels": []
+        }
+      ]
+    }
+  ],
+  "field_errors": []
+}
+```
+```json 200 HubSpot Config with Map Fields
+{
+  "slug": "hubspot",
+  "config_id": "config_hubspot_001",
+  "fields": [
+    {
+      "required": true,
+      "id": "670fcb9e023ebc1f370c5139",
+      "name": "Contact Field Mapping",
+      "field_type": "map",
+      "options": [
+        { "name": "First Name", "value": "firstname" },
+        { "name": "Last Name", "value": "lastname" },
+        { "name": "Email", "value": "email" },
+        { "name": "Company", "value": "company" }
+      ],
+      "labels": [
+        { "name": "Customer Name", "value": "customer_name" },
+        { "name": "Customer Email", "value": "customer_email" }
+      ]
+    }
+  ],
+  "workflows": [
+    {
+      "id": "649d230c2ce6b9b07b163e61",
+      "name": "Sync Contacts to HubSpot",
+      "description": "Creates or updates contacts in HubSpot",
+      "enabled": false,
+      "fields": []
+    }
+  ],
+  "field_errors": []
+}
+```
+```json 400 Missing Slug
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Missing Slug",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.gocobalt.io/api/v2/public/config" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "slug": "slack",
+    "config_id": "config_slack_001",
+    "labels": {
+      "customer_fields": [
+        { "name": "Customer Name", "value": "name" },
+        { "name": "Customer Email", "value": "email" }
+      ]
+    }
+  }'
+```
+</RequestExample>
+
+## Example: Initialize Config After Connection
+```javascript
+async function initializeConfig(linkedAccountId, slug, apiKey) {
+  const response = await fetch('https://api.gocobalt.io/api/v2/public/config', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'linked_account_id': linkedAccountId,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      slug,
+      labels: {
+        // Pass your application's field names for mapping
+        contact_fields: [
+          { name: 'Full Name', value: 'full_name' },
+          { name: 'Email Address', value: 'email' },
+          { name: 'Phone', value: 'phone_number' }
+        ]
+      }
+    })
+  });
+
+  const config = await response.json();
+  
+  return {
+    configId: config.config_id,
+    availableWorkflows: config.workflows.map(w => ({
+      id: w.id,
+      name: w.name,
+      enabled: w.enabled,
+      hasRequiredFields: w.fields.some(f => f.required)
+    })),
+    globalFields: config.fields
+  };
+}
+```
+
+## Field Types
+
+| Type | Description | Example Usage |
+|------|-------------|---------------|
+| `text` | Free-form text input | API keys, custom identifiers |
+| `number` | Numeric input | Thresholds, limits |
+| `select` | Dropdown selection | Channels, pipelines, stages |
+| `map` | Field mapping | Map your fields to integration fields |
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Update Config" icon="pen" href="/v3/api-reference/config/update-config">
+    Enable workflows and set field values
+  </Card>
+  <Card title="Get Config" icon="eye" href="/v3/api-reference/config/get-config">
+    Retrieve a specific config
+  </Card>
+  <Card title="Trigger Event" icon="bolt" href="/v3/api-reference/event/trigger-event">
+    Execute workflows with events
+  </Card>
+</CardGroup>
