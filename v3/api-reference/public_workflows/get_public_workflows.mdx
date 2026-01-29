@@ -1,6 +1,458 @@
 ---
-title: "Get_Public_Workflows"
-description: "Documentation for get_public_workflows"
+title: List Workflows
+api: get /api/v2/public/workflow
+description: Retrieve workflows with filtering by application, name, and publish status.
 ---
 
-Content coming soon.
+Retrieve a paginated list of workflows with optional filtering. This API supports both public workflows (organization-wide) and private workflows (linked account specific).
+
+<Info>
+When `linked_account_id` is provided, the API returns private workflows created by that linked account. When omitted, only public workflows are returned.
+</Info>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string">
+  The unique identifier for the linked account.
+  
+  - **If provided:** Returns private workflows created by that linked account
+  - **If omitted:** Returns only public (organization-wide) workflows
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="slug" type="string">
+  Filter workflows by application slug.
+  
+  **Example:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+<ParamField query="name" type="string">
+  Search workflows by name (case-insensitive partial match).
+  
+  **Example:** `create`, `sync`, `delete`
+</ParamField>
+
+<ParamField query="published" type="boolean">
+  Filter by publish status.
+  
+  - `true` - Only published workflows
+  - `false` - Only unpublished (draft) workflows
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Number of records per page (maximum 100).
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a paginated list of workflows.
+
+    <ResponseField name="docs" type="array">
+      Array of workflow objects
+      <Expandable title="Workflow Object">
+        <ResponseField name="_id" type="string">
+          Unique identifier for the workflow
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Workflow name
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Workflow description
+        </ResponseField>
+        <ResponseField name="published" type="boolean">
+          Whether the workflow is published and live
+        </ResponseField>
+        <ResponseField name="autoEnable" type="boolean">
+          Whether workflow auto-enables for new connections
+        </ResponseField>
+        <ResponseField name="workflow_environment" type="array">
+          Environments where workflow is available: `test`, `production`
+        </ResponseField>
+        <ResponseField name="slug" type="string">
+          Application slug the workflow belongs to
+        </ResponseField>
+        <ResponseField name="createdAt" type="string">
+          ISO 8601 creation timestamp
+        </ResponseField>
+        <ResponseField name="updatedAt" type="string">
+          ISO 8601 last update timestamp
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="totalDocs" type="integer">
+      Total number of workflows matching the query
+    </ResponseField>
+
+    <ResponseField name="limit" type="integer">
+      Records per page
+    </ResponseField>
+
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages
+    </ResponseField>
+
+    <ResponseField name="page" type="integer">
+      Current page number
+    </ResponseField>
+
+    <ResponseField name="pagingCounter" type="integer">
+      Paging counter
+    </ResponseField>
+
+    <ResponseField name="hasPrevPage" type="boolean">
+      Whether there is a previous page
+    </ResponseField>
+
+    <ResponseField name="hasNextPage" type="boolean">
+      Whether there is a next page
+    </ResponseField>
+
+    <ResponseField name="prevPage" type="integer">
+      Previous page number (null if none)
+    </ResponseField>
+
+    <ResponseField name="nextPage" type="integer">
+      Next page number (null if none)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 All Workflows (no filter)
+{
+  "docs": [
+    {
+      "_id": "6813689e1acc0cbcd162cf16",
+      "name": "Create Contact",
+      "description": "",
+      "published": true,
+      "autoEnable": false,
+      "createdAt": "2023-08-26T16:36:44.573Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf17",
+      "name": "Delete Contact",
+      "description": "",
+      "published": true,
+      "autoEnable": true,
+      "createdAt": "2023-08-26T16:38:12.125Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf18",
+      "name": "Create Company",
+      "description": "",
+      "published": true,
+      "autoEnable": true,
+      "createdAt": "2023-08-26T16:43:47.193Z",
+      "updatedAt": "2026-01-08T07:45:22.441Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    }
+  ],
+  "totalDocs": 17,
+  "limit": 10,
+  "totalPages": 2,
+  "page": 1,
+  "pagingCounter": 1,
+  "hasPrevPage": false,
+  "hasNextPage": true,
+  "prevPage": null,
+  "nextPage": 2
+}
+```
+```json 200 Filtered by Name and Slug
+{
+  "docs": [
+    {
+      "_id": "6813689e1acc0cbcd162cf16",
+      "name": "Create Contact",
+      "description": "",
+      "published": true,
+      "autoEnable": false,
+      "createdAt": "2023-08-26T16:36:44.573Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf18",
+      "name": "Create Company",
+      "description": "",
+      "published": true,
+      "autoEnable": true,
+      "createdAt": "2023-08-26T16:43:47.193Z",
+      "updatedAt": "2026-01-08T07:45:22.441Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf1a",
+      "name": "Create deal in hubspot",
+      "description": "",
+      "published": true,
+      "autoEnable": false,
+      "createdAt": "2023-08-26T16:48:21.786Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "workflow_environment": ["test", "production"],
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf2c",
+      "name": "Contact created in Hubspot",
+      "description": "",
+      "published": true,
+      "autoEnable": false,
+      "workflow_environment": ["test", "production"],
+      "createdAt": "2023-12-22T09:23:52.093Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "slug": "hubspot"
+    },
+    {
+      "_id": "6813689e1acc0cbcd162cf87",
+      "name": "Create Company-Contact-Timeline",
+      "published": true,
+      "description": "",
+      "autoEnable": false,
+      "workflow_environment": ["test", "production"],
+      "createdAt": "2024-10-01T06:27:16.629Z",
+      "updatedAt": "2026-01-06T16:11:53.025Z",
+      "slug": "hubspot"
+    }
+  ],
+  "totalDocs": 5,
+  "limit": 10,
+  "totalPages": 1,
+  "page": 1,
+  "pagingCounter": 1,
+  "hasPrevPage": false,
+  "hasNextPage": false,
+  "prevPage": null,
+  "nextPage": null
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Public Workflows)
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (Filter by Name)
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow?name=create" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (Filter by Slug and Name)
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow?slug=hubspot&name=create" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (Private Workflows for Linked Account)
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow?slug=hubspot&published=true" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+```bash cURL (Full Filter)
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow?slug=hubspot&page=1&limit=10&published=true&name=create" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: List All Workflows
+```javascript
+async function listWorkflows(apiKey, options = {}) {
+  const params = new URLSearchParams();
+  
+  if (options.slug) params.append('slug', options.slug);
+  if (options.name) params.append('name', options.name);
+  if (options.published !== undefined) params.append('published', options.published);
+  if (options.page) params.append('page', options.page);
+  if (options.limit) params.append('limit', options.limit);
+
+  const url = `https://api.gocobalt.io/api/v2/public/workflow${params.toString() ? '?' + params : ''}`;
+  
+  const headers = {
+    'x-api-key': apiKey
+  };
+  
+  // Include linked_account_id for private workflows
+  if (options.linkedAccountId) {
+    headers['linked_account_id'] = options.linkedAccountId;
+  }
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Get all public HubSpot workflows
+const result = await listWorkflows('your_api_key', {
+  slug: 'hubspot'
+});
+
+console.log(`Found ${result.totalDocs} workflows`);
+result.docs.forEach(w => {
+  console.log(`- ${w.name} (${w.published ? 'Published' : 'Draft'})`);
+});
+```
+
+## Example: Search Workflows by Name
+```javascript
+async function searchWorkflows(apiKey, searchTerm, options = {}) {
+  const result = await listWorkflows(apiKey, {
+    name: searchTerm,
+    ...options
+  });
+
+  return result.docs;
+}
+
+// Usage: Find all "create" workflows for HubSpot
+const createWorkflows = await searchWorkflows('your_api_key', 'create', {
+  slug: 'hubspot',
+  published: true
+});
+
+console.log(`Found ${createWorkflows.length} workflows matching "create":`);
+createWorkflows.forEach(w => console.log(`- ${w.name}`));
+```
+
+## Example: Get Private Workflows for a User
+```javascript
+async function getUserWorkflows(apiKey, linkedAccountId, slug) {
+  const result = await listWorkflows(apiKey, {
+    slug,
+    linkedAccountId // This fetches private workflows
+  });
+
+  return {
+    published: result.docs.filter(w => w.published),
+    drafts: result.docs.filter(w => !w.published),
+    total: result.totalDocs
+  };
+}
+
+// Usage: Get user's HubSpot workflows
+const userWorkflows = await getUserWorkflows(
+  'your_api_key',
+  'user_12345',
+  'hubspot'
+);
+
+console.log(`Published: ${userWorkflows.published.length}`);
+console.log(`Drafts: ${userWorkflows.drafts.length}`);
+```
+
+## Example: Paginate Through All Workflows
+```javascript
+async function getAllWorkflows(apiKey, options = {}) {
+  const allWorkflows = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const result = await listWorkflows(apiKey, {
+      ...options,
+      page,
+      limit: 100
+    });
+
+    allWorkflows.push(...result.docs);
+    hasMore = result.hasNextPage;
+    page++;
+  }
+
+  return allWorkflows;
+}
+
+// Usage: Get all published workflows
+const allPublished = await getAllWorkflows('your_api_key', {
+  published: true
+});
+
+console.log(`Total published workflows: ${allPublished.length}`);
+```
+
+## Example: Group Workflows by Application
+```javascript
+async function getWorkflowsByApplication(apiKey) {
+  const allWorkflows = await getAllWorkflows(apiKey);
+
+  // Group by slug
+  const byApp = allWorkflows.reduce((acc, workflow) => {
+    const slug = workflow.slug || 'unknown';
+    if (!acc[slug]) acc[slug] = [];
+    acc[slug].push(workflow);
+    return acc;
+  }, {});
+
+  return byApp;
+}
+
+// Usage
+const grouped = await getWorkflowsByApplication('your_api_key');
+
+Object.entries(grouped).forEach(([app, workflows]) => {
+  console.log(`\n${app}: ${workflows.length} workflows`);
+  workflows.forEach(w => console.log(`  - ${w.name}`));
+});
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create Workflow" icon="plus" href="/v3/api-reference/public_workflows/create_public_workflow">
+    Create a new public workflow
+  </Card>
+  <Card title="Get Draft" icon="pen-to-square" href="/v3/api-reference/public_workflows/get_draft">
+    Retrieve the draft version
+  </Card>
+  <Card title="List Executions" icon="clock-rotate-left" href="/v3/api-reference/executions/list-executions">
+    View execution history
+  </Card>
+</CardGroup>

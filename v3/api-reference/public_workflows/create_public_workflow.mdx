@@ -1,6 +1,342 @@
 ---
-title: "Create_Public_Workflow"
-description: "Documentation for create_public_workflow"
+title: Create Public Workflow
+api: post /api/v2/public/workflow
+description: Create a new public workflow for a linked account.
 ---
 
-Content coming soon.
+Create a new public workflow that linked accounts can customize and execute. Public workflows enable end-users to build their own automation workflows within your embedded integration experience.
+
+<Info>
+Public workflows are created with a default Start node and operate in the production environment. Users can edit workflows in draft mode before publishing.
+</Info>
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+  
+  Generate a session token using the [Session Token API](/v3/api-reference/session-token/generate-session-token).
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>
+  Display name for the workflow.
+  
+  **Example:** `Sync Contacts to CRM`
+</ParamField>
+
+<ParamField body="slug" type="string" required>
+  Application slug the workflow is associated with.
+  
+  **Example:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of what the workflow does.
+  
+  **Example:** `Automatically sync new contacts from our platform to HubSpot`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the created workflow object.
+
+    <ResponseField name="_id" type="string">
+      Unique identifier for the workflow
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Workflow name
+    </ResponseField>
+
+    <ResponseField name="org_id" type="string">
+      Organization ID where workflow is created
+    </ResponseField>
+
+    <ResponseField name="nodes" type="array">
+      Array of workflow nodes
+      <Expandable title="Node Object">
+        <ResponseField name="id" type="string">
+          Node identifier within the workflow
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Node type: `start`, `ai_code_executor`, etc.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Display name of the node
+        </ResponseField>
+        <ResponseField name="status" type="string">
+          Current status: `Ready`, `Running`, `Completed`, `Errored`
+        </ResponseField>
+        <ResponseField name="position" type="object">
+          X and Y coordinates for canvas positioning
+        </ResponseField>
+        <ResponseField name="triggers" type="array">
+          Trigger configuration (only for `start` node)
+        </ResponseField>
+        <ResponseField name="action" type="string">
+          Action configured in the node
+        </ResponseField>
+        <ResponseField name="incoming_nodes" type="array">
+          IDs of nodes connecting to this node
+        </ResponseField>
+        <ResponseField name="outgoing_nodes" type="array">
+          IDs of nodes this node connects to
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="edges" type="array">
+      Connections between nodes
+      <Expandable title="Edge Object">
+        <ResponseField name="id" type="string">
+          Edge identifier
+        </ResponseField>
+        <ResponseField name="source" type="string">
+          Source node ID
+        </ResponseField>
+        <ResponseField name="target" type="string">
+          Target node ID
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="published" type="boolean">
+      Whether the workflow is published
+    </ResponseField>
+
+    <ResponseField name="associated_application" type="string">
+      Application ID the workflow is associated with
+    </ResponseField>
+
+    <ResponseField name="linked_account_id" type="string">
+      Linked account that owns this workflow
+    </ResponseField>
+
+    <ResponseField name="public_access_workflow" type="boolean">
+      Always `true` for public workflows
+    </ResponseField>
+
+    <ResponseField name="workflow_environment" type="array">
+      Environments where workflow is available: `test`, `production`
+    </ResponseField>
+
+    <ResponseField name="data_slots" type="array">
+      Data slots configured in the workflow
+    </ResponseField>
+
+    <ResponseField name="autoEnable" type="boolean">
+      Whether workflow auto-enables for new connections
+    </ResponseField>
+
+    <ResponseField name="hide_in_config" type="boolean">
+      Whether workflow is hidden in configuration UI
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 last update timestamp
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="500 Server Error">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "67dd309c8a29c6f92d8bb45e",
+  "name": "Sync Contacts Workflow",
+  "org_id": "669e076623c652d7aff25eb9",
+  "nodes": [
+    {
+      "id": "1",
+      "data": null,
+      "type": "start",
+      "position": {
+        "x": 396,
+        "y": 112
+      },
+      "name": "Start",
+      "status": "Ready",
+      "configurable": false,
+      "maximum_attempts": 1,
+      "attempts_made": 0,
+      "is_batch": false,
+      "triggers": [
+        {
+          "application": "Cobalt",
+          "event": "API Call",
+          "_id": "67dd309c8a29c6f92d8bb45d"
+        }
+      ],
+      "incoming_nodes": [],
+      "outgoing_nodes": []
+    },
+    {
+      "id": "2",
+      "data": null,
+      "type": "ai_code_executor",
+      "position": {
+        "x": 396,
+        "y": 272
+      },
+      "name": "Step 1",
+      "status": "Ready",
+      "configurable": false,
+      "maximum_attempts": 1,
+      "attempts_made": 0,
+      "is_batch": false,
+      "action": "no_action",
+      "incoming_nodes": [],
+      "outgoing_nodes": []
+    }
+  ],
+  "published": false,
+  "associated_application": "669e0767d6c828b822c4f656",
+  "description": "Sync contacts from our platform to HubSpot",
+  "icon": "",
+  "edges": [
+    {
+      "source": "1",
+      "target": "2",
+      "sourceHandle": null,
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "1efef0cc-b4aa-4a04-804f-55abdccd8db3"
+    }
+  ],
+  "autoEnable": false,
+  "hide_in_config": false,
+  "is_v2": true,
+  "linked_account_id": "user_12345",
+  "public_access_workflow": true,
+  "workflow_environment": ["test", "production"],
+  "data_slots": [],
+  "createdAt": "2025-03-21T09:25:48.384Z",
+  "updatedAt": "2025-03-21T09:25:48.384Z"
+}
+```
+```json 500 Application Not Found
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Application with slug hubspot not found",
+  "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.gocobalt.io/api/v2/public/workflow" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sync Contacts Workflow",
+    "slug": "hubspot",
+    "description": "Sync contacts from our platform to HubSpot"
+  }'
+```
+</RequestExample>
+
+## Example: Create Public Workflow
+```javascript
+async function createPublicWorkflow(sessionToken, workflowData) {
+  const response = await fetch('https://api.gocobalt.io/api/v2/public/workflow', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${sessionToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(workflowData)
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Create a HubSpot sync workflow
+const workflow = await createPublicWorkflow('session_token_here', {
+  name: 'Sync Contacts to HubSpot',
+  slug: 'hubspot',
+  description: 'Automatically sync new contacts from our platform to HubSpot CRM'
+});
+
+console.log(`Workflow created: ${workflow._id}`);
+console.log(`Embed URL: https://app.gocobalt.io/workflows/${workflow._id}?token=SESSION_TOKEN`);
+```
+
+## Example: Embed Workflow Editor
+```javascript
+// After creating a workflow, embed the editor in your application
+function embedWorkflowEditor(workflowId, sessionToken) {
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://app.gocobalt.io/workflows/${workflowId}?token=${sessionToken}`;
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  
+  document.getElementById('workflow-container').appendChild(iframe);
+}
+
+// Usage
+embedWorkflowEditor(workflow._id, 'session_token_here');
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Workflows" icon="list" href="/v3/api-reference/public_workflows/get_public_workflows">
+    View all public workflows
+  </Card>
+  <Card title="Get Draft" icon="pen-to-square" href="/v3/api-reference/public_workflows/get_draft">
+    Create editable draft
+  </Card>
+  <Card title="List Executions" icon="clock-rotate-left" href="/v3/api-reference/executions/list-executions">
+    View execution history
+  </Card>
+</CardGroup>    

@@ -1,6 +1,360 @@
 ---
-title: "Get_Draft"
-description: "Documentation for get_draft"
+title: Get Workflow Draft
+api: get /api/v2/public/workflow/:workflow_id/edit
+description: Create a draft version of a public workflow for editing.
 ---
 
-Content coming soon.
+Create a draft (editable) version of a public workflow. Modifications are made in draft mode before being published. This enables users to test changes before making them live.
+
+<Info>
+Draft workflows persist until they are published, allowing users to return and modify them anytime before finalizing. The live workflow remains unchanged until the draft is published.
+</Info>
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token for authentication.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+  
+  Generate a session token using the [Session Token API](/v3/api-reference/session-token/generate-session-token).
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>
+  The unique identifier of the workflow to create a draft for.
+  
+  **Example:** `67dd309c8a29c6f92d8bb45e`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the draft workflow object.
+
+    <ResponseField name="_id" type="string">
+      Unique identifier for the draft workflow
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Workflow name (appended with " - Draft")
+    </ResponseField>
+
+    <ResponseField name="org_id" type="string">
+      Organization ID
+    </ResponseField>
+
+    <ResponseField name="nodes" type="array">
+      Array of workflow nodes (editable)
+      <Expandable title="Node Object">
+        <ResponseField name="id" type="string">
+          Node identifier
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Node type
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Display name
+        </ResponseField>
+        <ResponseField name="status" type="string">
+          Node status
+        </ResponseField>
+        <ResponseField name="position" type="object">
+          Canvas position
+        </ResponseField>
+        <ResponseField name="triggers" type="array">
+          Trigger configuration (start node only)
+        </ResponseField>
+        <ResponseField name="action" type="string">
+          Configured action
+        </ResponseField>
+        <ResponseField name="incoming_nodes" type="array">
+          Incoming node connections
+        </ResponseField>
+        <ResponseField name="outgoing_nodes" type="array">
+          Outgoing node connections
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="edges" type="array">
+      Node connections
+      <Expandable title="Edge Object">
+        <ResponseField name="id" type="string">
+          Edge identifier
+        </ResponseField>
+        <ResponseField name="source" type="string">
+          Source node ID
+        </ResponseField>
+        <ResponseField name="target" type="string">
+          Target node ID
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="published" type="boolean">
+      Always `false` for draft workflows
+    </ResponseField>
+
+    <ResponseField name="associated_application" type="string">
+      Application ID
+    </ResponseField>
+
+    <ResponseField name="associated_public_workflow" type="string">
+      ID of the parent public workflow this draft was created from
+    </ResponseField>
+
+    <ResponseField name="linked_account_id" type="string">
+      Owner linked account ID
+    </ResponseField>
+
+    <ResponseField name="public_access_workflow" type="boolean">
+      Always `true` for public workflows
+    </ResponseField>
+
+    <ResponseField name="workflow_environment" type="array">
+      Available environments
+    </ResponseField>
+
+    <ResponseField name="data_slots" type="array">
+      Configured data slots
+    </ResponseField>
+
+    <ResponseField name="test_instance_meta_data" type="object">
+      Test execution metadata
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 last update timestamp
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="http_error_type" type="string">
+      Error classification
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "67dd411b6d0ac47859420c0f",
+  "createdAt": "2025-03-21T09:25:48.384Z",
+  "updatedAt": "2025-03-21T09:25:48.384Z",
+  "name": "My API Workflow - Draft",
+  "org_id": "669e076623c652d7aff25eb9",
+  "nodes": [
+    {
+      "id": "1",
+      "incoming_nodes": [],
+      "outgoing_nodes": [],
+      "data": null,
+      "type": "start",
+      "position": { "x": 396, "y": 112 },
+      "name": "Start",
+      "status": "Ready",
+      "parsed_response": {},
+      "request": {},
+      "configurable": false,
+      "input_data": {},
+      "style": {},
+      "maximum_attempts": 1,
+      "attempts_made": 0,
+      "is_batch": false,
+      "triggers": [
+        {
+          "application": "Cobalt",
+          "event": "API Call",
+          "_id": "67dd309c8a29c6f92d8bb45d"
+        }
+      ],
+      "trigger_cron": null,
+      "event_to_dynamic_var_map": []
+    },
+    {
+      "id": "2",
+      "incoming_nodes": [],
+      "outgoing_nodes": [],
+      "data": null,
+      "type": "ai_code_executor",
+      "position": { "x": 396, "y": 272 },
+      "name": "Step 1",
+      "status": "Ready",
+      "parsed_response": {},
+      "request": {},
+      "configurable": false,
+      "input_data": {},
+      "style": {},
+      "maximum_attempts": 1,
+      "attempts_made": 0,
+      "is_batch": false,
+      "action": "no_action"
+    }
+  ],
+  "published": false,
+  "associated_application": "669e0767d6c828b822c4f656",
+  "workflow_environment": ["test", "production"],
+  "index_order": 36,
+  "data_slots": [],
+  "test_instance_meta_data": {
+    "trigger": {
+      "application": "Cobalt",
+      "event": "API Call",
+      "_id": "67dd309c8a29c6f92d8bb45d"
+    },
+    "environment": "test",
+    "linked_account_id": "cobalt_test_user"
+  },
+  "description": "",
+  "icon": "",
+  "edges": [
+    {
+      "source": "1",
+      "target": "2",
+      "sourceHandle": null,
+      "targetHandle": null,
+      "type": "smoothstep",
+      "id": "1efef0cc-b4aa-4a04-804f-55abdccd8db3"
+    }
+  ],
+  "autoEnable": false,
+  "hide_in_config": false,
+  "is_v2": true,
+  "linked_account_id": "user_12345",
+  "public_access_workflow": true,
+  "associated_public_workflow": "67dd309c8a29c6f92d8bb45e",
+  "version": null
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "INVALID_WORKFLOW_ID",
+  "message": "No public workflow with id 67dd309c8a2946f92d8bb45e."
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/workflow/67dd309c8a29c6f92d8bb45e/edit" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>
+
+## Example: Get Workflow Draft
+```javascript
+async function getWorkflowDraft(sessionToken, workflowId) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/workflow/${workflowId}/edit`,
+    {
+      headers: {
+        'Authorization': `Bearer ${sessionToken}`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Create draft for editing
+const draft = await getWorkflowDraft('session_token_here', '67dd309c8a29c6f92d8bb45e');
+
+console.log(`Draft created: ${draft._id}`);
+console.log(`Original workflow: ${draft.associated_public_workflow}`);
+console.log(`Nodes: ${draft.nodes.length}`);
+```
+
+## Example: Edit and Embed Draft Workflow
+```javascript
+async function openWorkflowEditor(workflowId, sessionToken, containerId) {
+  // Get or create draft
+  const draft = await getWorkflowDraft(sessionToken, workflowId);
+  
+  // Embed the workflow editor
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://app.gocobalt.io/workflows/${draft._id}?token=${sessionToken}`;
+  iframe.style.width = '100%';
+  iframe.style.height = '600px';
+  iframe.style.border = 'none';
+  
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  container.appendChild(iframe);
+  
+  return draft;
+}
+
+// Usage
+const draft = await openWorkflowEditor(
+  '67dd309c8a29c6f92d8bb45e',
+  'session_token_here',
+  'workflow-editor-container'
+);
+```
+
+## Example: Workflow Edit Flow
+```javascript
+async function workflowEditFlow(sessionToken, workflowId) {
+  // 1. Get the draft
+  console.log('Creating draft...');
+  const draft = await getWorkflowDraft(sessionToken, workflowId);
+  console.log(`Draft ID: ${draft._id}`);
+
+  // 2. Display editor URL for the user
+  const editorUrl = `https://app.gocobalt.io/workflows/${draft._id}?token=${sessionToken}`;
+  console.log(`\nEdit your workflow at:\n${editorUrl}`);
+
+  // 3. Provide instructions
+  console.log('\nWorkflow Editing Steps:');
+  console.log('1. Make changes in the editor');
+  console.log('2. Test changes using Workflow Testing');
+  console.log('3. Click "Publish" to make changes live');
+  console.log('4. Or click "Cancel" to save as draft for later');
+
+  return {
+    draftId: draft._id,
+    originalId: draft.associated_public_workflow,
+    editorUrl
+  };
+}
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create Workflow" icon="plus" href="/v3/api-reference/public_workflows/create_public_workflow">
+    Create new workflow
+  </Card>
+  <Card title="List Workflows" icon="list" href="/v3/api-reference/public_workflows/get_public_workflows">
+    View all workflows
+  </Card>
+  <Card title="List Executions" icon="clock-rotate-left" href="/v3/api-reference/executions/list-executions">
+    View execution history
+  </Card>
+</CardGroup>
