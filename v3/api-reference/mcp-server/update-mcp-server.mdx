@@ -1,0 +1,368 @@
+---
+title: Update MCP Server
+api: put /api/v2/public/mcp-servers/:mcp_server_id
+description: Update an MCP server's configuration including suggestions, chains, and associated applications.
+---
+
+Update an existing MCP server with new configurations. You can modify the name, description, suggestions, chains, and associated applications.
+
+<Note>
+This API supports two authentication methods: Session Token OR API Key with linked account ID.
+</Note>
+
+## Authentication
+
+### Option 1: Session Token
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+### Option 2: API Key + Linked Account
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="mcp_server_id" type="string" required>
+  Unique identifier for the MCP server to update.
+  
+  **Example:** `686e2393750d509493c6d87c`
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string">
+  Updated name of the MCP server.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated description of the MCP server.
+</ParamField>
+
+<ParamField body="suggestions" type="array">
+  Predefined prompts to guide AI agent interactions.
+  <Expandable title="Suggestion Object">
+    <ParamField body="name" type="string" required>
+      Suggestion name
+    </ParamField>
+    <ParamField body="prompt" type="string" required>
+      Prompt text for the suggestion
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="chains" type="array">
+  Predefined API sequences with conditional logic.
+  <Expandable title="Chain Object">
+    <ParamField body="name" type="string" required>
+      Chain name
+    </ParamField>
+    <ParamField body="goals" type="string" required>
+      Business objectives this chain achieves
+    </ParamField>
+    <ParamField body="steps" type="string" required>
+      Execution steps (newline separated)
+    </ParamField>
+    <ParamField body="precheck" type="string">
+      Prerequisites validation before execution
+    </ParamField>
+    <ParamField body="successCondition" type="string">
+      Conditions that define successful execution
+    </ParamField>
+    <ParamField body="responseFormat" type="string">
+      Expected response format
+    </ParamField>
+    <ParamField body="onError" type="string">
+      Error handling instructions
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="associated_apps" type="array">
+  Applications to link with this MCP server.
+  <Expandable title="Associated App Object">
+    <ParamField body="slug" type="string" required>
+      Application identifier (e.g., `hubspot`, `salesforce`)
+    </ParamField>
+    <ParamField body="workflows" type="array">
+      Workflows to associate
+      <Expandable title="Workflow Object">
+        <ParamField body="id" type="string" required>
+          Workflow identifier
+        </ParamField>
+        <ParamField body="name" type="string" required>
+          Workflow name
+        </ParamField>
+        <ParamField body="description" type="string">
+          Workflow description
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    <ParamField body="actions" type="array">
+      Actions to associate
+      <Expandable title="Action Object">
+        <ParamField body="id" type="string" required>
+          Action identifier
+        </ParamField>
+        <ParamField body="name" type="string" required>
+          Action name
+        </ParamField>
+        <ParamField body="description" type="string">
+          Action description
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the complete updated MCP server object with all configurations.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "MCP Server not found"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "686e2393750d509493c6d87c",
+  "name": "Enterprise CRM Server",
+  "description": "Updated MCP server for enterprise CRM workflows",
+  "associated_org_id": "6698b77a733c5ebd8908189e",
+  "environment": "production",
+  "suggestions": [
+    {
+      "name": "Customer Onboarding",
+      "prompt": "Create a new customer account with complete profile setup"
+    }
+  ],
+  "associated_apps": [
+    {
+      "slug": "hubspot",
+      "workflows": [
+        {
+          "id": "67fbc1e4954bde0dcae1d51c",
+          "name": "Contact Sync Workflow",
+          "description": "Synchronize contacts between systems"
+        }
+      ],
+      "actions": [
+        {
+          "id": "create_contact",
+          "name": "Create Contact",
+          "description": "Create a new contact in HubSpot"
+        }
+      ]
+    }
+  ],
+  "chains": [
+    {
+      "_id": "686e2a3f7e7cb9099d06ca40",
+      "name": "Lead Processing Chain",
+      "goals": "Qualify and process incoming leads through CRM workflow",
+      "steps": "Step 1: Validate lead data\nStep 2: Create contact in CRM\nStep 3: Assign to sales representative",
+      "precheck": "Verify required fields are present",
+      "successCondition": "Lead successfully created and assigned",
+      "responseFormat": "JSON with contact ID and assignment details",
+      "onError": "Log error and retry with manual intervention"
+    }
+  ],
+  "resources": [],
+  "createdAt": "2025-07-09T08:08:51.177Z",
+  "updatedAt": "2025-07-09T10:15:00.000Z"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "VALIDATION_ERROR",
+  "message": "Invalid request body",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "MCP Server not found",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X PUT "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Enterprise CRM Server",
+    "description": "Updated MCP server for enterprise CRM workflows",
+    "suggestions": [
+      {
+        "name": "Customer Onboarding",
+        "prompt": "Create a new customer account with complete profile setup"
+      }
+    ],
+    "chains": [
+      {
+        "name": "Lead Processing Chain",
+        "goals": "Qualify and process incoming leads",
+        "steps": "Step 1: Validate data\nStep 2: Create contact\nStep 3: Assign to rep",
+        "precheck": "Verify required fields",
+        "successCondition": "Lead created and assigned",
+        "responseFormat": "JSON with contact ID",
+        "onError": "Retry with manual review"
+      }
+    ],
+    "associated_apps": [
+      {
+        "slug": "hubspot",
+        "workflows": [],
+        "actions": [
+          {
+            "id": "create_contact",
+            "name": "Create Contact",
+            "description": "Create a new contact"
+          }
+        ]
+      }
+    ]
+  }'
+```
+```bash cURL (API Key)
+curl -X PUT "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Enterprise CRM Server",
+    "description": "Updated MCP server for enterprise CRM workflows"
+  }'
+```
+</RequestExample>
+
+## Example: Update MCP Server
+```javascript
+async function updateMCPServer(auth, mcpServerId, updates) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(auth.sessionToken
+      ? { 'Authorization': `Bearer ${auth.sessionToken}` }
+      : { 'x-api-key': auth.apiKey, 'linked_account_id': auth.linkedAccountId })
+  };
+
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/mcp-servers/${mcpServerId}`,
+    {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(updates)
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Add a new chain
+const updated = await updateMCPServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c',
+  {
+    chains: [
+      {
+        name: 'Order Processing',
+        goals: 'Process customer orders through ERP',
+        steps: 'Step 1: Validate order\nStep 2: Check inventory\nStep 3: Create PO',
+        precheck: 'Verify customer exists',
+        successCondition: 'Order confirmed',
+        responseFormat: 'JSON with order ID',
+        onError: 'Escalate to support'
+      }
+    ]
+  }
+);
+
+console.log(`Updated server with ${updated.chains.length} chains`);
+```
+
+## Example: Add Application to Server
+```javascript
+async function addApplicationToServer(auth, mcpServerId, appConfig) {
+  // Get current configuration
+  const server = await getMCPServer(auth, mcpServerId);
+
+  // Add new application
+  const associatedApps = [...server.associated_apps, appConfig];
+
+  // Update server
+  return updateMCPServer(auth, mcpServerId, { associated_apps: associatedApps });
+}
+
+// Usage
+const updated = await addApplicationToServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c',
+  {
+    slug: 'salesforce',
+    workflows: [
+      { id: 'workflow_123', name: 'Lead Sync', description: 'Sync leads to Salesforce' }
+    ],
+    actions: [
+      { id: 'create_lead', name: 'Create Lead', description: 'Create a new lead' },
+      { id: 'update_contact', name: 'Update Contact', description: 'Update contact info' }
+    ]
+  }
+);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get MCP Server" icon="server" href="/v3/api-reference/mcp-servers/get-mcp-server">
+    View server details
+  </Card>
+  <Card title="Delete MCP Server" icon="trash" href="/v3/api-reference/mcp-servers/delete-mcp-server">
+    Remove a server
+  </Card>
+  <Card title="Chains" icon="link" href="/v3/developer-guide/mcp/chains">
+    Learn about chains
+  </Card>
+</CardGroup>

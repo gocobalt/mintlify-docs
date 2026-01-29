@@ -1,0 +1,251 @@
+---
+title: Create MCP Server
+api: post /api/v2/public/mcp-servers
+description: Create a new MCP server to enable AI agents to execute integration actions.
+---
+
+Create a new MCP (Model Context Protocol) server in your organization. After creation, you can update the server to add suggestions, chains, and associated applications.
+
+<Note>
+This API supports two authentication methods: Session Token OR API Key with linked account ID.
+</Note>
+
+## Authentication
+
+### Option 1: Session Token
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+### Option 2: API Key + Linked Account
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>
+  Name of the MCP server. Must be unique within your organization.
+  
+  **Example:** `Production CRM Server`
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Description of the MCP server's purpose and capabilities.
+  
+  **Example:** `MCP server for production customer integration workflows`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="201 Created">
+    <ResponseField name="_id" type="string">
+      Unique identifier for the created MCP server
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Name of the MCP server
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Description of the MCP server
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description (e.g., "Name and description are required")
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="409 Conflict">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "MCP Server with this name already exists"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 201
+{
+  "_id": "686e23c7397a76e76449bc14",
+  "name": "Production CRM Server",
+  "description": "MCP server for production customer integration workflows"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "VALIDATION_ERROR",
+  "message": "Name and description are required",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 409
+{
+  "status_code": 409,
+  "http_error_type": "CONFLICT",
+  "error_code": "SERVER_ERROR",
+  "message": "MCP Server with this name already exists",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production CRM Server",
+    "description": "MCP server for production customer integration workflows"
+  }'
+```
+```bash cURL (API Key)
+curl -X POST "https://api.gocobalt.io/api/v2/public/mcp-servers" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Production CRM Server",
+    "description": "MCP server for production customer integration workflows"
+  }'
+```
+</RequestExample>
+
+## Example: Create MCP Server
+```javascript
+async function createMCPServer(auth, name, description) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(auth.sessionToken
+      ? { 'Authorization': `Bearer ${auth.sessionToken}` }
+      : { 'x-api-key': auth.apiKey, 'linked_account_id': auth.linkedAccountId })
+  };
+
+  const response = await fetch(
+    'https://api.gocobalt.io/api/v2/public/mcp-servers',
+    {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ name, description })
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const server = await createMCPServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  'Enterprise Integration Server',
+  'MCP server for enterprise integration workflows with Salesforce and SAP'
+);
+
+console.log(`Created MCP server: ${server._id}`);
+```
+
+## Example: Create and Configure Server
+```javascript
+async function createAndConfigureMCPServer(auth, config) {
+  // Step 1: Create the server
+  const server = await createMCPServer(auth, config.name, config.description);
+
+  // Step 2: Update with full configuration
+  const updatedServer = await updateMCPServer(auth, server._id, {
+    suggestions: config.suggestions,
+    chains: config.chains,
+    associated_apps: config.associatedApps
+  });
+
+  return updatedServer;
+}
+
+// Usage
+const server = await createAndConfigureMCPServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  {
+    name: 'Sales Automation Server',
+    description: 'MCP server for sales automation workflows',
+    suggestions: [
+      { name: 'Create Lead', prompt: 'Create a new lead in the CRM' },
+      { name: 'Update Opportunity', prompt: 'Update opportunity status' }
+    ],
+    chains: [
+      {
+        name: 'Lead Qualification',
+        goals: 'Qualify incoming leads automatically',
+        steps: 'Step 1: Validate data\nStep 2: Score lead\nStep 3: Assign to rep',
+        precheck: 'Verify lead email is valid',
+        successCondition: 'Lead assigned to sales rep',
+        responseFormat: 'JSON with lead ID',
+        onError: 'Retry with manual review'
+      }
+    ],
+    associatedApps: [
+      {
+        slug: 'salesforce',
+        workflows: [],
+        actions: [{ id: 'create_lead', name: 'Create Lead', description: 'Create a new lead' }]
+      }
+    ]
+  }
+);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Update MCP Server" icon="pen" href="/v3/api-reference/mcp-servers/update-mcp-server">
+    Add configurations
+  </Card>
+  <Card title="Get MCP Server" icon="server" href="/v3/api-reference/mcp-servers/get-mcp-server">
+    View server details
+  </Card>
+  <Card title="MCP Overview" icon="robot" href="/v3/developer-guide/mcp/overview">
+    Learn about MCP
+  </Card>
+</CardGroup>

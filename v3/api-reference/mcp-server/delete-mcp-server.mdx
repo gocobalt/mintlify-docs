@@ -1,0 +1,203 @@
+---
+title: Delete MCP Server
+api: delete /api/v2/public/mcp-servers/:mcp_server_id
+description: Permanently delete an MCP server and all its configurations.
+---
+
+Permanently delete an MCP server from your organization. This action removes all configurations including suggestions, chains, and associated applications.
+
+<Warning>
+This action is irreversible. Once deleted, the MCP server and all its configurations will be permanently removed.
+</Warning>
+
+<Note>
+This API supports two authentication methods: Session Token OR API Key with linked account ID.
+</Note>
+
+## Authentication
+
+### Option 1: Session Token
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+### Option 2: API Key + Linked Account
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="mcp_server_id" type="string" required>
+  Unique identifier for the MCP server to delete.
+  
+  **Example:** `686e2393750d509493c6d87c`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="204 No Content">
+    No content returned on successful deletion.
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="403 Forbidden">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "Insufficient permissions to delete this MCP server"
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "MCP Server not found"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```text 204
+No content returned
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 403
+{
+  "status_code": 403,
+  "http_error_type": "FORBIDDEN",
+  "error_code": "SERVER_ERROR",
+  "message": "Insufficient permissions to delete this MCP server",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "MCP Server not found",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+```bash cURL (API Key)
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Delete MCP Server
+```javascript
+async function deleteMCPServer(auth, mcpServerId) {
+  const headers = auth.sessionToken
+    ? { 'Authorization': `Bearer ${auth.sessionToken}` }
+    : { 'x-api-key': auth.apiKey, 'linked_account_id': auth.linkedAccountId };
+
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/mcp-servers/${mcpServerId}`,
+    {
+      method: 'DELETE',
+      headers
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return true;
+}
+
+// Usage
+const deleted = await deleteMCPServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c'
+);
+
+console.log('MCP server deleted successfully');
+```
+
+## Example: Delete with Confirmation
+```javascript
+async function deleteMCPServerWithConfirmation(auth, mcpServerId) {
+  // Get server details first
+  const server = await getMCPServer(auth, mcpServerId);
+
+  console.log(`About to delete: ${server.name}`);
+  console.log(`- ${server.suggestions?.length || 0} suggestions`);
+  console.log(`- ${server.chains?.length || 0} chains`);
+  console.log(`- ${server.associated_apps?.length || 0} associated apps`);
+
+  // In a real application, prompt user for confirmation here
+  const confirmed = true; // Replace with actual confirmation logic
+
+  if (!confirmed) {
+    throw new Error('Deletion cancelled by user');
+  }
+
+  await deleteMCPServer(auth, mcpServerId);
+  return { deleted: true, serverName: server.name };
+}
+
+// Usage
+const result = await deleteMCPServerWithConfirmation(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c'
+);
+
+console.log(`Deleted server: ${result.serverName}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create MCP Server" icon="plus" href="/v3/api-reference/mcp-servers/create-mcp-server">
+    Create a new server
+  </Card>
+  <Card title="List MCP Servers" icon="list" href="/v3/api-reference/mcp-servers/list-mcp-servers">
+    View all servers
+  </Card>
+  <Card title="MCP Overview" icon="robot" href="/v3/developer-guide/mcp/overview">
+    Learn about MCP
+  </Card>
+</CardGroup>

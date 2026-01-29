@@ -1,0 +1,355 @@
+---
+title: Get MCP Server
+api: get /api/v2/public/mcp-servers/:mcp_server_id
+description: Retrieve detailed information about a specific MCP server including suggestions, chains, and associated applications.
+---
+
+Retrieve the complete configuration of an MCP server including its suggestions, chains, associated applications, workflows, and actions.
+
+<Note>
+This API supports two authentication methods: Session Token OR API Key with linked account ID.
+</Note>
+
+## Authentication
+
+### Option 1: Session Token
+
+<ParamField header="Authorization" type="string" required>
+  Bearer token using your session token.
+  
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+### Option 2: API Key + Linked Account
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="mcp_server_id" type="string" required>
+  Unique identifier for the MCP server.
+  
+  **Example:** `686e2393750d509493c6d87c`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="_id" type="string">
+      Unique identifier for the MCP server
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Name of the MCP server
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Description of the MCP server
+    </ResponseField>
+
+    <ResponseField name="associated_org_id" type="string">
+      Organization ID associated with the MCP server
+    </ResponseField>
+
+    <ResponseField name="environment" type="string">
+      Environment: `test` or `production`
+    </ResponseField>
+
+    <ResponseField name="suggestions" type="array">
+      Predefined prompts to guide AI agent interactions
+      <Expandable title="Suggestion Object">
+        <ResponseField name="name" type="string">
+          Suggestion name
+        </ResponseField>
+        <ResponseField name="prompt" type="string">
+          Prompt text for the suggestion
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="chains" type="array">
+      Predefined API sequences with conditional logic
+      <Expandable title="Chain Object">
+        <ResponseField name="_id" type="string">
+          Unique identifier for the chain
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Chain name
+        </ResponseField>
+        <ResponseField name="goals" type="string">
+          Business objectives this chain achieves
+        </ResponseField>
+        <ResponseField name="steps" type="string">
+          Execution steps (newline separated)
+        </ResponseField>
+        <ResponseField name="precheck" type="string">
+          Prerequisites validation before execution
+        </ResponseField>
+        <ResponseField name="successCondition" type="string">
+          Conditions that define successful execution
+        </ResponseField>
+        <ResponseField name="responseFormat" type="string">
+          Expected response format
+        </ResponseField>
+        <ResponseField name="onError" type="string">
+          Error handling instructions
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="associated_apps" type="array">
+      Applications linked to this MCP server
+      <Expandable title="Associated App Object">
+        <ResponseField name="slug" type="string">
+          Application identifier (e.g., `hubspot`, `salesforce`)
+        </ResponseField>
+        <ResponseField name="workflows" type="array">
+          Workflows available for this application
+          <Expandable title="Workflow Object">
+            <ResponseField name="id" type="string">
+              Workflow identifier
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Workflow name
+            </ResponseField>
+            <ResponseField name="description" type="string">
+              Workflow description
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="actions" type="array">
+          Actions available for this application
+          <Expandable title="Action Object">
+            <ResponseField name="id" type="string">
+              Action identifier
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Action name
+            </ResponseField>
+            <ResponseField name="description" type="string">
+              Action description
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="resources" type="array">
+      Additional resources associated with the server
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 last update timestamp
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "MCP Server not found"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "686e2393750d509493c6d87c",
+  "name": "Enterprise CRM Server",
+  "description": "MCP server for CRM integration workflows",
+  "associated_org_id": "6698b77a733c5ebd8908189e",
+  "environment": "production",
+  "suggestions": [
+    {
+      "name": "Create Lead",
+      "prompt": "Create a new lead in Salesforce with the provided contact information"
+    },
+    {
+      "name": "Sync Contacts",
+      "prompt": "Synchronize contacts between HubSpot and our system"
+    }
+  ],
+  "associated_apps": [
+    {
+      "slug": "salesforce",
+      "workflows": [
+        {
+          "id": "67fbc1e4954bde0dcae1d51c",
+          "name": "Lead Qualification Workflow",
+          "description": "Qualify and route incoming leads"
+        }
+      ],
+      "actions": [
+        {
+          "id": "create_lead",
+          "name": "Create Lead",
+          "description": "Create a new lead in Salesforce"
+        },
+        {
+          "id": "update_opportunity",
+          "name": "Update Opportunity",
+          "description": "Update an existing opportunity"
+        }
+      ]
+    },
+    {
+      "slug": "hubspot",
+      "workflows": [],
+      "actions": [
+        {
+          "id": "create_contact",
+          "name": "Create Contact",
+          "description": "Create a new contact in HubSpot"
+        }
+      ]
+    }
+  ],
+  "chains": [
+    {
+      "_id": "686e2a3f7e7cb9099d06ca40",
+      "name": "Lead Processing Chain",
+      "goals": "Qualify and process incoming leads through CRM workflow",
+      "steps": "Step 1: Validate lead data\nStep 2: Check for existing contact\nStep 3: Create lead in CRM\nStep 4: Assign to sales representative",
+      "precheck": "Verify required fields are present",
+      "successCondition": "Lead successfully created and assigned",
+      "responseFormat": "JSON with lead ID and assignment details",
+      "onError": "Log error and retry with manual intervention"
+    }
+  ],
+  "resources": [],
+  "createdAt": "2025-07-09T08:08:51.177Z",
+  "updatedAt": "2025-07-09T08:37:19.407Z"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "MCP Server not found",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (Session Token)
+curl -X GET "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+```bash cURL (API Key)
+curl -X GET "https://api.gocobalt.io/api/v2/public/mcp-servers/686e2393750d509493c6d87c" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Get MCP Server Details
+```javascript
+async function getMCPServer(auth, mcpServerId) {
+  const headers = auth.sessionToken
+    ? { 'Authorization': `Bearer ${auth.sessionToken}` }
+    : { 'x-api-key': auth.apiKey, 'linked_account_id': auth.linkedAccountId };
+
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/mcp-servers/${mcpServerId}`,
+    { headers }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const server = await getMCPServer(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c'
+);
+
+console.log(`Server: ${server.name}`);
+console.log(`Suggestions: ${server.suggestions.length}`);
+console.log(`Chains: ${server.chains.length}`);
+console.log(`Apps: ${server.associated_apps.map(a => a.slug).join(', ')}`);
+```
+
+## Example: List Available Actions
+```javascript
+async function getAvailableActions(auth, mcpServerId) {
+  const server = await getMCPServer(auth, mcpServerId);
+
+  const actions = [];
+  for (const app of server.associated_apps) {
+    for (const action of app.actions) {
+      actions.push({
+        app: app.slug,
+        actionId: action.id,
+        name: action.name,
+        description: action.description
+      });
+    }
+  }
+
+  return actions;
+}
+
+// Usage
+const actions = await getAvailableActions(
+  { apiKey: 'your_api_key', linkedAccountId: 'user_12345' },
+  '686e2393750d509493c6d87c'
+);
+
+actions.forEach(action => {
+  console.log(`[${action.app}] ${action.name}: ${action.description}`);
+});
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Update MCP Server" icon="pen" href="/v3/api-reference/mcp-servers/update-mcp-server">
+    Modify server configuration
+  </Card>
+  <Card title="Delete MCP Server" icon="trash" href="/v3/api-reference/mcp-servers/delete-mcp-server">
+    Remove a server
+  </Card>
+  <Card title="Chains" icon="link" href="/v3/developer-guide/mcp/chains">
+    Learn about MCP chains
+  </Card>
+</CardGroup>
