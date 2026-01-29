@@ -1,6 +1,241 @@
 ---
-title: "Get Execution"
-description: "Documentation for get execution"
+title: Get Execution by ID
+api: get /api/v2/public/execution/:execution_id
+description: Retrieve detailed information about a specific workflow execution.
 ---
 
-Content coming soon.
+Retrieve metadata and details about a specific workflow execution, including the associated workflow, application, status, and timestamps.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="execution_id" type="string" required>
+  The unique identifier for the execution.
+  
+  **Example:** `65410cf6cdf931a12d7ab009`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="_id" type="string">
+      Unique identifier for the execution
+    </ResponseField>
+
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp when execution started
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Execution name or description
+    </ResponseField>
+
+    <ResponseField name="associated_application" type="object">
+      Application the workflow belongs to
+      <Expandable title="Application Object">
+        <ResponseField name="_id" type="string">
+          Application ID
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Application name
+        </ResponseField>
+        <ResponseField name="icon" type="string">
+          Application icon URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Execution status: `COMPLETED`, `RUNNING`, `ERRORED`
+    </ResponseField>
+
+    <ResponseField name="associated_workflow" type="object">
+      Workflow that was executed
+      <Expandable title="Workflow Object">
+        <ResponseField name="_id" type="string">
+          Workflow ID
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Workflow name
+        </ResponseField>
+        <ResponseField name="icon" type="string">
+          Workflow icon URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="environment" type="string">
+      Execution environment: `test` or `production`
+    </ResponseField>
+
+    <ResponseField name="config_id" type="string">
+      Associated config ID (if applicable)
+    </ResponseField>
+
+    <ResponseField name="associated_event_id" type="string">
+      Event ID that triggered the execution (if event-triggered)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      Specific error identifier
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "65410cf6cdf931a12d7ab009",
+  "createdAt": "2023-10-31T14:19:34.788Z",
+  "name": "Create Contact Execution",
+  "associated_application": {
+    "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png",
+    "name": "HubSpot",
+    "_id": "64f6d9f33234d3d6419cfdbc"
+  },
+  "status": "COMPLETED",
+  "associated_workflow": {
+    "_id": "64f7258e35b72267edc02589",
+    "name": "Create Contact",
+    "icon": ""
+  },
+  "environment": "production",
+  "config_id": "config_12345",
+  "associated_event_id": "6523dfdeffed0fb7e2c3b90e"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "INVALID_EXECUTION_ID",
+  "message": "No execution found with id 65410cf6cdf931a12d7ab009"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/execution/65410cf6cdf931a12d7ab009" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: Get Execution Details
+```javascript
+async function getExecution(apiKey, linkedAccountId, executionId) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v2/public/execution/${executionId}`,
+    {
+      headers: {
+        'x-api-key': apiKey,
+        'linked_account_id': linkedAccountId
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const execution = await getExecution(
+  'your_api_key',
+  'user_12345',
+  '65410cf6cdf931a12d7ab009'
+);
+
+console.log(`Workflow: ${execution.associated_workflow.name}`);
+console.log(`Application: ${execution.associated_application.name}`);
+console.log(`Status: ${execution.status}`);
+console.log(`Environment: ${execution.environment}`);
+```
+
+## Example: Track Execution Status
+```javascript
+async function trackExecution(apiKey, linkedAccountId, executionId) {
+  const execution = await getExecution(apiKey, linkedAccountId, executionId);
+  
+  const statusEmoji = {
+    COMPLETED: '✅',
+    RUNNING: '⏳',
+    ERRORED: '❌'
+  };
+
+  return {
+    id: execution._id,
+    status: execution.status,
+    statusDisplay: `${statusEmoji[execution.status] || '❓'} ${execution.status}`,
+    workflow: execution.associated_workflow.name,
+    application: execution.associated_application.name,
+    startedAt: new Date(execution.createdAt),
+    environment: execution.environment
+  };
+}
+
+// Usage
+const status = await trackExecution('your_api_key', 'user_12345', '65410cf6cdf931a12d7ab009');
+console.log(`${status.statusDisplay} - ${status.workflow} (${status.application})`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Execute Workflow" icon="play" href="/v3/api-reference/executions/execute-workflow">
+    Run a workflow
+  </Card>
+  <Card title="Get Execution Response" icon="message" href="/v3/api-reference/executions/get-execution-response">
+    Fetch workflow results
+  </Card>
+  <Card title="List Executions" icon="list" href="/v3/api-reference/executions/list-executions">
+    View all executions
+  </Card>
+</CardGroup>

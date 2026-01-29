@@ -1,6 +1,372 @@
 ---
-title: "List Executions"
-description: "Documentation for list executions"
+title: List Executions
+api: get /api/v2/public/execution
+description: Retrieve a paginated list of workflow executions.
 ---
 
-Content coming soon.
+Retrieve a paginated list of all workflow executions for a linked account. Use this to monitor workflow activity, debug issues, or build execution history views.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Number of records per page (maximum 100).
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="docs" type="array">
+      Array of execution objects
+      <Expandable title="Execution Object">
+        <ResponseField name="_id" type="string">
+          Unique identifier for the execution
+        </ResponseField>
+        <ResponseField name="createdAt" type="string">
+          ISO 8601 timestamp when execution started
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Execution name or description
+        </ResponseField>
+        <ResponseField name="associated_application" type="string">
+          Application slug or name
+        </ResponseField>
+        <ResponseField name="status" type="string">
+          Execution status: `COMPLETED`, `RUNNING`, `ERRORED`
+        </ResponseField>
+        <ResponseField name="associated_workflow" type="string">
+          Workflow name
+        </ResponseField>
+        <ResponseField name="environment" type="string">
+          Execution environment: `test` or `production`
+        </ResponseField>
+        <ResponseField name="config_id" type="string">
+          Associated config ID
+        </ResponseField>
+        <ResponseField name="associated_event_id" type="string">
+          Event ID that triggered the execution
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="totalDocs" type="integer">
+      Total number of executions
+    </ResponseField>
+
+    <ResponseField name="limit" type="integer">
+      Records per page
+    </ResponseField>
+
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages
+    </ResponseField>
+
+    <ResponseField name="page" type="integer">
+      Current page number
+    </ResponseField>
+
+    <ResponseField name="pagingCounter" type="integer">
+      Paging counter
+    </ResponseField>
+
+    <ResponseField name="hasPrevPage" type="boolean">
+      Whether there is a previous page
+    </ResponseField>
+
+    <ResponseField name="hasNextPage" type="boolean">
+      Whether there is a next page
+    </ResponseField>
+
+    <ResponseField name="prevPage" type="integer">
+      Previous page number (null if none)
+    </ResponseField>
+
+    <ResponseField name="nextPage" type="integer">
+      Next page number (null if none)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "65410cf6cdf931a12d7ab009",
+      "createdAt": "2023-10-31T14:19:34.788Z",
+      "name": "Create Contact Execution",
+      "associated_application": "hubspot",
+      "status": "COMPLETED",
+      "associated_workflow": "Create Contact",
+      "environment": "production",
+      "config_id": "config_12345",
+      "associated_event_id": "6523dfdeffed0fb7e2c3b90e"
+    },
+    {
+      "_id": "65410d12cdf931a12d7ab010",
+      "createdAt": "2023-10-31T14:20:02.123Z",
+      "name": "Sync Contacts Execution",
+      "associated_application": "salesforce",
+      "status": "ERRORED",
+      "associated_workflow": "Sync Contacts",
+      "environment": "test",
+      "config_id": "config_67890",
+      "associated_event_id": "6523dfe0ffed0fb7e2c3b90f"
+    }
+  ],
+  "totalDocs": 2,
+  "limit": 10,
+  "totalPages": 1,
+  "page": 1,
+  "pagingCounter": 1,
+  "hasPrevPage": false,
+  "hasNextPage": false,
+  "prevPage": null,
+  "nextPage": null
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "error_type": "BAD_REQUEST",
+  "http_error_type": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id or org_id is required",
+  "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v2/public/execution" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+```bash cURL (with pagination)
+curl -X GET "https://api.gocobalt.io/api/v2/public/execution?page=1&limit=20" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+</RequestExample>
+
+## Example: List Executions
+```javascript
+async function listExecutions(apiKey, linkedAccountId, options = {}) {
+  const params = new URLSearchParams();
+  if (options.page) params.append('page', options.page);
+  if (options.limit) params.append('limit', options.limit);
+
+  const url = `https://api.gocobalt.io/api/v2/public/execution${params.toString() ? '?' + params : ''}`;
+
+  const response = await fetch(url, {
+    headers: {
+      'x-api-key': apiKey,
+      'linked_account_id': linkedAccountId
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const result = await listExecutions('your_api_key', 'user_12345', {
+  page: 1,
+  limit: 20
+});
+
+console.log(`Found ${result.totalDocs} executions`);
+result.docs.forEach(exec => {
+  const status = exec.status === 'COMPLETED' ? '✅' : exec.status === 'ERRORED' ? '❌' : '⏳';
+  console.log(`${status} ${exec.associated_workflow} - ${exec.createdAt}`);
+});
+```
+
+## Example: Get Execution Statistics
+```javascript
+async function getExecutionStats(apiKey, linkedAccountId) {
+  // Get all executions
+  const allExecutions = [];
+  let page = 1;
+  let hasMore = true;
+
+  while (hasMore) {
+    const result = await listExecutions(apiKey, linkedAccountId, {
+      page,
+      limit: 100
+    });
+    allExecutions.push(...result.docs);
+    hasMore = result.hasNextPage;
+    page++;
+  }
+
+  // Calculate statistics
+  const stats = {
+    total: allExecutions.length,
+    completed: allExecutions.filter(e => e.status === 'COMPLETED').length,
+    running: allExecutions.filter(e => e.status === 'RUNNING').length,
+    errored: allExecutions.filter(e => e.status === 'ERRORED').length,
+    byApplication: {},
+    byWorkflow: {}
+  };
+
+  // Group by application
+  allExecutions.forEach(exec => {
+    const app = exec.associated_application;
+    stats.byApplication[app] = (stats.byApplication[app] || 0) + 1;
+  });
+
+  // Group by workflow
+  allExecutions.forEach(exec => {
+    const workflow = exec.associated_workflow;
+    stats.byWorkflow[workflow] = (stats.byWorkflow[workflow] || 0) + 1;
+  });
+
+  // Calculate success rate
+  stats.successRate = stats.total > 0 
+    ? ((stats.completed / stats.total) * 100).toFixed(1) + '%'
+    : 'N/A';
+
+  return stats;
+}
+
+// Usage
+const stats = await getExecutionStats('your_api_key', 'user_12345');
+console.log(`Total: ${stats.total}`);
+console.log(`Success Rate: ${stats.successRate}`);
+console.log(`Completed: ${stats.completed}, Running: ${stats.running}, Errored: ${stats.errored}`);
+```
+
+## Example: Filter Executions by Status
+```javascript
+async function getExecutionsByStatus(apiKey, linkedAccountId, status) {
+  const result = await listExecutions(apiKey, linkedAccountId, { limit: 100 });
+  return result.docs.filter(exec => exec.status === status);
+}
+
+// Usage: Get all errored executions
+const erroredExecutions = await getExecutionsByStatus(
+  'your_api_key',
+  'user_12345',
+  'ERRORED'
+);
+
+console.log(`Found ${erroredExecutions.length} errored executions:`);
+erroredExecutions.forEach(exec => {
+  console.log(`- ${exec.associated_workflow} at ${exec.createdAt}`);
+});
+```
+
+## Example: Build Execution Dashboard Data
+```javascript
+async function getDashboardData(apiKey, linkedAccountId) {
+  const result = await listExecutions(apiKey, linkedAccountId, { limit: 50 });
+
+  // Recent executions
+  const recentExecutions = result.docs.slice(0, 10).map(exec => ({
+    id: exec._id,
+    workflow: exec.associated_workflow,
+    application: exec.associated_application,
+    status: exec.status,
+    timestamp: new Date(exec.createdAt),
+    environment: exec.environment
+  }));
+
+  // Status breakdown
+  const statusCounts = result.docs.reduce((acc, exec) => {
+    acc[exec.status] = (acc[exec.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Application breakdown
+  const appCounts = result.docs.reduce((acc, exec) => {
+    acc[exec.associated_application] = (acc[exec.associated_application] || 0) + 1;
+    return acc;
+  }, {});
+
+  return {
+    recentExecutions,
+    statusCounts,
+    appCounts,
+    totalExecutions: result.totalDocs,
+    pagination: {
+      currentPage: result.page,
+      totalPages: result.totalPages,
+      hasMore: result.hasNextPage
+    }
+  };
+}
+
+// Usage
+const dashboard = await getDashboardData('your_api_key', 'user_12345');
+console.log('Dashboard Data:', dashboard);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Execute Workflow" icon="play" href="/v3/api-reference/executions/execute-workflow">
+    Run a workflow
+  </Card>
+  <Card title="Get Execution" icon="magnifying-glass" href="/v3/api-reference/executions/get-execution">
+    View execution details
+  </Card>
+  <Card title="Get Execution Response" icon="message" href="/v3/api-reference/executions/get-execution-response">
+    Fetch workflow results
+  </Card>
+</CardGroup>
