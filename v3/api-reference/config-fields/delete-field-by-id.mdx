@@ -1,0 +1,222 @@
+---
+title: Delete Field Value
+api: delete /api/v2/public/config/field/:fieldId
+description: Clear the value of a specific config field.
+---
+
+Delete (clear) the value of a specific configuration field. This resets the field to its default state, removing any user-set value. The field definition itself remains; only the value is cleared.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+<ParamField header="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `slack`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="fieldId" type="string" required>
+  The unique identifier of the field to clear.
+  
+  **Example:** `670fcb9e023ebc1f370c5139`
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="workflow_id" type="string">
+  Filter to a specific workflow's field. Required when deleting a workflow-specific field value.
+  
+  **Example:** `67fbc1ec954bde0dcae218c8`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the field object with cleared value.
+
+    <ResponseField name="id" type="string">
+      Field identifier
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Field display name
+    </ResponseField>
+
+    <ResponseField name="field_type" type="string">
+      Input type: `text`, `number`, `select`, or `map`
+    </ResponseField>
+
+    <ResponseField name="required" type="boolean">
+      Whether required
+    </ResponseField>
+
+    <ResponseField name="options" type="array">
+      Available options (unchanged)
+    </ResponseField>
+
+    <ResponseField name="has_dynamic_map_fields" type="boolean">
+      Whether dynamic map fields exist
+    </ResponseField>
+
+    <ResponseField name="dynamic_slot_identifier" type="string">
+      Dynamic slot identifier
+    </ResponseField>
+
+    <ResponseField name="hidden" type="boolean">
+      Whether hidden
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Field Value Cleared
+{
+  "required": false,
+  "id": "670fcb9e023ebc1f370c5139",
+  "name": "YourName",
+  "has_dynamic_map_fields": false,
+  "field_type": "text",
+  "options": [],
+  "dynamic_slot_identifier": "text",
+  "hidden": false
+}
+```
+```json 200 Select Field Cleared
+{
+  "required": true,
+  "id": "64da0b57c9ae95561bb0a24d",
+  "name": "Channel",
+  "has_dynamic_map_fields": false,
+  "field_type": "select",
+  "options": [
+    { "name": "general", "value": "C044U7Q074J" },
+    { "name": "engineering", "value": "C045X8R185K" }
+  ],
+  "dynamic_slot_identifier": "channel",
+  "hidden": false
+}
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/config/field/670fcb9e023ebc1f370c5139" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "slug: hubspot"
+```
+```bash With Workflow Filter
+curl -X DELETE "https://api.gocobalt.io/api/v2/public/config/field/64da0b57c9ae95561bb0a24f?workflow_id=67fbc1ec954bde0dcae218c8" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "slug: slack"
+```
+</RequestExample>
+
+## Example: Reset Field Value
+```javascript
+async function resetFieldValue(linkedAccountId, slug, fieldId, workflowId, apiKey) {
+  const url = new URL(`https://api.gocobalt.io/api/v2/public/config/field/${fieldId}`);
+  if (workflowId) {
+    url.searchParams.set('workflow_id', workflowId);
+  }
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'x-api-key': apiKey,
+      'linked_account_id': linkedAccountId,
+      'slug': slug
+    }
+  });
+
+  const field = await response.json();
+  
+  return {
+    fieldId: field.id,
+    fieldName: field.name,
+    cleared: true
+  };
+}
+
+// Usage: Reset a channel selection
+await resetFieldValue(
+  'user_12345',
+  'slack',
+  '64da0b57c9ae95561bb0a24d',
+  null,
+  'your_api_key'
+);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Get Field by ID" icon="magnifying-glass" href="/v3/api-reference/config-fields/get-field-by-id">
+    Retrieve field details
+  </Card>
+  <Card title="Update Field Value" icon="pen" href="/v3/api-reference/config-fields/update-field-value">
+    Set new field values
+  </Card>
+  <Card title="Delete Config" icon="trash" href="/v3/api-reference/config/delete-config">
+    Remove entire config
+  </Card>
+</CardGroup>

@@ -1,0 +1,282 @@
+---
+title: Get Rule Engine Options
+api: post /api/v2/public/config/rule-engine/:fieldId
+description: Retrieve dynamic options for a Rule Engine field based on current selections.
+---
+
+Retrieve the dynamic options for a Rule Engine field. Rule Engine fields allow users to define conditional rules with three columns: LHS (left-hand side), Operator, and RHS (right-hand side). This endpoint returns the available options for the Operator and RHS columns based on the current LHS selection.
+
+<Info>
+Rule Engine fields are used for complex conditional logic, such as routing workflows based on user type, region, or other attributes.
+</Info>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Developer → Setup**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier for the linked account.
+  
+  **Example:** `user_12345`
+</ParamField>
+
+<ParamField header="slug" type="string" required>
+  The application slug.
+  
+  **Examples:** `hubspot`, `salesforce`, `workday`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="fieldId" type="string" required>
+  The unique identifier of the Rule Engine field.
+  
+  **Example:** `67231c960f8ac1513443c75`
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="workflow_id" type="string">
+  Filter to a specific workflow's Rule Engine field.
+  
+  **Example:** `67fbc1ec954bde0dcae218c8`
+</ParamField>
+
+<ParamField query="config_id" type="string">
+  The config identifier. Defaults to `linked_account_id` if not provided.
+  
+  **Example:** `config_workday_001`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the Rule Engine column configuration.
+
+    <ResponseField name="rule_column" type="object">
+      Rule column configuration
+      <Expandable title="Rule Column Object">
+        <ResponseField name="rhs" type="object">
+          Right-hand side configuration
+          <Expandable title="RHS Object">
+            <ResponseField name="name" type="string">
+              Column name (e.g., "RHS")
+            </ResponseField>
+            <ResponseField name="type" type="string">
+              Field type: `text`, `select`, `number`
+            </ResponseField>
+            <ResponseField name="options" type="array">
+              Available options for selection
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="operator" type="object">
+          Operator configuration
+          <Expandable title="Operator Object">
+            <ResponseField name="name" type="string">
+              Column name (e.g., "Operator")
+            </ResponseField>
+            <ResponseField name="type" type="string">
+              Field type (usually `select`)
+            </ResponseField>
+            <ResponseField name="options" type="array">
+              Available operators
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="conditional_code_stdout" type="array">
+      Standard output from conditional code execution (for debugging)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Default Options
+{
+  "rule_column": {
+    "rhs": {
+      "name": "RHS",
+      "type": "text",
+      "options": []
+    },
+    "operator": {
+      "name": "Operator",
+      "type": "select",
+      "options": []
+    }
+  },
+  "conditional_code_stdout": []
+}
+```
+```json 200 With Dynamic Options
+{
+  "rule_column": {
+    "rhs": {
+      "name": "Region",
+      "type": "select",
+      "options": [
+        { "name": "North America", "value": "na" },
+        { "name": "Europe", "value": "eu" },
+        { "name": "Asia Pacific", "value": "apac" }
+      ]
+    },
+    "operator": {
+      "name": "Operator",
+      "type": "select",
+      "options": [
+        { "name": "Equals To", "value": "eq" },
+        { "name": "Not Equals To", "value": "neq" }
+      ]
+    }
+  },
+  "conditional_code_stdout": [
+    "Loaded regions from workflow",
+    "Set operator options"
+  ]
+}
+```
+```json 400 Missing Linked Account
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id is required",
+  "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.gocobalt.io/api/v2/public/config/rule-engine/67231c960f8ac1513443c75" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "slug: workday"
+```
+```bash With Config Filter
+curl -X POST "https://api.gocobalt.io/api/v2/public/config/rule-engine/67231c960f8ac1513443c75?config_id=config_workday_001" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "slug: workday"
+```
+</RequestExample>
+
+## Example: Build Rule Engine UI
+```javascript
+async function getRuleEngineOptions(linkedAccountId, slug, fieldId, configId, apiKey) {
+  const url = new URL(`https://api.gocobalt.io/api/v2/public/config/rule-engine/${fieldId}`);
+  if (configId) {
+    url.searchParams.set('config_id', configId);
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'linked_account_id': linkedAccountId,
+      'slug': slug
+    }
+  });
+
+  const result = await response.json();
+  
+  return {
+    rhsColumn: {
+      name: result.rule_column.rhs.name,
+      type: result.rule_column.rhs.type,
+      options: result.rule_column.rhs.options
+    },
+    operatorColumn: {
+      name: result.rule_column.operator.name,
+      type: result.rule_column.operator.type,
+      options: result.rule_column.operator.options
+    },
+    debugOutput: result.conditional_code_stdout
+  };
+}
+
+// Usage: Load rule engine options for a provisioning rule
+const ruleOptions = await getRuleEngineOptions(
+  'user_12345',
+  'workday',
+  '67231c960f8ac1513443c75',
+  null,
+  'your_api_key'
+);
+
+// Build dynamic UI based on options
+if (ruleOptions.operatorColumn.options.length > 0) {
+  renderOperatorDropdown(ruleOptions.operatorColumn.options);
+}
+
+if (ruleOptions.rhsColumn.type === 'select') {
+  renderRhsDropdown(ruleOptions.rhsColumn.options);
+} else {
+  renderRhsTextInput();
+}
+```
+
+## Rule Engine Structure
+
+| Column | Description | Example Values |
+|--------|-------------|----------------|
+| LHS | The attribute to evaluate | User Type, Region, Role |
+| Operator | The comparison operator | Equals, Not Equals, Contains |
+| RHS | The value to compare against | Agent, North America, Admin |
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="List Config Fields" icon="list" href="/v3/api-reference/config-fields/get-all-fields">
+    View all fields including Rule Engine
+  </Card>
+  <Card title="Update Config" icon="gear" href="/v3/api-reference/config/update-config">
+    Save Rule Engine values
+  </Card>
+  <Card title="Rule Engine Guide" icon="book" href="/build/connectors/config/rule_engine">
+    Learn about Rule Engine setup
+  </Card>
+</CardGroup>
