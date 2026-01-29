@@ -1,6 +1,314 @@
 ---
-title: "Get All Schedules"
-description: "Documentation for get all schedules"
+title: List Schedules
+api: get /api/v1/workflow/public/scheduled
+description: Retrieve all scheduled jobs with optional filtering and pagination.
 ---
 
-Content coming soon.
+Retrieve a paginated list of all scheduled jobs. Filter by linked account to view schedules for specific users.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="linked_account_id" type="string">
+  Filter schedules by linked account ID.
+</ParamField>
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Number of records per page.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="docs" type="array">
+      Array of schedule objects
+      <Expandable title="Schedule Object">
+        <ResponseField name="_id" type="string">
+          Unique schedule identifier
+        </ResponseField>
+        <ResponseField name="event_id" type="string">
+          Associated event ID
+        </ResponseField>
+        <ResponseField name="workflow" type="object">
+          Workflow information
+          <Expandable title="Workflow Object">
+            <ResponseField name="_id" type="string">
+              Workflow ID
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Workflow name
+            </ResponseField>
+            <ResponseField name="description" type="string">
+              Workflow description
+            </ResponseField>
+            <ResponseField name="associated_application" type="object">
+              Application details with `_id`, `name`, `icon`, `description`
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="config_id" type="string">
+          Associated config ID
+        </ResponseField>
+        <ResponseField name="linked_account_id" type="string">
+          Linked account ID
+        </ResponseField>
+        <ResponseField name="environment" type="string">
+          Environment: `test` or `production`
+        </ResponseField>
+        <ResponseField name="org_id" type="string">
+          Organization ID
+        </ResponseField>
+        <ResponseField name="cron_patten" type="string">
+          Cron pattern (for cron schedules)
+        </ResponseField>
+        <ResponseField name="inactive" type="boolean">
+          Whether schedule is paused
+        </ResponseField>
+        <ResponseField name="trigger_type" type="string">
+          Trigger type: `cron` or `interval`
+        </ResponseField>
+        <ResponseField name="triggered_instances" type="array">
+          Array of triggered execution instances
+        </ResponseField>
+        <ResponseField name="schedule_added_at" type="string">
+          ISO 8601 creation timestamp
+        </ResponseField>
+        <ResponseField name="updatedAt" type="string">
+          ISO 8601 last update timestamp
+        </ResponseField>
+        <ResponseField name="inactive_from" type="string">
+          Timestamp when schedule was paused (if applicable)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="totalDocs" type="integer">
+      Total number of schedules
+    </ResponseField>
+
+    <ResponseField name="limit" type="integer">
+      Records per page
+    </ResponseField>
+
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages
+    </ResponseField>
+
+    <ResponseField name="page" type="integer">
+      Current page number
+    </ResponseField>
+
+    <ResponseField name="pagingCounter" type="integer">
+      Paging counter
+    </ResponseField>
+
+    <ResponseField name="hasPrevPage" type="boolean">
+      Whether previous page exists
+    </ResponseField>
+
+    <ResponseField name="hasNextPage" type="boolean">
+      Whether next page exists
+    </ResponseField>
+
+    <ResponseField name="prevPage" type="integer">
+      Previous page number (null if none)
+    </ResponseField>
+
+    <ResponseField name="nextPage" type="integer">
+      Next page number (null if none)
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "65e1b187a9feec935ab46c31",
+      "event_id": "65e1b187a9feec935ab46c30",
+      "workflow": {
+        "_id": "65e1b122a9feec935ab40a2e",
+        "name": "Sync Contacts",
+        "description": "Sync contacts from HubSpot",
+        "associated_application": {
+          "_id": "65c9ef72af613b7828322831",
+          "name": "HubSpot",
+          "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png",
+          "description": "HubSpot CRM platform"
+        }
+      },
+      "config_id": "config_123",
+      "linked_account_id": "user_12345",
+      "environment": "production",
+      "org_id": "65c9ef72f4b95fce32e8ccf8",
+      "cron_patten": "*/30 * * * *",
+      "inactive": false,
+      "trigger_type": "cron",
+      "schedule_added_at": "2025-01-15T10:44:23.336Z",
+      "updatedAt": "2025-01-15T10:44:23.336Z",
+      "triggered_instances": [
+        "65e1b200a9feec935ab46c32",
+        "65e1b230a9feec935ab46c33"
+      ]
+    },
+    {
+      "_id": "65e1b187a9feec935ab46c32",
+      "event_id": "65e1b187a9feec935ab46c31",
+      "workflow": {
+        "_id": "65e1b122a9feec935ab40a2f",
+        "name": "Daily Report",
+        "description": "Generate daily sales report",
+        "associated_application": {
+          "_id": "65c9ef72af613b7828322832",
+          "name": "Salesforce",
+          "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/salesforce/logo.png",
+          "description": "Salesforce CRM"
+        }
+      },
+      "config_id": "config_456",
+      "linked_account_id": "user_12345",
+      "environment": "production",
+      "org_id": "65c9ef72f4b95fce32e8ccf8",
+      "cron_patten": "0 9 * * *",
+      "inactive": true,
+      "trigger_type": "cron",
+      "schedule_added_at": "2025-01-10T08:00:00.000Z",
+      "updatedAt": "2025-01-14T11:06:39.308Z",
+      "inactive_from": "2025-01-14T11:06:39.308Z",
+      "triggered_instances": []
+    }
+  ],
+  "totalDocs": 2,
+  "limit": 10,
+  "totalPages": 1,
+  "page": 1,
+  "pagingCounter": 1,
+  "hasPrevPage": false,
+  "hasNextPage": false,
+  "prevPage": null,
+  "nextPage": null
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials",
+  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gocobalt.io/api/v1/workflow/public/scheduled" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (with filters)
+curl -X GET "https://api.gocobalt.io/api/v1/workflow/public/scheduled?linked_account_id=user_12345&page=1&limit=20" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: List All Schedules
+```javascript
+async function listSchedules(apiKey, options = {}) {
+  const params = new URLSearchParams();
+  if (options.linkedAccountId) params.append('linked_account_id', options.linkedAccountId);
+  if (options.page) params.append('page', options.page);
+  if (options.limit) params.append('limit', options.limit);
+
+  const url = `https://api.gocobalt.io/api/v1/workflow/public/scheduled${params.toString() ? '?' + params : ''}`;
+
+  const response = await fetch(url, {
+    headers: {
+      'x-api-key': apiKey
+    }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: List all schedules for a user
+const result = await listSchedules('your_api_key', {
+  linkedAccountId: 'user_12345'
+});
+
+console.log(`Found ${result.totalDocs} schedules`);
+result.docs.forEach(schedule => {
+  const status = schedule.inactive ? '⏸️ Paused' : '▶️ Active';
+  console.log(`${status} ${schedule.workflow.name} - ${schedule.cron_patten || 'Interval'}`);
+});
+```
+
+## Example: Get Schedule Statistics
+```javascript
+async function getScheduleStats(apiKey, linkedAccountId) {
+  const result = await listSchedules(apiKey, { linkedAccountId, limit: 100 });
+
+  const stats = {
+    total: result.totalDocs,
+    active: result.docs.filter(s => !s.inactive).length,
+    paused: result.docs.filter(s => s.inactive).length,
+    cronSchedules: result.docs.filter(s => s.trigger_type === 'cron').length,
+    intervalSchedules: result.docs.filter(s => s.trigger_type === 'interval').length,
+    byApplication: {}
+  };
+
+  result.docs.forEach(schedule => {
+    const appName = schedule.workflow.associated_application?.name || 'Unknown';
+    stats.byApplication[appName] = (stats.byApplication[appName] || 0) + 1;
+  });
+
+  return stats;
+}
+
+// Usage
+const stats = await getScheduleStats('your_api_key', 'user_12345');
+console.log(`Total: ${stats.total}, Active: ${stats.active}, Paused: ${stats.paused}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Register Schedule" icon="plus" href="/v3/api-reference/schedule/register-schedule">
+    Create a new schedule
+  </Card>
+  <Card title="Pause Schedule" icon="pause" href="/v3/api-reference/schedule/pause-schedule">
+    Pause a schedule
+  </Card>
+  <Card title="Delete Schedule" icon="trash" href="/v3/api-reference/schedule/delete-schedule">
+    Remove a schedule
+  </Card>
+</CardGroup>

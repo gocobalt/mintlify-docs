@@ -1,6 +1,198 @@
 ---
-title: "Resume Schedule"
-description: "Documentation for resume schedule"
+title: Resume Schedule
+api: put /api/v1/workflow/public/scheduled/:schedule_id/resume
+description: Resume a paused schedule to restart workflow executions.
 ---
 
-Content coming soon.
+Resume a previously paused schedule to restart scheduled workflow executions using the original configuration.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="schedule_id" type="string" required>
+  The unique identifier of the schedule to resume.
+  
+  **Example:** `67becf62f29636d291eaadc0`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated schedule object with `inactive` set to `false`.
+
+    <ResponseField name="_id" type="string">
+      Schedule identifier
+    </ResponseField>
+
+    <ResponseField name="inactive" type="boolean">
+      Always `false` after resuming
+    </ResponseField>
+
+    <ResponseField name="workflow" type="string">
+      Workflow ID or alias
+    </ResponseField>
+
+    <ResponseField name="linked_account_id" type="string">
+      Linked account ID
+    </ResponseField>
+
+    <ResponseField name="cron_patten" type="string">
+      Cron pattern
+    </ResponseField>
+
+    <ResponseField name="options" type="object">
+      Schedule options
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of the resume action
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description (e.g., "Scheduled Job Already Active")
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      `RESOURCE_NOT_FOUND`
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "Scheduled Job Not Found"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "67becf62f29636d291eaadc0",
+  "event_id": "67becf62f29636d291eaadbf",
+  "workflow": "663c73e4608a784bacac384a",
+  "linked_account_id": "user_12345",
+  "environment": "production",
+  "org_id": "65c9ef72f4b95fce32e8ccf8",
+  "cron_patten": "*/30 * * * *",
+  "inactive": false,
+  "registered_by_api": true,
+  "options": {
+    "currentDate": "2025-01-15",
+    "endDate": "2025-01-31",
+    "startDate": "2025-01-16",
+    "tz": "America/New_York"
+  },
+  "trigger_type": "cron",
+  "trigger_interval": [],
+  "schedule_added_at": "2025-01-15T08:22:58.080Z",
+  "updatedAt": "2025-01-21T09:00:00.000Z"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Scheduled Job Already Active"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "RESOURCE_NOT_FOUND",
+  "message": "Scheduled Job Not Found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://api.gocobalt.io/api/v1/workflow/public/scheduled/67becf62f29636d291eaadc0/resume" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: Resume Schedule
+```javascript
+async function resumeSchedule(apiKey, scheduleId) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v1/workflow/public/scheduled/${scheduleId}/resume`,
+    {
+      method: 'PUT',
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const schedule = await resumeSchedule('your_api_key', '67becf62f29636d291eaadc0');
+console.log(`Schedule resumed: ${!schedule.inactive}`);
+```
+
+## Example: Toggle Schedule State
+```javascript
+async function toggleSchedule(apiKey, scheduleId, currentState) {
+  const action = currentState ? 'resume' : 'pause';
+  
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v1/workflow/public/scheduled/${scheduleId}/${action}`,
+    {
+      method: 'PUT',
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage: Toggle from paused to active
+const schedule = await toggleSchedule('your_api_key', '67becf62f29636d291eaadc0', true);
+console.log(`Schedule is now ${schedule.inactive ? 'paused' : 'active'}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Pause Schedule" icon="pause" href="/v3/api-reference/schedule/pause-schedule">
+    Pause an active schedule
+  </Card>
+  <Card title="Update Schedule" icon="pen" href="/v3/api-reference/schedule/update-schedule">
+    Modify schedule settings
+  </Card>
+  <Card title="List Schedules" icon="list" href="/v3/api-reference/schedule/list-schedules">
+    View all schedules
+  </Card>
+</CardGroup>

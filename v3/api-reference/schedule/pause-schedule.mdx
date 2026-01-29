@@ -1,6 +1,170 @@
 ---
-title: "Pause Schedule"
-description: "Documentation for pause schedule"
+title: Pause Schedule
+api: put /api/v1/workflow/public/scheduled/:schedule_id/pause
+description: Pause an active schedule to temporarily stop workflow executions.
 ---
 
-Content coming soon.
+Pause an active schedule to temporarily stop scheduled workflow executions. The schedule configuration is preserved and can be resumed later.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="schedule_id" type="string" required>
+  The unique identifier of the schedule to pause.
+  
+  **Example:** `67becf62f29636d291eaadc0`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated schedule object with `inactive` set to `true`.
+
+    <ResponseField name="_id" type="string">
+      Schedule identifier
+    </ResponseField>
+
+    <ResponseField name="inactive" type="boolean">
+      Always `true` after pausing
+    </ResponseField>
+
+    <ResponseField name="workflow" type="string">
+      Workflow ID or alias
+    </ResponseField>
+
+    <ResponseField name="linked_account_id" type="string">
+      Linked account ID
+    </ResponseField>
+
+    <ResponseField name="cron_patten" type="string">
+      Cron pattern (preserved)
+    </ResponseField>
+
+    <ResponseField name="options" type="object">
+      Schedule options (preserved)
+    </ResponseField>
+
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of the pause action
+    </ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      Error description (e.g., "Scheduled Job Already Inactive")
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">
+      HTTP status code
+    </ResponseField>
+
+    <ResponseField name="error_code" type="string">
+      `RESOURCE_NOT_FOUND`
+    </ResponseField>
+
+    <ResponseField name="message" type="string">
+      "Scheduled Job Not Found"
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "67becf62f29636d291eaadc0",
+  "event_id": "67becf62f29636d291eaadbf",
+  "workflow": "663c73e4608a784bacac384a",
+  "linked_account_id": "user_12345",
+  "environment": "production",
+  "org_id": "65c9ef72f4b95fce32e8ccf8",
+  "cron_patten": "*/30 * * * *",
+  "inactive": true,
+  "registered_by_api": true,
+  "options": {
+    "currentDate": "2025-01-15",
+    "endDate": "2025-01-31",
+    "startDate": "2025-01-16",
+    "tz": "America/New_York"
+  },
+  "trigger_type": "cron",
+  "trigger_interval": [],
+  "schedule_added_at": "2025-01-15T08:22:58.080Z",
+  "updatedAt": "2025-01-20T14:30:00.000Z"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Scheduled Job Already Inactive"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "RESOURCE_NOT_FOUND",
+  "message": "Scheduled Job Not Found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://api.gocobalt.io/api/v1/workflow/public/scheduled/67becf62f29636d291eaadc0/pause" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
+
+## Example: Pause Schedule
+```javascript
+async function pauseSchedule(apiKey, scheduleId) {
+  const response = await fetch(
+    `https://api.gocobalt.io/api/v1/workflow/public/scheduled/${scheduleId}/pause`,
+    {
+      method: 'PUT',
+      headers: {
+        'x-api-key': apiKey
+      }
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
+
+// Usage
+const schedule = await pauseSchedule('your_api_key', '67becf62f29636d291eaadc0');
+console.log(`Schedule paused: ${schedule.inactive}`);
+```
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Resume Schedule" icon="play" href="/v3/api-reference/schedule/resume-schedule">
+    Resume a paused schedule
+  </Card>
+  <Card title="List Schedules" icon="list" href="/v3/api-reference/schedule/list-schedules">
+    View all schedules
+  </Card>
+  <Card title="Delete Schedule" icon="trash" href="/v3/api-reference/schedule/delete-schedule">
+    Remove a schedule
+  </Card>
+</CardGroup>
