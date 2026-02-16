@@ -1,6 +1,149 @@
 ---
-title: "Overview"
-description: "Documentation for overview"
+title: API Reference
+description: Programmatically manage linked accounts, trigger workflows, configure integrations, and automate operations in Refold.
 ---
 
-Content coming soon.
+The Refold API provides RESTful endpoints to manage your integration platform programmatically. You can create and manage linked accounts, trigger workflow executions, configure integrations, handle webhooks, and interact with MCP servers.
+
+<Info>
+All API requests use the base URL `https://api.gocobalt.io`
+</Info>
+
+## Authentication
+
+Refold supports two authentication methods depending on your use case.
+
+<AccordionGroup>
+  <Accordion title="API Key Authentication" icon="key">
+    Use API Key authentication for server-side operations where your key remains secure.
+
+    Every request requires two headers:
+
+    <ParamField header="x-api-key" type="string" required>
+      Your Refold API key
+    </ParamField>
+
+    <ParamField header="linked_account_id" type="string" required>
+      The unique identifier for the linked account making the request
+    </ParamField>
+```bash
+    curl -X GET https://api.gocobalt.io/api/v2/public/application \
+      -H "x-api-key: your_api_key" \
+      -H "linked_account_id: user_12345"
+```
+
+    **Finding your API Key:**
+    Navigate to **Settings → Credentials** in your Refold dashboard. You can copy the API key for either the Test or Production environment.
+
+    <Frame>
+      <img src="/images/getting_api.png" alt="Getting your API Key from Refold dashboard" />
+    </Frame>
+  </Accordion>
+
+  <Accordion title="Session Token Authentication" icon="shield-check">
+    Use Session Token authentication for frontend implementations where you cannot expose your API key.
+
+    Session tokens replace both `x-api-key` and `linked_account_id` headers with a single `Authorization` header.
+
+    <ParamField header="Authorization" type="string" required>
+      Bearer token using your session token
+      
+      **Format:** `Bearer YOUR_SESSION_TOKEN`
+    </ParamField>
+```bash
+    curl -X GET https://api.gocobalt.io/api/v2/public/application \
+      -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+```
+
+    **Supported endpoints:** Config APIs, Config Field APIs, and MCP Server APIs support session token authentication.
+
+    Generate a session token using the [Session Token API](/api-reference/session-token/generate-token-for-linked-account).
+  </Accordion>
+</AccordionGroup>
+
+## Rate Limits
+
+The Refold API enforces rate limits to ensure fair usage across all users.
+
+| Limit Type | Value |
+|------------|-------|
+| Standard Rate | 20 requests per second |
+| Burst Rate | 5 requests in an instant within a second |
+
+When you exceed rate limits, the API returns a `429 Too Many Requests` response. Implement exponential backoff in your retry logic to handle rate limiting gracefully.
+
+## API Resources
+
+<CardGroup cols={2}>
+  <Card title="Linked Account" icon="user" href="/v3/api-reference/customer/list-linked-accounts">
+    Create and manage end-users who connect their third-party accounts through your integration.
+  </Card>
+  <Card title="Applications" icon="grid-2" href="/v3/api-reference/integration-meta/list-applications">
+    Retrieve and manage the integrations enabled in your Refold account.
+  </Card>
+  <Card title="Integration Schema" icon="diagram-project" href="/v3/api-reference/integration-schema/get-actions-for-an-application">
+    Fetch available actions and their parameters for any connected application.
+  </Card>
+  <Card title="Config" icon="sliders" href="/v3/api-reference/config/upsert-config">
+    Manage integration configurations that define how workflows behave for each linked account.
+  </Card>
+  <Card title="Event" icon="bolt" href="/v3/api-reference/event/trigger-an-event-from-your-application">
+    Trigger workflows by sending events from your application.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/v3/api-reference/webhooks/create-webhook">
+    Subscribe to real-time notifications when events occur in Refold.
+  </Card>
+  <Card title="Executions" icon="play" href="/v3/api-reference/executions/list-executions">
+    Retrieve details and status of workflow executions.
+  </Card>
+  <Card title="Public Workflows" icon="share-nodes" href="/v3/api-reference/public_workflows/get_public_workflows">
+    Manage workflows that can be triggered via API without linked account context.
+  </Card>
+  <Card title="Schedule" icon="clock" href="/v3/api-reference/schedule/register-cron">
+    Create and manage scheduled workflow executions using cron expressions.
+  </Card>
+  <Card title="Session Token" icon="ticket" href="/v3/api-reference/session-token/generate-token-for-linked-account">
+    Generate tokens for secure frontend authentication.
+  </Card>
+  <Card title="Hosted Portal" icon="browser" href="/v3/api-reference/hosted-portal/get-connect-url">
+    Generate hosted portal URLs for end-user authentication flows.
+  </Card>
+</CardGroup>
+
+## Error Handling
+
+The API returns standard HTTP status codes and a consistent error response format.
+```json
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "INVALID_CREDENTIALS",
+  "message": "Invalid Credentials",
+  "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+}
+```
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Request succeeded |
+| `400` | Bad request. Check your request parameters. |
+| `401` | Authentication failed. Verify your API key or session token. |
+| `404` | Resource not found |
+| `429` | Rate limit exceeded. Implement backoff and retry. |
+| `500` | Internal server error. Contact support if persistent. |
+
+Every error response includes a `request_id` field. Include this ID when contacting support for faster troubleshooting.
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Create a Linked Account" icon="user-plus" href="/v3/api-reference/customer/create-linked-account">
+    Set up your first end-user to start building integrations.
+  </Card>
+  <Card title="Trigger a Workflow" icon="bolt" href="/v3/api-reference/event/trigger-an-event-from-your-application">
+    Learn how to execute workflows programmatically.
+  </Card>
+  <Card title="Explore SDKs" icon="code" href="/v3/sdks/overview">
+    Use our Node.js, React, or JavaScript SDKs for faster development.
+  </Card>
+</CardGroup>
