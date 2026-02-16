@@ -1,0 +1,369 @@
+---
+title: "Custom Code Node"
+description: "Execute custom JavaScript or Python code within workflows to process, transform, and manipulate data"
+sidebarTitle: "Custom Code"
+---
+
+The Custom Code Node enables you to execute custom JavaScript or Python code within workflows. It acts as a code executor that allows you to create custom logic, manipulate data structures, and perform complex operations that are not available in standard workflow nodes.
+
+## When to Use
+
+- Transform data into custom formats for external APIs
+- Filter and process large datasets from API responses
+- Perform complex calculations on records or metrics
+- Validate and clean data before sending to external systems
+- Integrate with external libraries for specialized processing
+
+## Input Parameters
+
+<ParamField path="Input Parameters" type="object" required>
+  Key-value pairs of data to pass into your function. Include variables from previous nodes or static values needed for processing. Example: `{"vendor": "{{sap_vendor}}", "threshold": 75}`
+</ParamField>
+
+<ParamField path="Language" type="dropdown" required>
+  Programming language for your code. Options: `JavaScript`, `Python`.
+</ParamField>
+
+<ParamField path="Code" type="string" required>
+  Your custom code logic written inside the `yourFunction` wrapper. The function receives input parameters as arguments and should return an object with your processed data.
+</ParamField>
+
+<Info>Your code must be written inside the `yourFunction` wrapper. The function receives input parameters as arguments and should return an object with your processed data.</Info>
+
+## Supported Libraries
+
+### JavaScript Libraries
+
+| Library | Description | Import |
+|---------|-------------|--------|
+| axios | HTTP client for API requests | `const axios = require('axios');` |
+| lodash | Utility library for data manipulation | `const _ = require('lodash');` |
+| cheerio | Server-side jQuery for HTML parsing | `const cheerio = require('cheerio');` |
+| date-fns | Date utility library | `const { format } = require('date-fns');` |
+| fast-xml-parser | Fast XML to JSON converter | `const parser = require('fast-xml-parser');` |
+| fuse.js | Fuzzy search library | `const Fuse = require('fuse.js');` |
+| uuid | Generate RFC-compliant UUIDs | `const { v4: uuidv4 } = require('uuid');` |
+| mime | MIME type utilities | `const mime = require('mime');` |
+| number-to-words | Convert numbers to words | `const converter = require('number-to-words');` |
+| url | URL parsing utilities | `const url = require('url');` |
+| danfo | Data analysis library (pandas-like) | `const dfd = require('danfojs-node');` |
+
+### Python Libraries
+
+| Library | Description | Import |
+|---------|-------------|--------|
+| pandas | Data analysis and manipulation | `import pandas as pd` |
+| numpy | Numerical computing | `import numpy as np` |
+| requests | HTTP library | `import requests` |
+
+<Info>Need additional libraries? Contact our support team to request additional library support for JavaScript or Python.</Info>
+
+## Output
+
+The Custom Code Node outputs the exact return value from your custom function.
+```json
+{
+  "processed_vendor": {
+    "id": "V001234",
+    "name": "Acme Corporation",
+    "category": "preferred"
+  },
+  "original_score": 85,
+  "meets_threshold": true
+}
+```
+
+**Return Value Notes:**
+
+- **Direct Output**: Whatever you return from `yourFunction` becomes the node output
+- **JSON Serializable**: Return values must be JSON serializable (objects, arrays, strings, numbers, booleans)
+- **Error Handling**: Runtime errors will be captured and displayed in workflow logs
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the node">
+    Click **Add Node** in the workflow canvas, select **Custom Code** from the list of available nodes, then position it in your workflow.
+  </Step>
+  <Step title="Configure input parameters">
+    Define the data to pass into your function as key-value pairs. Include variables from previous nodes and any static values needed for processing.
+  </Step>
+  <Step title="Select programming language">
+    Choose **JavaScript** for web-focused processing or **Python** for data analysis and scientific computing.
+  </Step>
+  <Step title="Write your custom code">
+    Implement your logic inside the `yourFunction` wrapper. Access input parameters through function arguments and return an object with your processed results.
+  </Step>
+  <Step title="Test the node">
+    Run the node with sample data to verify logic and output format work correctly.
+  </Step>
+</Steps>
+
+<Warning>Code execution has timeout limits (30 seconds) and memory restrictions. Avoid infinite loops, excessive API calls, or large data processing that may exceed these limits.</Warning>
+
+## Examples
+
+### Transform SAP Vendor Data for External API
+
+This example processes SAP vendor data and categorizes it for external API integration:
+
+**Input Parameters:**
+```json
+{
+  "vendor": "{{sap_vendor_response}}",
+  "score_threshold": 75
+}
+```
+
+**Code (JavaScript):**
+```javascript
+const _ = require('lodash');
+
+async function yourFunction(params) {
+    const vendor = params.vendor;
+    const threshold = params.score_threshold;
+    
+    // Transform vendor data
+    const transformedVendor = {
+        external_id: vendor.LIFNR,
+        company_name: vendor.NAME1,
+        country: vendor.LAND1,
+        city: vendor.ORT01,
+        postal_code: vendor.PSTLZ,
+        created_date: vendor.ERDAT
+    };
+    
+    // Categorize based on purchase volume
+    const purchaseVolume = vendor.PURCHASE_VOLUME || 0;
+    if (purchaseVolume >= threshold * 1000) {
+        transformedVendor.category = 'preferred';
+        transformedVendor.priority = 1;
+    } else if (purchaseVolume >= threshold * 500) {
+        transformedVendor.category = 'standard';
+        transformedVendor.priority = 2;
+    } else {
+        transformedVendor.category = 'basic';
+        transformedVendor.priority = 3;
+    }
+    
+    // Add computed fields
+    transformedVendor.processed_at = new Date().toISOString();
+    
+    return {
+        processed_vendor: transformedVendor,
+        original_volume: purchaseVolume,
+        meets_threshold: purchaseVolume >= threshold * 1000
+    };
+}
+```
+
+**Output:**
+```json
+{
+  "processed_vendor": {
+    "external_id": "V001234",
+    "company_name": "Acme Corporation",
+    "country": "US",
+    "city": "Chicago",
+    "postal_code": "60601",
+    "created_date": "2024-01-15",
+    "category": "preferred",
+    "priority": 1,
+    "processed_at": "2024-01-15T14:30:00Z"
+  },
+  "original_volume": 250000,
+  "meets_threshold": true
+}
+```
+
+### Enrich NetSuite Customer Data with External API
+
+This example enriches customer data by calling an external company information API:
+
+**Input Parameters:**
+```json
+{
+  "customer": "{{netsuite_customer}}",
+  "api_key": "{{config.company_api_key}}"
+}
+```
+
+**Code (JavaScript):**
+```javascript
+const axios = require('axios');
+const _ = require('lodash');
+
+async function yourFunction(params) {
+    const customer = params.customer;
+    const apiKey = params.api_key;
+    
+    let enrichedData = {
+        customer_id: customer.internalId,
+        name: customer.companyName,
+        email: customer.email
+    };
+    
+    // Extract company domain
+    const domain = customer.email ? customer.email.split('@')[1] : null;
+    
+    if (domain && !_.includes(['gmail.com', 'yahoo.com', 'hotmail.com'], domain)) {
+        try {
+            const response = await axios.get('https://api.company-data.com/lookup', {
+                params: { domain: domain, api_key: apiKey },
+                timeout: 5000
+            });
+            
+            if (response.data && response.data.company) {
+                enrichedData.company_info = {
+                    name: response.data.company.name,
+                    industry: response.data.company.industry,
+                    size: response.data.company.employee_count,
+                    location: response.data.company.location
+                };
+                enrichedData.enrichment_source = 'external_api';
+            }
+        } catch (error) {
+            console.log('Company lookup failed:', error.message);
+            enrichedData.enrichment_error = error.message;
+        }
+    } else {
+        enrichedData.enrichment_source = 'personal_email';
+    }
+    
+    enrichedData.processed_at = new Date().toISOString();
+    enrichedData.domain = domain;
+    
+    return {
+        enriched_customer: enrichedData,
+        enrichment_attempted: !!domain,
+        api_called: !!domain && !_.includes(['gmail.com', 'yahoo.com', 'hotmail.com'], domain)
+    };
+}
+```
+
+**Output:**
+```json
+{
+  "enriched_customer": {
+    "customer_id": "12345",
+    "name": "TechCorp Solutions",
+    "email": "procurement@techcorp.com",
+    "company_info": {
+      "name": "TechCorp Solutions",
+      "industry": "Software",
+      "size": "50-200",
+      "location": "San Francisco, CA"
+    },
+    "enrichment_source": "external_api",
+    "processed_at": "2024-01-15T14:30:00Z",
+    "domain": "techcorp.com"
+  },
+  "enrichment_attempted": true,
+  "api_called": true
+}
+```
+
+### Analyze Order Data with Python
+
+This example analyzes order data using Python pandas:
+
+**Input Parameters:**
+```json
+{
+  "orders": "{{netsuite_orders}}",
+  "analysis_type": "revenue_summary"
+}
+```
+
+**Code (Python):**
+```python
+import pandas as pd
+import numpy as np
+from datetime import datetime
+
+async def yourFunction(params):
+    orders = params['orders']
+    analysis_type = params['analysis_type']
+    
+    # Convert to DataFrame
+    df = pd.DataFrame(orders)
+    
+    if analysis_type == 'revenue_summary':
+        # Calculate revenue metrics
+        df['order_total'] = pd.to_numeric(df['total'], errors='coerce')
+        
+        # Add revenue category
+        df['revenue_tier'] = pd.cut(
+            df['order_total'],
+            bins=[0, 1000, 10000, 100000, float('inf')],
+            labels=['Small', 'Medium', 'Large', 'Enterprise']
+        )
+        
+        # Generate summary
+        summary = {
+            'total_orders': len(df),
+            'total_revenue': float(df['order_total'].sum()),
+            'avg_order_value': float(df['order_total'].mean()),
+            'revenue_by_tier': df['revenue_tier'].value_counts().to_dict()
+        }
+    
+    processed_orders = df.to_dict('records')
+    
+    return {
+        'processed_orders': processed_orders,
+        'analysis_summary': summary,
+        'processed_at': datetime.now().isoformat()
+    }
+```
+
+**Output:**
+```json
+{
+  "processed_orders": [
+    {
+      "id": "SO-12345",
+      "customer": "Acme Corp",
+      "order_total": 15000,
+      "revenue_tier": "Large"
+    }
+  ],
+  "analysis_summary": {
+    "total_orders": 150,
+    "total_revenue": 1250000,
+    "avg_order_value": 8333.33,
+    "revenue_by_tier": {
+      "Small": 45,
+      "Medium": 67,
+      "Large": 30,
+      "Enterprise": 8
+    }
+  },
+  "processed_at": "2024-01-15T14:30:00Z"
+}
+```
+
+## Best Practices
+
+- **Keep functions focused**: Break complex logic into smaller operations
+- **Handle errors gracefully**: Use try-catch blocks for external API calls
+- **Return structured data**: Always return objects that other nodes can consume
+- **Use efficient algorithms**: Optimize for performance within timeout limits
+- **Log debug information**: Use console.log for troubleshooting
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Code execution timeout | Optimize algorithms, reduce complexity, break into multiple nodes |
+| Library import error | Check library name spelling, verify library is supported, use correct import syntax |
+| Runtime error | Add try-catch blocks, validate input parameters, check for null values |
+| Memory limit exceeded | Process data in smaller chunks, avoid storing large objects, use streaming approaches |
+
+<Tip>Use console.log statements in your custom code to debug issues. Logs will appear in the workflow execution details for troubleshooting.</Tip>
+
+## What's Next
+
+- [Transform Node](/developer-guide/workflows/nodes/transform) for simpler JSONata-based transformations
+- [HTTP Node](/developer-guide/workflows/nodes/http) to call external APIs without custom code
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic around custom code
+- [Loop Node](/developer-guide/workflows/nodes/loop) to process arrays with custom code

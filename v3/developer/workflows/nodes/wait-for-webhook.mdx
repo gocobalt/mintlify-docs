@@ -1,0 +1,252 @@
+---
+title: "Wait for Webhook Node"
+description: "Pause workflow execution until an external webhook is triggered, enabling asynchronous workflow coordination"
+sidebarTitle: "Wait for Webhook"
+---
+
+The Wait for Webhook Node pauses workflow execution until an external system triggers a webhook by sending a POST request to the generated webhook URL. This enables asynchronous workflow coordination where the workflow waits for external processes to complete before continuing with subsequent steps.
+
+## When to Use
+
+- Wait for third-party data enrichment services to return processed data
+- Pause workflow for manual approval processes via external systems
+- Coordinate with asynchronous external APIs that respond via webhooks
+- Wait for external document processing or validation to complete
+- Synchronize workflows with external business process completion
+
+## Input Parameters
+
+<ParamField path="Webhook URL" type="string" required>
+  Automatically generated static webhook URL that external systems must call to resume workflow execution. This URL is generated when the node is added and remains constant. Example: `https://api.gocobalt.io/api/v1/workflows/webhooks/6887`
+</ParamField>
+
+<ParamField path="Security Headers" type="object">
+  Optional key-value pairs for webhook authentication validation. If configured, incoming webhook requests must include these headers with exact matching values. Example: `{"Authorization": "Bearer secret123", "X-API-Key": "webhook-key"}`
+</ParamField>
+
+<Info>The webhook URL is automatically generated when the node is added and remains static. Only POST requests are supported. The workflow remains in Running state until the webhook is received.</Info>
+
+## Output
+
+The Wait for Webhook Node does not produce output data for subsequent nodes. It serves purely as a workflow control mechanism that gates execution.
+
+**Execution States:**
+
+| State | Description |
+|-------|-------------|
+| Waiting | Workflow paused at this node, waiting for webhook trigger |
+| Triggered | Webhook received, workflow continues to next nodes |
+| Error | Webhook request failed validation (missing or incorrect security headers) |
+
+<Warning>Workflows remain paused indefinitely at this node until the webhook is triggered. Only the first valid webhook request resumes execution. Subsequent requests are ignored.</Warning>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the node">
+    Click **Add Node** in the workflow canvas, select **Wait for Webhook** from the list of available nodes, then position it in your workflow.
+  </Step>
+  <Step title="Copy webhook URL">
+    Copy the automatically generated webhook URL displayed in the node configuration. Share this URL with external systems that need to trigger the webhook.
+  </Step>
+  <Step title="Configure security headers (optional)">
+    Add key-value pairs for required headers if authentication is needed. Leave empty if no authentication is required. Headers must match exactly in incoming webhook requests.
+  </Step>
+  <Step title="Configure external system">
+    Set up the external system to send a POST request to your webhook URL. Include required security headers if configured.
+  </Step>
+  <Step title="Test the node">
+    Run the workflow and trigger the webhook from your external system to verify the workflow resumes correctly.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="SAP Vendor Validation Workflow">
+    Pause workflow while waiting for external vendor validation service to complete.
+
+    **Scenario:** New vendor created in SAP needs external compliance validation before activation.
+
+    **Workflow Flow:**
+
+    1. **Trigger:** New SAP vendor record created
+    2. **HTTP Node:** Send vendor data to compliance validation service
+    3. **Wait for Webhook:** Pause until validation service responds
+    4. **Rule Node:** Check validation result and route accordingly
+    5. **SAP Node:** Update vendor status based on validation
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Webhook URL | `https://api.gocobalt.io/api/v1/workflows/webhooks/6887` |
+    | Security Headers | `{"X-Validation-Service": "compliance-check", "Authorization": "Bearer val-secret-123"}` |
+
+    **External System Call:**
+```bash
+    curl -X POST https://api.gocobalt.io/api/v1/workflows/webhooks/6887 \
+      -H "X-Validation-Service: compliance-check" \
+      -H "Authorization: Bearer val-secret-123" \
+      -H "Content-Type: application/json"
+```
+  </Accordion>
+
+  <Accordion title="NetSuite Order Approval Process">
+    Wait for manual approval via external approval system before processing high-value orders.
+
+    **Scenario:** Orders above threshold require manager approval through external approval portal.
+
+    **Workflow Flow:**
+
+    1. **Trigger:** NetSuite sales order created with total above $50,000
+    2. **HTTP Node:** Send approval request to approval portal
+    3. **Wait for Webhook:** Pause until approval decision received
+    4. **Rule Node:** Route based on approval or rejection
+    5. **NetSuite Node:** Update order status and proceed with fulfillment
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Webhook URL | `https://api.gocobalt.io/api/v1/workflows/webhooks/7234` |
+    | Security Headers | `{"X-Approval-System": "internal", "X-Request-ID": "{{approval_request.id}}"}` |
+
+    **External System Call:**
+```bash
+    curl -X POST https://api.gocobalt.io/api/v1/workflows/webhooks/7234 \
+      -H "X-Approval-System: internal" \
+      -H "X-Request-ID: req-12345" \
+      -H "Content-Type: application/json"
+```
+  </Accordion>
+
+  <Accordion title="Tipalti Payment Processing Callback">
+    Wait for payment processor to confirm transaction completion.
+
+    **Scenario:** Batch payment initiated to Tipalti, workflow waits for payment confirmation.
+
+    **Workflow Flow:**
+
+    1. **Trigger:** Scheduled weekly payment batch
+    2. **Tipalti Node:** Initiate batch payment
+    3. **Wait for Webhook:** Pause until Tipalti confirms processing
+    4. **Loop Node:** Process payment confirmations
+    5. **Response Node:** Return batch payment summary
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Webhook URL | `https://api.gocobalt.io/api/v1/workflows/webhooks/8456` |
+    | Security Headers | `{"X-Tipalti-Signature": "{{config.tipalti_webhook_secret}}"}` |
+  </Accordion>
+
+  <Accordion title="Simple Webhook Without Security">
+    Basic webhook wait without authentication for trusted internal systems.
+
+    **Scenario:** Internal microservice coordination where security is handled at network level.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Webhook URL | `https://api.gocobalt.io/api/v1/workflows/webhooks/9012` |
+    | Security Headers | `{}` (empty) |
+
+    **External System Call:**
+```bash
+    curl -X POST https://api.gocobalt.io/api/v1/workflows/webhooks/9012 \
+      -H "Content-Type: application/json"
+```
+  </Accordion>
+</AccordionGroup>
+
+## Runtime Behavior
+
+<AccordionGroup>
+  <Accordion title="Webhook Processing Flow">
+    The Wait for Webhook Node processes incoming requests in the following order:
+
+    1. **Request Validation:** Validates POST method and URL match
+    2. **Security Header Check:** Verifies required headers if configured
+    3. **Workflow Resume:** Triggers continuation of workflow execution
+    4. **Duplicate Prevention:** Ignores subsequent webhook requests for the same execution
+  </Accordion>
+
+  <Accordion title="Security Validation">
+    When security headers are configured:
+
+    | Behavior | Description |
+    |----------|-------------|
+    | Required Headers | All configured headers must be present in the webhook request |
+    | Exact Match | Header values must match exactly (case-sensitive) |
+    | Missing Headers | Returns error to webhook caller, workflow remains paused |
+    | Workflow Continuation | Only resumes if all security requirements are met |
+  </Accordion>
+
+  <Accordion title="Multiple Request Handling">
+    | Request Type | Behavior |
+    |--------------|----------|
+    | First Valid Request | Resumes workflow execution |
+    | Subsequent Requests | Ignored, do not affect workflow state |
+    | Failed Validation | Does not prevent future valid requests from working |
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Workflow Stuck at Webhook Node">
+    **Problem:** Workflow remains paused indefinitely
+
+    | Cause | Solution |
+    |-------|----------|
+    | Wrong webhook URL | Verify external system is calling the correct URL |
+    | Wrong HTTP method | Confirm external system is using POST method |
+    | Missing security headers | Check that all configured headers are included |
+    | External system not triggered | Test webhook URL manually with curl or Postman |
+  </Accordion>
+
+  <Accordion title="Security Header Validation Errors">
+    **Problem:** Webhook requests fail validation
+
+    | Cause | Solution |
+    |-------|----------|
+    | Missing headers | Include all configured security headers in request |
+    | Case mismatch | Header names and values are case-sensitive |
+    | Wrong header format | Ensure headers are sent in correct HTTP format |
+    | Testing isolation | Try with empty security headers `{}` to isolate issue |
+  </Accordion>
+
+  <Accordion title="External System Integration Issues">
+    **Problem:** External system cannot trigger webhook
+
+    | Cause | Solution |
+    |-------|----------|
+    | Firewall blocking | Verify external system can reach Cobalt endpoints |
+    | Timeout issues | Check external system timeout settings |
+    | No retry logic | Implement retry logic for webhook delivery |
+    | Network restrictions | Whitelist Cobalt webhook endpoints if needed |
+  </Accordion>
+
+  <Accordion title="Webhook URL Not Working">
+    **Problem:** Webhook URL returns 404 or errors
+
+    | Cause | Solution |
+    |-------|----------|
+    | URL truncated | Copy complete webhook URL without truncation |
+    | Workflow not deployed | Ensure workflow is deployed and active |
+    | Execution not started | Confirm workflow has reached the Wait for Webhook Node |
+    | URL regenerated | Node modifications may regenerate the URL |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use webhook testing tools like curl, Postman, or online webhook testers to verify your webhook URL and security headers work correctly before integrating with external systems.</Tip>
+
+## What's Next
+
+- [HTTP Node](/developer-guide/workflows/nodes/http) to trigger external systems that will call your webhook
+- [Delay Node](/developer-guide/workflows/nodes/delay) for time-based workflow pausing
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic after webhook triggers
+- [Response Node](/developer-guide/workflows/nodes/response) to return results after webhook processing

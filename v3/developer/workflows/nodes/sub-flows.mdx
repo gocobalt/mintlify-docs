@@ -1,0 +1,337 @@
+---
+title: "Sub Flows Node"
+description: "Execute another workflow within your current workflow to create modular, reusable automation components"
+sidebarTitle: "Sub Flows"
+---
+
+The Sub Flows Node executes another workflow from within your current workflow using the Workflow API. This enables you to build modular, reusable workflow components that can be shared across multiple integrations, reducing duplication and simplifying maintenance of complex automation logic.
+
+## When to Use
+
+- Create reusable utility workflows for common operations like data transformation or validation
+- Build standardized error handling or notification workflows used across integrations
+- Break down complex workflows into smaller, testable components
+- Share common logic between workflows in different applications
+- Implement recursive workflows for hierarchical data processing
+
+<Warning>When using recursive sub flows (a workflow calling itself), ensure you include a break condition to prevent infinite loops. Refold enforces a limit of 1000 recursions as a safeguard.</Warning>
+
+## Input Parameters
+
+<ParamField path="Select Workflow" type="dropdown" required>
+  Choose the workflow to execute as a sub flow. Available options include workflows from the current application and Internal Conductor workflows.
+</ParamField>
+
+<ParamField path="Sync Execution" type="toggle">
+  Execute the sub flow synchronously or asynchronously. When enabled (`true`), the parent workflow waits for the sub flow to complete and receives the full response. When disabled (`false`, default), the node returns immediately with only the execution ID.
+</ParamField>
+
+<ParamField path="Wait for completion for async execution" type="toggle">
+  When Sync Execution is disabled, enabling this option makes the parent workflow wait for the sub flow to complete before continuing. The response is returned once the sub flow finishes. Default: `false`
+</ParamField>
+
+<ParamField path="Raw Payload" type="toggle">
+  When enabled, displays the raw JSON payload editor for the sub flow. Use this to pass dynamic data from the parent workflow to the sub flow.
+</ParamField>
+
+### Execution Modes
+
+| Mode | Sync Execution | Wait for Completion | Behavior |
+|------|----------------|---------------------|----------|
+| Fire and Forget | Off | Off | Returns execution ID immediately. Sub flow runs in background. |
+| Async with Wait | Off | On | Waits for completion, returns execution ID and response. |
+| Synchronous | On | N/A | Waits for completion, returns execution ID and full response. |
+
+<Info>Sub flows are triggered via Workflow API. The sub flow must have **API Call** configured as its trigger in the Start Node, and return data through a Response Node.</Info>
+
+## Output
+
+The output structure depends on the execution mode configured.
+
+**Async Response (Sync Execution: Off, Wait: Off):**
+```json
+{
+  "status": "Success",
+  "node_id": "8",
+  "node_name": "Sub Flows",
+  "body": {
+    "execution_id": "exec_abc123def456"
+  }
+}
+```
+
+**Sync Response (Sync Execution: On) or Async with Wait:**
+```json
+{
+  "status": "Success",
+  "node_id": "8",
+  "node_name": "Sub Flows",
+  "body": {
+    "execution_id": "exec_abc123def456",
+    "return_value": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "processed": true
+    }
+  }
+}
+```
+
+**Error Response:**
+```json
+{
+  "status": "Errored",
+  "node_id": "8",
+  "node_name": "Sub Flows",
+  "body": "Workflow with id 65ef0af306c60dee0970ec61 not found"
+}
+```
+
+## Creating a Sub Flow
+
+Before using the Sub Flows Node, you need to create a workflow designed to be called as a sub flow.
+
+<Steps>
+  <Step title="Create the workflow">
+    Create a new workflow in your application or in **Internal Conductor** for cross-application reuse.
+  </Step>
+  
+  <Step title="Configure API Call trigger">
+    In the **Start Node**, select **API Call** as the trigger. Define the payload structure that the sub flow expects to receive.
+  </Step>
+  
+  <Step title="Build your logic">
+    Add the nodes that perform the sub flow's operations.
+  </Step>
+  
+  <Step title="Return the response">
+    Add a **Response Node** at the end of the workflow to return data to the parent workflow. This is required for the parent workflow to access the sub flow's results.
+  </Step>
+  
+  <Step title="Publish the workflow">
+    Publish the workflow to make it available for use as a sub flow.
+  </Step>
+</Steps>
+
+<Note>Sub flows work via Workflow API calls. The data you want to use in the parent workflow must be returned through a Response Node in the sub flow.</Note>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Sub Flows Node">
+    In the workflow editor, click **Add Node** and select **Sub Flows** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select the workflow">
+    Choose the workflow to execute from the **Select Workflow** dropdown. You can select workflows from the current application or Internal Conductor workflows.
+  </Step>
+  
+  <Step title="Configure execution mode">
+    Set **Sync Execution** based on whether you need the sub flow's response immediately or can process it later.
+  </Step>
+  
+  <Step title="Pass payload data">
+    Enable **Raw Payload** if you need to pass data to the sub flow. Enter the JSON payload with values from previous nodes using templating.
+  </Step>
+  
+  <Step title="Use the response">
+    Access the sub flow's response in subsequent nodes using `{{sub_flows_node.body.return_value.field_name}}`.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Reusable Name Parser for SAP Contacts">
+    Create a sub flow that splits full names into first and last names, then use it across multiple SAP integration workflows.
+
+    **Sub Flow Configuration (Internal Conductor):**
+
+    Start Node Payload:
+```json
+    {
+      "full_name": ""
+    }
+```
+
+    Custom Code Node:
+```javascript
+    const fullName = input.full_name || "";
+    const parts = fullName.trim().split(" ");
+    const firstName = parts[0] || "";
+    const lastName = parts.slice(1).join(" ") || "";
+    
+    return {
+      first_name: firstName,
+      last_name: lastName
+    };
+```
+
+    **Parent Workflow (SAP Contact Sync):**
+
+    | Field | Value |
+    |-------|-------|
+    | Select Workflow | `Name Parser` |
+    | Sync Execution | Enabled |
+    | Raw Payload | `{"full_name": "{{sap_contact.FullName}}"}` |
+
+    **Using the Response:**
+```
+    First Name: {{sub_flows.body.return_value.first_name}}
+    Last Name: {{sub_flows.body.return_value.last_name}}
+```
+  </Accordion>
+
+  <Accordion title="Centralized Error Notification Handler">
+    Create a sub flow that handles error notifications consistently across all workflows.
+
+    **Sub Flow Configuration (Internal Conductor):**
+
+    Start Node Payload:
+```json
+    {
+      "workflow_name": "",
+      "error_message": "",
+      "linked_account_id": "",
+      "severity": "error"
+    }
+```
+
+    The sub flow contains:
+    1. **Custom Code Node** - Format error details
+    2. **Send Email Node** - Notify operations team
+    3. **HTTP Node** - Post to Slack webhook
+    4. **Response Node** - Confirm notification sent
+
+    **Parent Workflow Usage:**
+
+    | Field | Value |
+    |-------|-------|
+    | Select Workflow | `Error Notification Handler` |
+    | Sync Execution | Disabled |
+    | Wait for completion | Disabled |
+
+    **Raw Payload:**
+```json
+    {
+      "workflow_name": "NetSuite Invoice Sync",
+      "error_message": "{{http_node.body.error.message}}",
+      "linked_account_id": "{{linked_account.id}}",
+      "severity": "error"
+    }
+```
+
+    **Use Case:** Fire-and-forget pattern where the parent workflow continues immediately while notifications are sent asynchronously.
+  </Accordion>
+
+  <Accordion title="Tipalti Vendor Validation Pipeline">
+    Chain multiple sub flows for a multi-step vendor validation process.
+
+    **Workflow Architecture:**
+
+    1. **Parent Workflow** - Tipalti Vendor Onboarding
+    2. **Sub Flow 1** - Tax ID Validation
+    3. **Sub Flow 2** - Bank Account Verification
+    4. **Sub Flow 3** - Compliance Check
+
+    **Parent Workflow Configuration:**
+
+    **Step 1 - Tax ID Validation:**
+    | Field | Value |
+    |-------|-------|
+    | Select Workflow | `Tax ID Validator` |
+    | Sync Execution | Enabled |
+    | Raw Payload | `{"tax_id": "{{tipalti_vendor.taxId}}", "country": "{{tipalti_vendor.country}}"}` |
+
+    **Step 2 - Rule Node (Check Tax Validation):**
+    Condition: `{{tax_validator.body.return_value.is_valid}}` equals `true`
+
+    **Step 3 - Bank Verification (on success branch):**
+    | Field | Value |
+    |-------|-------|
+    | Select Workflow | `Bank Account Verifier` |
+    | Sync Execution | Enabled |
+    | Raw Payload | `{"routing_number": "{{tipalti_vendor.routingNumber}}", "account_number": "{{tipalti_vendor.accountNumber}}"}` |
+
+    **Use Case:** Build complex validation pipelines by composing simple, focused sub flows.
+  </Accordion>
+
+  <Accordion title="Recursive Hierarchy Processing">
+    Process hierarchical data structures by having a workflow call itself recursively.
+
+    **Sub Flow Configuration:**
+
+    Start Node Payload:
+```json
+    {
+      "parent_id": "",
+      "depth": 0,
+      "max_depth": 5
+    }
+```
+
+    **Workflow Logic:**
+
+    1. **HTTP Node** - Fetch children of current parent
+    2. **Rule Node** - Check if depth < max_depth AND has children
+    3. **Loop Node** (on true branch) - For each child:
+       - **Sub Flows Node** - Call self with child ID and depth + 1
+    4. **Custom Code Node** - Aggregate results
+    5. **Response Node** - Return processed hierarchy
+
+    **Sub Flows Node Configuration (inside Loop):**
+
+    | Field | Value |
+    |-------|-------|
+    | Select Workflow | `Hierarchy Processor` (self) |
+    | Sync Execution | Enabled |
+    | Raw Payload | `{"parent_id": "{{loop.body.array_item.id}}", "depth": {{depth + 1}}, "max_depth": {{max_depth}}}` |
+
+    <Warning>Always include a depth check or other break condition to prevent infinite recursion. The platform enforces a 1000 recursion limit.</Warning>
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Sub Flow Not Executing">
+    | Problem | Solution |
+    |---------|----------|
+    | Workflow not found | Verify the selected workflow exists and is published. Check if it was deleted or renamed. |
+    | Sub flow not triggered | Ensure the sub flow has **API Call** configured as its trigger in the Start Node. |
+    | Permission denied | Verify the workflow is accessible from the current application or is an Internal Conductor workflow. |
+  </Accordion>
+
+  <Accordion title="Response Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | No return_value in response | Enable **Sync Execution** or **Wait for completion** to receive the sub flow's response. |
+    | Empty return_value | Ensure the sub flow includes a **Response Node** that returns the expected data. |
+    | Only execution_id returned | With async execution (Sync Execution: Off), only the execution ID is returned. Enable sync mode or use the Response API to fetch results later. |
+  </Accordion>
+
+  <Accordion title="Payload Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Payload not received by sub flow | Enable **Raw Payload** and verify the JSON structure matches what the sub flow expects in its Start Node. |
+    | Variables not resolving | Check templating syntax. Use `{{node_name.body.field}}` format and ensure referenced nodes have executed. |
+    | Invalid JSON error | Validate your payload JSON syntax. Use the code editor's built-in validation. |
+  </Accordion>
+
+  <Accordion title="Recursion Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Recursion limit reached | Add a break condition to your recursive workflow. Check depth counters or result conditions before calling the sub flow again. |
+    | Stack overflow or timeout | Reduce recursion depth or restructure the workflow to use iteration instead of recursion where possible. |
+    | Infinite loop | Ensure break conditions are evaluated correctly. Add logging to track recursion depth during testing. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use Internal Conductor workflows for sub flows that need to be shared across multiple applications. Application-specific workflows can only be used as sub flows within that application.</Tip>
+
+## What's Next
+
+- [Workflow API](/developer-guide/workflows/workflow-api) to understand how sub flows are triggered programmatically
+- [Response Node](/developer-guide/workflows/nodes/response) to configure what data sub flows return
+- [Internal Functions](/developer-guide/advanced/internal-functions) for simpler reusable code without full workflows
+- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over results from sub flows

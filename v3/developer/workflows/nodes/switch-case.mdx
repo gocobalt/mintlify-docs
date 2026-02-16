@@ -1,0 +1,401 @@
+---
+title: "Switch Case Node"
+description: "Route workflow execution to different paths based on condition evaluation with value comparison or custom code logic"
+sidebarTitle: "Switch Case"
+---
+
+The Switch Case Node enables conditional routing in workflows by evaluating input parameters against multiple cases and directing execution to different node paths based on the results. It acts like a traditional switch-case statement, allowing you to create branching logic with multiple possible outcomes.
+
+## When to Use
+
+- Route records based on status values (New, Approved, Rejected, Pending)
+- Direct processing to different workflows based on record type or category
+- Handle different account types with specific automation paths
+- Create multi-path approval workflows based on amount thresholds
+- Implement complex business logic with multiple conditional branches
+
+<Info>For simple true/false conditional logic, use the [Rule Node](/developer-guide/workflows/nodes/rule) instead. Switch Case is designed for scenarios with more than two possible outcomes.</Info>
+
+## Actions
+
+<AccordionGroup>
+  <Accordion title="Value Params">
+    Directly evaluates a specified input parameter value against case statements.
+
+    **How it works:**
+    1. Takes the value of a specified parameter key
+    2. Compares against case values as strings
+    3. Routes to matched case nodes or default case
+
+    **Best for:** Simple, straightforward value matching without transformation.
+
+    **Parameters:**
+
+    | Field | Required | Description |
+    |-------|----------|-------------|
+    | Input Parameters | Yes | Key-value pairs of data to evaluate |
+    | Value Param | Yes | The key name from input parameters to use for case evaluation |
+  </Accordion>
+
+  <Accordion title="Code Evaluation">
+    Uses custom JavaScript or Python code to evaluate conditions and return values for case comparison.
+
+    **How it works:**
+    1. Executes custom code with access to input parameters via `params` object
+    2. Returns a string value for case comparison
+    3. Routes based on the returned value
+
+    **Best for:** Complex logic, data normalization, or computed values before comparison.
+
+    **Parameters:**
+
+    | Field | Required | Description |
+    |-------|----------|-------------|
+    | Input Parameters | Yes | Key-value pairs available in your custom code |
+    | Code Language | Yes | `JavaScript` or `Python` |
+    | Code String | Yes | Custom code that returns a string value |
+  </Accordion>
+</AccordionGroup>
+
+## Input Parameters
+
+<ParamField path="Input Parameters" type="array" required>
+  Key-value pairs of data to evaluate. Can include variables from previous nodes. Example: `[{"key": "status", "value": "{{netsuite_order.status}}"}]`
+</ParamField>
+
+<ParamField path="Value Param" type="string">
+  The key name from input parameters to use for case evaluation. Required for Value Params action. Must match a key in the input parameters array.
+</ParamField>
+
+<ParamField path="Code Language" type="dropdown">
+  Programming language for custom evaluation logic. Required for Code Evaluation action. Options: `JavaScript`, `Python`.
+</ParamField>
+
+<ParamField path="Code String" type="string">
+  Custom code that processes input parameters and returns a string value for case comparison. Required for Code Evaluation action. Access parameters via `params` object.
+</ParamField>
+
+<ParamField path="Case Statements" type="array" required>
+  Array of case conditions with their corresponding node execution paths. Each case has a value to match and nodes to execute when matched.
+</ParamField>
+
+<ParamField path="Default Case Nodes" type="array" required>
+  Nodes to execute when no case conditions match. The default case is mandatory and cannot be removed.
+</ParamField>
+
+<Warning>Case matching is case-sensitive and uses exact string comparison. Ensure your evaluation logic returns string values that exactly match your case statements.</Warning>
+
+## Supported Libraries
+
+<AccordionGroup>
+  <Accordion title="JavaScript Libraries">
+    | Library | Description |
+    |---------|-------------|
+    | axios | HTTP client |
+    | lodash | Utility functions |
+    | date-fns | Date manipulation |
+    | uuid | UUID generation |
+    | fast-xml-parser | XML parsing |
+    | cheerio | HTML parsing |
+    | fuse.js | Fuzzy search |
+    | mime | MIME type detection |
+    | number-to-words | Number conversion |
+    | danfo | Data manipulation |
+  </Accordion>
+
+  <Accordion title="Python Libraries">
+    | Library | Description |
+    |---------|-------------|
+    | Standard libraries | Built-in Python modules |
+    | pandas | Data analysis |
+    | numpy | Numerical computing |
+  </Accordion>
+</AccordionGroup>
+
+## Output
+
+The Switch Case Node outputs evaluation results and routing information.
+```json
+{
+  "evaluated_value": "approved",
+  "matched_case": {
+    "case_value": "approved",
+    "case_satisfied_nodes": ["5", "6"]
+  },
+  "final_satisfied_nodes": ["5", "6"]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| evaluated_value | The string result from parameter value or code execution |
+| matched_case | The case statement that matched the evaluated value |
+| final_satisfied_nodes | Array of node IDs that will be executed next |
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the node">
+    Click **Add Node** in the workflow canvas, select **Switch Case** from the list of available nodes, then position it in your workflow.
+  </Step>
+  <Step title="Select evaluation method">
+    Choose **Value Params** for direct value comparison or **Code Evaluation** for custom logic.
+  </Step>
+  <Step title="Configure input parameters">
+    Add key-value pairs from previous nodes or static values. For Value Params, specify which parameter key to evaluate. For Code Evaluation, write your custom logic.
+  </Step>
+  <Step title="Define case statements">
+    Add case values that match possible evaluation results. Connect nodes to execute for each case. Configure the default case for unmatched conditions.
+  </Step>
+  <Step title="Test the node">
+    Run the node with sample data to verify case routing works correctly.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Route NetSuite Orders by Status">
+    Route NetSuite sales orders to different processing workflows based on their approval status.
+
+    **Action:** Value Params
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Input Parameters | `[{"key": "status", "value": "{{netsuite_order.approvalStatus}}"}]` |
+    | Value Param | `status` |
+
+    **Case Statements:**
+
+    | Case Value | Nodes to Execute |
+    |------------|------------------|
+    | `Pending Approval` | approval_workflow |
+    | `Approved` | fulfillment_workflow |
+    | `Rejected` | rejection_notification |
+    | `Pending Fulfillment` | shipping_workflow |
+    | Default | manual_review |
+
+    **Output (Status = "Approved"):**
+```json
+    {
+      "evaluated_value": "Approved",
+      "matched_case": {
+        "case_value": "Approved",
+        "case_satisfied_nodes": ["fulfillment_workflow"]
+      },
+      "final_satisfied_nodes": ["fulfillment_workflow"]
+    }
+```
+  </Accordion>
+
+  <Accordion title="SAP Vendor Classification with Code">
+    Use custom code to classify SAP vendors based on multiple criteria and route accordingly.
+
+    **Action:** Code Evaluation
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Input Parameters | `[{"key": "vendor", "value": "{{sap_vendor}}"}, {"key": "spend", "value": "{{sap_vendor.total_spend}}"}]` |
+    | Code Language | `JavaScript` |
+
+    **Code:**
+```javascript
+    const vendor = params.vendor;
+    const spend = parseFloat(params.spend) || 0;
+    const country = vendor.LAND1?.toUpperCase();
+
+    // Classify based on spend and location
+    if (spend > 1000000) {
+      return 'strategic';
+    } else if (spend > 100000) {
+      return country === 'US' ? 'preferred_domestic' : 'preferred_international';
+    } else if (vendor.KTOKK === 'VCPP') {
+      return 'contractor';
+    }
+    return 'standard';
+```
+
+    **Case Statements:**
+
+    | Case Value | Nodes to Execute |
+    |------------|------------------|
+    | `strategic` | executive_review, contract_renewal |
+    | `preferred_domestic` | domestic_procurement |
+    | `preferred_international` | international_procurement |
+    | `contractor` | contractor_management |
+    | `standard` | standard_processing |
+    | Default | vendor_onboarding |
+
+    **Output (Spend = 500000, Country = "DE"):**
+```json
+    {
+      "evaluated_value": "preferred_international",
+      "matched_case": {
+        "case_value": "preferred_international",
+        "case_satisfied_nodes": ["international_procurement"]
+      },
+      "final_satisfied_nodes": ["international_procurement"]
+    }
+```
+  </Accordion>
+
+  <Accordion title="Tipalti Payment Routing by Amount">
+    Route Tipalti payments to different approval workflows based on amount thresholds using Python.
+
+    **Action:** Code Evaluation
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Input Parameters | `[{"key": "amount", "value": "{{tipalti_payment.amount}}"}, {"key": "currency", "value": "{{tipalti_payment.currency}}"}]` |
+    | Code Language | `Python` |
+
+    **Code:**
+```python
+    amount = float(params['amount']) if params['amount'] else 0
+    currency = params['currency'].upper() if params['currency'] else 'USD'
+
+    # Convert to USD equivalent for threshold comparison
+    conversion_rates = {'EUR': 1.1, 'GBP': 1.27, 'USD': 1.0}
+    usd_amount = amount * conversion_rates.get(currency, 1.0)
+
+    if usd_amount >= 50000:
+        return 'executive_approval'
+    elif usd_amount >= 10000:
+        return 'manager_approval'
+    elif usd_amount >= 1000:
+        return 'standard_approval'
+    else:
+        return 'auto_approve'
+```
+
+    **Case Statements:**
+
+    | Case Value | Nodes to Execute |
+    |------------|------------------|
+    | `executive_approval` | cfo_notification, executive_review |
+    | `manager_approval` | manager_review |
+    | `standard_approval` | ap_review |
+    | `auto_approve` | process_payment |
+    | Default | manual_review |
+  </Accordion>
+
+  <Accordion title="Document Type Routing">
+    Route incoming documents based on their type for appropriate processing.
+
+    **Action:** Value Params
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Input Parameters | `[{"key": "doc_type", "value": "{{webhook.document_type}}"}]` |
+    | Value Param | `doc_type` |
+
+    **Case Statements:**
+
+    | Case Value | Nodes to Execute |
+    |------------|------------------|
+    | `INVOICE` | invoice_processing, ap_notification |
+    | `PURCHASE_ORDER` | po_matching, receiving |
+    | `CONTRACT` | legal_review, contract_storage |
+    | `RECEIPT` | expense_processing |
+    | Default | document_classification |
+  </Accordion>
+</AccordionGroup>
+
+## Runtime Behavior
+
+<AccordionGroup>
+  <Accordion title="Evaluation Process">
+    The Switch Case Node processes conditions in the following order:
+
+    1. **Parameter Resolution:** Resolves variables from previous nodes into input parameters
+    2. **Evaluation Execution:** Runs value extraction or custom code evaluation
+    3. **String Conversion:** Converts evaluation result to string for case comparison
+    4. **Case Matching:** Compares result against case statements (exact, case-sensitive match)
+    5. **Node Routing:** Routes to matched case nodes or default case if no match
+    6. **Error Handling:** Routes to default case if code evaluation fails
+  </Accordion>
+
+  <Accordion title="Code Execution Environment">
+    For Code Evaluation mode:
+
+    | Aspect | Behavior |
+    |--------|----------|
+    | Isolation | Code runs in secure containers with timeout limits |
+    | Parameter Access | Input parameters available via `params` object |
+    | Library Support | External libraries available via import/require |
+    | Error Capture | Runtime errors captured, execution routes to default case |
+    | Return Value | Must return a value convertible to string |
+  </Accordion>
+
+  <Accordion title="Case Matching Rules">
+    | Rule | Description |
+    |------|-------------|
+    | Case-sensitive | `Approved` does not match `approved` |
+    | Exact match | No partial or fuzzy matching |
+    | First match wins | If multiple cases could match, first defined case is used |
+    | Default fallback | Unmatched values always route to default case |
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Routes to Default When It Should Match">
+    **Problem:** Evaluation result doesn't match any case
+
+    | Cause | Solution |
+    |-------|----------|
+    | Case sensitivity mismatch | Normalize case in code: `toLowerCase()` or `upper()` |
+    | Extra whitespace | Trim values: `trim()` or `strip()` |
+    | Spelling differences | Use Debug Node to inspect actual evaluated value |
+    | Type mismatch | Ensure code returns string, not number or boolean |
+  </Accordion>
+
+  <Accordion title="Code Evaluation Errors">
+    **Problem:** Custom code throws runtime errors
+
+    | Cause | Solution |
+    |-------|----------|
+    | Null/undefined values | Add null checks: `params.field || 'default'` |
+    | Missing parameters | Verify all required keys exist in input parameters |
+    | Syntax errors | Test code in standalone environment first |
+    | Library not available | Check library is in supported list |
+  </Accordion>
+
+  <Accordion title="Wrong Nodes Executing">
+    **Problem:** Unexpected nodes are triggered
+
+    | Cause | Solution |
+    |-------|----------|
+    | Wrong node IDs | Verify case_satisfied_nodes contain correct node references |
+    | Multiple matches possible | Ensure case values are mutually exclusive |
+    | Node doesn't exist | Check referenced nodes exist in workflow |
+  </Accordion>
+
+  <Accordion title="Input Parameter Issues">
+    **Problem:** Parameters not resolving correctly
+
+    | Cause | Solution |
+    |-------|----------|
+    | Previous node failed | Check upstream nodes completed successfully |
+    | Wrong variable syntax | Use correct templating: `{{node_name.field}}` |
+    | Key name mismatch | Verify key names match exactly in Value Param |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use `console.log()` statements in JavaScript or `print()` in Python during Code Evaluation to debug your logic. Logs appear in workflow execution details.</Tip>
+
+## What's Next
+
+- [Rule Node](/developer-guide/workflows/nodes/rule) for simple true/false conditional logic
+- [Merge Node](/developer-guide/workflows/nodes/merge) to combine multiple switch case paths
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing
+- [Loop Node](/developer-guide/workflows/nodes/loop) to apply switch logic across arrays

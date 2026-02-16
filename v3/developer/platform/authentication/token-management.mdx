@@ -1,0 +1,75 @@
+---
+title: "Token Management"
+description: "Manage access token lifecycle, refresh, and revocation"
+---
+
+# Token Management
+
+## Access Token Lifecycle
+
+<Tabs>
+  <Tab title="Token Generation">
+    ```javascript
+    // Generate access token for integration
+    const accessToken = await cobalt.tokens.create({
+      linked_account_id: 'user_123',
+      application: 'salesforce',
+      scopes: ['api', 'refresh_token']
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Token Refresh">
+    ```javascript
+    // Refresh expired access token
+    const refreshedToken = await cobalt.tokens.refresh({
+      linked_account_id: 'user_123',
+      application: 'salesforce',
+      refresh_token: 'existing_refresh_token'
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Token Revocation">
+    ```javascript
+    // Revoke access token
+    await cobalt.tokens.revoke({
+      linked_account_id: 'user_123',
+      application: 'salesforce',
+      token: 'access_token_to_revoke'
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Token Storage
+
+<Warning>
+Store tokens securely and never log them in plain text. Use encryption for token storage and implement proper access controls.
+</Warning>
+
+```javascript
+// Example: Secure token storage
+const encryptedToken = await encrypt(accessToken, encryptionKey);
+await database.storeToken(userId, integrationId, encryptedToken);
+
+// Example: Secure token retrieval
+const encryptedToken = await database.getToken(userId, integrationId);
+const decryptedToken = await decrypt(encryptedToken, encryptionKey);
+```
+
+## Audit Logging
+
+All authentication events are logged for security and compliance purposes:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "event_type": "authentication.success",
+  "user_id": "user_123",
+  "method": "api_key",
+  "ip_address": "192.168.1.100",
+  "user_agent": "CobaltSDK/1.0.0",
+  "resource": "linked_accounts.list"
+}
+```

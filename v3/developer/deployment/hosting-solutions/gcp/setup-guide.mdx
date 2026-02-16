@@ -1,0 +1,175 @@
+---
+title: GCP Deployment
+description: "This guide helps you install and deploy Cobalt’s on-prem solution on your Kubernetes cluster. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on GCP. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts."
+---
+
+## Prerequisites
+
+- A Kubernetes cluster (GCP setup instructions provided below)
+- Docker credentials (you will receive a Personal Access Token (PAT) from the Cobalt team)
+- Redis (managed or self-hosted)
+- MongoDB (managed or self-hosted, recommended: MongoDB Atlas)
+
+## 1. Redis Setup
+
+You can either use a managed Redis instance or host Redis yourself.
+
+### Option 1: Managed Redis (Google Cloud MemoryStore)
+
+1. Go to the Google Cloud Console.
+2. Navigate to **MemoryStore > Redis > Create Instance**.
+3. Choose the following settings:
+   - **Instance ID**: Choose a unique ID.
+   - **Region**: Select the same region as your Kubernetes cluster.
+   - **Tier**: Select a tier depending on your requirements (Standard or Basic).
+   - **Eviction Policy**: Set to `no-eviction` to ensure Redis works properly with BullMQ.
+4. Once the instance is created, note down the connection endpoint. You will use this endpoint in your environment configuration to connect Cobalt services to Redis.
+5. Ensure your Kubernetes pods can access this Redis instance by setting up appropriate firewall rules in your GCP project.
+
+### Option 2: Self-Hosted Redis Installation
+
+1. Install Redis using Helm on your Kubernetes cluster:
+   ```bash
+   helm repo add bitnami https://charts.bitnami.com/bitnami
+   helm install redis bitnami/redis --set redis.configuration="maxmemory-policy noeviction"
+
+2. Verify Redis installation:
+    ```bash
+    kubectl exec -it $(kubectl get pods -l app.kubernetes.io/name=redis -o jsonpath="{.items[0].metadata.name}") -- redis-cli ping
+
+
+## 2. MongoDB Setup
+
+You can either use a managed MongoDB instance with MongoDB Atlas or host MongoDB yourself.
+
+### Option 1: Managed MongoDB (MongoDB Atlas)
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and create an account or log in.
+2. Create a new cluster:
+    - Choose the appropriate region based on your workload and proximity to your Kubernetes cluster.
+    - Select the cluster tier (e.g., M10, M20, etc.) depending on your usage needs.
+3. Once the cluster is created, set up access:
+    - Add your Kubernetes cluster's IP address (or CIDR) to the **IP Whitelist** to allow access.
+    - Create a database user with proper permissions (e.g., `readWrite`).
+4. Get the connection string:
+    - Navigate to your cluster, click **Connect**, and copy the connection string. Use this connection string in your configuration files to connect your services to MongoDB.
+
+### Option 2: Self-Hosted MongoDB Installation
+
+1. Install MongoDB using Helm:
+    ```bash
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm install mongodb bitnami/mongodb --set auth.rootPassword=<password>,auth.username=<user>,auth.password=<password>,auth.database=<db_name>
+    ```
+2. Verify MongoDB installation:
+    ```bash
+    kubectl exec -it $(kubectl get pods -l app.kubernetes.io/name=mongodb -o jsonpath="{.items[0].metadata.name}") -- mongo --eval "db.stats()"
+    ```
+
+## 3. Setting Up Kubernetes Cluster on GCP
+
+You can either create an autopilot or a standard cluster on GCP. Here’s how:
+
+### Autopilot Cluster Setup
+
+1. Create the cluster using the following command:
+    ```bash
+    gcloud container clusters create-auto cobalt-cluster --region <region>
+    ```
+2. Get credentials for the cluster:
+    ```bash
+    gcloud container clusters get-credentials cobalt-cluster --region <region>
+    ```
+
+### Standard Cluster Setup
+
+1. Create the cluster:
+    ```bash
+    gcloud container clusters create cobalt-cluster --region <region> --machine-type=e2-standard-4
+    ```
+2. Get credentials for the cluster:
+    ```bash
+    gcloud container clusters get-credentials cobalt-cluster --region <region>
+    ```
+
+3. Create a namespace for the services:
+    ```bash
+    kubectl create namespace services
+    ```
+
+
+## 4. Creating Docker Registry Credentials
+
+Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a Personal Access Token (PAT) from the Cobalt team.
+
+Run the following command to create the secret:
+
+```bash
+kubectl create secret docker-registry regcred \
+  --docker-server=https://ghcr.io \
+  --docker-username=<user-name> \
+  --docker-password=<PAT> \
+  --docker-email=<email> \
+  -n services
+```
+
+This command creates a secret named regcred in the services namespace that will allow Kubernetes to authenticate and pull images from the private repository.
+
+
+## 5. Applying ConfigMaps and Secrets Provided by Cobalt
+
+As part of the Cobalt setup, you'll receive ConfigMaps and Secrets from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
+
+### Option 1: Manually Applying ConfigMaps and Secrets
+
+1. **Update ConfigMap and Secret YAML Files**  
+   Modify the YAML files (e.g., `configmap.yaml` and `secret.yaml`) to include environment-specific values. For example:  
+   - `REDIS_HOST`, `MONGODB_URI`, and any other service-related settings should match your environment.
+
+2. **Apply ConfigMap and Secret Files**  
+   Use the following `kubectl` commands to apply the ConfigMap and Secret to the `services` namespace in your Kubernetes cluster:
+   ```bash
+   kubectl apply -f <configmap.yaml> -n services
+   kubectl apply -f <secret.yaml> -n services
+
+Replace `<configmap.yaml>` and `<secret.yaml>` with the actual names of the YAML files you received. Repeat the process for all ConfigMap and Secret files provided.
+
+### Option 2: Using `apply_all.sh` Script
+
+You can use the provided `apply_all.sh` script to apply all ConfigMap and Secret files at once after updating the necessary values (e.g., `REDIS_HOST`, `MONGODB_URI`, etc.) in the YAML files.
+
+1. Ensure all required values are updated in the YAML files.
+2. Run the script:
+   ```bash
+   ./apply_all.sh
+
+This should display properly when rendered in a compatible MDX environment. Let me know if you need any further modifications!
+
+
+
+## 6. Installing Cobalt Services via Helm
+
+After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Cobalt services.
+
+### To Install Cobalt Services
+
+Use the provided `install_all.sh` script to install all necessary services:
+
+```bash
+./install_all.sh
+```
+
+This script will handle the installation of all Cobalt services on your Kubernetes cluster.
+
+
+## To Uninstall Cobalt Services
+
+If you need to uninstall the services, use the provided `uninstall_all.sh` script:
+
+```bash
+./uninstall_all.sh
+```
+
+This script will cleanly uninstall all Cobalt services from your cluster.
+
+<Info>This guide provides the foundational setup for deploying Cobalt services, including the option to use the apply_all.sh script for easier management of ConfigMaps and Secrets. For further questions or assistance, feel free to reach out to the Cobalt support team.</Info>

@@ -1,0 +1,122 @@
+---
+title: On Standalone Machine
+description: This guide helps you to install Cobalt using Docker images on any standalone machine. We will use Amazon EC2 as reference in the guide.
+---
+## **Pre-requisites**
+
+Following are the pre-requisites for deployment:
+
+1. **Docker Credentials**: You will receive a Personal Access Token (PAT) from the Cobalt team.
+2. **MongoDB Atlas Account**: Create or use an existing account.
+3. **Docker Registry URL**: Provided by the Cobalt team.
+
+
+## Steps to Deploy Cobalt on an EC2 Instance
+To deploy Cobalt, follow the steps given below:
+
+
+### **Step 1: Ensure Docker Engine is Running**:
+<Steps>
+  <Step title="Install Docker if not already installed">
+    ```bash
+     sudo apt update
+     sudo apt install docker.io -y
+     ```
+  </Step>
+  <Step title="Start and enable the Docker service">
+     ```bash
+     sudo systemctl start docker
+     sudo systemctl enable docker
+     ```
+  </Step>
+  <Step title="Verify Docker is running">
+     ```bash
+     docker --version
+     docker info
+     ```
+  </Step>
+</Steps>
+    
+
+### Step 2: Set Up MongoDB Cluster
+
+
+- Log in to your **MongoDB Atlas** account and create a new `M10 cluster`.
+- Set **autoscaling** with a maximum scale to`M20`.
+- Configure **minimum disk space to 50GB** in the cluster settings.
+- Create a **MongoDB user** with full access to the database:
+        **Username**: Choose a secure username.
+        **Password**: Use a strong password.
+- Save the **MongoDB connection string**. For e.g.:
+     ```
+     mongodb+srv://<username>:<password>@<cluster-url>/myDatabase?retryWrites=true&w=majority
+     ```
+
+
+### **Step 3: Authenticate Docker with Cobalt Credentials**:
+<Steps>
+  <Step title="Log in to the Docker registry">
+     ```bash
+     docker login <docker-registry-url>
+     ```
+  </Step>
+  <Step title="Provide Credentials">
+    Enter the **username** (PAT) and **password** when prompted.
+  </Step>
+</Steps>
+
+### **Step 4: Pull the Docker Compose File**:
+    Download the `docker-compose.yml` file provided by the Cobalt team:
+     ```bash
+     curl -O <docker-compose-url>
+     ```
+
+### **Step 5: Configure Environment Variables**:
+    Edit the `docker-compose.yml` file to include the MongoDB connection string:
+     ```yaml
+     environment:
+       MONGO_URI: "mongodb+srv://<username>:<password>@<cluster-url>/myDatabase?retryWrites=true&w=majority"
+     ```
+   <Note>
+   Add any additional environment variables specific to your deployment.
+   </Note>
+
+### **Step 6: Start Cobalt Services**:
+   - Run the Docker Compose setup:
+     ```bash
+     docker-compose up -d
+     ```
+   - Verify that all containers are running:
+     ```bash
+     docker ps
+     ```
+
+## **Optional Checks**
+1. **Security Groups**:
+
+    Ensure the EC2 instance's **Security Group** allows inbound traffic on necessary ports (e.g., `80`, `443`, or custom application ports).
+
+2. **Volume Mounts**:
+
+    If any Docker services require persistent storage, check that **volumes** are correctly configured in the `docker-compose.yml`.
+
+3. **Logs**:
+
+    Monitor logs to ensure all services are running correctly:
+    ```bash
+    docker-compose logs -f
+    ```
+
+## **Additional Considerations**
+1. **Resource Monitoring**:
+
+   - Check the EC2 instance's CPU and memory usage to ensure it meets Cobalt's requirements.
+   - Set up **autoscaling groups** on memory usage if it exceeds **75%** for a sustained period. This ensures the system can handle increased loads efficiently.
+
+2. **Redis Configuration**:
+
+    This document assumes that **Redis** will run on the same instance as Cobalt's service. This setup is acceptable for light to moderate loads, but for high loads, consider deploying Redis on a separate instance or using a managed Redis service.
+
+3. **Backup**:
+
+    Set up regular backups for your MongoDB cluster to avoid data loss.

@@ -1,0 +1,395 @@
+---
+title: "Functions Node"
+description: "Execute reusable JavaScript functions for data transformation, array operations, encryption, and custom logic"
+sidebarTitle: "Functions"
+---
+
+The Functions Node executes reusable JavaScript functions within your workflows. Instead of writing the same code in multiple Custom Code nodes, create functions once and call them across any workflow. Functions can be organization-specific custom functions you create, or pre-defined library functions provided by Refold.
+
+## When to Use
+
+- Execute reusable logic across multiple workflows without duplicating code
+- Find specific elements in arrays from API responses
+- Group data by key values for organization and reporting
+- Encrypt sensitive data before sending to external systems
+- Convert data formats (EDI, X12, cXML) for enterprise integrations
+- Perform common operations without writing custom code each time
+
+<Info>Functions are organization-specific. Create and manage functions under **More > Functions** in your dashboard.</Info>
+
+## Input Parameters
+
+<ParamField path="Select internal function" type="dropdown" required>
+  Choose the function to execute from your organization's Functions Library. Functions are created and managed in **More > Functions**. After selecting a function, input fields are dynamically generated based on the function's parameter requirements.
+</ParamField>
+
+<ParamField path="Custom Output" type="dynamic fields">
+  Map function output to custom field names. Click **+ Add Field** to define additional output fields that will be included in the node's response alongside the function result.
+</ParamField>
+
+### Dynamic Input Fields
+
+When you select a function, input fields are automatically generated based on that function's parameters. For example, selecting "Find element in array" displays:
+
+| Field | Description |
+|-------|-------------|
+| array | The array to search through |
+| element | The element to find |
+
+<Tip>Refer to the function's code in **More > Functions** to understand which parameters are required and which are optional.</Tip>
+
+## Pre-defined Library Functions
+
+Refold provides several pre-defined library functions that are available by default. These functions cannot be edited but can be used immediately in any workflow.
+
+<AccordionGroup>
+  <Accordion title="Array Operations">
+    | Function | Description |
+    |----------|-------------|
+    | **Find element in array** | Searches through an array to locate a specific element. Returns the index of the element, or -1 if not found. |
+    | **Group objects by a key** | Groups an array of objects by a specified key field. Returns an object with grouped arrays. |
+  </Accordion>
+
+  <Accordion title="Encryption">
+    | Function | Description |
+    |----------|-------------|
+    | **Encrypt a string** | Encrypts sensitive text data using standard encryption algorithms. Returns the encrypted string. |
+  </Accordion>
+
+  <Accordion title="Date Helper">
+    | Function | Description |
+    |----------|-------------|
+    | **Get current date** | Retrieves the current date and time. Useful for timestamping records or calculating relative dates. |
+    | **Convert date from one format to another** | Transforms dates between different format patterns (e.g., ISO to MM/DD/YYYY). Essential for integrating systems with different date formats. |
+    | **Extract date units** | Parses dates to extract specific components like year, month, day, hour. Useful for date-based filtering and conditional logic. |
+    | **Add/Subtract time** | Performs time arithmetic by adding or subtracting days, hours, minutes from dates. Critical for SLA calculations and deadline management. |
+  </Accordion>
+
+  <Accordion title="Miscellaneous">
+    | Function | Description |
+    |----------|-------------|
+    | **Generate UUID** | Creates unique identifiers (UUIDs) for tracking, record linking, or external system integration. |
+  </Accordion>
+
+  <Accordion title="Math Helper">
+    | Function | Description |
+    |----------|-------------|
+    | **Math Operations** | Performs mathematical calculations on numeric values. Supports common operations like sum, average, min, max, and more. |
+  </Accordion>
+</AccordionGroup>
+
+<Info>Your organization may have additional custom functions created for specific use cases. Check **More > Functions** to see all available functions.</Info>
+
+## Creating Custom Functions
+
+Create reusable functions for your organization that can be called from any workflow.
+
+<Steps>
+  <Step title="Navigate to Functions">
+    In the Refold dashboard, go to **More > Functions**.
+  </Step>
+
+  <Step title="Create a new function">
+    Click **+ Create Function** and provide a name for your function.
+  </Step>
+
+  <Step title="Write your function">
+    Define your function code, input parameters, and output fields. You can use supported JavaScript libraries in your function code.
+  </Step>
+
+  <Step title="Save the function">
+    Click **Create** to save. The function is now available in the Functions Node dropdown across all workflows.
+  </Step>
+</Steps>
+
+### Supported JavaScript Libraries
+
+The following npm modules can be used in your custom function code:
+
+| Library | Description |
+|---------|-------------|
+| [axios](https://www.npmjs.com/package/axios) | HTTP client for API requests |
+| [cheerio](https://www.npmjs.com/package/cheerio) | HTML parsing and manipulation |
+| [date-fns](https://www.npmjs.com/package/date-fns) | Date utility functions |
+| [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser) | XML parsing and building |
+| [fuse.js](https://www.npmjs.com/package/fuse.js) | Fuzzy search library |
+| [lodash](https://www.npmjs.com/package/lodash) | Utility functions for arrays, objects, strings |
+| [mime](https://www.npmjs.com/package/mime/v/3.0.0) | MIME type detection |
+| [number-to-words](https://www.npmjs.com/package/number-to-words) | Number to text conversion |
+| [url](https://www.npmjs.com/package/url) | URL parsing utilities |
+| [uuid](https://www.npmjs.com/package/uuid) | UUID generation |
+| [danfo](https://danfo.jsdata.org/getting-started) | Data analysis and manipulation |
+
+<Tip>Need a library that's not listed? [Contact support](mailto:integrations@gocobalt.io) to request additional libraries.</Tip>
+
+### Library Usage Examples
+
+<AccordionGroup>
+  <Accordion title="Using axios for HTTP requests">
+```javascript
+    const axios = require('axios');
+
+    async function yourFunction(params) {
+      const res = await axios.get("https://api.example.com/data");
+      return {
+        data: res.data
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Using lodash for data manipulation">
+```javascript
+    const _ = require('lodash');
+
+    function yourFunction(params) {
+      const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+      const sortedData = _.sortBy(array, "id");
+      return {
+        data: sortedData
+      };
+    }
+```
+  </Accordion>
+
+  <Accordion title="Using danfo for data analysis">
+```javascript
+    const dfd = require('dfd');
+
+    function yourFunction(params) {
+      const s = new dfd.Series([1, 3, 5, undefined, 6, 8]);
+      return dfd.toJSON(s);
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Output
+
+The output structure depends on the function being executed. Each function returns its result in the `body` field.
+
+<AccordionGroup>
+  <Accordion title="Find element in array (found)">
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": 1
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Find element in array (not found)">
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": -1
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Custom function output">
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "result": "your_function_output",
+        "custom_field": "mapped_value"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Error response">
+```json
+    {
+      "status": "Errored",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": "Function execution failed: undefined is not a function"
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Functions Node">
+    In the workflow editor, click **Add Node** and select **Functions** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select a function">
+    Choose a function from the **Select internal function** dropdown. This list includes pre-defined library functions and any custom functions created in your organization.
+  </Step>
+  
+  <Step title="Configure input parameters">
+    Fill in the dynamically generated input fields based on the selected function's requirements. Use dynamic variables from previous nodes where needed.
+  </Step>
+  
+  <Step title="Configure custom output (optional)">
+    Click **+ Add Field** under Custom Output to map function results to custom field names for use in subsequent nodes.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute and verify the function returns the expected output.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Find Vendor in SAP Response Array">
+    Search for a specific vendor in an array returned from an SAP API call.
+
+    **Function:** Find element in array
+
+    | Field | Value |
+    |-------|-------|
+    | array | `{{sap_get_vendors.body.vendors}}` |
+    | element | `{{webhook.vendor_id}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "index": 3
+      }
+    }
+```
+
+    **Use Case:** Use the returned index with a Rule Node to check if the vendor exists (index >= 0) before proceeding with updates.
+  </Accordion>
+
+  <Accordion title="Group Invoices by Status">
+    Organize NetSuite invoices by their payment status for processing.
+
+    **Function:** Group objects by a key
+
+    | Field | Value |
+    |-------|-------|
+    | array | `{{netsuite_get_invoices.body.invoices}}` |
+    | key | `payment_status` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "paid": [
+          {"id": "INV-001", "payment_status": "paid", "amount": 1500},
+          {"id": "INV-003", "payment_status": "paid", "amount": 2200}
+        ],
+        "pending": [
+          {"id": "INV-002", "payment_status": "pending", "amount": 3000}
+        ],
+        "overdue": [
+          {"id": "INV-004", "payment_status": "overdue", "amount": 750}
+        ]
+      }
+    }
+```
+
+    **Use Case:** Process each status group differently, such as sending reminders for pending invoices or escalations for overdue ones.
+  </Accordion>
+
+  <Accordion title="Encrypt Sensitive Vendor Data">
+    Encrypt vendor bank account information before storing or transmitting.
+
+    **Function:** Encrypt a string
+
+    | Field | Value |
+    |-------|-------|
+    | string | `{{vendor.bank_account_number}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "encrypted": "aGVsbG8gd29ybGQ=..."
+      }
+    }
+```
+
+    **Use Case:** Encrypt PII or financial data before sending to external systems or storing in logs.
+  </Accordion>
+
+  <Accordion title="Convert Purchase Order to EDI X12 Format">
+    Transform a JSON purchase order into EDI X12 format for transmission to trading partners.
+
+    **Function:** Convert JSON to X12 EDI string (custom function)
+
+    | Field | Value |
+    |-------|-------|
+    | jsonData | `{{purchase_order}}` |
+    | transaction_type | `850` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "8",
+      "node_name": "Functions",
+      "body": {
+        "edi_string": "ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *...",
+        "transaction_type": "850"
+      }
+    }
+```
+
+    **Use Case:** Generate EDI documents for B2B transactions with trading partners who require X12 format.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Function Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | Function not in dropdown | Verify the function exists in **More > Functions**. Check if it was created in the correct organization. |
+    | Function was deleted | Recreate the function or select an alternative function. Workflows using deleted functions will fail. |
+  </Accordion>
+
+  <Accordion title="Execution Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "undefined is not a function" | Check the function code for syntax errors. Verify all required libraries are imported correctly. |
+    | Function returns unexpected output | Review the function's input parameters and ensure values are passed correctly. Check the function code logic. |
+    | Timeout errors | Optimize the function code. Avoid long-running operations or external API calls with slow response times. |
+  </Accordion>
+
+  <Accordion title="Input Parameter Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | Required parameter missing | Refer to the function code in **More > Functions** to identify required parameters. |
+    | Invalid data type | Ensure input values match expected types (string, array, object). Use a Custom Code node to transform data if needed. |
+    | Dynamic variable not resolving | Verify the source node has executed successfully and the variable path is correct. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use the [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off logic that doesn't need to be reused. Reserve functions for code that will be used across multiple workflows.</Tip>
+
+## What's Next
+
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off custom logic
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on function output
+- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over grouped data from functions
+- [Transform Node](/developer-guide/workflows/nodes/transform) for JSONata-based data transformation
