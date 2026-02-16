@@ -1,10 +1,10 @@
 ---
 title: Register Schedule
 api: post /api/v1/workflow/public/scheduled
-description: Create a scheduled trigger for a workflow using cron expressions or specific date/time intervals.
+description: Create a scheduled trigger to execute workflows at specified times using cron expressions or specific date intervals.
 ---
 
-Register a scheduled trigger to execute a workflow automatically at specified times. Supports both cron expressions for recurring schedules and specific date/time intervals for precise execution.
+Register a new scheduled trigger to execute workflows automatically. You can create recurring schedules using cron expressions or specify exact dates and times for execution.
 
 ## Authentication
 
@@ -12,18 +12,30 @@ Register a scheduled trigger to execute a workflow automatically at specified ti
   Your Refold API key. Find it in **Settings → Credentials**.
 </ParamField>
 
+## Header Parameters
+
 <ParamField header="linked_account_id" type="string" required>
-  The unique identifier for the linked account.
+  The unique identifier for the linked account that will execute the scheduled workflow.
+  
+  **Example:** `user_12345`
 </ParamField>
 
 <ParamField header="slug" type="string" required>
-  Application slug for the integration.
+  The application slug for the integration.
   
-  **Example:** `hubspot`, `salesforce`, `slack`
+  **Example:** `salesforce`, `hubspot`, `netsuite`
 </ParamField>
 
 <ParamField header="workflow_id_alias" type="string" required>
-  Workflow ID or the workflow alias to schedule.
+  The workflow ID alias or identifier to execute on schedule.
+  
+  **Example:** `sync_contacts_workflow`
+</ParamField>
+
+<ParamField header="config_id" type="string" required>
+  The configuration ID associated with the linked account for this integration.
+  
+  **Example:** `config_abc123`
 </ParamField>
 
 ## Body Parameters
@@ -31,90 +43,92 @@ Register a scheduled trigger to execute a workflow automatically at specified ti
 <ParamField body="trigger_type" type="string" required>
   The type of schedule trigger.
   
-  - `cron` - Use a cron expression for recurring schedules
-  - `interval` - Use specific date/time values for precise execution
-</ParamField>
-
-<ParamField body="payload" type="object" required>
-  Event payload to send during workflow execution. Pass an empty object `{}` if no data is needed.
+  **Allowed values:** `cron`, `interval`
+  
+  - `cron`: Use cron expressions for recurring schedules
+  - `interval`: Use specific date/time values for precise execution
 </ParamField>
 
 ### Cron Trigger Parameters
 
-<Info>
-Required when `trigger_type` is `cron`.
-</Info>
+When `trigger_type` is `cron`:
 
-<ParamField body="regex" type="string">
+<ParamField body="regex" type="string" required>
   Cron expression defining the schedule pattern.
+  
+  **Format:** `minute hour day month weekday`
   
   **Examples:**
   - `*/30 * * * *` - Every 30 minutes
   - `0 9 * * *` - Daily at 9:00 AM
   - `0 0 * * 1` - Every Monday at midnight
-  - `*/6 * * * *` - Every 6 minutes
 </ParamField>
 
 <ParamField body="currentDate" type="string">
-  Current date in `YYYY-MM-DD` format.
+  Current date for schedule calculation in `YYYY-MM-DD` format.
   
-  **Example:** `2025-01-15`
+  **Example:** `2025-01-30`
 </ParamField>
 
 <ParamField body="startDate" type="string">
-  Start date for the cron job in `YYYY-MM-DD` format.
+  Start date for the schedule in `YYYY-MM-DD` format. Schedule will not execute before this date.
   
-  **Example:** `2025-01-16`
+  **Example:** `2025-02-01`
 </ParamField>
 
 <ParamField body="endDate" type="string">
-  End date for the cron job in `YYYY-MM-DD` format.
+  End date for the schedule in `YYYY-MM-DD` format. Schedule will not execute after this date.
   
-  **Example:** `2025-01-31`
+  **Example:** `2025-12-31`
 </ParamField>
 
 <ParamField body="tz" type="string">
-  Timezone for the cron job.
+  Timezone for the schedule. Uses IANA timezone format.
   
-  **Example:** `Asia/Kolkata`, `America/New_York`, `Europe/London`, `UTC`
+  **Examples:** `Asia/Kolkata`, `America/New_York`, `Europe/London`, `UTC`
+  
+  **Default:** `UTC`
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Event payload to pass to the workflow when it executes.
+  
+  **Example:** `{ "sync_type": "full", "batch_size": 100 }`
 </ParamField>
 
 ### Interval Trigger Parameters
 
-<Info>
-Required when `trigger_type` is `interval`.
-</Info>
+When `trigger_type` is `interval`:
 
-<ParamField body="interval_dates" type="array">
-  Array of specific date/time values for execution.
+<ParamField body="interval_dates" type="array" required>
+  Array of specific date/time objects for execution.
   <Expandable title="Interval Date Object">
-    <ParamField body="date" type="object" required>
-      Date and time specification
-      <Expandable title="Date Fields">
-        <ParamField body="day" type="integer" required>
-          Day of month (1-31). **Example:** `25`
-        </ParamField>
-        <ParamField body="month" type="integer" required>
-          Month (1-12). **Example:** `5`
-        </ParamField>
-        <ParamField body="year" type="integer" required>
-          Year. **Example:** `2025`
-        </ParamField>
-        <ParamField body="hour" type="integer" required>
-          Hour in 24-hour format (0-23). **Example:** `21`
-        </ParamField>
-        <ParamField body="minute" type="integer" required>
-          Minute (0-59). **Example:** `45`
-        </ParamField>
-        <ParamField body="second" type="integer" required>
-          Second (0-59). **Example:** `30`
-        </ParamField>
-      </Expandable>
+    <ParamField body="day" type="integer" required>
+      Day of the month (1-31)
     </ParamField>
-    <ParamField body="tz" type="string" required>
-      Timezone for this specific date. **Example:** `Asia/Kolkata`
+    <ParamField body="month" type="integer" required>
+      Month (1-12)
+    </ParamField>
+    <ParamField body="year" type="integer" required>
+      Year (e.g., 2025)
+    </ParamField>
+    <ParamField body="hour" type="integer" required>
+      Hour (0-23)
+    </ParamField>
+    <ParamField body="minute" type="integer" required>
+      Minute (0-59)
+    </ParamField>
+    <ParamField body="second" type="integer">
+      Second (0-59). Default: 0
+    </ParamField>
+    <ParamField body="tz" type="string">
+      Timezone for this specific date. Default: UTC
     </ParamField>
   </Expandable>
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Event payload to pass to the workflow when it executes.
 </ParamField>
 
 ## Response
@@ -122,19 +136,19 @@ Required when `trigger_type` is `interval`.
 <Tabs>
   <Tab title="200 OK">
     <ResponseField name="_id" type="string">
-      Unique identifier for the registered schedule
+      Unique identifier for the schedule
     </ResponseField>
 
     <ResponseField name="event_id" type="string">
-      Associated event ID
+      Event identifier associated with this schedule
     </ResponseField>
 
     <ResponseField name="workflow" type="string">
-      Workflow ID or alias
+      Workflow ID that will be executed
     </ResponseField>
 
     <ResponseField name="linked_account_id" type="string">
-      Linked account ID for which schedule is registered
+      Linked account identifier
     </ResponseField>
 
     <ResponseField name="environment" type="string">
@@ -142,45 +156,31 @@ Required when `trigger_type` is `interval`.
     </ResponseField>
 
     <ResponseField name="org_id" type="string">
-      Organization ID
+      Organization identifier
     </ResponseField>
 
     <ResponseField name="cron_patten" type="string">
-      Cron pattern used (for cron trigger type)
+      The cron pattern (for cron triggers)
     </ResponseField>
 
     <ResponseField name="inactive" type="boolean">
-      Whether the schedule is inactive
+      Whether the schedule is paused
     </ResponseField>
 
     <ResponseField name="registered_by_api" type="boolean">
-      Whether registered via API (always `true` for API registrations)
+      Whether the schedule was created via API
     </ResponseField>
 
     <ResponseField name="trigger_type" type="string">
-      Trigger type: `cron` or `interval`
+      Type of trigger: `cron` or `interval`
     </ResponseField>
 
     <ResponseField name="options" type="object">
-      Schedule configuration options
-      <Expandable title="Options Object">
-        <ResponseField name="currentDate" type="string">
-          Current date
-        </ResponseField>
-        <ResponseField name="startDate" type="string">
-          Start date
-        </ResponseField>
-        <ResponseField name="endDate" type="string">
-          End date
-        </ResponseField>
-        <ResponseField name="tz" type="string">
-          Timezone
-        </ResponseField>
-      </Expandable>
+      Schedule options including timezone and date range
     </ResponseField>
 
     <ResponseField name="trigger_interval" type="array">
-      Array of interval dates (empty for cron trigger type)
+      Array of interval dates (for interval triggers)
     </ResponseField>
 
     <ResponseField name="schedule_added_at" type="string">
@@ -197,16 +197,12 @@ Required when `trigger_type` is `interval`.
       HTTP status code
     </ResponseField>
 
-    <ResponseField name="http_error_type" type="string">
-      Error classification
-    </ResponseField>
-
-    <ResponseField name="error_code" type="string">
-      Specific error code
-    </ResponseField>
-
     <ResponseField name="message" type="string">
       Error description
+    </ResponseField>
+
+    <ResponseField name="request_id" type="string">
+      Unique identifier for debugging
     </ResponseField>
   </Tab>
 
@@ -216,75 +212,78 @@ Required when `trigger_type` is `interval`.
     </ResponseField>
 
     <ResponseField name="message" type="string">
-      Error description
-    </ResponseField>
-
-    <ResponseField name="request_id" type="string">
-      Unique identifier for debugging
+      "Invalid Credentials"
     </ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
-```json 200 Cron Schedule
+```json 200 (Cron)
 {
-  "_id": "67becf62f29636d291eaadc0",
-  "event_id": "67becf62f29636d291eaadbf",
-  "workflow": "663c73e4608a784bacac384a",
+  "_id": "67a123456789abcdef012345",
+  "event_id": "evt_sync_contacts",
+  "workflow": "67fbc1e4954bde0dcae1d51c",
   "linked_account_id": "user_12345",
   "environment": "production",
-  "org_id": "65c9ef72f4b95fce32e8ccf8",
+  "org_id": "6698b77a733c5ebd8908189e",
   "cron_patten": "*/30 * * * *",
   "inactive": false,
   "registered_by_api": true,
-  "options": {
-    "currentDate": "2025-01-15",
-    "endDate": "2025-01-31",
-    "startDate": "2025-01-16",
-    "tz": "America/New_York"
-  },
   "trigger_type": "cron",
+  "options": {
+    "tz": "America/New_York",
+    "startDate": "2025-02-01",
+    "endDate": "2025-12-31"
+  },
   "trigger_interval": [],
-  "schedule_added_at": "2025-01-15T08:22:58.080Z",
-  "updatedAt": "2025-01-15T08:22:58.080Z"
+  "schedule_added_at": "2025-01-30T10:00:00.000Z",
+  "updatedAt": "2025-01-30T10:00:00.000Z"
 }
 ```
-```json 200 Interval Schedule
+```json 200 (Interval)
 {
-  "_id": "67becf62f29636d291eaadc1",
-  "event_id": "67becf62f29636d291eaadba",
-  "workflow": "663c73e4608a784bacac384a",
+  "_id": "67a123456789abcdef012346",
+  "event_id": "evt_quarterly_report",
+  "workflow": "67fbc1e4954bde0dcae1d51c",
   "linked_account_id": "user_12345",
   "environment": "production",
-  "org_id": "65c9ef72f4b95fce32e8ccf8",
-  "cron_patten": null,
+  "org_id": "6698b77a733c5ebd8908189e",
+  "cron_patten": "",
   "inactive": false,
   "registered_by_api": true,
-  "options": {},
   "trigger_type": "interval",
+  "options": {},
   "trigger_interval": [
     {
-      "date": {
-        "day": 25,
-        "month": 1,
-        "year": 2025,
-        "hour": 14,
-        "minute": 30,
-        "second": 0
-      },
+      "day": 1,
+      "month": 4,
+      "year": 2025,
+      "hour": 9,
+      "minute": 0,
+      "second": 0,
+      "tz": "America/New_York"
+    },
+    {
+      "day": 1,
+      "month": 7,
+      "year": 2025,
+      "hour": 9,
+      "minute": 0,
+      "second": 0,
       "tz": "America/New_York"
     }
   ],
-  "schedule_added_at": "2025-01-15T08:22:58.080Z",
-  "updatedAt": "2025-01-15T08:22:58.080Z"
+  "schedule_added_at": "2025-01-30T10:00:00.000Z",
+  "updatedAt": "2025-01-30T10:00:00.000Z"
 }
 ```
 ```json 400
 {
   "status_code": 400,
   "http_error_type": "BAD_REQUEST",
-  "error_code": "SERVER_ERROR",
-  "message": "Cron Job Could Not Be Added, Regex Configuration failed to register"
+  "error_code": "VALIDATION_ERROR",
+  "message": "Invalid cron expression",
+  "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
 }
 ```
 ```json 401
@@ -299,61 +298,59 @@ Required when `trigger_type` is `interval`.
 </ResponseExample>
 
 <RequestExample>
-```bash cURL (Cron)
-curl -X POST "https://api.gocobalt.io/api/v1/workflow/public/scheduled" \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "linked_account_id: user_12345" \
-  -H "slug: hubspot" \
-  -H "workflow_id_alias: sync-contacts" \
-  -d '{
-    "trigger_type": "cron",
-    "payload": {
-      "source": "scheduled_sync"
-    },
-    "regex": "*/30 * * * *",
-    "currentDate": "2025-01-15",
-    "startDate": "2025-01-16",
-    "endDate": "2025-01-31",
-    "tz": "America/New_York"
-  }'
-```
-```bash cURL (Interval)
+```bash cURL (Cron Schedule)
 curl -X POST "https://api.gocobalt.io/api/v1/workflow/public/scheduled" \
   -H "Content-Type: application/json" \
   -H "x-api-key: YOUR_API_KEY" \
   -H "linked_account_id: user_12345" \
   -H "slug: salesforce" \
-  -H "workflow_id_alias: daily-report" \
+  -H "workflow_id_alias: sync_contacts_workflow" \
+  -H "config_id: config_abc123" \
+  -d '{
+    "trigger_type": "cron",
+    "regex": "*/30 * * * *",
+    "tz": "America/New_York",
+    "startDate": "2025-02-01",
+    "endDate": "2025-12-31",
+    "payload": {
+      "sync_type": "incremental",
+      "batch_size": 100
+    }
+  }'
+```
+```bash cURL (Interval Schedule)
+curl -X POST "https://api.gocobalt.io/api/v1/workflow/public/scheduled" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "slug: netsuite" \
+  -H "workflow_id_alias: quarterly_report" \
+  -H "config_id: config_xyz789" \
   -d '{
     "trigger_type": "interval",
-    "payload": {
-      "report_type": "daily_summary"
-    },
     "interval_dates": [
       {
-        "date": {
-          "day": 25,
-          "month": 1,
-          "year": 2025,
-          "hour": 14,
-          "minute": 30,
-          "second": 0
-        },
+        "day": 1,
+        "month": 4,
+        "year": 2025,
+        "hour": 9,
+        "minute": 0,
+        "second": 0,
         "tz": "America/New_York"
       },
       {
-        "date": {
-          "day": 26,
-          "month": 1,
-          "year": 2025,
-          "hour": 14,
-          "minute": 30,
-          "second": 0
-        },
+        "day": 1,
+        "month": 7,
+        "year": 2025,
+        "hour": 9,
+        "minute": 0,
+        "second": 0,
         "tz": "America/New_York"
       }
-    ]
+    ],
+    "payload": {
+      "report_type": "quarterly_summary"
+    }
   }'
 ```
 </RequestExample>
@@ -361,19 +358,6 @@ curl -X POST "https://api.gocobalt.io/api/v1/workflow/public/scheduled" \
 ## Example: Register Cron Schedule
 ```javascript
 async function registerCronSchedule(apiKey, options) {
-  const {
-    linkedAccountId,
-    slug,
-    workflowIdOrAlias,
-    cronExpression,
-    startDate,
-    endDate,
-    timezone,
-    payload = {}
-  } = options;
-
-  const today = new Date().toISOString().split('T')[0];
-
   const response = await fetch(
     'https://api.gocobalt.io/api/v1/workflow/public/scheduled',
     {
@@ -381,18 +365,18 @@ async function registerCronSchedule(apiKey, options) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'linked_account_id': linkedAccountId,
-        'slug': slug,
-        'workflow_id_alias': workflowIdOrAlias
+        'linked_account_id': options.linkedAccountId,
+        'slug': options.slug,
+        'workflow_id_alias': options.workflowIdAlias,
+        'config_id': options.configId
       },
       body: JSON.stringify({
         trigger_type: 'cron',
-        payload,
-        regex: cronExpression,
-        currentDate: today,
-        startDate,
-        endDate,
-        tz: timezone
+        regex: options.cronExpression,
+        tz: options.timezone || 'UTC',
+        startDate: options.startDate,
+        endDate: options.endDate,
+        payload: options.payload || {}
       })
     }
   );
@@ -408,42 +392,26 @@ async function registerCronSchedule(apiKey, options) {
 // Usage: Schedule workflow to run every 30 minutes
 const schedule = await registerCronSchedule('your_api_key', {
   linkedAccountId: 'user_12345',
-  slug: 'hubspot',
-  workflowIdOrAlias: 'sync-contacts',
+  slug: 'salesforce',
+  workflowIdAlias: 'sync_contacts_workflow',
+  configId: 'config_abc123',
   cronExpression: '*/30 * * * *',
-  startDate: '2025-01-16',
-  endDate: '2025-01-31',
   timezone: 'America/New_York',
-  payload: { source: 'scheduled_sync' }
+  startDate: '2025-02-01',
+  endDate: '2025-12-31',
+  payload: {
+    sync_type: 'incremental',
+    batch_size: 100
+  }
 });
 
 console.log(`Schedule created: ${schedule._id}`);
+console.log(`Cron pattern: ${schedule.cron_patten}`);
 ```
 
 ## Example: Register Interval Schedule
 ```javascript
 async function registerIntervalSchedule(apiKey, options) {
-  const {
-    linkedAccountId,
-    slug,
-    workflowIdOrAlias,
-    dates,
-    timezone,
-    payload = {}
-  } = options;
-
-  const intervalDates = dates.map(d => ({
-    date: {
-      day: d.getDate(),
-      month: d.getMonth() + 1,
-      year: d.getFullYear(),
-      hour: d.getHours(),
-      minute: d.getMinutes(),
-      second: d.getSeconds()
-    },
-    tz: timezone
-  }));
-
   const response = await fetch(
     'https://api.gocobalt.io/api/v1/workflow/public/scheduled',
     {
@@ -451,14 +419,15 @@ async function registerIntervalSchedule(apiKey, options) {
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'linked_account_id': linkedAccountId,
-        'slug': slug,
-        'workflow_id_alias': workflowIdOrAlias
+        'linked_account_id': options.linkedAccountId,
+        'slug': options.slug,
+        'workflow_id_alias': options.workflowIdAlias,
+        'config_id': options.configId
       },
       body: JSON.stringify({
         trigger_type: 'interval',
-        payload,
-        interval_dates: intervalDates
+        interval_dates: options.dates,
+        payload: options.payload || {}
       })
     }
   );
@@ -471,22 +440,47 @@ async function registerIntervalSchedule(apiKey, options) {
   return response.json();
 }
 
-// Usage: Schedule workflow for specific dates
+// Usage: Schedule workflow for specific quarterly dates
 const schedule = await registerIntervalSchedule('your_api_key', {
   linkedAccountId: 'user_12345',
-  slug: 'salesforce',
-  workflowIdOrAlias: 'quarterly-report',
+  slug: 'netsuite',
+  workflowIdAlias: 'quarterly_report',
+  configId: 'config_xyz789',
   dates: [
-    new Date('2025-03-31T17:00:00'),
-    new Date('2025-06-30T17:00:00'),
-    new Date('2025-09-30T17:00:00'),
-    new Date('2025-12-31T17:00:00')
+    { day: 1, month: 4, year: 2025, hour: 9, minute: 0, second: 0, tz: 'America/New_York' },
+    { day: 1, month: 7, year: 2025, hour: 9, minute: 0, second: 0, tz: 'America/New_York' },
+    { day: 1, month: 10, year: 2025, hour: 9, minute: 0, second: 0, tz: 'America/New_York' },
+    { day: 1, month: 1, year: 2026, hour: 9, minute: 0, second: 0, tz: 'America/New_York' }
   ],
-  timezone: 'America/New_York',
-  payload: { report_type: 'quarterly' }
+  payload: {
+    report_type: 'quarterly_summary'
+  }
 });
 
-console.log(`Schedule created with ${schedule.trigger_interval.length} execution dates`);
+console.log(`Schedule created: ${schedule._id}`);
+console.log(`Execution dates: ${schedule.trigger_interval.length}`);
+```
+
+## Example: Convert JavaScript Date to Interval Format
+```javascript
+function dateToIntervalFormat(date, timezone = 'UTC') {
+  return {
+    day: date.getDate(),
+    month: date.getMonth() + 1, // JavaScript months are 0-indexed
+    year: date.getFullYear(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    second: date.getSeconds(),
+    tz: timezone
+  };
+}
+
+// Usage
+const executionDate = new Date('2025-03-15T14:30:00');
+const intervalDate = dateToIntervalFormat(executionDate, 'America/Los_Angeles');
+
+console.log(intervalDate);
+// { day: 15, month: 3, year: 2025, hour: 14, minute: 30, second: 0, tz: 'America/Los_Angeles' }
 ```
 
 ## Cron Expression Reference
@@ -495,26 +489,32 @@ console.log(`Schedule created with ${schedule.trigger_interval.length} execution
 |------------|-------------|
 | `* * * * *` | Every minute |
 | `*/5 * * * *` | Every 5 minutes |
+| `*/15 * * * *` | Every 15 minutes |
 | `*/30 * * * *` | Every 30 minutes |
 | `0 * * * *` | Every hour (at minute 0) |
 | `0 */2 * * *` | Every 2 hours |
 | `0 9 * * *` | Daily at 9:00 AM |
-| `0 9,17 * * *` | Daily at 9:00 AM and 5:00 PM |
+| `0 9,18 * * *` | Daily at 9:00 AM and 6:00 PM |
 | `0 0 * * *` | Daily at midnight |
 | `0 0 * * 1` | Every Monday at midnight |
-| `0 0 1 * *` | First day of every month |
-| `0 0 1 1 *` | January 1st at midnight |
+| `0 0 * * 1-5` | Every weekday at midnight |
+| `0 0 1 * *` | First day of every month at midnight |
+| `0 0 1 1 *` | January 1st at midnight (yearly) |
+
+<Info>
+Cron format: `minute (0-59) hour (0-23) day (1-31) month (1-12) weekday (0-7, where 0 and 7 are Sunday)`
+</Info>
 
 ## What's Next
 
 <CardGroup cols={3}>
-  <Card title="List Schedules" icon="list" href="/v3/api-reference/schedule/list-schedules">
-    View all scheduled jobs
+  <Card title="List Schedules" icon="list" href="/v3/api-reference/schedule/get-all-schedules">
+    View all schedules
   </Card>
   <Card title="Pause Schedule" icon="pause" href="/v3/api-reference/schedule/pause-schedule">
-    Pause a schedule
+    Temporarily stop execution
   </Card>
   <Card title="Update Schedule" icon="pen" href="/v3/api-reference/schedule/update-schedule">
-    Modify schedule settings
+    Modify schedule configuration
   </Card>
 </CardGroup>
