@@ -1,0 +1,257 @@
+---
+title: "Linked Accounts"
+description: "Create, manage, and monitor your end customers' integration connections in Refold."
+---
+
+A Linked Account represents your app's end user or customer who connects and uses third-party apps through your platform. Every integration connection, workflow execution, and API call in Refold is tracked against a Linked Account.
+
+You can track app connections, total executions, and API calls at the customer level.
+
+<Frame>
+    <img src="/images/Guides/Linked-account/Overview.png" alt="Linked Account overview in Refold Dashboard"/>
+</Frame>
+
+## Managing Linked Accounts
+
+Linked Accounts can be created, updated, or deleted through the Refold Dashboard or via API.
+
+<AccordionGroup>
+    <Accordion title="Via Refold Dashboard" icon="laptop">
+
+In the Refold Dashboard, navigate to **Dashboard** > **Linked Accounts**. Click **+ Add Account**, then provide the following:
+
+<ParamField path="Linked Account ID" type="string" required>
+  A unique identifier for the customer. Use a stable ID such as an email address or primary key from your system.
+</ParamField>
+
+<ParamField path="Name" type="string">
+  A human-readable name for the customer.
+</ParamField>
+
+<Frame>
+    <img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account in Refold Dashboard"/>
+</Frame>
+
+You can also bulk create Linked Accounts by importing a `.csv` file.
+
+</Accordion>
+
+<Accordion title="Via API" icon="code">
+
+Use the API to create or update Linked Accounts programmatically. Refold provides two endpoints:
+
+**Create** a new Linked Account using `POST`:
+
+<CodeGroup>
+```bash cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "acme-corp-001",
+  "name": "Acme Corp",
+  "your_app": {
+    "auth_credentials": {
+      "x-api-key": "your-customer-api-key"
+    }
+  }
+}'
+```
+```JavaScript SDK
+try {
+    await Client.createLinkedAccount({
+        linked_account_id: "acme-corp-001",
+        name: "Acme Corp",
+        udf: {
+            "erp_system": "SAP S/4HANA",
+            "region": "eu-west"
+        },
+        your_app: {
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials: {
+                "Authorization": "Bearer <your-customer-token>"
+            }
+        }
+    })
+} catch (error) {
+    // Handle error
+}
+```
+</CodeGroup>
+
+**Upsert** (create or update) a Linked Account using `PUT`:
+
+<CodeGroup>
+```bash cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+  "linked_account_id": "acme-corp-001",
+  "name": "Acme Corp",
+  "your_app": {
+    "app_id": "646370324e3b114f9c720719",
+    "auth_credentials": {
+      "x-api-key": "updated-customer-api-key"
+    }
+  }
+}'
+```
+```JavaScript SDK
+try {
+    await Client.upsertLinkedAccount({
+        linked_account_id: "acme-corp-001",
+        name: "Acme Corp",
+        udf: {
+            "erp_system": "SAP S/4HANA",
+            "region": "eu-west"
+        },
+        your_app: {
+            app_id: "64da0b57c9ae95561bb0a2ea",
+            auth_credentials: {
+                "Authorization": "Bearer <updated-customer-token>"
+            }
+        }
+    })
+} catch (error) {
+    // Handle error
+}
+```
+</CodeGroup>
+
+<Note>Linked Account operations should always happen on the server side. Do not expose your API key in client-side code.</Note>
+
+#### Request Parameters
+
+<ParamField body="linked_account_id" type="string" required>
+  A unique identifier for the customer. Use a stable value such as an email address or a primary key from your database (e.g., `acme-corp-001`, `finance-team@acme.com`).
+</ParamField>
+
+<ParamField body="name" type="string">
+  A human-readable display name for the customer.
+</ParamField>
+
+<ParamField body="your_app" type="object">
+  Contains your application's details and authentication credentials for this customer.
+  <Warning>
+    Passing an empty `your_app` object without `auth_credentials` throws an API error. Either omit the field entirely or include valid credentials.
+  </Warning>
+</ParamField>
+
+<ParamField body="udf" type="object">
+  User-defined fields for storing custom metadata about the customer, such as ERP system type or region.
+</ParamField>
+
+#### Response
+
+A successful request returns the Linked Account object:
+
+```json 200
+{
+    "_id": "63cabcc596d0d10508a69bdf",
+    "associated_org": "63c93da0b46b7243785a1e17",
+    "account_id": "acme-corp-001",
+    "environment": "test",
+    "name": "Acme Corp",
+    "udf": [
+        {
+            "key_name": "erp_system",
+            "key_value": "SAP S/4HANA",
+            "_id": "64d5d69bfb78da0950f5e18f",
+            "updatedAt": "2024-08-11T06:35:07.574Z",
+            "createdAt": "2024-08-11T06:35:07.574Z"
+        },
+        {
+            "key_name": "region",
+            "key_value": "eu-west",
+            "_id": "64d5d69bfb78da0950f5e190",
+            "updatedAt": "2024-08-11T06:35:07.574Z",
+            "createdAt": "2024-08-11T06:35:07.574Z"
+        }
+    ],
+    "createdAt": "2024-01-20T16:09:41.700Z",
+    "updatedAt": "2024-08-11T06:35:07.574Z"
+}
+```
+
+#### Error Responses
+
+```json 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "Duplicate Auth key_name not allowed",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+
+This error occurs when you pass duplicate key names in `auth_credentials`. Ensure each credential key is unique.
+
+```json 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials",
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+
+This error occurs when the `x-api-key` header is missing or invalid. Verify your API key in **Settings** > **Credentials**.
+
+</Accordion>
+</AccordionGroup>
+
+<Info>The `linked_account_id` must be unique for every customer. Use a stable identifier such as an email address or a primary key from your system.</Info>
+
+## Monitoring Linked Accounts
+
+You can get insights into how each customer uses their integrations, including logs for executions, schedules, events, and webhooks.
+
+<Tip>
+To learn more about the available log types, refer to [Observability with Logs](/maintain/logs).
+</Tip>
+
+<AccordionGroup>
+<Accordion title="End User App Configuration">
+
+After a customer authenticates with a third-party app, they may need specific configuration applied. You can view and modify these settings from the Refold Dashboard.
+
+<Steps>
+  <Step title="Navigate to Config">
+    In the Linked Account **Overview** tab, find the application under **Integrations**. Click the three-dot menu in the row and select **Configure**.
+  </Step>
+  <Step title="Select Config from the Dropdown">
+    Choose the configuration settings such as field values or enable and disable specific workflows for the Linked Account.
+  </Step>
+  <Step title="Modify and Save">
+    Update the configuration as needed. Click **Save** to apply the changes.
+    <img height="200" src="/images/Guides/Linked-account/linked-config.png" alt="Config Management in Linked Account"/>
+  </Step>
+</Steps>
+
+</Accordion>
+
+<Accordion title="Integration Logs">
+
+You can monitor and troubleshoot the authentication and connectivity status of an integration.
+
+To view Integration Logs, go to the **Integrations** section in the Linked Account **Overview** tab. Click the three-dot menu on any integration and select **Logs**.
+
+<img height="200" src="/images/Guides/Linked-account/logs-navigation.png" alt="Navigation for Linked Account Integration Logs"/>
+
+This displays all auth events for the integration in chronological order.
+
+</Accordion>
+</AccordionGroup>
+
+## What's Next
+
+{/* TODO: Replace placeholder links with final v3 paths */}
+
+- [Org Developer Settings](/build/basics/developer_settings) — Configure your organization's API keys, events, and default app settings.
+- [Events](/build/basics/events) — Set up event triggers that start workflows for your Linked Accounts.
+- [Auth Flows](/ship/tryapi) — Learn how your customers authenticate with third-party apps.
