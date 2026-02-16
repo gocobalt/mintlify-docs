@@ -1,4 +1,268 @@
 ---
-title: "Webhooks"
-description: "Configure webhooks for real-time event notifications"
+title: Webhooks
+description: Set up webhooks to receive real-time notifications for platform events like connection changes and workflow completions.
 ---
+
+Refold webhooks push real-time event data to your application when something changes on the platform. Instead of polling the API for updates, you receive an HTTP POST request the moment an event occurs.
+
+Use webhooks to track connection lifecycle changes, monitor workflow execution status, and trigger downstream actions in your system.
+
+## Event Types
+
+Refold supports five webhook event types.
+
+<AccordionGroup>
+  <Accordion title="Connection Created">
+    Fires when a linked account successfully connects to an application.
+
+    ```json
+    {
+      "linked_account_id": "12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "test",
+      "type": "General",
+      "event": "Connection Created",
+      "slug": "hubspot",
+      "createdAt": "Tue, 07 Nov 2023 08:03:27 GMT"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Connection Deleted">
+    Fires when a linked account disconnects from an application.
+
+    ```json
+    {
+      "linked_account_id": "12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "test",
+      "type": "General",
+      "event": "Connection Deleted",
+      "slug": "hubspot",
+      "createdAt": "Tue, 07 Nov 2023 08:04:27 GMT"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Connection Expired">
+    Fires when a connection is removed or no longer valid.
+
+    ```json
+    {
+      "linked_account_id": "12345",
+      "org_id": "645270e37917442c4307297a",
+      "environment": "test",
+      "type": "General",
+      "event": "Connection Expired",
+      "slug": "pipedrive",
+      "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Workflow Completed">
+    Fires when a workflow executes successfully.
+
+    ```json
+    {
+      "linked_account_id": "12345",
+      "instance_id": "656f30f69144bb8f183c0118",
+      "workflow_id": "6495792b9b6ca6d77a17e513",
+      "config_id": "12345",
+      "event": "Workflow Completed",
+      "workflow_name": "Export contact to Hubspot",
+      "status": "COMPLETED"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Workflow Errored">
+    Fires when a workflow execution fails due to an error.
+
+    ```json
+    {
+      "linked_account_id": "12345",
+      "instance_id": "656f308b9144bb8f183bfc7b",
+      "workflow_id": "6495792b9b6ca6d77a17e513",
+      "config_id": "12345",
+      "event": "Workflow Errored",
+      "workflow_name": "Export contact to Hubspot",
+      "status": "ERRORED"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Subscribe to Webhook Events
+
+You can subscribe to webhook events through the Refold dashboard or via the API.
+
+### Via the Dashboard
+
+<Steps>
+  <Step title="Open the Webhooks page">
+    Go to **Dashboard > Developer > Webhooks**.
+
+    <img height="200" src="/images/Developer/webhooks-placeholder.png" alt="Webhooks page in the Refold dashboard"/>
+  </Step>
+
+  <Step title="Add a webhook">
+    Click **+ Add Webhook** and enter the HTTPS endpoint URL from your system.
+  </Step>
+
+  <Step title="Select events">
+    Choose the events you want to receive notifications for. You can subscribe to any combination of the five event types.
+  </Step>
+
+  <Step title="Choose a webhook template">
+    Select a template type for your webhook:
+
+    <ParamField body="default" type="string">
+      Sends the standard event payload to your endpoint with no additional configuration.
+    </ParamField>
+
+    <ParamField body="slack" type="string">
+      Formats the payload for Slack-compatible incoming webhook URLs.
+    </ParamField>
+
+    <ParamField body="custom" type="string">
+      Allows you to configure custom headers and body content. Use this when you need to include authentication headers or reshape the payload.
+    </ParamField>
+  </Step>
+
+  <Step title="Save the webhook">
+    Click **Add Webhook** to activate your subscription. Your endpoint starts receiving events immediately.
+  </Step>
+</Steps>
+
+<Info>
+Webhooks must use HTTPS and your endpoint must accept POST requests.
+</Info>
+
+### Via the API
+
+You can create and manage webhook subscriptions programmatically using the Webhooks API. See the [API Reference](/api-reference/webhooks/create-webhook) for details.
+
+## Advanced Webhook Settings
+
+When you select `Custom` as the webhook template, you can configure custom headers and a request body to send alongside the event payload.
+
+This is useful when your receiving endpoint requires authentication headers or when you want to trigger another Refold action (such as the [Workflow API](/build/workflow/workflow_api)) in response to an event.
+
+<img height="200" src="/images/Developer/advanced-webhooks-placeholder.png" alt="Advanced webhook settings in the Refold dashboard"/>
+
+### Templating Webhook Payload Variables
+
+You can reference event payload data in your custom headers and body using double-curly-brace templates.
+
+**Access event payload fields:**
+
+```javascript
+{{event.<payload_key_name>}}
+```
+
+For example, to reference the instance ID from a Workflow Errored event:
+
+```javascript
+{{event.instance_id}}
+```
+
+**Access Response Node data:**
+
+If the completed workflow contains a [Response node](/build/workflow/response), you can access its output in your webhook payload.
+
+```javascript
+{{workflow_response}}                  // Complete Response Node payload
+{{workflow_response.<key_name>}}       // Specific key from the Response Node payload
+```
+
+## Verify HMAC Signature
+
+You can verify that incoming webhook requests originate from Refold by validating the HMAC signature included in the `x-cobalt-signature` header.
+
+<Info>
+HMAC verification is optional. Skip this section if your use case does not require signature validation.
+</Info>
+
+The signature is generated using your Cobalt API key as the HMAC secret, with the SHA-256 algorithm applied to the raw JSON payload.
+
+```typescript
+import * as crypto from 'crypto';
+
+// Your Cobalt API key (based on environment)
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '<Cobalt-API-key>';
+
+const payload = {
+  "linked_account_id": "dev",
+  "instance_id": "67d22c4330d75f3a3fa29056",
+  "workflow_id": "67af37ad1d0bb61005439eaf",
+  "event": "Workflow Completed",
+  "workflow_name": "Get Response",
+  "status": "COMPLETED",
+  "environment": "test"
+};
+
+/**
+ * Verifies the HMAC signature from a Refold webhook.
+ * @param payload - The raw request body as a string (JSON.stringify)
+ * @param signature - The value from the 'x-cobalt-signature' header
+ * @returns boolean indicating if the signature is valid
+ */
+function verifyWebhookSignature(payload: string, signature: string): boolean {
+  try {
+    const expectedSignature = crypto
+      .createHmac('sha256', WEBHOOK_SECRET)
+      .update(payload)
+      .digest('hex');
+
+    return crypto.timingSafeEqual(
+      Buffer.from(signature, 'hex'),
+      Buffer.from(expectedSignature, 'hex')
+    );
+  } catch (error) {
+    console.error('Error verifying webhook signature:', error);
+    return false;
+  }
+}
+
+const examplePayload = JSON.stringify(payload);
+const exampleSignature = '42799d46dfd9a8acf35c14e6b7c300cc3734d06a0ce129268f1b54096750a44f';
+
+const isValid = verifyWebhookSignature(examplePayload, exampleSignature);
+console.log('Signature is valid:', isValid);
+```
+
+<Warning>
+Always use `crypto.timingSafeEqual` for signature comparison. Standard string comparison (`===`) is vulnerable to timing attacks.
+</Warning>
+
+## Receive Events
+
+Your endpoint must respond with an **HTTP 200 OK** to confirm successful delivery. If Refold does not receive a 200 response, it treats the delivery as a failure and retries up to **3 times** with exponential backoff.
+
+<Tip>
+Process webhook payloads asynchronously. Accept the request and return a 200 response immediately, then handle the event data in a background job. This prevents timeouts during delivery.
+</Tip>
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| No events received | Webhook is disabled | Go to **Dashboard > Developer > Webhooks** and confirm `is_enabled` is true. |
+| `401 Unauthorized` on your endpoint | Missing or incorrect auth headers | Use the Custom template to add required authentication headers. |
+| HMAC signature mismatch | Wrong API key or modified payload | Verify you are using the correct Cobalt API key for the environment (test vs production). Ensure you validate against the raw request body, not a re-serialized version. |
+| Events received multiple times | Endpoint not returning 200 | Ensure your server responds with HTTP 200 before processing the payload. |
+
+## What's Next
+
+<CardGroup cols={3}>
+  <Card title="Events" icon="bolt" href="/build/basics/events">
+    Learn how to trigger events from your application to start workflows.
+  </Card>
+  <Card title="Webhooks API Reference" icon="code" href="/api-reference/webhooks/create-webhook">
+    Create, update, and manage webhook subscriptions programmatically.
+  </Card>
+  <Card title="Workflow API" icon="diagram-project" href="/build/workflow/workflow_api">
+    Trigger workflows directly via API for event-driven automation.
+  </Card>
+</CardGroup>
