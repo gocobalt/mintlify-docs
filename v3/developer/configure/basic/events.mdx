@@ -1,4 +1,356 @@
 ---
-title: "Events"
-description: "Configure and manage events in your Cobalt platform"
+title: Events
+description: Send data from your application to trigger workflows across multiple integrations using a single event.
 ---
+
+Events let you push data from your application into Refold workflows. You define an event with a name and a sample payload, then trigger it via the REST API, the Event URL, or the backend SDK. When an event fires, every workflow associated with that event executes for the specified linked account.
+
+Events are **common models**. A single event, such as `Contact Created`, can trigger one workflow in Salesforce, another in HubSpot, and a third in NetSuite. You define the event once and reuse it across integrations without additional setup.
+
+<img height="200" src="/images/Developer/event-trigger-overview.png" alt="Overview of how an event triggers multiple workflows across integrations"/>
+
+## When to use Events
+
+- Push data from your application to your users' third-party apps (for example, syncing a new contact to their CRM).
+- Trigger the same workflow logic across multiple integrations from a single API call.
+- Pass dynamic data into workflows using event payload variables.
+
+<Info>
+Events are designed for **your application triggering workflows**. If you need to run workflows based on changes in your users' third-party apps (for example, when a new contact is created in Salesforce), use [Default App Triggers](/developer-guide/workflows/triggers) instead.
+</Info>
+
+## Prerequisites
+
+Before creating and triggering events, make sure you have:
+
+- A Refold account with access to the Developer settings
+- At least one [linked account](/developer-guide/linked-accounts) created
+- Your API key from **Settings > Credentials**
+
+## Create an Event
+
+An event consists of a **name** and a **sample payload**. The sample payload defines the data schema. Properties in this payload become available as trigger variables inside your workflows.
+
+<Steps>
+  <Step title="Navigate to Events">
+    Go to **Settings > Developer > Events** in the Refold dashboard.
+  </Step>
+  <Step title="Create a new event">
+    Click **New Event** and select a model. Update the name and sample payload to match your requirements, then click **Create Event**.
+    <img height="200" src="/images/Developer/create-event-v3.png" alt="Creating a new event in the Refold dashboard"/>
+  </Step>
+  <Step title="Define the sample payload">
+    The sample payload sets the data structure for the event. Each property in the payload becomes a variable you can reference in your workflows.
+
+    For example, a `Contact Created` event might use this payload:
+
+    ```json
+    {
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "jane.smith@example.com",
+      "phone": "+1-555-0199",
+      "company": "Acme Corp"
+    }
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+You must pass data matching the sample payload structure when triggering the event. The properties defined in the sample payload are used as trigger variables inside workflows.
+</Warning>
+
+## Use Event Variables in Workflows
+
+After creating an event, its payload properties are available as trigger variables in any workflow that uses the event as its trigger.
+
+For example, if your `Contact Created` event payload includes a `first_name` field, you can map it to the `Name` field in a Salesforce, HubSpot, or SAP Business ByDesign workflow. When the event triggers, the actual value you pass replaces the variable.
+
+<img height="200" src="/images/Developer/event-payload-variable-v3.png" alt="Using an event payload property as a variable in a workflow"/>
+
+## Trigger an Event
+
+You can trigger events in three ways: the REST API, the Event URL, or the backend Node.js SDK. All methods require a `linked_account_id` to identify which user's workflows to execute.
+
+### REST API
+
+Make a POST request to trigger the event for all associated workflows, or include an application slug to target a specific integration.
+
+<AccordionGroup>
+  <Accordion title="Trigger for all applications">
+    Send a POST request to the `/api/v2/public/event` endpoint. This triggers all workflows associated with the event across every integration.
+
+    ```bash
+    curl --request POST \
+      --url https://api.gocobalt.io/api/v2/public/event \
+      --header 'Content-Type: application/json' \
+      --header 'linked_account_id: user-123' \
+      --header 'x-api-key: your-api-key' \
+      --data '{
+        "event": "Contact Created",
+        "payload": {
+          "first_name": "Jane",
+          "last_name": "Smith",
+          "email": "jane.smith@example.com",
+          "phone": "+1-555-0199",
+          "company": "Acme Corp"
+        }
+      }'
+    ```
+
+    **Headers**
+
+    <ParamField header="x-api-key" type="string" required>
+      Your Refold API key. Found in **Settings > Credentials**.
+    </ParamField>
+
+    <ParamField header="linked_account_id" type="string" required>
+      The unique identifier of the linked account (your end-user).
+    </ParamField>
+
+    <ParamField header="config_id" type="string">
+      Optional. If not provided, `linked_account_id` is used as the default.
+    </ParamField>
+
+    **Body parameters**
+
+    <ParamField body="event" type="string" required>
+      The name of the event as defined in the Refold dashboard.
+    </ParamField>
+
+    <ParamField body="payload" type="object">
+      The event data matching your sample payload structure. These values replace the trigger variables in your workflows.
+    </ParamField>
+
+    **Success response**
+
+    ```json
+    {
+      "message": "Webhook Fired Success"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Trigger for a specific application">
+    To trigger workflows for a single application, include the application slug in the URL path.
+
+    ```bash
+    curl --request POST \
+      --url https://api.gocobalt.io/api/v2/public/event/salesforce \
+      --header 'Content-Type: application/json' \
+      --header 'linked_account_id: user-123' \
+      --header 'x-api-key: your-api-key' \
+      --data '{
+        "event": "Contact Created",
+        "payload": {
+          "first_name": "Jane",
+          "last_name": "Smith",
+          "email": "jane.smith@example.com",
+          "phone": "+1-555-0199",
+          "company": "Acme Corp"
+        }
+      }'
+    ```
+
+    Replace `salesforce` in the URL with the slug of the target application (for example, `hubspot`, `netsuite`, `pipedrive`).
+  </Accordion>
+</AccordionGroup>
+
+### Event URL
+
+The Event URL provides a quick way to trigger events without constructing API calls manually. This is useful for testing or simpler integration setups.
+
+<Steps>
+  <Step title="Copy the Event URL">
+    Go to **Settings > Developer > Events** and copy the Event URL displayed at the top of the page.
+  </Step>
+  <Step title="Get the event cURL">
+    Click on the event you want to trigger to view its pre-built cURL command.
+    <img height="200" src="/images/Developer/copy-payload-v3.png" alt="Copying the event cURL from the dashboard"/>
+  </Step>
+  <Step title="Send the request">
+    Add your `linked_account_id` and `x-api-key` to the headers and send the POST request.
+
+    ```bash
+    curl --request POST \
+      --url https://api.gocobalt.io/api/v1/webhook/64c357c739ec788238ab5f9b \
+      --header 'Content-Type: application/json' \
+      --header 'linked_account_id: user-123' \
+      --header 'x-api-key: your-api-key' \
+      --data '{
+        "event": "Contact Created",
+        "payload": {
+          "first_name": "Jane",
+          "last_name": "Smith",
+          "email": "jane.smith@example.com",
+          "phone": "+1-555-0199",
+          "company": "Acme Corp"
+        }
+      }'
+    ```
+  </Step>
+</Steps>
+
+<Tip>
+The Event URL triggers workflows across all applications associated with the event. If you need to target a specific application, use the [REST API](#rest-api) with the application slug instead.
+</Tip>
+
+### Node.js SDK
+
+Use the `.event()` method on the Refold backend SDK to trigger events programmatically from your server.
+
+```javascript
+const { Cobalt } = require("@cobaltio/cobalt");
+const Client = new Cobalt({ apiKey: "your-api-key" });
+
+try {
+  const response = await Client.event({
+    linked_account_id: "user-123",
+    event: "Contact Created",
+    payload: {
+      first_name: "Jane",
+      last_name: "Smith",
+      email: "jane.smith@example.com",
+      phone: "+1-555-0199",
+      company: "Acme Corp",
+    },
+  });
+  console.log(response);
+  // { "message": "Webhook Fired Success" }
+} catch (error) {
+  console.error("Event trigger failed:", error);
+}
+```
+
+To target a specific application, pass the `slug` parameter:
+
+```javascript
+const response = await Client.event({
+  linked_account_id: "user-123",
+  event: "Contact Created",
+  slug: "salesforce",
+  payload: {
+    first_name: "Jane",
+    last_name: "Smith",
+    email: "jane.smith@example.com",
+  },
+});
+```
+
+**SDK parameters**
+
+<ParamField body="linked_account_id" type="string" required>
+  Unique identifier of the linked account.
+</ParamField>
+
+<ParamField body="event" type="string" required>
+  Name of the event as defined in the Refold dashboard.
+</ParamField>
+
+<ParamField body="slug" type="string">
+  Optional. Application slug to trigger workflows for a specific integration only.
+</ParamField>
+
+<ParamField body="config_id" type="string">
+  Optional. Unique configuration ID. Defaults to `linked_account_id` if not provided.
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Optional. Event data matching the sample payload structure.
+</ParamField>
+
+## Error Handling
+
+When triggering events, you may encounter the following errors.
+
+<AccordionGroup>
+  <Accordion title="400 - Event not found">
+    The event name does not match any event defined in the dashboard for the specified application.
+
+    ```json
+    {
+      "status_code": 400,
+      "error_type": "BAD_REQUEST",
+      "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+      "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+    }
+    ```
+
+    **Fix:** Verify the event name matches exactly (case-sensitive) with the event created in the dashboard.
+  </Accordion>
+
+  <Accordion title="401 - Invalid credentials">
+    The API key or linked account ID is missing or incorrect.
+
+    ```json
+    {
+      "status_code": 401,
+      "http_error_type": "UNAUTHORIZED",
+      "error_code": "SERVER_ERROR",
+      "message": "Invalid Credentials",
+      "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+    }
+    ```
+
+    **Fix:** Confirm your `x-api-key` and `linked_account_id` headers are correct. Get your API key from **Settings > Credentials**.
+  </Accordion>
+
+  <Accordion title="404 - Application not found">
+    The application slug in the URL path does not match any configured application.
+
+    ```json
+    {
+      "status_code": 404,
+      "http_error_type": "BAD_REQUEST",
+      "error_code": "INVALID_APP_ID",
+      "message": "Default Application not found",
+      "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+    }
+    ```
+
+    **Fix:** Check that the application slug in the URL (for example, `/event/salesforce`) matches a valid application in your Refold account.
+  </Accordion>
+</AccordionGroup>
+
+## How Events Work Across Integrations
+
+A single event can trigger different workflows for different integrations. Here is how this works in practice.
+
+Consider a `Contact Created` event with a payload containing `first_name`, `last_name`, and `email`:
+
+- **Salesforce workflow:** Maps `first_name` and `last_name` to the Salesforce Contact object and creates a new record.
+- **HubSpot workflow:** Maps `email` to the HubSpot Contact and triggers an enrollment in a nurture sequence.
+- **SAP Business ByDesign workflow:** Maps the contact data to a Business Partner record in the SAP system.
+- **Tipalti workflow:** Creates a new payee record using the contact's email and name.
+
+When your application triggers the `Contact Created` event, all four workflows execute simultaneously for the specified linked account. Each workflow uses the same payload data but maps it according to its own configuration.
+
+<Info>
+You define the event and payload once. The field mapping for each integration is configured in the respective workflow, not in the event itself.
+</Info>
+
+## Testing Events
+
+You can test events directly from the Refold dashboard using the **Try API** feature without writing any code.
+
+<Steps>
+  <Step title="Open Try API">
+    Navigate to the **Try API** section in the Refold dashboard.
+  </Step>
+  <Step title="Select the event">
+    Choose the event you want to test, provide a `linked_account_id`, and enter your test payload.
+  </Step>
+  <Step title="Execute and verify">
+    Fire the event and check the workflow execution logs to confirm the workflows triggered correctly.
+  </Step>
+</Steps>
+
+<Tip>
+Use Try API to validate your event payload structure and workflow behavior before integrating the trigger into your production code.
+</Tip>
+
+## What's Next
+
+- Learn how to [build workflows](/developer-guide/workflows/overview) that respond to events.
+- Explore [workflow triggers](/developer-guide/workflows/triggers) to understand all available trigger types.
+- See the [Trigger Event API reference](/api-reference/event/trigger-an-event-from-your-application) for complete endpoint details.
