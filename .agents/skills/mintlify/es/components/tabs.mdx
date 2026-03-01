@@ -1,0 +1,97 @@
+---
+title: "Tabs"
+description: "Organiza el contenido con pestañas para mostrar diferentes opciones o versiones."
+keywords: ["tabbed content", "content panels", "switchable content"]
+---
+
+Usa pestañas para organizar el contenido en varios paneles entre los que los usuarios pueden alternar. Puedes agregar cualquier número de pestañas e incluir otros componentes dentro de cada una.
+
+<Tabs>
+  <Tab title="Primera pestaña">
+    ☝️ Bienvenido al contenido que solo puedes ver dentro de la primera pestaña.
+
+    Puedes agregar cualquier número de componentes dentro de las pestañas. Por ejemplo, un bloque de código:
+
+    ```java HelloWorld.java
+      class HelloWorld {
+          public static void main(String[] args) {
+              System.out.println("Hello, World!");
+          }
+      }
+    ```
+  </Tab>
+
+  <Tab title="Segunda pestaña" icon="leaf">
+    ✌️ Aquí tienes contenido que solo está dentro de la segunda pestaña.
+
+    ¡Esta tiene un <Icon icon="leaf" />!
+  </Tab>
+
+  <Tab title="Tercera pestaña">
+    💪 Aquí tienes contenido que solo está dentro de la tercera pestaña.
+  </Tab>
+</Tabs>
+
+````mdx Tabs example
+<Tabs>
+  <Tab title="Primera pestaña">
+    ☝️ Bienvenido al contenido que solo puedes ver dentro de la primera pestaña.
+
+    Puedes agregar cualquier número de componentes dentro de las pestañas. Por ejemplo, un bloque de código:
+    ```java HelloWorld.java
+      class HelloWorld {
+          public static void main(String[] args) {
+              System.out.println("Hello, World!");
+          }
+      }
+    ```
+  </Tab>
+  <Tab title="Second tab" icon="leaf">
+    ✌️ Here's content that's only inside the second tab.
+
+    This one has a <Icon icon="leaf" /> icon!
+  </Tab>
+  <Tab title="Third tab">
+    💪 Here's content that's only inside the third tab.
+  </Tab>
+</Tabs>
+````
+
+Las pestañas con el mismo título se mantienen sincronizadas en toda la página. Por ejemplo, si tienes varios grupos de pestañas que incluyen una pestaña titulada `JavaScript`, al seleccionar `JavaScript` en un grupo de pestañas se selecciona automáticamente `JavaScript` en los demás. Esto ayuda a que los usuarios que eligen un lenguaje o framework una vez vean reflejada esa elección en todas partes. Las pestañas también se sincronizan con los [grupos de código](/es/components/code-groups) que tienen el mismo título.
+
+Para desactivar la sincronización de pestañas, agrega `sync={false}` a un componente `<Tabs>`.
+
+```mdx Disable tab sync example
+<Tabs sync={false}>
+  <Tab title="Primera pestaña">
+    Este grupo de pestañas opera de forma independiente.
+  </Tab>
+  <Tab title="Segunda pestaña">
+    Seleccionar pestañas aquí no afectará a otros grupos de pestañas.
+  </Tab>
+</Tabs>
+```
+
+<div id="properties">
+  ## Propiedades
+</div>
+
+<ResponseField name="title" type="string" required>
+  El title de la Tab. Los títulos cortos facilitan la navegación. Las pestañas con el mismo título sincronizan sus selecciones.
+</ResponseField>
+
+<ResponseField name="icon" type="string">
+  Un icon de [Font Awesome](https://fontawesome.com/icons), un icon de [Lucide](https://lucide.dev/icons), una URL a un icon o una ruta relativa a un icon.
+</ResponseField>
+
+<ResponseField name="iconType" type="string">
+  Solo para icon de Font Awesome: Uno de `regular`, `solid`, `light`, `thin`, `sharp-solid`, `duotone`, `brands`.
+</ResponseField>
+
+<ResponseField name="sync" type="boolean" default="true">
+  Cuando es `true`, las pestañas se sincronizan con otras pestañas y grupos de código de la página que tengan títulos coincidentes. Establécelo en `false` para que las pestañas sean independientes.
+</ResponseField>
+
+<ResponseField name="borderBottom" type="boolean">
+  Añade un borde inferior y un padding al contenedor de pestañas. Es útil para separar visualmente el contenido con pestañas del resto de la página, especialmente cuando las pestañas contienen contenido de distinta longitud.
+</ResponseField>
