@@ -1,8 +1,38 @@
 ---
-title: "Linked Accounts"
-description: "Core concept: Linked Accounts"
+title: Linked Accounts
+description: "Linked Accounts represent your end users who connect and authenticate with third-party applications through your platform."
+sidebarTitle: "Linked Accounts"
 ---
 
-# Linked Accounts
+A Linked Account represents one of your end users (or customers) in Refold. When your customer authenticates with a third-party app like Salesforce or NetSuite, Refold stores their credentials, configurations, and execution history under their Linked Account. All workflow executions are scoped to a specific Linked Account.
 
-Linked accounts connect your users to third-party integrations. Content coming soon.
+## How Linked Accounts Work
+
+Your backend creates a Linked Account for each customer using a unique identifier, such as an email address or database primary key. When that customer connects a third-party app through your integration UI, Refold securely stores their credentials under that Linked Account.
+
+From that point forward, every workflow execution, API proxy call, and configuration change is isolated to that specific Linked Account. Customer A's Salesforce credentials never mix with Customer B's.
+
+
+## What a Linked Account Contains
+
+| Component | Description |
+|-----------|-------------|
+| **Linked Account ID** | The unique identifier you assign (e.g., `acme-corp-123`) |
+| **Connections** | OAuth tokens and API credentials for each connected app |
+| **Configurations** | Customer-specific settings such as field mappings and workflow toggles |
+| **UDF (User Defined Fields)** | Custom metadata you attach to the account for use in workflows |
+| **Execution history** | Logs of all workflow runs, events, and webhook deliveries |
+
+## Why This Matters
+
+Linked Accounts enable multi-tenant integrations. You build your workflows once, and each of your customers gets their own isolated instance with their own credentials and configurations. This is the foundation that makes Refold work for SaaS products serving many customers.
+
+<Info>
+You typically create a Linked Account at the same time your customer signs up in your application. This ensures they are ready to connect integrations immediately.
+</Info>
+
+## What's Next
+
+- [Field Mapping](/v3/developer/getting-started/core-concepts/field-mapping) — Learn how your customers map fields between systems.
+- [Linked Accounts Deep Dive](/v3/developer/platform/linked-accounts/overview) — Full guide on creating and managing Linked Accounts.
+- [Authentication](/v3/developer/platform/authentication/overview) — Understand API keys and session tokens for secure access.

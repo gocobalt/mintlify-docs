@@ -1,8 +1,50 @@
 ---
-title: "Field Mapping"
-description: "Core concept: Field Mapping"
+title: Field Mapping
+description: "Field mapping lets your customers define how data fields in your application correspond to fields in their connected third-party apps."
+sidebarTitle: "Field Mapping"
 ---
 
-# Field Mapping
+Field mapping allows your customers to define how fields in your application map to fields in their connected third-party apps. This is essential because different systems use different field names and structures for the same data. Your "Company Name" field might correspond to "Account Name" in Salesforce or "CompanyName" in NetSuite.
 
-Field mapping defines how data is transformed between systems. Content coming soon.
+<Frame>
+  <img src="/images/concepts/field-mapping-overview.png" alt="Field mapping interface showing source fields from your application on the left (Name, Email, Company) mapped to destination fields in a third-party app on the right (Contact Name, Email Address, Organization)" />
+</Frame>
+
+## How Field Mapping Works
+
+You define the **source fields** (your application's fields) and the **destination fields** (the third-party app's fields). Your customers then create the mapping between the two through a configuration interface. This mapping is stored per Linked Account, so each customer can have their own field mapping tailored to their specific setup.
+
+<Frame>
+  <img src="/images/concepts/field-mapping-config.png" alt="Configuration panel showing a Map field type with source column containing your app fields and destination column containing third-party app object fields, with a customer mapping Name to Full Name and Email to Primary Email" />
+</Frame>
+
+## Static vs. Dynamic Mapping
+
+Refold supports two approaches to field mapping.
+
+**Static mapping** uses a predefined set of fields that you configure in advance. This works when you know exactly which fields need to be mapped.
+
+**Dynamic mapping** fetches fields at runtime from the third-party application. This is useful when the available fields vary per customer account, such as custom fields in a CRM or ERP system.
+
+| Approach | Best for |
+|----------|----------|
+| **Static** | Known, fixed fields that are the same for every customer |
+| **Dynamic** | Custom fields or fields that vary across customer accounts |
+
+<Tip>
+Dynamic mapping is particularly valuable for enterprise integrations where customers often have heavily customized schemas in systems like SAP, NetSuite, or Tipalti.
+</Tip>
+
+## Where Mapping Fits in a Workflow
+
+Field mappings are typically consumed by a **Data Mapper** node within a workflow. When a workflow runs for a specific Linked Account, the Data Mapper reads that customer's field mapping configuration and transforms the data accordingly before sending it to the destination system.
+
+<Frame>
+  <img src="/images/concepts/field-mapping-in-workflow.png" alt="Workflow showing an Event Trigger feeding into a Data Mapper node that applies the customer's field mapping, followed by an HTTP node that sends the mapped data to the third-party API" />
+</Frame>
+
+## What's Next
+
+- [Triggers & Actions](/v3/developer/getting-started/core-concepts/triggers-actions) — Understand what starts workflows and what they can do.
+- [Data Mapper Node](/v3/developer/workflows/nodes/data-mapper) — Learn how to use field mappings inside workflows.
+- [Variables](/v3/developer/platform/variables/overview) — Explore other ways to pass dynamic data into workflows.

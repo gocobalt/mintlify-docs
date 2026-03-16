@@ -1,8 +1,52 @@
 ---
-title: "Workflows"
-description: "Core concept: Workflows as the heart of Refold"
+title: Workflows
+description: "Workflows are the core building blocks of Refold, connecting data between your application and your users' third-party apps."
+sidebarTitle: "Workflows"
 ---
 
-# Workflows
+<div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+  <div style={{ flex: '1', minWidth: '200px' }}>
+    Workflows are directed acyclic graphs (DAGs) that define how data flows between your application and your users' connected third-party apps. 
+    
+    <p>
+    Every integration you build in Refold is powered by a workflow. 
+    </p>
 
-Workflows are the heart of Refold. Content coming soon.
+    <p>
+    The diagram to the right illustrates a typical workflow: a **Start** trigger, an **application** node, and a **Response** node connected in sequence.
+    </p>
+  </div>
+  <Frame>
+    <img
+      src="/images/v3/developer/core-concepts/workflow-dag-representation.png"
+      alt="A workflow DAG showing three connected nodes: a Start trigger node receiving event data, an HTTP node calling a third-party API, and a Response node returning the result"
+      style={{ maxWidth: '320px', width: '100%', height: 'auto' }}
+    />
+  </Frame>
+</div>
+
+## The Workflow Builder
+
+You build workflows using the visual Workflow Builder in the Refold dashboard. The builder provides a drag-and-drop canvas where you connect nodes, configure their inputs, and test the entire flow.
+
+Refold provides over 20 node types for different operations: making HTTP requests, running custom code, looping over arrays, branching with conditional logic, handling files, and more. You can also use AI-powered workflow generation to build workflows from natural language descriptions.
+
+## Key Characteristics
+
+| Characteristic | Description |
+|---------------|-------------|
+| **DAG structure** | Nodes execute in a defined order with no circular dependencies |
+| **Per-user execution** | Each workflow runs in the context of a specific Linked Account |
+| **Trigger-driven** | Workflows start from events, webhooks, schedules, or API calls |
+| **Reusable across users** | Build once, deploy for all your Linked Accounts |
+| **Testable** | Test individual nodes or the entire workflow before deploying |
+
+<Info>
+Workflows are central to everything in Refold. Whether you are syncing CRM records, processing webhook payloads, or orchestrating multi-step business processes, you will build a workflow to do it.
+</Info>
+
+## What's Next
+
+- [Linked Accounts](/v3/developer/getting-started/core-concepts/linked-accounts) — Learn about the users who run your workflows.
+- [Workflow Fundamentals](/v3/developer/workflows/fundamentals/overview) — Dive into building your first workflow.
+- [Nodes Reference](/v3/developer/workflows/nodes/http) — Explore the full set of available workflow nodes.
