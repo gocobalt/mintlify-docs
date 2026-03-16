@@ -1,0 +1,293 @@
+---
+title: "2026"
+description: "All platform updates, API changes, and integration additions for 2026."
+mode: "wide"
+---
+
+
+<Steps>
+<Step title="March 12, 2026 · v3.4.8 · Bug fixes" icon="circle" iconType="solid">
+
+<Badge color="green">APIs</Badge>
+
+Patch fix for the workflow enable/disable API introduced in **v3.4.7**.
+
+<Accordion title="View details">
+
+**Bug Fixes**
+
+- Fixed `PATCH /api/v2/public/slug/{slug}/config/{configId}/workflows/{workflowId}` to handle all configuration cases correctly.
+
+</Accordion>
+
+</Step> 
+<Step title="March 12, 2026 · v3.4.7 · New integrations, workflow controls, and platform improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+New integrations for Smartsheet, Hexagon Smart 3D, and Contentful, a public API to enable/disable individual workflows, expanded Sage Intacct support, and a range of bug fixes across workflows and the platform.
+
+<Accordion title="View details">
+
+**New Features**
+
+- **Enable/Disable Workflows via API**: Individual workflows can now be enabled or disabled programmatically without reinstalling the config, via a new public API endpoint.
+- **Configurable Workflow Timeouts**: Workflow timeouts are now configurable, with support for environment variables in data slots.
+- **Smartsheet Integration**: New connector with full auth support.
+- **Hexagon Smart 3D Integration**: New connector with auth and API support.
+- **Contentful Integration**: New connector with full API support.
+
+**Improvements**
+
+- Webhook URL whitespace is now automatically trimmed on input.
+- Custom payload in workflow testing now auto-initializes with an empty object for a smoother testing experience.
+- File handling improvements — filenames are now correctly extracted from `Content-Disposition` headers.
+
+**Bug Fixes**
+
+- Fixed "Select Connection" field not being visible for multi-auth configurations.
+- Fixed reset payload option being incorrectly disabled during workflow testing.
+- Fixed webhook trigger button being disabled when additional configuration was present.
+- Fixed invalid enum values in API schemas causing unexpected errors.
+
+**API Changes**
+
+- New endpoint to enable/disable individual workflows: `PUT /api/v2/public/slug/{slug}/config/{configId}/workflows/{workflowId}`
+
+**Integration Updates**
+
+- New **Smartsheet** API endpoints.
+- New **Hexagon Smart 3D**, **Hexagon SPID** API endpoints.
+- New **Contentful** API endpoints.
+- **Sage Intacct**: Extended API coverage — purchase orders, revenue recognition, warehouses, contracts, and fixed assets.
+- Fixed **Salesforce** pagination and job permission issues.
+
+</Accordion>
+
+</Step>
+<Step title="March 10, 2026 · v3.4.6 · Bug fixes and reliability improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge><Badge color="orange">Agent</Badge>
+Bug fixes for workflow templating and improved connection retry reliability.
+
+<Accordion title="View details">
+
+**Bug Fixes**
+
+- Fixed workflow templating issues causing incorrect value resolution.
+- Fixed connection failures not being automatically retried, improving reliability for transient network errors.
+
+</Accordion>
+
+</Step>
+<Step title="March 9, 2026 · v3.4.5 · Extended integration, execution logs overhaul, and platform improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+New integrations for Coupa, a fully redesigned Execution Logs page, public audit event log API, and a range of platform bug fixes and improvements.
+
+<Accordion title="View details">
+
+**New Features**
+
+- **Execution Logs Overhaul**: Redesigned execution logs page with filter views, saved filters, and pagination. Includes a flat error table with per-node error details on hover and child instance badges for Loop, Sub Flow, and Pagination nodes.
+- **Public Audit Event Logs API**: Retrieve audit event logs programmatically via `GET /api/v2/public/audit/event-received`. Supports session token and org key authentication with pagination.
+- **Connected Account Reconnect**: Reconnect a connected account directly from the platform without needing to remove and re-add it.
+- **Unpublished Workflow Guard**: Draft workflows are now blocked on public routes, returning a `403` to prevent accidental execution of unpublished workflows.
+
+**Improvements**
+
+- Instance metadata now includes `workflow_id`, accessible via `instance_meta_data.workflow_id`.
+- Copying a workflow now correctly preserves all dataslots.
+- Configurable session token TTL for linked accounts — previously hardcoded to 7 days, now configurable per deployment.
+- Workspace switching now invalidates cached queries for a clean state on every switch.
+
+**Bug Fixes**
+
+- Fixed multi-app workflow execution failures.
+- Fixed custom action fields not applying default values correctly.
+- Fixed React Query cache not being cleared on logout, which could cause cross-account data leakage.
+- Fixed Google token refresh not persisting correctly, causing repeated re-authentication prompts.
+
+**API Changes**
+
+- `GET /api/v2/public/audit/event-received` — new endpoint to retrieve paginated audit event logs.
+- `instance_meta_data.workflow_id` — workflow ID is now included in instance metadata responses.
+- `feature_flags` — org settings responses now include a `feature_flags` field.
+
+**Integration Updates**
+
+- **Coupa**: New integration covering procurement, P2P/S2C, and Order Header APIs.
+- **SAP S/4HANA**: Extended support including Customer Master API, Service Metadata, journal entry, custom table data, and custom fields.
+- Fixed BigQuery pagination returning incomplete data.
+
+</Accordion>
+
+</Step>
+<Step title="February 27, 2026 · v3.4.3 · Environment variable APIs, bug fixes, and reliability improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge>
+
+Public APIs for managing environment variables programmatically, bug fixes for custom actions and subflows, and improved workflow service connection stability.
+
+<Accordion title="View details">
+
+**New Features**
+
+- **Environment Variable APIs**: Environment variables in Refold can now be fully managed via public APIs — set, retrieve, and delete variable values across org, workspace, linked account, and workflow scopes. Enables automated provisioning, dynamic configuration, and parent–child linked account setups without manual dashboard intervention. Both API Key and Bearer Token authentication are supported. Linked account tokens are scoped to their own `linked_account` and `workflow` variables only.
+
+**Bug Fixes**
+
+- Fixed custom action fields not populating in the workflow UI after creation.
+- Fixed subflows not executing for nodes with pagination and do-while logic.
+
+**API Changes**
+
+- New environment variable management endpoints:
+  - `GET /api/v2/public/env/definitions` — list all environment variable definitions
+  - `GET /api/v2/public/env/definitions/:id` — retrieve a specific definition
+  - `GET /api/v2/public/env/values/:scope` — get variable values by scope
+  - `GET /api/v2/public/env/value/:definition_id` — get value for a specific definition
+  - `POST /api/v2/public/env/values` — set an environment variable value
+  - `DELETE /api/v2/public/env/values/:value_id` — delete an environment variable value
+
+**Improvements**
+
+- Improved workflow service connection stability to prevent intermittent dropped connection errors during workflow execution.
+
+</Accordion>
+
+</Step>
+<Step title="February 20, 2026 · v3.4.2 · Zincwork integration, bug fixes, and security improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+New Zincwork integration with full Partner API v2 support, enhanced linked accounts API filtering, bug fixes for Slack and Odoo, and a security improvement for SendGrid authentication.
+
+<Accordion title="View details">
+
+**Improvements**
+
+- Improved query parameter handling for more consistent API request composition across integrations.
+- Enhanced cursor pagination with more robust support for complex navigation structures.
+
+**Bug Fixes**
+
+- Fixed Slack message blocks being dropped when using the `post_message_to_channel` and `post_message_to_user` actions. Blocks are now consistently preserved.
+- Fixed Odoo actions incorrectly reading contact, product, company, order, and invoice IDs from the wrong payload locations.
+
+**API Changes**
+
+- The **Get Linked Accounts** API now supports filtering by environment variable and value, allowing more targeted retrieval of linked accounts.
+
+**Integration Updates**
+
+- **Zincwork Integration**: Added full support for the Zincwork Partner API v2, including package management, check creation and results retrieval, report generation, request review, and HR management functionality. Authenticates via key-based auth with a configurable API key and base URL.
+
+- Enhanced **SendGrid** authentication to use minimal permission scopes, reducing API key privilege surface area.
+
+</Accordion>
+
+</Step>
+<Step title="February 16, 2026 · v3.4.1 · Bug fixes and stability improvements" icon="circle" iconType="solid">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+Bug fixes across authentication, workflows, the MCP server, and integration connectors, along with reliability improvements throughout the platform.
+
+<Accordion title="View details">
+
+**Bug Fixes**
+
+- Significantly reduced auth service initialization time — Casbin enforcer creation and caching now completes in ~100ms, down from ~1 minute, eliminating production auth blocking.
+- Fixed custom app publish flow to redirect users to the app page after publishing instead of showing a toast notification.
+- Fixed an error occurring when selecting a Linked Account on the MCP page.
+- Fixed pagination on the Errors view for more reliable browsing of error logs.
+- Fixed slug not being passed down to group batches, causing incorrect batch processing behavior.
+- Resolved maximum depth error occurring when using the Test Node in workflows.
+- Fixed Salesforce query creation where malformed query parameters and fields were causing `Malformed_Query` errors.
+- Fixed AI-powered error analysis for cases where workflow instances were archived.
+
+**Integration Updates**
+
+- Fixed **HubSpot** API configuration and field mapping issues.
+- Fixed **Slack** message formatting and webhook handling issues.
+- Fixed **Contentful** actions — asset version field and file upload URL field are now correctly required where needed.
+
+</Accordion>
+
+</Step>
+  <Step title="February 13, 2026 · v3.4.0 · RBAC, linked account login, and platform improvements" icon="circle" iconType="solid">
+
+  <Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+  Role-based access control (RBAC), linked account login, multi-app workflow builder in the hosted portal, a new Logger page for tracking logs, and error tracking. Includes API updates, bug fixes, and a refreshed platform design.
+
+  <Accordion title="View details">
+
+  **New Features**
+
+  - **Role-Based Access Control (RBAC)**: Define granular permissions for team members across your Refold workspace.
+  - **Linked Account Login**: Linked accounts can now log in directly to access their integration configurations.
+  - **Multi-App Workflow Builder in Hosted Portal**: Build workflows spanning multiple applications directly from the hosted portal.
+  - **Logger Page**: A new dedicated page to track all logs generated by the Logger node in workflows.
+  - **Error Tracking**: Monitor and track workflow execution errors from a centralized view.
+  - **Updated Platform Design**: Refreshed UI across the platform for improved navigation and usability.
+
+  **Improvements**
+
+  - Capability to update Page/Tab names in config portal per application.
+
+  **Bug Fixes**
+
+  - Fixed linked account selection in MCP server.
+  - Fixed Map V2 Default Values Not available in Hosted Portal.
+
+  **API Changes**
+
+  - Select public APIs now accept `linked_account_id` to support linked account login flows. Existing API calls remain backward compatible.
+
+  **Integration Updates**
+
+  - Fixed **ServiceNow** authentication schema to correctly capture instance URL, username, and password fields.
+  - Fixed **Slack** file upload errors.
+  - Resolved **Zuora** pagination issues causing incomplete data retrieval.
+  - Enhanced support for **SAP S4/Hana**, **Snowflake**, **Databricks**, **Oracle Fusion Financials** and **Netsuite** applications.
+
+  </Accordion>
+
+  </Step>
+
+  <Step title="February 3, 2026 · v3.3.0 · Bug fixes and stability improvements" icon="circle" iconType="solid">
+
+  <Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+  Bug fixes across authentication, workflows, and access control, along with schema corrections for Zoho CRM actions.
+
+  <Accordion title="View details">
+
+  **New Features**
+  - **Workflow Canvas V2**: Upgraded the look & feel of the workflow canvas which host modern UI and data handling capabilities.
+  
+  **Bug Fixes**
+
+  - Fixed **HaloITSM** authentication issues preventing successful connection setup.
+  - Resolved missing fields in action parameter metadata. All fields are now returned correctly.
+  - Fixed ACL-related inconsistencies affecting access control.
+  - Resolved PDF merge reliability issues in workflows.
+  - Improved workflow execution reliability through accurate field validation.
+  - Fixed data reference creation failing when linked account name was not provided.
+  - Fixed linked accounts not persisting in workflow configuration during testing.
+  - Ledger entries now correctly filter by config ID for workflows executed within a configuration.
+  - Ledger entries now update immediately after deletion without requiring manual refresh.
+
+  **Integration Updates**
+
+  - Corrected **Zoho CRM** action definitions to match actual API requirements.
+  - Added `Get Base URL` action to **OpenProject**, **HaloITSM**, and **Aha!** to retrieve the instance base URL for each connected account.
+
+  </Accordion>
+
+  </Step>
+
+</Steps>
