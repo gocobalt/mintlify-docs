@@ -1,0 +1,96 @@
+---
+title: 'Get all events'
+api: get /api/v2/public/event
+---
+
+This API lists all Cobalt [events](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps) of your org's default app.
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the event
+    </ResponseField>
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw response string of the event model
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+  {
+    "_id": "64cb7c433c6dddda0fb6bde8",
+    "name": "Create Deal",
+    "response": [
+      {
+        "key": "customer_name",
+        "type": "string"
+      },
+      {
+        "key": "amount",
+        "type": "number"
+      },
+      {
+        "key": "is_new",
+        "type": "boolean"
+      }
+    ],
+    "raw_response": "{\"event\":\"Create Deal\",\"payload\":{\"customer_name\":\"text\",\"amount\":\"number\",\"is_new\":\"boolean\"}}"
+  },
+  {
+    "_id": "4e377c433c6dddda0fb6bd21",
+    "name": "Create Lead",
+    "response": [
+      {
+        "key": "first_name",
+        "type": "string"
+      },
+      {
+        "key": "email",
+        "type": "string"
+      }
+    ],
+    "raw_response": "{\"event\":\"Create Lead\",\"payload\":{\"first_name\":\"text\",\"email\":\"text\"}}"
+  }
+]
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>

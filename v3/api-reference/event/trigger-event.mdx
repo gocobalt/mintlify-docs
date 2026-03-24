@@ -1,6 +1,77 @@
 ---
-title: "Trigger Event"
-description: "Documentation for trigger event"
+title: 'Trigger an event for single app'
+api: post /api/v2/public/event/:slug
 ---
+This API triggers a webhook event for a specific application using its slug. Ensure the event is created on your Cobalt dashboard prior to triggering.
 
-Content coming soon.
+## Request description
+#### Headers
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+<ParamField header="config_id" type="string">
+  Config Id for the linked account. If not provided, `linked_account_id` is considered by default.
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application slug. Eg: `pipedrive`
+</ParamField>
+
+#### Body Parameters
+<ParamField body="event" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="payload" type="object">
+  Event payload with user data required for the workflow.
+  ```JSON Example payload
+    {
+      "deal_name": "Some Value",
+      "deal_amount": "some value 2",
+      "close_date": "some value 3",
+      "status": "some value 4"
+    }
+  ```
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="message" type="string">
+      System generated message
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+    "message": "Webhook Fired Success"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "error_type": "BAD_REQUEST",
+    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
+    "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+}
+```
+</ResponseExample>

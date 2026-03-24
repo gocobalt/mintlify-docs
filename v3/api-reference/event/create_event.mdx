@@ -1,0 +1,107 @@
+---
+title: 'Create an event'
+api: post /api/v2/public/event
+---
+
+This API creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). 
+
+## Request description
+#### Body Parameters
+<ParamField body="name" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="response" type="object" required>
+  Event model. This model's properties are accessed in the workflow as trigger variables.
+  ```JSON Example payload
+    {
+      "event": "event name",
+      "payload": {
+        "jobid": "677677AE59",
+        "firstname": "nanami",
+        "lastname": "jjk",
+        "email": "nana@jjk.com",
+        "headline": "Professional sorcerer"
+      }
+    }
+  ```
+  <Expandable title="example properties" defaultOpen="true">
+      <ResponseField name="event" type="string">
+          Event name string
+      </ResponseField>
+      <ResponseField name="payload" type="object">
+          Payload object containing event data fields
+      </ResponseField>
+  </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the event
+    </ResponseField>
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw response string of the event model
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+    System generated request id
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+  {
+    "_id": "64cb7c433c6dddda0fb6bde8",
+    "name": "event name 213",
+    "response": [
+      {
+        "key": "jobid",
+        "type": "string"
+      },
+      {
+        "key": "firstname",
+        "type": "string"
+      }
+    ],
+    "raw_response": "{\"event\":\"event name\",\"payload\":{\"jobid\":\"677677AE59\",\"firstname\":\"nanami\"}}"
+  }
+]
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+}
+```
+</ResponseExample>
