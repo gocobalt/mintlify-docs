@@ -1,39 +1,54 @@
 ---
 title: 'Trigger an event'
-api: post /api/v2/public/event
+api: post /api/v2/public/event/trigger
 ---
 
-This API triggers a Cobalt [event](https://app.gocobalt.io/developer/events). This would trigger
+This API triggers a Refold [event](https://app.gocobalt.io/developer/events). This would trigger
 all the workflows associated with the specified event.
 
 ## Request description
 #### Headers
 <ParamField header="linked_account_id" type="string" required>
-  Application slug. Eg: `pipedrive`
+  Unique customer identification id. For Eg: markwood@some_email.com
 </ParamField>
 
 <ParamField header="config_id" type="string">
-  If not provided, `linked_account_id` is considered by default.
+  Config Id for the linked account. If not provided, `linked_account_id` is considered by default.
 </ParamField>
 
+<ParamField header="slug" type="string">
+  Application slug to scope the trigger to a specific app. For Eg: `hubspot`. If not provided, all workflows associated with the event will be triggered.
+</ParamField>
 
 #### Body Parameters
 <ParamField body="event" type="string" required>
   Event Name
 </ParamField>
 
-<ParamField body="payload" type="object">
+<ParamField body="payload" type="object" required>
   Event payload with user data required for the workflow.
   ```JSON Example payload
     {
-      "first_name": "Mark",
-      "last_name": "wood",
-      "employee_id": 221,
-      "is_new": false,
-      "address":{
-        "house_no":"221",
-        "street": "lorem ipsum",
-        "pincode":560103
+      "event": "email-sent",
+      "emailSentAt": "2023-04-25T09:39:48.085Z",
+      "prospect": {
+        "firstName": "Mark",
+        "lastName": "Wood",
+        "email": "mark.wood@example.com",
+        "phone": "+1 234 567 8900",
+        "jobTitle": "Product Owner",
+        "company": "Acme Corp"
+      },
+      "sequence": {
+        "id": "123940",
+        "sequenceName": "Outreach Campaign",
+        "stepID": "FUWcw22do",
+        "stepNumber": "3"
+      },
+      "user": {
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john.doe@example.com"
       }
     }
   ```
@@ -43,19 +58,33 @@ all the workflows associated with the specified event.
 
 <Tabs>
   <Tab title="200">
-    <ResponseField name="message" type="string">
-      System generated message
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the triggered event
+    </ResponseField>
+    <ResponseField name="response" type="array">
+      Array of response field objects from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw response string of the event model
     </ResponseField>
   </Tab>
-  <Tab title="Error">
+  <Tab title="500">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
-    <ResponseField name="error_type" type="string">
+    <ResponseField name="error" type="string">
     System generated error type
-    </ResponseField>
-    <ResponseField name="error_code" type="string">
-    Specific error code to identify the error
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
@@ -68,26 +97,34 @@ all the workflows associated with the specified event.
 
 <ResponseExample>
 ```JSON 200
+[
+  {
+    "_id": "64cb7c433c6dddda0fb6bde8",
+    "name": "Email Sent From The Sequence",
+    "response": [
+      {
+        "key": "emailSentAt",
+        "type": "string"
+      },
+      {
+        "key": "firstName",
+        "type": "string"
+      },
+      {
+        "key": "email",
+        "type": "string"
+      }
+    ],
+    "raw_response": "{\"event\":\"email-sent\",\"emailSentAt\":\"2023-04-25T09:39:48.085Z\",\"prospect\":{\"firstName\":\"Malav\"}}"
+  }
+]
+```
+```JSON 500
 {
-    "message": "Webhook Fired Success"
+    "status_code": 500,
+    "error": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500",
+    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
 }
 ```
-```JSON 401
-{
-    "status_code": 401,
-    "http_error_type": "UNAUTHORIZED",
-    "error_code": "SERVER_ERROR",
-    "message": "Invalid Credentials"
-    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
-}
-```
-```JSON 404
-{
-    "status_code": 404,
-    "http_error_type": "BAD_REQUEST",
-    "error_code": "INVALID_APP_ID",
-    "message": "Default Application not found",
-    "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
-}
-```
-</ ResponseExample>
+</ResponseExample>

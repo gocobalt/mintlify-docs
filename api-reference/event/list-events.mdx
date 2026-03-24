@@ -1,15 +1,9 @@
 ---
-title: 'Get all events events'
-api: get /api/v2/public/application/event
+title: 'Get all events'
+api: get /api/v2/public/event
 ---
 
-This API lists Cobalt [events](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). 
-
-## Request description
-#### Path Parameters
-<ParamField path="event_id" type="string" required>
-  Event Id
-</ParamField>
+This API lists all Refold [events](https://app.gocobalt.io/developer/events) of your org's default app.
 
 ## Response description
 
@@ -18,14 +12,22 @@ This API lists Cobalt [events](https://app.gocobalt.io/your-app#:~:text=Add%20ev
     <ResponseField name="_id" type="string">
       Event Id
     </ResponseField>
-    <ResponseField name="event_url" type="string">
-      Event URL for triggering the event
-    </ResponseField>
-    <ResponseField name="event_name" type="string">
+    <ResponseField name="name" type="string">
       Name of the event
     </ResponseField>
-    <ResponseField name="event_model" type="object">
-      Event model for Trigger payload reference
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw response string of the event model
     </ResponseField>
   </Tab>
   <Tab title="500">
@@ -46,30 +48,42 @@ This API lists Cobalt [events](https://app.gocobalt.io/your-app#:~:text=Add%20ev
 
 <ResponseExample>
 ```JSON 200
-  [
-    {
-      "_id": "64cb7c433c6dddda0fb6bde8",
-      "event_url": "https://api.gocobalt.io/api/v1/webhook/e51e979faa1edef92d87b1d4",
-      "event_name": "Create Deal",
-      "event_model":{
-        "customer_name": "text",
-        "amount": "number",
-        "emails":"array",
-        "is_new": "boolean"
+[
+  {
+    "_id": "64cb7c433c6dddda0fb6bde8",
+    "name": "Create Deal",
+    "response": [
+      {
+        "key": "customer_name",
+        "type": "string"
+      },
+      {
+        "key": "amount",
+        "type": "number"
+      },
+      {
+        "key": "is_new",
+        "type": "boolean"
       }
-    },
-    {
+    ],
+    "raw_response": "{\"event\":\"Create Deal\",\"payload\":{\"customer_name\":\"text\",\"amount\":\"number\",\"is_new\":\"boolean\"}}"
+  },
+  {
     "_id": "4e377c433c6dddda0fb6bd21",
-    "event_url": "https://api.gocobalt.io/api/v1/webhook/e51e979faa1edef92d87b1d4",
-    "event_name": "Create Lead",
-    "event_model":{
-      "first_name": "text",
-      "last_name": "text",
-      "email":"text",
-      "company": "text"
-    }
-}
-  ]
+    "name": "Create Lead",
+    "response": [
+      {
+        "key": "first_name",
+        "type": "string"
+      },
+      {
+        "key": "email",
+        "type": "string"
+      }
+    ],
+    "raw_response": "{\"event\":\"Create Lead\",\"payload\":{\"first_name\":\"text\",\"email\":\"text\"}}"
+  }
+]
 ```
 ```JSON 500
 {
@@ -79,4 +93,4 @@ This API lists Cobalt [events](https://app.gocobalt.io/your-app#:~:text=Add%20ev
     "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
 }
 ```
-</ ResponseExample>
+</ResponseExample>
