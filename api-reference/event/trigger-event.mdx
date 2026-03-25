@@ -2,7 +2,7 @@
 title: 'Trigger an event for single app'
 api: post /api/v2/public/event/:slug
 ---
-This API triggers a webhook event for a specific application using its slug. Ensure the event is created on your Refold dashboard prior to triggering.
+This API triggers a webhook event for a specific application using its slug. Ensure the event is created on your Cobalt dashboard prior to triggering.
 
 ## Request description
 #### Headers
@@ -44,7 +44,7 @@ This API triggers a webhook event for a specific application using its slug. Ens
       System generated message
     </ResponseField>
   </Tab>
-  <Tab title="400">
+  <Tab title="Error response">
     <ResponseField name="status_code" type="integer">
     System generated status Code
     </ResponseField>
@@ -53,9 +53,6 @@ This API triggers a webhook event for a specific application using its slug. Ens
     </ResponseField>
     <ResponseField name="message" type="string">
     Error message
-    </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
     </ResponseField>
   </Tab>
 </Tabs>
@@ -70,8 +67,15 @@ This API triggers a webhook event for a specific application using its slug. Ens
 {
     "status_code": 400,
     "error_type": "BAD_REQUEST",
-    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719",
-    "request_id": "fa6ad809-3a6d-4c3d-9b86-c2c0662f3f37"
+    "message": "Trigger with name Wrong_Event not found for application 646370324e3b114f9c720719"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
 }
 ```
 </ResponseExample>

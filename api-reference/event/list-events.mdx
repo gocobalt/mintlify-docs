@@ -1,6 +1,6 @@
 ---
 title: 'Get all events'
-api: get /api/v2/public/event
+api: get /api/v2/public/application/event
 ---
 
 This API lists all Refold [events](https://app.gocobalt.io/developer/events) of your org's default app.
@@ -19,15 +19,15 @@ This API lists all Refold [events](https://app.gocobalt.io/developer/events) of 
       Array of response field objects derived from the event model
       <Expandable title="properties">
         <ResponseField name="key" type="string">
-          Field key name
+          Field key name. Nested object fields are represented using dot notation, e.g. `prospect.email`
         </ResponseField>
         <ResponseField name="type" type="string">
-          Field data type
+          Field data type. Expected values: `text`, `object`
         </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="raw_response" type="string">
-      Raw response string of the event model
+      Raw JSON string of the event payload
     </ResponseField>
   </Tab>
   <Tab title="500">
@@ -40,57 +40,77 @@ This API lists all Refold [events](https://app.gocobalt.io/developer/events) of 
     <ResponseField name="message" type="string">
     Error message
     </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
 ```JSON 200
 [
-  {
-    "_id": "64cb7c433c6dddda0fb6bde8",
-    "name": "Create Deal",
-    "response": [
-      {
-        "key": "customer_name",
-        "type": "string"
-      },
-      {
-        "key": "amount",
-        "type": "number"
-      },
-      {
-        "key": "is_new",
-        "type": "boolean"
-      }
-    ],
-    "raw_response": "{\"event\":\"Create Deal\",\"payload\":{\"customer_name\":\"text\",\"amount\":\"number\",\"is_new\":\"boolean\"}}"
-  },
-  {
-    "_id": "4e377c433c6dddda0fb6bd21",
-    "name": "Create Lead",
-    "response": [
-      {
-        "key": "first_name",
-        "type": "string"
-      },
-      {
-        "key": "email",
-        "type": "string"
-      }
-    ],
-    "raw_response": "{\"event\":\"Create Lead\",\"payload\":{\"first_name\":\"text\",\"email\":\"text\"}}"
-  }
+    {
+        "_id": "64c8d0e22f6f5ad7ce6b4a62",
+        "name": "Add Contact",
+        "response": [
+            {
+                "key": "first_name",
+                "type": "text"
+            },
+            {
+                "key": "last_name",
+                "type": "text"
+            },
+            {
+                "key": "email",
+                "type": "text"
+            },
+            {
+                "key": "phone",
+                "type": "text"
+            },
+            {
+                "key": "id",
+                "type": "text"
+            },
+            {
+                "key": "prospect",
+                "type": "object"
+            },
+            {
+                "key": "prospect.first_name",
+                "type": "text"
+            },
+            {
+                "key": "prospect.last_name",
+                "type": "text"
+            },
+            {
+                "key": "prospect.email",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"first_name\":\"Subrat\",\"last_name\":\"Dash\",\"email\":\"subrat.1108@gmail.com\",\"phone\":\"7624826260\",\"id\":\"2378423\",\"prospect\":{\"first_name\":\"Subrat\",\"last_name\":\"Dash\",\"email\":\"subrat.1108@gmail.com\",\"phone\":\"7624826260\"}}"
+    },
+    {
+        "_id": "64c8d0f92f6f5ad7ce6b4a6a",
+        "name": "Delete Contact",
+        "response": [
+            {
+                "key": "contact_id",
+                "type": "text"
+            },
+            {
+                "key": "app_contact_id",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"contact_id\":\"64e4742936ee94ac84be2d35\",\"app_contact_id\":\"\"}"
+    }
 ]
 ```
 ```JSON 500
 {
     "status_code": 500,
     "error_type": "INTERNAL_SERVER_ERROR",
-    "message": "Request failed with status code 500",
-    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+    "message": "Request failed with status code 500"
 }
 ```
 </ResponseExample>

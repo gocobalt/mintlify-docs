@@ -1,6 +1,6 @@
 ---
 title: 'Get event by ID'
-api: get /api/v2/public/event/:event_id
+api: get /api/v2/public/application/event/:event_id
 ---
 
 This API fetches a specific Refold [event](https://app.gocobalt.io/developer/events) of your org's default app by ID.
@@ -8,7 +8,7 @@ This API fetches a specific Refold [event](https://app.gocobalt.io/developer/eve
 ## Request description
 #### Path Parameters
 <ParamField path="event_id" type="string" required>
-  Event Id. For Eg: 653b9fbeaa28576f28afd0f0
+  Event Id. For Eg: 64c8d0e22f6f5ad7ce6b4a62
 </ParamField>
 
 ## Response description
@@ -25,15 +25,29 @@ This API fetches a specific Refold [event](https://app.gocobalt.io/developer/eve
       Array of response field objects derived from the event model
       <Expandable title="properties">
         <ResponseField name="key" type="string">
-          Field key name
+          Field key name. Nested object fields are represented using dot notation, e.g. `prospect.email`
         </ResponseField>
         <ResponseField name="type" type="string">
-          Field data type
+          Field data type. Expected values: `text`, `object`
         </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="raw_response" type="string">
-      Raw response string of the event model
+      Raw JSON string of the event payload
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
     </ResponseField>
   </Tab>
   <Tab title="500">
@@ -46,40 +60,72 @@ This API fetches a specific Refold [event](https://app.gocobalt.io/developer/eve
     <ResponseField name="message" type="string">
     Error message
     </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
 ```JSON 200
 {
-    "_id": "653b9fbeaa28576f28afd0f0",
-    "name": "Create Deal",
+    "_id": "64c8d0e22f6f5ad7ce6b4a62",
+    "name": "Add Contact",
     "response": [
-      {
-        "key": "customer_name",
-        "type": "string"
-      },
-      {
-        "key": "amount",
-        "type": "number"
-      },
-      {
-        "key": "is_new",
-        "type": "boolean"
-      }
+        {
+            "key": "first_name",
+            "type": "text"
+        },
+        {
+            "key": "last_name",
+            "type": "text"
+        },
+        {
+            "key": "email",
+            "type": "text"
+        },
+        {
+            "key": "phone",
+            "type": "text"
+        },
+        {
+            "key": "id",
+            "type": "text"
+        },
+        {
+            "key": "prospect",
+            "type": "object"
+        },
+        {
+            "key": "prospect.first_name",
+            "type": "text"
+        },
+        {
+            "key": "prospect.last_name",
+            "type": "text"
+        },
+        {
+            "key": "prospect.email",
+            "type": "text"
+        },
+        {
+            "key": "prospect.phone",
+            "type": "text"
+        }
     ],
-    "raw_response": "{\"event\":\"Create Deal\",\"payload\":{\"customer_name\":\"text\",\"amount\":\"number\",\"is_new\":\"boolean\"}}"
+    "raw_response": "{\"first_name\":\"Subrat\",\"last_name\":\"Dash\",\"email\":\"subrat.1108@gmail.com\",\"phone\":\"7624826260\",\"id\":\"2378423\",\"prospect\":{\"first_name\":\"Subrat\",\"last_name\":\"Dash\",\"email\":\"subrat.1108@gmail.com\",\"phone\":\"7624826260\"}}"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_EVENT_ID",
+    "message": "Event not found"
 }
 ```
 ```JSON 500
 {
     "status_code": 500,
     "error_type": "INTERNAL_SERVER_ERROR",
-    "message": "Request failed with status code 500",
-    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+    "message": "Request failed with status code 500"
 }
 ```
 </ResponseExample>
