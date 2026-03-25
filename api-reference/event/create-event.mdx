@@ -3,7 +3,7 @@ title: 'Create event'
 api: post /api/v2/public/application/event
 ---
 
-This API creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%20events%20to%20send%20data%20from%20your%20app%20to%20other%20apps). 
+This API creates a Refold [event](https://app.gocobalt.io/developer/events).
 
 ## Request description
 #### Body Parameters
@@ -11,28 +11,26 @@ This API creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%2
   Event Name
 </ParamField>
 
-<ParamField body="model" type="object">
+<ParamField body="response" type="object" required>
   Event model. This model's properties are accessed in the workflow as trigger variables.
   ```JSON Example payload
     {
-      "string_field": "string",
-      "number_field": 12,
-      "array_field": ["1","2"],
-      "boolean_field": false
+      "event": "event name",
+      "payload": {
+        "jobid": "677677AE59",
+        "firstname": "nanami",
+        "lastname": "jjk",
+        "email": "nana@jjk.com",
+        "headline": "Professional sorcerer"
+      }
     }
   ```
   <Expandable title="example properties" defaultOpen="true">
-      <ResponseField name="string_field" type="string">
-          Example string
+      <ResponseField name="event" type="string">
+          Event name string
       </ResponseField>
-      <ResponseField name="number_field" type="number">
-          Example number
-      </ResponseField>
-      <ResponseField name="array_field" type="array">
-          Example number
-      </ResponseField>
-      <ResponseField name="boolean_field" type="boolean">
-          Example number
+      <ResponseField name="payload" type="object">
+          Payload object containing event data fields
       </ResponseField>
   </Expandable>
 </ParamField>
@@ -41,17 +39,40 @@ This API creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%2
 
 <Tabs>
   <Tab title="200">
+    Returns an array of all events in the org after creation.
     <ResponseField name="_id" type="string">
       Event Id
     </ResponseField>
-    <ResponseField name="event_url" type="string">
-      Event URL for triggering the event
-    </ResponseField>
-    <ResponseField name="event_name" type="string">
+    <ResponseField name="name" type="string">
       Name of the event
     </ResponseField>
-    <ResponseField name="event_model" type="object">
-      Event model for Trigger payload reference
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type. Expected values: `text`, `object`
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw JSON string of the event payload
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
     </ResponseField>
   </Tab>
   <Tab title="500">
@@ -64,32 +85,62 @@ This API creates a Cobalt [event](https://app.gocobalt.io/your-app#:~:text=Add%2
     <ResponseField name="message" type="string">
     Error message
     </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
 ```JSON 200
-{
-    "_id": "64cb7c433c6dddda0fb6bde8",
-    "event_url": "https://api.gocobalt.io/api/v1/webhook/e51e979faa1edef92d87b1d4",
-    "event_name": "Create Deal",
-    "event_model":{
-      "customer_name": "text",
-      "amount": "number",
-      "emails":"array",
-      "is_new": "boolean"
+[
+    {
+        "_id": "64c8d0f92f6f5ad7ce6b4a6a",
+        "name": "Delete Contact",
+        "response": [
+            {
+                "key": "contact_id",
+                "type": "text"
+            },
+            {
+                "key": "app_contact_id",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"contact_id\":\"64e4742936ee94ac84be2d35\",\"app_contact_id\":\"\"}"
+    },
+    {
+        "_id": "64c8d1172f6f5ad7ce6b7462",
+        "name": "Add Lead",
+        "response": [
+            {
+                "key": "company",
+                "type": "text"
+            },
+            {
+                "key": "email",
+                "type": "text"
+            },
+            {
+                "key": "name",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"company\":\"\",\"email\":\"\",\"name\":\"\"}"
     }
+]
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_EVENT_ID",
+    "message": "Trigger with name event name 211233 already exists"
 }
 ```
+
 ```JSON 500
 {
     "status_code": 500,
     "error_type": "INTERNAL_SERVER_ERROR",
-    "message": "Request failed with status code 500",
-    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+    "message": "Request failed with status code 500"
 }
 ```
-</ ResponseExample>
+</ResponseExample>
