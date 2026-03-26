@@ -1,0 +1,162 @@
+---
+title: "Connect"
+description: "Connect with the Linked Account's Databricks account."
+---
+
+<Note>
+  Databricks is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **Databricks** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. API Key (Personal Access Token)
+2. Base URL
+
+<Info>
+  To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+### Getting Credentials of Databricks
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+
+1. Log in to your Databricks workspace at your workspace URL (e.g., `https://<workspace-id>.azuredatabricks.net`).
+2. Click on your profile icon in the top right corner and select `User Settings`.
+
+<img
+  height="200"
+  src="/images/Databricks/databricks_navigation.png"
+  alt="Navigation for Personal Access Token"
+/>
+
+3. Navigate to the `Access tokens` tab and click `Generate new token` as shown above.
+
+<img
+  height="200"
+  src="/images/Databricks/databricks_credentials.png"
+  alt="Getting Personal Access Token"
+/>
+
+4. Provide a **Comment** (e.g., "Refold Integration") and set a **Lifetime** for the token. Select any particular scopes as should be accessible by the Refold Databricks connector. Click `Generate`. 
+5. Copy the token displayed on the screen. This is your **API Key**.
+
+
+
+<img
+  height="200"
+  src="/images/Databricks/databricks_credentials_2.png"
+  alt="Connect a Linked Account"
+/>
+
+<Warning>
+  The token will only be shown once. Copy and store it immediately. If lost, you will need to revoke and generate a new token.
+</Warning>
+
+6. Your **Base URL** is the workspace URL you used to log in (e.g., `https://<workspace-id>.azuredatabricks.net`).
+
+The Linked Account or end-user now have all the credentials required to connect with Databricks.
+
+#### Actions and triggers
+
+In Refold, you can create orchestrations of your use-cases using Databricks actions and triggers. Following are the set of Databricks actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Catalogs">
+        1. **Query Catalogs** - Gets an array of catalogs in the metastore in Databricks.
+        2. **Create Catalog** - Creates a new catalog instance in the parent metastore in Databricks.
+        3. **Retrieve Catalog** - Gets the specified catalog in a metastore in Databricks.
+        4. **Update Catalog** - Updates the catalog that matches the supplied name in Databricks.
+        5. **Delete Catalog** - Deletes the catalog that matches the supplied name in Databricks.
+      </Accordion>
+      <Accordion title="Clusters">
+        6. **Create Cluster** - Create a new cluster in Databricks.
+        7. **List Clusters** - List all pinned and active clusters in Databricks.
+        8. **Get Cluster Info** - Get information about a specific cluster in Databricks.
+        9. **Query Clusters** - Return information about all pinned, active, and recently terminated clusters in Databricks.
+        10. **Start Cluster** - Start a terminated cluster in Databricks.
+        11. **Restart Cluster** - Restart a running cluster in Databricks.
+        12. **Terminate Cluster** - Terminate a cluster in Databricks.
+        13. **Delete Cluster** - Permanently terminates a cluster and removes it asynchronously in Databricks.
+      </Accordion>
+      <Accordion title="Groups">
+        14. **List Groups** - Get all group details in Databricks.
+        15. **Create Group** - Create a new group in Databricks.
+        16. **Update Group** - Update group details in Databricks.
+        17. **Delete Group** - Delete a group in Databricks.
+      </Accordion>
+      <Accordion title="Jobs">
+        18. **Create Job** - Create a new job in Databricks.
+        19. **Query Jobs** - Retrieves a list of jobs in Databricks.
+        20. **Show Job** - Retrieves the details for a single job in Databricks.
+        21. **Update Job** - Add, update, or remove specific settings of an existing job in Databricks.
+        22. **Delete Job** - Delete a job in Databricks.
+        23. **Run Job** - Run a job and return the run ID of the triggered run in Databricks.
+        24. **Get Job Run** - Retrieves the metadata of a run in Databricks.
+        25. **Cancel Run** - Cancels a job run or a task run asynchronously in Databricks.
+      </Accordion>
+      <Accordion title="Schemas">
+        26. **Query Schemas** - Gets an array of schemas for a catalog in the metastore in Databricks.
+        27. **Create Schema** - Creates a new schema for a catalog in the metastore in Databricks.
+        28. **Retrieve Schema** - Gets the specified schema within the metastore in Databricks.
+        29. **Update Schema** - Updates a schema for a catalog in Databricks.
+        30. **Delete Schema** - Deletes the specified schema from the parent catalog in Databricks.
+      </Accordion>
+      <Accordion title="SQL Statements">
+        31. **Execute Statement** - Execute a SQL statement and optionally await its results in Databricks.
+        32. **Retrieve Statement** - Poll for the status and results of a SQL statement execution in Databricks.
+        33. **Retrieve Statement Result Chunk** - Fetch a paginated chunk of results from a completed SQL statement in Databricks.
+        34. **Cancel Statement Execution** - Request that an executing SQL statement be canceled in Databricks.
+      </Accordion>
+      <Accordion title="Tables">
+        35. **Query Tables** - Gets an array of all tables for a catalog and schema in the metastore in Databricks.
+        36. **Retrieve Table** - Gets a table from the metastore for a specific catalog and schema in Databricks.
+        37. **Check Table Exists** - Checks if a table exists in the metastore for a specific catalog and schema in Databricks.
+        38. **Query Table Summaries** - Gets an array of summaries for tables under a schema and catalog in Databricks.
+        39. **Delete Table** - Deletes a table from the specified parent catalog and schema in Databricks.
+      </Accordion>
+      <Accordion title="Users">
+        40. **List Users** - Get details for all users in Databricks.
+        41. **Create User** - Create a new user in Databricks.
+        42. **Get User** - Get user details by ID in Databricks.
+        43. **Update User** - Update an existing user in Databricks.
+        44. **Delete User** - Delete a user in Databricks.
+      </Accordion>
+      <Accordion title="Volumes">
+        45. **Query Volumes** - Gets an array of volumes for a catalog and schema in the metastore in Databricks.
+        46. **Create Volume** - Creates a new volume in Databricks.
+        47. **Retrieve Volume** - Gets a volume from the metastore for a specific catalog and schema in Databricks.
+        48. **Update Volume** - Updates the specified volume in Databricks.
+        49. **Delete Volume** - Deletes a volume from the specified parent catalog and schema in Databricks.
+      </Accordion>
+      <Accordion title="Warehouses">
+        50. **Query Warehouses** - Lists all SQL warehouses that a user has manager permissions on in Databricks.
+        51. **Create Warehouse** - Creates a new SQL warehouse in Databricks.
+        52. **Retrieve Warehouse** - Gets the information for a single SQL warehouse in Databricks.
+        53. **Update Warehouse** - Updates the configuration for a SQL warehouse in Databricks.
+        54. **Start Warehouse** - Starts a SQL warehouse in Databricks.
+        55. **Stop Warehouse** - Stops a SQL warehouse in Databricks.
+        56. **Delete Warehouse** - Deletes a SQL warehouse in Databricks.
+      </Accordion>
+      <Accordion title="Workspace">
+        57. **Import Workspace** - Import a workspace object (notebook or file) or the contents of an entire directory in Databricks.
+        58. **Export Workspace** - Export a workspace object or the contents of an entire directory in Databricks.
+        59. **List Workspace** - List the contents of a directory in Databricks.
+        60. **Retrieve Object Status** - Gets the status of an object or directory in Databricks.
+        61. **Delete Workspace** - Deletes an object or a directory in Databricks.
+        62. **Query Directories** - Lists the contents of a directory, or the object if it is not a directory in Databricks.
+        63. **Create Directory** - Creates the specified directory and any necessary parent directories in Databricks.
+      </Accordion>
+      <Accordion title="Others">
+        64. **HTTP Request** - Make HTTP API calls to any Databricks documented REST APIs.
+        65. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>
