@@ -3,6 +3,43 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+<Update label="March 24, 2026" description="v3.4.14 · Bulk retry, Workday, new AI builder tools">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Bulk retry for errored workflows, extended Workday SOAP integration, AI builder improvements, and a more powerful Logger experience.**
+
+**New Features**
+
+- **Bulk Retry on Error Logs**: Errored workflow nodes can now be retried in bulk by error type. Error logs are aggregated by hash for faster triage and resolution.
+- **Workflow Import**: Workflows can now be imported directly from the new workflow dialog, alongside the existing "Start from scratch" option.
+- **Logger Search & Persistent Filters**: The Logger page now supports search filtering with URL-persisted state — filters and pagination are preserved across navigation.
+
+**Improvements**
+
+- Pagination state now resets correctly when filters change across Errors, Events, Executions, Schedules, Webhooks, and Logger pages.
+- The AI builder now surfaces an interactive multi-step prompt card when additional input is needed, and displays the task list in the implementation plan tab before a plan is generated.
+- Connect portal URLs now handle account status checks more broadly, and a double-encoding bug on portal URL params has been resolved.
+
+**Bug Fixes**
+
+- Workflow updates in the scheduler trigger were not being saved — this is now resolved.
+- The workflow testing tab incorrectly showed connection status for the selected linked account.
+- The "Fields" config tab was appearing twice on the app configuration page.
+- Input fields in the User Form builder could not be cleared.
+
+**API Changes**
+
+- The **Get Linked Accounts** API now supports a `search` query parameter for filtering linked accounts by name.
+
+**Integration Updates**
+
+- **Workday**: Extended SOAP integration with support for 14 WSDLs, including worker data, documents, and Resource Management P2P actions.
+- **Hexagon SDx2**: New integration with full OpenAPI spec, OData query support, and auth pre-processing.
+- **Hexagon SPID**: Expanded with 248 additional actions.
+- **AWS S3**: Fixed credential validation issue affecting request signing.
+
+</Update>
 <Update label="March 18, 2026" description="v3.4.11 · Webhook fixes & new actions added">
 
 <Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
