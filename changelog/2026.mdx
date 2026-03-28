@@ -3,6 +3,44 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="March 27, 2026" description="v3.4.16 · Personal access tokens, Workday expansion, persistent table improvements">
+
+<Badge color="blue">Platform</Badge>  <Badge color="purple">Integrations</Badge>
+
+**Personal access tokens for linked accounts, expanded Workday SOAP coverage, persistent table column management, and webhook support for stopped and timed-out workflows.**
+
+**New Features**
+
+- **Personal Access Tokens (PAT) for Linked Accounts**: Linked accounts can now generate, copy, and revoke long-lived API tokens directly from the account overview. Useful for programmatic access without session-based authentication for MCP usecases.
+- **Persistent Table Column Management**: Columns in persistent tables can now be added, removed, and renamed. The maximum column limit has been increased from 10 to 20 per table.
+- **Workflow Stopped & Timed Out Webhooks**: Webhook subscribers can now register for `Workflow Stopped` and `Workflow Timed Out` events, in addition to the existing Completed and Errored events.
+- **Workflow Search by Alias**: Workflows can now be searched by their alias in addition to their name.
+- **Excel Merge — Single Sheet Option**: The merge-files action now supports a `merge_into_single_sheet` option to consolidate all sheets into a single sheet on merge.
+
+**Improvements**
+
+- Action descriptions in the node details panel are now collapsible, reducing visual clutter when working with complex workflows.
+- Connection search now matches on both name and ID, making it easier to locate accounts quickly.
+- Execution log instance IDs are now normalised, with related batches pre-selected automatically for context.
+
+**Bug Fixes**
+
+- Workflow Stopped events previously did not emit a webhook or audit log entry on manual stop — this is now resolved.
+- Enabling Pagination in API Proxies did not open subsequent pagination modal - this is fixed.
+
+**API Changes**
+
+- **`POST /session-token/refresh`** has been decommissioned.
+
+**Integration Updates**
+
+- **Workday**: Expanded SOAP coverage for additional Workday modules.
+- **Oracle Financials**: Expanded REST coverage for currency rates, data security, journal batches, and list-of-values.
+- **Snowflake**: Connections now identify as `RefoldAI_Workflow` for improved auditability in Snowflake query history.
+
+</Update>
+
 <Update label="March 24, 2026" description="v3.4.14 · Bulk retry, Workday, new AI builder tools">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
