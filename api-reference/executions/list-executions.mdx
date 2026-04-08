@@ -122,7 +122,7 @@ curl --location 'https://api.gocobalt.io/api/v2/public/execution?page=1&limit=10
           </Expandable>
         </ResponseField>
         <ResponseField name="status" type="string">
-          Execution status. Possible values: `COMPLETED`, `ERRORED`, `RUNNING`
+          Execution status. Possible values: `COMPLETED`, `ERRORED`, `RUNNING`, `STOPPED`, `STOPPING`, `TIMED_OUT`, `ALL`
         </ResponseField>
         <ResponseField name="associated_workflow" type="object">
           Associated workflow object
@@ -235,7 +235,7 @@ curl --location 'https://api.gocobalt.io/api/v2/public/execution?page=1&limit=10
 ```JSON 400
 {
   "status_code": 400,
-  "error_type": "BAD_REQUEST",
+  "error_code": "BAD_REQUEST",
   "http_error_type": "INVALID_LINKED_ACCOUNT_ID",
   "message": "linked_account_id or org_id is required",
   "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"

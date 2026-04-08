@@ -11,11 +11,11 @@ This API returns all organization-created workflows that are currently enabled f
 This API supports two authentication methods. You can use either a Linked Account Token OR the combination of an Org API key and linked account ID.
 </Note>
 
-#### Authentication Option 1: Linked Account Token
+#### Authentication Option 1: Session Token
 <ParamField header="Authorization" type="string" required>
-  The session token of the linked account.
+  Bearer token using the [session token](https://docs.refold.ai/api-reference/session-token/generate-token-for-linked-account) of the linked account.
 
-  **Format**: `<linked_account_token>`
+  **Format**: `Bearer <session_token>`
 </ParamField>
 
 #### Authentication Option 2: Org API Key + Linked Account ID
