@@ -1,0 +1,154 @@
+---
+title: 'Get Enabled Workflows'
+api: get /api/v2/public/workflow/enabled
+---
+
+This API returns all organization-created workflows that are currently enabled for the authenticated linked account.
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either a Linked Account Token OR the combination of an Org API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Linked Account Token
+<ParamField header="Authorization" type="string" required>
+  The session token of the linked account.
+
+  **Format**: `<linked_account_token>`
+</ParamField>
+
+#### Authentication Option 2: Org API Key + Linked Account ID
+<ParamField header="x-api-key" type="string" required>
+  Your org-level Cobalt API key.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier of the linked account to scope the response to.
+</ParamField>
+
+No query parameters or request body are required.
+
+<RequestExample>
+```bash Linked Account Token
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/workflow/enabled \
+  --header 'Authorization: <linked_account_token>'
+```
+```bash Org API Key
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/workflow/enabled \
+  --header 'x-api-key: <your_org_api_key>' \
+  --header 'linked_account_id: <linked_account_id>'
+```
+</RequestExample>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    Returns an array of enabled workflow objects. Returns an empty array `[]` if none are enabled.
+    <ResponseField name="id" type="string">
+      Unique ID of the workflow.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Display name of the workflow.
+    </ResponseField>
+    <ResponseField name="description" type="string">
+      Short description of what the workflow does.
+    </ResponseField>
+    <ResponseField name="icon" type="string">
+      URL of the workflow's icon.
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">
+      ISO 8601 timestamp of when the workflow was created.
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of the last update to the workflow.
+    </ResponseField>
+    <ResponseField name="config_id" type="string">
+      ID of the installation config this workflow is enabled under.
+    </ResponseField>
+    <ResponseField name="application" type="object">
+      The parent application this workflow belongs to.
+      <Expandable title="properties">
+        <ResponseField name="name" type="string">
+          Name of the application.
+        </ResponseField>
+        <ResponseField name="icon" type="string">
+          Icon URL of the application.
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Description of the application.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    Returned when the `linked_account_id` header is missing while using the Org API Key authentication approach.
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+  </Tab>
+  <Tab title="401">
+    Returned when the token or API key is missing, invalid, or expired.
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+  {
+    "id": "663f1a2b4e1d2c0012345678",
+    "name": "Sync Contacts to HubSpot",
+    "description": "Automatically syncs new contacts to HubSpot CRM",
+    "icon": "https://cdn.example.com/icons/hubspot.png",
+    "createdAt": "2024-05-01T10:30:00.000Z",
+    "updatedAt": "2024-06-15T08:45:00.000Z",
+    "config_id": "cfg_abc123xyz",
+    "application": {
+      "name": "HubSpot",
+      "icon": "https://cdn.example.com/icons/hubspot.png",
+      "description": "HubSpot CRM integration"
+    }
+  }
+]
+```
+```JSON 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "MISSING_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id header is required when using org API key authentication."
+}
+```
+```JSON 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
