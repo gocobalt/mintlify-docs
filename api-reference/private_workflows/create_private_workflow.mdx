@@ -1,0 +1,184 @@
+---
+title: 'Create Private Workflow'
+api: post /api/v2/public/workflow
+---
+
+This API creates a new private workflow for the authenticated linked account.
+
+<Note>
+  A **private workflow** is a workflow created by a linked account itself — it belongs exclusively to that linked account and is not visible to or shared with the organization.
+</Note>
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either a Session Token OR the combination of an Org API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using the [session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) of the linked account.
+
+  **Format**: `Bearer <session_token>`
+</ParamField>
+
+#### Authentication Option 2: Org API Key + Linked Account ID
+<ParamField header="x-api-key" type="string" required>
+  Your org-level Cobalt API key.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier of the linked account to scope the response to.
+</ParamField>
+
+#### Body Parameters
+<ParamField body="name" type="string" required>
+  Display name of the private workflow.
+</ParamField>
+
+<ParamField body="slug" type="string" required>
+  Application slug to associate the workflow with.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Optional description of the workflow.
+</ParamField>
+
+<RequestExample>
+```bash Session Token
+curl --location --request POST 'https://api.gocobalt.io/api/v2/public/workflow' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer <session_token>' \
+  --data '{
+    "name": "<string>",
+    "slug": "<string>",
+    "description": "<string>"
+  }'
+```
+```bash Org API Key
+curl --location --request POST 'https://api.gocobalt.io/api/v2/public/workflow' \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <your_api_key>' \
+  --header 'linked_account_id: <your_linked_account_id>' \
+  --data '{
+    "name": "<string>",
+    "slug": "<string>",
+    "description": "<string>"
+  }'
+```
+</RequestExample>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    Returns the newly created workflow object wrapped under the `workflow` key. New workflows are always created in an unpublished state with a single Start node.
+    <ResponseField name="workflow" type="object">
+      The newly created private workflow object.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">
+          Unique ID of the newly created draft workflow instance.
+        </ResponseField>
+        <ResponseField name="associated_workflow" type="string">
+          ID of the parent workflow record.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Workflow name as provided in the request.
+        </ResponseField>
+        <ResponseField name="published" type="boolean">
+          Always `false` for a newly created workflow.
+        </ResponseField>
+        <ResponseField name="nodes" type="array">
+          Array of node objects. A new workflow contains a single Start node by default.
+          <Expandable title="Node Object">
+            <ResponseField name="id" type="string">
+              ID of the node.
+            </ResponseField>
+            <ResponseField name="type" type="string">
+              Type of the node. The default node is `start`.
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Display name of the node.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="linked_account_id" type="string">
+          ID of the linked account this workflow belongs to.
+        </ResponseField>
+        <ResponseField name="environment" type="string">
+          Environment where the workflow was created (e.g. `test`, `production`).
+        </ResponseField>
+        <ResponseField name="public_access_workflow" type="boolean">
+          Marks whether this workflow is a private/public access workflow.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request ID.
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    Returned when the provided application slug is not found.
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+    <ResponseField name="request_id" type="string">
+      System generated request ID.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+  "workflow": {
+    "_id": "69ce2736ebade1cc4309e7a4",
+    "name": "1 via API",
+    "published": false,
+    "associated_workflow": "69ce2736ebade1cc4309e79e",
+    "linked_account_id": "cobalt_test_user",
+    "environment": "test",
+    "public_access_workflow": true,
+    "nodes": [
+      {
+        "id": "1",
+        "type": "start",
+        "name": "Start"
+      }
+    ]
+  }
+}
+```
+```JSON 500
+{
+  "status_code": 500,
+  "http_error_type": "INTERNAL_SERVER_ERROR",
+  "error_code": "SERVER_ERROR",
+  "message": "Application with slug <slug> not found",
+  "request_id": "c34e179c-783d-4464-af6a-7a353e301a46"
+}
+```
+</ResponseExample>

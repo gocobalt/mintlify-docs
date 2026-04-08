@@ -1,0 +1,169 @@
+---
+title: 'List Private Workflows'
+api: get /api/v2/public/workflow
+---
+
+This API retrieves a paginated list of all private workflows associated with the authenticated linked account.
+
+<Note>
+  A **private workflow** is a workflow created by a linked account itself — it belongs exclusively to that linked account and is not visible to or shared with the organization.
+</Note>
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either a Session Token OR the combination of an Org API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using the [session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) of the linked account.
+
+  **Format**: `Bearer <session_token>`
+</ParamField>
+
+#### Authentication Option 2: Org API Key + Linked Account ID
+<ParamField header="x-api-key" type="string" required>
+  Your org-level Cobalt API key.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier of the linked account to scope the response to.
+</ParamField>
+
+#### Query Parameters
+<ParamField query="slug" type="string">
+  Application slug to filter private workflows. For example: `hubspot`
+</ParamField>
+
+<RequestExample>
+```bash Session Token
+curl --location 'https://api.gocobalt.io/api/v2/public/workflow' \
+  --header 'Authorization: Bearer <session_token>'
+```
+```bash Org API Key
+curl --location 'https://api.gocobalt.io/api/v2/public/workflow' \
+  --header 'x-api-key: <your_api_key>' \
+  --header 'linked_account_id: <your_linked_account_id>'
+```
+</RequestExample>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    Returns a paginated object containing an array of private workflow objects under `docs`.
+    <ResponseField name="docs" type="array">
+      Array of private workflow objects.
+      <Expandable title="Workflow Object">
+        <ResponseField name="_id" type="string">
+          Unique internal identifier of the workflow.
+        </ResponseField>
+        <ResponseField name="name" type="string">
+          Display name of the workflow.
+        </ResponseField>
+        <ResponseField name="org_id" type="string">
+          ID of the organization.
+        </ResponseField>
+        <ResponseField name="published" type="boolean">
+          Whether the workflow is currently published.
+        </ResponseField>
+        <ResponseField name="associated_application" type="object">
+          The application this workflow is linked to.
+          <Expandable title="properties">
+            <ResponseField name="_id" type="string">
+              Unique ID of the application.
+            </ResponseField>
+            <ResponseField name="name" type="string">
+              Name of the application.
+            </ResponseField>
+            <ResponseField name="slug" type="string">
+              Slug identifier of the application.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="slug" type="string">
+          Application slug identifier.
+        </ResponseField>
+        <ResponseField name="environment" type="string">
+          Deployment environment (e.g. `test`, `production`).
+        </ResponseField>
+        <ResponseField name="linked_account_id" type="string">
+          ID of the linked account that owns this workflow.
+        </ResponseField>
+        <ResponseField name="is_v2" type="boolean">
+          Whether this is a v2 workflow.
+        </ResponseField>
+        <ResponseField name="current_version" type="integer">
+          Current published version number of the workflow.
+        </ResponseField>
+        <ResponseField name="createdAt" type="string">
+          ISO 8601 timestamp of when the workflow was created.
+        </ResponseField>
+        <ResponseField name="updatedAt" type="string">
+          ISO 8601 timestamp of the last update to the workflow.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">
+      Total number of private workflows for this linked account.
+    </ResponseField>
+    <ResponseField name="page" type="integer">
+      Current page number.
+    </ResponseField>
+    <ResponseField name="totalPages" type="integer">
+      Total number of pages available.
+    </ResponseField>
+  </Tab>
+  <Tab title="401">
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+{
+  "docs": [
+    {
+      "_id": "69ce2736ebade1cc4309e79e",
+      "name": "1 via API",
+      "org_id": "669e076623c652d7aff25eb9",
+      "published": false,
+      "associated_application": {
+        "_id": "669e0767d6c828b822c4f656",
+        "name": "Hubspot",
+        "slug": "hubspot"
+      },
+      "environment": "test",
+      "linked_account_id": "cobalt_test_user",
+      "is_v2": true,
+      "current_version": 0,
+      "createdAt": "2025-03-21T09:25:48.384Z",
+      "updatedAt": "2025-03-21T09:25:48.384Z"
+    }
+  ],
+  "totalDocs": 4,
+  "page": 1,
+  "totalPages": 1
+}
+```
+```JSON 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>

@@ -1,0 +1,193 @@
+---
+title: 'Publish / Unpublish Private Workflow'
+api: put /api/v2/public/workflow/{workflow_id}/publish
+---
+
+This API updates the published state of a private workflow. The same endpoint handles both publishing and unpublishing by toggling the `published` flag in the request body.
+
+<Note>
+  A **private workflow** is a workflow created by a linked account itself — it belongs exclusively to that linked account and is not visible to or shared with the organization.
+</Note>
+
+## Request description
+
+<Note>
+This API supports two authentication methods. You can use either a Session Token OR the combination of an Org API key and linked account ID.
+</Note>
+
+#### Authentication Option 1: Session Token
+<ParamField header="Authorization" type="string" required>
+  Bearer token using the [session token](https://docs.refold.ai/api-reference/session-token/generate-token-for-linked-account) of the linked account.
+
+  **Format**: `Bearer <session_token>`
+</ParamField>
+
+#### Authentication Option 2: Org API Key + Linked Account ID
+<ParamField header="x-api-key" type="string" required>
+  Your org-level Cobalt API key.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The unique identifier of the linked account to scope the request to.
+</ParamField>
+
+#### Other Headers
+<ParamField header="environment" type="string" required>
+  The environment to target. Accepted values: `test`, `production`.
+</ParamField>
+
+#### Path Parameters
+<ParamField path="workflow_id" type="string" required>
+  The ID of the workflow to publish or unpublish. See usage notes below for which ID to pass depending on the operation.
+</ParamField>
+
+#### Body Parameters
+<ParamField body="published" type="boolean" required>
+  Set to `true` to publish the workflow, `false` to unpublish.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Optional description. Include when publishing.
+</ParamField>
+
+---
+
+## Usage
+
+<Warning>
+Publishing and unpublishing use different workflow IDs. Read the steps below carefully.
+</Warning>
+
+### Unpublish a workflow
+
+Pass the **parent workflow ID** with `"published": false`:
+
+```bash cURL
+curl --location --request PUT \
+  'https://api.gocobalt.io/api/v2/public/workflow/<workflow_id>/publish' \
+  --header 'Authorization: Bearer <session_token>' \
+  --header 'x-api-key: <your_api_key>' \
+  --header 'environment: test' \
+  --header 'Content-Type: application/json' \
+  --data '{"published": false}'
+```
+
+### Publish a workflow
+
+Publishing requires the **draft workflow ID**, not the parent workflow ID. Follow these two steps:
+
+**Step 1 — Fetch the draft workflow ID**
+
+Use the [Get Draft Workflow](https://docs.gocobalt.io/api-reference/private_workflows/get_draft) endpoint to retrieve the draft:
+
+```bash cURL
+curl --location \
+  'https://api.gocobalt.io/api/v2/public/workflow/<workflow_id>/edit' \
+  --header 'Authorization: Bearer <session_token>'
+```
+
+Copy the `_id` from the response — this is your `draft_workflow_id`:
+
+```json
+{
+  "_id": "69ce22a6ebade1cc4309b647",
+  "associated_workflow": "69ce22a6ebade1cc4309b641",
+  "name": "test",
+  "published": false
+}
+```
+
+**Step 2 — Publish using the draft workflow ID**
+
+Pass the `draft_workflow_id` into the publish endpoint with `"published": true`:
+
+```bash cURL
+curl --location --request PUT \
+  'https://api.gocobalt.io/api/v2/public/workflow/<draft_workflow_id>/publish' \
+  --header 'Authorization: Bearer <session_token>' \
+  --header 'x-api-key: <your_api_key>' \
+  --header 'environment: test' \
+  --header 'Content-Type: application/json' \
+  --data '{"published": true, "description": ""}'
+```
+
+---
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    Returns the updated workflow object reflecting the new published state.
+    <ResponseField name="published" type="boolean">
+      The new published state of the workflow — `true` if published, `false` if unpublished.
+    </ResponseField>
+    <ResponseField name="current_version" type="integer">
+      The current version number, incremented on each successful publish.
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+      ISO 8601 timestamp of when the state was last changed.
+    </ResponseField>
+  </Tab>
+  <Tab title="401">
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+  </Tab>
+  <Tab title="404">
+    Returned when the provided `workflow_id` does not exist.
+    <ResponseField name="status_code" type="integer">
+      System generated status code.
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+      System generated error type.
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+      Specific error code to identify the error.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Error message.
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200 (Published)
+{
+  "published": true,
+  "current_version": 2,
+  "updatedAt": "2025-07-10T11:22:00.000Z"
+}
+```
+```JSON 200 (Unpublished)
+{
+  "published": false,
+  "current_version": 2,
+  "updatedAt": "2025-07-10T11:25:00.000Z"
+}
+```
+```JSON 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+```JSON 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "INVALID_WORKFLOW_ID",
+  "message": "No workflow found with the provided ID."
+}
+```
+</ResponseExample>

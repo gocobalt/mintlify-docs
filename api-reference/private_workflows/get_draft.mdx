@@ -1,9 +1,9 @@
 ---
-title: 'Get all Public Workflows'
-api: get /api/v2/public/workflow
+title: 'Get draft of Private Workflow'
+api: get /api/v2/public/workflow/:workflow_id/edit
 ---
 
-This API fetches a list of all public workflows of a linked account using Session Token.
+This API creates a draft/editable version of a Private workflow.
 
 ## Request description
 #### Headers
@@ -11,18 +11,18 @@ This API fetches a list of all public workflows of a linked account using Sessio
 Unlike other API's in this documentation, this API requires the [Session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) as a bearer token for authentication.
 </ParamField>
 
+#### Path Parameters
+<ParamField path="workflow_id" type="string" required>
+Id of the workflow to create draft version.
+</ParamField>
+
 <RequestExample>
 ```bash cURL
 curl --request GET \
-  --url https://api.gocobalt.io/api/v2/public/workflow \
+  --url https://api.gocobalt.io/api/v2/public/workflow/:workflow_id/edit \
   --header 'Authorization: Bearer {Session_token}' \
 ```
 </RequestExample>
-
-#### Query Parameters
-<ParamField body="slug" type="string">
-  Application slug to filter public workflows. For eg: hubspot
-</ParamField>
 
 ## Response description
 
@@ -137,6 +137,7 @@ curl --request GET \
    <ResponseField name="associated_public_worklfow" type="string">
    Id of the public workflow which is converted to draft mode.
     </ResponseField>
+
   </Tab>
   <Tab title="404">
     <ResponseField name="status_code" type="integer">
@@ -157,117 +158,110 @@ curl --request GET \
 <ResponseExample>
 ```JSON 200
 {
-   "workflows":[
+   "_id":"67dd411b6d0ac47859420c0f",
+   "createdAt":"2025-03-21T09:25:48.384Z",
+   "updatedAt":"2025-03-21T09:25:48.384Z",
+   "name":"My API Workflow - Draft",
+   "org_id":"669e076623c652d7aff25eb9",
+   "nodes":[
       {
-         "_id":"67dd309c8a29c6f92d8bb45e",
-         "name":"My API Workflow",
-         "org_id":"669e076623c652d7aff25eb9",
-        "nodes": [
-                {
-                    "id": "1",
-                    "data": null,
-                    "type": "start",
-                    "position": {
-                        "x": 396,
-                        "y": 112
-                    },
-                    "name": "Start",
-                    "status": "Ready",
-                    "configurable": false,
-                    "maximum_attempts": 1,
-                    "attempts_made": 0,
-                    "is_batch": false,
-                    "triggers": [
-                        {
-                            "application": "Cobalt",
-                            "event": "API Call",
-                            "_id": "67dd309c8a29c6f92d8bb45d"
-                        }
-                    ],
-                    "trigger_cron": null,
-                    "incoming_nodes": [],
-                    "outgoing_nodes": [],
-                    "parsed_response": {},
-                    "request": {},
-                    "input_data": {},
-                    "style": {},
-                    "event_to_dynamic_var_map": []
-                },
-                {
-                    "id": "2",
-                    "data": null,
-                    "type": "ai_code_executor",
-                    "position": {
-                        "x": 396,
-                        "y": 272
-                    },
-                    "name": "Step 1",
-                    "status": "Ready",
-                    "configurable": false,
-                    "maximum_attempts": 1,
-                    "attempts_made": 0,
-                    "is_batch": false,
-                    "action": "no_action",
-                    "incoming_nodes": [],
-                    "outgoing_nodes": [],
-                    "parsed_response": {},
-                    "request": {},
-                    "input_data": {},
-                    "style": {}
-                }
-            ],
-         "published":false,
-         "associated_application":{
-            "_id":"669e0767d6c828b822c4f656",
-            "name":"Hubspot",
-            "slug":"hubspot"
+         "id":"1",
+         "incoming_nodes":[],
+         "outgoing_nodes":[],
+         "data":null,
+         "type":"start",
+         "position":{
+            "x":396,
+            "y":112
          },
-         "index_order":33,
-         "test_instance_meta_data":{
-            "trigger":{
+         "name":"Start",
+         "status":"Ready",
+         "parsed_response":{},
+         "request":{},
+         "configurable":false,
+         "input_data":{},
+         "style":{},
+         "maximum_attempts":1,
+         "attempts_made":0,
+         "is_batch":false,
+         "triggers":[
+            {
                "application":"Cobalt",
                "event":"API Call",
                "_id":"67dd309c8a29c6f92d8bb45d"
-            },
-            "environment":"test",
-            "linked_account_id":"cobalt_test_user"
-         },
-         "description":"<string>",
-         "icon":"",
-         "edges":[
-            {
-               "source":"1",
-               "target":"2",
-               "sourceHandle":null,
-               "targetHandle":null,
-               "type":"smoothstep",
-               "id":"1efef0cc-b4aa-4a04-804f-55abdccd8db3"
             }
          ],
-         "autoEnable":false,
-         "hide_in_config":false,
-         "is_v2":true,
-         "linked_account_id":"dhananjay",
-         "public_access_workflow":true,
-         "workflow_environment":[
-            "test",
-            "production"
-         ],
-         "data_slots":[],
-         "createdAt":"2025-03-21T09:25:48.384Z",
-         "updatedAt":"2025-03-21T09:25:48.384Z",
-         "__v":0
+         "trigger_cron":null,
+         "event_to_dynamic_var_map":[]
+      },
+      {
+         "id":"2",
+         "incoming_nodes":[],
+         "outgoing_nodes":[],
+         "data":null,
+         "type":"ai_code_executor",
+         "position":{
+            "x":396,
+            "y":272
+         },
+         "name":"Step 1",
+         "status":"Ready",
+         "parsed_response":{},
+         "request":{},
+         "configurable":false,
+         "input_data":{},
+         "style":{},
+         "maximum_attempts":1,
+         "attempts_made":0,
+         "is_batch":false,
+         "action":"no_action"
       }
    ],
-   "totalDocs":1,
-   "limit":10,
-   "totalPages":1,
-   "page":1,
-   "pagingCounter":1,
-   "hasPrevPage":false,
-   "hasNextPage":false,
-   "prevPage":null,
-   "nextPage":null
+   "published":false,
+   "associated_application":"669e0767d6c828b822c4f656",
+   "workflow_environment":[
+      "test",
+      "production"
+   ],
+   "index_order":36,
+   "data_slots":[],
+   "test_instance_meta_data":{
+      "trigger":{
+         "application":"Cobalt",
+         "event":"API Call",
+         "_id":"67dd309c8a29c6f92d8bb45d"
+      },
+      "environment":"test",
+      "linked_account_id":"cobalt_test_user"
+   },
+   "description":"<string>",
+   "icon":"",
+   "edges":[
+      {
+         "source":"1",
+         "target":"2",
+         "sourceHandle":null,
+         "targetHandle":null,
+         "type":"smoothstep",
+         "id":"1efef0cc-b4aa-4a04-804f-55abdccd8db3"
+      }
+   ],
+   "autoEnable":false,
+   "hide_in_config":false,
+   "is_v2":true,
+   "linked_account_id":"dhananjay",
+   "public_access_workflow":true,
+   "associated_public_worklfow":"67dd309c8a29c6f92d8bb45e",
+   "version":null,
+   "__v":0
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "INVALID_WORKFLOW_ID",
+    "message": "No public workflow with id 67dd309c8a2946f92d8bb45e."
 }
 ```
 
