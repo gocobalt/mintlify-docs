@@ -1,62 +1,101 @@
 ---
-title: Connect
-description: Connect with the Linked Account's Sentry account.
+title: "Connect"
+description: "Connect to your Sentry app using a Personal Access Token"
 ---
-<Note>
-Sentry is an **API Key** based integration and does not require the setup of an app.
-</Note>
 
-### Required Credentials of a Linked Account
+To connect your Sentry app in Refold using a Personal Access Token, you will need the following credentials from your Sentry account:
 
-To successfully connect with the **Sentry** integration, a Linked Account or an end-user will need to provide the following to connect:
+- Personal Access Token
 
-1. Custom Integration Token
+### Pre-requisites
+
+1. Sentry account with Member role or higher.
 
 <Info>
-To understand how a Linked Account can get the above mentioned credentials, refer below.
+  Personal Access Tokens act on behalf of your individual Sentry user account. If you need a token scoped to an organization rather than a user, use an Organization Token instead, available under the same Developer Settings section.
 </Info>
 
+### Creating a Personal Access Token in Sentry
 
-### Getting Credentials of Sentry
+To create a Sentry Personal Access Token and acquire the above mentioned credentials, please follow the steps mentioned below:
 
-To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
-<img height="200" src="/images/Sentry/sentry_config.png" alt="Connect a Linked Account"/>
+1. Log in to your Sentry account at [https://sentry.io](https://sentry.io).
+2. Click on your **organization name** in the top-left corner to open the organization menu.
 
-1. Log in to your [Sentry account](https://sentry.io/auth/login/).
-2. Click on the `Settings` option in the side menu and click on `Custom Integrations` under **Developer Settings**.
-<img height="200" src="/images/Sentry/sentry_navigation.png" alt="Navigation in Sentry"/>
+<img
+  height="200"
+  src="/images/Sentry/sentry_landing_page.png"
+  alt="Sentry organization menu"
+/>
 
-3. Click on `Create New Integration` > Choose `Integration Type` as **Internal Integration** and click on `Next`.
-4. Provide a `Name` for the integration > Choose required `Permissions` and click on `Save Changes`.
-5. Scroll down to `Tokens` section in the integration > Click on `+ New Token` and copy the Token displayed.
-<img height="200" src="/images/Sentry/sentry_credentials.png" alt="Getting Credentials"/>
+3. Click on `Organization Settings` to navigate to your settings.
+4. In the left sidebar, scroll down to the **Developer Settings** section and click on `Personal Tokens`.
 
-The Linked Account or end-user now have all the credentials required to connect with Sentry.
+<img
+  height="200"
+  src="/images/sentry/sentry_token_setting.png"
+  alt="Developer Settings section in Sentry sidebar"
+/>
+
+5. You will see a list of all existing Personal Access Tokens associated with your account. Click on `Create New Token` in the top-right corner.
+
+<img
+  height="200"
+  src="/images/Sentry/sentry_PAT_listpage.png"
+  alt="Personal Tokens list page"
+/>
+
+6. On the **Create New Personal Token** page, enter a descriptive **Name** for your token in the Name field to help identify it later (e.g., `refold-integration`).
+
+7. Under **Permissions**, set the access level for each module using the dropdown. Each module supports the following access levels:
+   - **No Access** — the token cannot interact with this module
+   - **Read** — view-only access
+   - **Read & Write** — view and modify access
+   - **Admin** — full administrative control
+
+<img
+  height="200"
+  src="/images/Sentry/PAT_sentry.png"
+  alt="Create New Personal Token form with permission dropdowns"
+/>
+
+8. Once you have configured the required permissions, scroll down and click `Save Token`.
+9. **Copy the token value immediately** — it will only be displayed once.
+
+<Warning>
+  Once you leave the token creation page, the full token value cannot be retrieved again. If you lose it, you will need to revoke the token and create a new one. Store your token securely in a password manager or secrets vault.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the Personal Access Token when prompted during the Sentry connection setup.
+
+Provide the acquired Personal Access Token in the hosted portal and complete the connection.
 
 #### Actions and triggers
-In Cobalt, you can create orchestrations of your use-cases using Sentry actions and triggers. Following are the set of Sentry actions and triggers
-supported by Cobalt.
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Sentry actions and triggers. Following are the set of Sentry actions and triggers supported by Refold.
 
 <Tabs>
   <Tab title="Actions">
-  <AccordionGroup>
-  <Accordion title="Projects">
-     1. **Create Project** - Create a new project in Sentry.
-     2. **Update Projecte** - Update a project in Sentry.
-     3. **Delete Project** - Delete a project in Sentry.
-     4. **List Projects** - List all projects in Sentry.
-    </Accordion>
-    <Accordion title="Organization Members">
-     5. **List Members** - List all members in Sentry.
-     6. **Add Member** - Add a new member in Sentry.
-     7. **Delete Member** - Delete a member in Sentry.
-     </Accordion>
-    <Accordion title="Others">
-     8. **HTTP Request** - Make HTTP API calls to any Sentry documented REST APIs.
-  </Accordion>
-  </AccordionGroup>
+    <AccordionGroup>
+      <Accordion title="Organization Members">
+        1. **List Members** - List all organization members in Sentry.
+        2. **Add Member** - Adds a new member to the organization in Sentry.
+        3. **Delete Member** - Deletes a member from the organization in Sentry.
+      </Accordion>
+      <Accordion title="Projects">
+        4. **Create Project** - Creates a new project in Sentry.
+        5. **List Projects** - Lists all projects in Sentry.
+        6. **Delete Project** - Deletes a project in Sentry.
+        7. **Update Project** - Updates a project in Sentry.
+      </Accordion>
+      <Accordion title="Others">
+        8. **HTTP Request** - Make HTTP API calls to any Sentry documented REST APIs.
+        9. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
   </Tab>
-
   <Tab title="Triggers">
     1. **Issue Created** - Triggers when an issue is created on Sentry.
     2. **Issue Resolved** - Triggers when an issue is resolved on Sentry.
