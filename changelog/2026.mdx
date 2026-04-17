@@ -4,6 +4,198 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="April 16, 2026" description="v3.4.27 · Downloads & retry improvements">
+
+<Badge color="blue">Platform</Badge>
+
+**Better file download handling and network retries.**
+
+**New Features**
+
+- **Content-Disposition Support for File Downloads**: File downloads now honor `Content-Disposition` headers, resulting in correct filenames and proper inline/attachment handling.
+
+**Improvements**
+
+- Enhanced network error detection with more robust retry logic for transient failures.
+- More consistent API call tracking for more accurate usage metrics.
+
+</Update>
+
+<Update label="April 15, 2026" description="v3.4.26 · New connectors & Workbench">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Three new connectors — Certinal eSignature, Rillet, Bullhorn — plus a redesigned Workbench for AI artifacts and new hosted portal controls.**
+
+**New Features**
+
+- **Public Workflows in Hosted Portal**: A new sub-tab in the hosted portal lets you enable or disable public workflows per linked account.
+- **Workbench (formerly Scratchpad)**: AI-generated artifacts — implementation plans, reports, field mappings, code, and API contracts — now stream live into dedicated cards. The Workbench tab opens automatically when generation begins.
+- **Duplicate Node & Entry Node Management**: New context menu options in the workflow builder for duplicating nodes and managing entry nodes.
+- **Environment Variable Insertion in Data Slots**: Insert environment variables directly from the Data Slots toolbar.
+- **Unsaved Changes Prompt**: A navigation guard now warns you when leaving a connect portal configuration with unsaved changes.
+- **Execute Workflow Dialog**: New dialog for running non-associated workflows, with linked account selection, a payload editor, and a sync toggle.
+
+**Improvements**
+
+- **Integration Graph Redesign**: URL-driven filtering, a restructured sidebar with dynamic app and type entries, and collapsible Node Types & Edge Types legends that persist across the session.
+- **Tool Output Expansion**: Long tool outputs in chat now truncate at 4 lines with Show more / Show less controls.
+- **Tab State Persistence**: Workflow and project tabs persist across version switches and provider remounts.
+- The default "Fields" tab has been renamed to "General Fields" in the hosted portal and admin Config Portal for clarity.
+
+**API Changes**
+
+- **X-Trace-ID Response Header**: API responses now include an `X-Trace-ID` header to simplify debugging and support requests.
+
+**Integration Updates**
+
+- **Certinal eSignature**: New connector with OAuth2 authentication supporting transactions, documents, and templates.
+- **Rillet**: New native connector with API-key authentication and automatic idempotency key injection on POST requests.
+- **Bullhorn**: New OAuth2-based connector with automatic token management and refresh handling.
+- **Ironclad**: Seven new webhook trigger events.
+- **SFTP**: PEM passphrase support for encrypted keys.
+- **NetSuite**: Improved base URL handling across REST, SuiteQL, and metadata endpoints.
+- **Incorta**: Empty-body support for POST/PUT/PATCH operations.
+- **Mailchimp**, **Dropbox**, **Zoho**, **Zoho Books**, and **Zendesk**: Reliability improvements.
+
+</Update>
+
+<Update label="April 10, 2026" description="v3.4.24 · Linked account execution & Scratchpad">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Run workflows with a linked account override, a new Scratchpad workspace, and SAP S/4HANA action ID standardization.**
+
+**New Features**
+
+- **Linked Account Support for Workflow Execution**: Workflows can now be executed with a specific linked account override via `linked_account_id` and `test_linked_account_id` fields — useful for multi-tenant testing and per-customer execution.
+- **Request Headers as Event Data**: Set `include-headers: true` (as a header or query param) on manual triggers and webhooks to capture request headers in the event payload. Access them via `{{event.headers.header_name}}` in workflow nodes.
+- **Associated App Slugs in Public Workflow Response**: `GET /api/v2/public/workflow` now returns an `associated_app_slugs` field listing apps reachable from the workflow's start node.
+- **Workflow Scratchpad**: New tab on the workflow page with summary cards for Code, Implementation Plan, Report, Testing, Versions, Field Mappings, and API Contracts.
+- **Persistent Unsaved Changes on Canvas**: Draft changes on the workflow canvas are preserved when switching tabs, preventing accidental data loss.
+- **Rule Node Edge Styling**: Edges from rule nodes now display "true" / "false" labels with green and red styling.
+- **V1 → V2 Workflow Import**: Import V2 workflows directly into existing V1 workflows.
+
+**Improvements**
+
+- **Integration Graph Visualization**: Dynamic edge styles, node shapes, entity type legends, focus-node navigation, list view pagination with search, and reset filters.
+- **Applications Lazy Loading**: Large application lists now lazy-load for faster page performance.
+- **Connect Portal Account Display**: Fixed an issue where already-connected accounts still showed a connect option.
+- **Sync Execution Timeout Warning**: The Try-API page now surfaces a timeout warning for synchronous executions of complex node groups.
+- **More Actionable Authentication Errors**: Authentication errors now return specific, context-aware messages with direct links to configure credentials.
+
+**API Changes**
+
+- **New endpoint**: `GET /api/v2/public/workflow/:workflowId/linked-account/:linkedAccountId/execution-node-batches` — fetch execution node batches scoped to a specific linked account.
+- `GET /api/v2/public/workflow` response now includes `associated_app_slugs`.
+- New `linked_account_id` and `test_linked_account_id` fields on the Workflow object.
+
+**Integration Updates**
+
+- **SAP S/4HANA**: Action identifiers across 15+ specs have been standardized to snake_case (e.g. `get_sales_order`, `create_material_bom_item`, `cancel_invoice`, `release_purchase_order`).
+- **Google Drive**: Sync notifications are handled correctly and Google Drive headers are automatically made available in the event payload.
+
+</Update>
+
+<Update label="April 8, 2026" description="v3.4.23 · Google Drive webhook fix">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Restored Google Drive webhook delivery and fixed a config-loading issue.**
+
+**Bug Fixes**
+
+- **Config Loading for Auto-Enabled Workflows**: Resolved an error that could occur when loading application config for linked accounts with auto-enabled workflows that had no data slots configured.
+
+**Integration Updates**
+
+- **Google Drive**: Fixed an issue where webhook events were silently dropped. Events are now reliably received and routed to the correct workflows.
+
+</Update>
+
+<Update label="April 4, 2026" description="v3.4.22 · Custom node patch">
+
+<Badge color="blue">Platform</Badge>
+
+**Fixed a custom node regression.**
+
+**Bug Fixes**
+
+- Fixed a regression that could affect custom node execution in certain configurations.
+
+</Update>
+
+<Update label="April 4, 2026" description="v3.4.21 · Stability improvements">
+
+<Badge color="purple">Integrations</Badge>
+
+**Reliability improvements for integration HTTP requests.**
+
+**Integration Updates**
+
+- Stability and reliability improvements for integration HTTP request handling.
+
+</Update>
+
+<Update label="April 2, 2026" description="v3.4.20 · SAP Fieldglass, rerun/resume & Contentful OAuth">
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+ 
+**New SAP Fieldglass connector, rerun and resume for stopped workflow instances, an AI chat panel on execution pages, and a Contentful OAuth migration.**
+ 
+**New Features**
+ 
+- **Rerun & Resume Stopped Instances**: Stopped workflow instances can now be rerun or resumed, with improved error handling across retry flows.
+- **AI Chat on Execution Instances**: New AI chat panel on the execution instance page to help debug specific runs.
+- **Issues Page Filters**: Added filtering on the Issues page with improved back-navigation behavior.
+- **Node Type Pages**: Expanded layout with dedicated pages per node type.
+- **Custom App Pagination Schema**: New action schema for default custom apps with pagination support.
+
+**Improvements**
+ 
+- Friendly display names for tool calls in chat and AI-assisted builders.
+
+**API Changes**
+ 
+- `active_linked_account_id` is now included in integration project responses.
+
+**Integration Updates**
+ 
+- **SAP Fieldglass**: New connector.
+- **Contentful**: Migrated from key-based authentication to OAuth2.
+- **Salesforce**: Fixed pagination for SOQL queries; `get_entity_with_soql` now supports a configurable batch size.
+- **Workday**: Fixed pagination on certain actions.
+- **HubSpot**: Fixed `company propertyChange` trigger not firing.
+- **Databricks**: Added User-Agent header for partner-certification compatibility.
+</Update>
+
+<Update label="April 1, 2026" description="v3.4.19 · Zoom webhook fix">
+
+<Badge color="purple">Integrations</Badge>
+
+**Fixed identifier mapping for Zoom recording transcript webhooks.**
+
+**Integration Updates**
+
+- **Zoom**: Recording transcript webhook events now correctly resolve to the right linked account, with graceful handling when identifiers are missing.
+
+</Update>
+
+<Update label="April 1, 2026" description="v3.4.18 · Error reporting & templating fix">
+
+<Badge color="blue">Platform</Badge>
+
+**Richer instance error reporting and a custom node templating fix.**
+
+**Improvements**
+
+- **Instance Error Reporting**: Added more detailed error reporting for workflow instances, making failures easier to diagnose.
+
+**Bug Fixes**
+
+- **Custom Node Templating**: Fixed a templating issue affecting custom node payloads in API Proxy calls.
+
+</Update>
+
 <Update label="March 27, 2026" description="v3.4.16 · Personal access tokens, Workday expansion, persistent table improvements">
 
 <Badge color="blue">Platform</Badge>  <Badge color="purple">Integrations</Badge>
