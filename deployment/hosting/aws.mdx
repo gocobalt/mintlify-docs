@@ -1,12 +1,12 @@
 ---
 title: AWS Deployment
-description: This guide helps you install and deploy Cobalt’s on-prem solution on your Kubernetes cluster in AWS. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on AWS. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts.
+description: This guide helps you install and deploy Refold’s on-prem solution on your Kubernetes cluster in AWS. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on AWS. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts.
 ---
 
 ## Prerequisites
 
 - An AWS account
-- Docker credentials (you will receive a Personal Access Token (PAT) from the Cobalt team)
+- Docker credentials (you will receive a Personal Access Token (PAT) from the Refold team)
 - Redis (managed or self-hosted)
 - MongoDB (managed or self-hosted, recommended: MongoDB Atlas)
 
@@ -141,7 +141,7 @@ After your EKS cluster is created, you need to add worker nodes:
 
 ### 5. Creating Docker Registry Credentials
 
-Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a **Personal Access Token (PAT)** from the Cobalt team.
+Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a **Personal Access Token (PAT)** from the Refold team.
 
 Run the following command to create the secret:
 
@@ -158,9 +158,9 @@ Run the following command to create the secret:
 This command creates a secret named regcred in the services namespace that will allow Kubernetes to authenticate and pull images from the private repository.
 </Info>
 
-## 6. Applying ConfigMaps and Secrets Provided by Cobalt
+## 6. Applying ConfigMaps and Secrets Provided by Refold
 
-As part of the Cobalt setup, you'll receive **ConfigMaps** and **Secrets** from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
+As part of the Refold setup, you'll receive **ConfigMaps** and **Secrets** from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
 
 ### Option 1: Manually Applying ConfigMaps and Secrets
 
@@ -179,7 +179,7 @@ As part of the Cobalt setup, you'll receive **ConfigMaps** and **Secrets** from 
 
 3. **Replace and Repeat for All Files**:
    - Replace `<configmap.yaml>` and `<secret.yaml>` with the actual file names you received.
-   - Apply this process for each ConfigMap and Secret file provided by Cobalt.
+   - Apply this process for each ConfigMap and Secret file provided by Refold.
 
 <Info>
 Notes:
@@ -213,18 +213,18 @@ Notes:
 </Info>
 
 
-## 7. Installing Cobalt Services via Helm
+## 7. Installing Refold Services via Helm
 
-After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Cobalt services.
+After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Refold services.
 
-### To Install Cobalt Services
+### To Install Refold Services
 
 1. Use the provided `install_all.sh` script to install all necessary services:
 
    ```bash
    ./install_all.sh
 
-2. This script will handle the installation of all Cobalt services on your Kubernetes cluster, streamlining the deployment process.
+2. This script will handle the installation of all Refold services on your Kubernetes cluster, streamlining the deployment process.
 
 <Info> 
 Notes:
@@ -234,11 +234,11 @@ Notes:
   chmod +x install_all.sh
 </Info>
 
-### To Uninstall Cobalt Services
+### To Uninstall Refold Services
 
 If you need to uninstall the services, use the provided `uninstall_all.sh` script:
 
 ```bash
 ./uninstall_all.sh
 ```
-This script will cleanly uninstall all Cobalt services from your cluster.
+This script will cleanly uninstall all Refold services from your cluster.

@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Zoho Recruit app for OAuth.
 ---
-To setup your Zoho Recruit app in Cobalt for OAuth, you will need the following credentials from your [Zoho Developer Console](https://api-console.zoho.com/):
+To setup your Zoho Recruit app in Refold for OAuth, you will need the following credentials from your [Zoho Developer Console](https://api-console.zoho.com/):
 - Client ID
 - Client Secret
 
@@ -25,14 +25,14 @@ To create a Zoho Recruit app and acquire the above mentioned credentials, please
 2. Click on the `+ Add Client` button in the right and select `Server-based Applications` button.
 <img height="200" src="/images/Zohocrm/Zohocrm_navigation.png" alt="Navigation for App setup"/>
 3. Enter the **Client Name** for your application and add a **Homepage URL**.
-4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Zoho Recruit` > `Settings` > `Callback Url` > Copy it.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Zoho Recruit` > `Settings` > `Callback Url` > Copy it.
 5. Paste the Callback URL under `Authorized Redirect URIs` and click on the `Create` button.
 
 <img height="200" src="/images/Zohocrm/Zohocrm_config.png" alt="Setting up Zoho Recruit Developer app"/>
 6. Navigate to the `Client Secret` tab in the app and copy the **Client ID** and **Client Secret**.
 <img height="200" src="/images/Zohocrm/Zohocrm_credentials.png" alt="Getting Credentials"/>
 
-## Configuring credentials in Cobalt
+## Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -41,14 +41,14 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 ## Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Zoho_recruit/ZohoRecruit_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+Once the scopes has been added to the application in Refold, the app will now request for access of the mentioned scopes.
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
@@ -57,13 +57,13 @@ If you are facing scopes missing or invalid scope error. Make sure you are not p
 ## Zoho Recruit Single Webhook URL
 If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Zoho Recruit, you'd need to create a Zoho Recruit's Webhook and add it as a Rule. 
 
-Cobalt provides a single webhook URL to manage such event triggers. The steps given below needs to be followed by all of your customers to setup webhooks in their account.
+Refold provides a single webhook URL to manage such event triggers. The steps given below needs to be followed by all of your customers to setup webhooks in their account.
 
 Let's setup the **Candidate Status changed** webhook in Zoho Recruit. For this you need to do two steps:
 
 #### 1. Create Webhook Action
 
-1. Select **Zoho Recruit** from the application list in **Cobalt** > select `Settings` and copy the `Single Webhook URL`.
+1. Select **Zoho Recruit** from the application list in **Refold** > select `Settings` and copy the `Single Webhook URL`.
 2. In Zoho Recruit, click on `Setup`(Gear icon) in the top bar and select `Actions` present under **Automation**.
 <Note>
 Your customers' accounts should be on Zoho Recruit Standard or a higher plan to use webhooks.
@@ -150,7 +150,7 @@ Your customers' accounts should be on Zoho Recruit Standard or a higher plan to 
 
 #### 2. Create Workflow Rule in Zoho Recruit
 
-Once the user has created a webhook, they now need to add it as a Rule in Recruit so that it fires Cobalt event.
+Once the user has created a webhook, they now need to add it as a Rule in Recruit so that it fires Refold event.
 
 1. Navigate to `Workflow Rules` under **Automation** and click on `+ Create Rule` button.
 2. Select **Module** as `Candidates`, add a **Rule Name** and click on `Next`.
@@ -165,7 +165,7 @@ Based on the trigger that you are using, you would select different action. For 
 
 ## Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Zoho Recruit actions and triggers. Following are the set of Zoho Recruit actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

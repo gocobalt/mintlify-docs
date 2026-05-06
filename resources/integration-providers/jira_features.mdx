@@ -4,21 +4,21 @@ description: This tutorial will give an example of how to create a Jira integrat
 ---
 
 ## Pre-requisites
-1. Jira App is enabled in Cobalt.
-2. Jira OAuth app credentials added to Cobalt. Refer [here](https://docs.gocobalt.io/resources/integration-providers/jira#creating-an-app-in-jira).
-3. Trigger created in Cobalt. Refer [here](https://docs.gocobalt.io/guides/workflow/triggers).
+1. Jira App is enabled in Refold.
+2. Jira OAuth app credentials added to Refold. Refer [here](https://docs.gocobalt.io/resources/integration-providers/jira#creating-an-app-in-jira).
+3. Trigger created in Refold. Refer [here](https://docs.gocobalt.io/guides/workflow/triggers).
 4. Linked Account available. Refer [here](https://docs.gocobalt.io/guides/platform/linked-account).
 
 ## Building a Workflow
 
-We'll create a Jira Workflow in Cobalt which can create an issue in a Project given by the user. For this, we'll first find the project based on it's name and then create an issue in it.
+We'll create a Jira Workflow in Refold which can create an issue in a Project given by the user. For this, we'll first find the project based on it's name and then create an issue in it.
 
 #### 1. Create Workflow in app
-* Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Jira` > `Workflows` > `Add Workflow` > Choose `Manually` > Give it a name and click on `Add Workflow`.
+* Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Jira` > `Workflows` > `Add Workflow` > Choose `Manually` > Give it a name and click on `Add Workflow`.
 <img height="200" src="/images/Jira/jira_workflow.png" alt="Navigation for Workflow setup"/>
 
 #### 2. Adding the Trigger
-To add a trigger for a Workflow in Cobalt, you need to select details about the Trigger like the Type and which trigger to be implemented.
+To add a trigger for a Workflow in Refold, you need to select details about the Trigger like the Type and which trigger to be implemented.
 
 To add a Trigger, follow these steps:
 * Click on the **Start node** to add a trigger.
@@ -62,10 +62,10 @@ To enable a workflow, end user or a Linked Account needs to Toggle On the Workfl
 
 Lastly, we'll fire an App Event whenever a contact is created in your app by using the Workflow.
 
-* Navigate to `Try API` in **Cobalt**.
+* Navigate to `Try API` in **Refold**.
 * Choose the **Linked Account** created to test the workflow, select the **Event** and Jira as the **Application**.
 * Click on the `Fire Event` button in the top right.
 <img height="200" src="/images/Jira/jira_fire.png" alt="Fire an App Event"/>
-* You can check the status of the event by navigating to `Logs` > `Events` in **Cobalt**.
+* You can check the status of the event by navigating to `Logs` > `Events` in **Refold**.
 
 Congratulations! We have successfully built a Jira integration that creates an issue from your app to your Linked account's Jira Project.

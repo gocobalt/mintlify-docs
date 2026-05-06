@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Shopify app for OAuth.
 ---
-To setup your Shopify app in Cobalt for OAuth, you will need the following credentials from your [Shopify Partner Dashboard](https://partners.shopify.com/current/resources):
+To setup your Shopify app in Refold for OAuth, you will need the following credentials from your [Shopify Partner Dashboard](https://partners.shopify.com/current/resources):
 - Client ID
 - Client Secret
 - Scopes
@@ -23,13 +23,13 @@ To create a Shopify app and acquire the above mentioned credentials, please foll
 <img height="100" src="/images/Shopify/Shopify_navigation.png" alt="Navigation for App setup"/>
 3. Click on the `Create App` button in the top right and choose `Create App Manually`.
 4. Enter the unique App Name for your application and click on `Create`.
-5. In **Cobalt**, go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Shopify` > `Settings` > `Use your credentials` > `Callback Url`. Copy the Callback URL as provided in your Shopify settings page.
+5. In **Refold**, go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Shopify` > `Settings` > `Use your credentials` > `Callback Url`. Copy the Callback URL as provided in your Shopify settings page.
 6. In the App settings in Shopify Partner Dashboard, navigate to `Build` > `Configuration` > `URLs` section > Remove the default URL present in `Allowed redirection URL(s)` > Paste the copied Callback Url > Click on the `Save and Release` button in the top side > `Release`. 
 <img height="200" src="/images/Shopify/Shopify_config.png" alt="Setting up Shopify Developer app"/>
 7. Navigate to `Overview` in the left menu and copy the **Client ID** and **Client Secret** from the **Client credentials** section.
 <img height="200" src="/images/Shopify/Shopify_credentials.png" alt="Getting Credentials"/>
 
-## Configuring credentials in Cobalt
+## Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -38,14 +38,14 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 ## Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section.
 
-For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Shopify/Shopify_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, the app will now request for access of the mentioned scopes.
+Once the scopes has been added to the application in Refold, the app will now request for access of the mentioned scopes.
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
@@ -78,9 +78,9 @@ You can't change the distribution method after you select it, so make sure that 
 
 ## Going Live with Shopify
 
-Once you have tested the Shopify integration with Cobalt using a test shop, it is time to publish your application so that other production shops of different organizations can install/authorize your application.
+Once you have tested the Shopify integration with Refold using a test shop, it is time to publish your application so that other production shops of different organizations can install/authorize your application.
 
-Shopify mandates publishing and listing of your application in order to be installed by other users from different organizations. This requires a review from the Shopify team who make sure that the application is installed through their marketplace as well and not just through the installation URL generated through Cobalt’s SDKs.
+Shopify mandates publishing and listing of your application in order to be installed by other users from different organizations. This requires a review from the Shopify team who make sure that the application is installed through their marketplace as well and not just through the installation URL generated through Refold’s SDKs.
 
 To list your application on Shopify, the following steps need to be followed:
 
@@ -115,12 +115,12 @@ Make use of the **shop name** and **code** from the previous step to make an API
 curl --location --request POST 'https://{Shop-Name}.myshopify.com/admin/oauth/access_token?client_id={Client-ID}&client_secret={Client-Secret}&code={Code}'
 ```
 <Note>
-Replace the `Client ID` and `Client Secret` with your valid credentials. This will provide you with a response consisting of the `access token` and `shop name`. Migrate the acquired token to Cobalt.
+Replace the `Client ID` and `Client Secret` with your valid credentials. This will provide you with a response consisting of the `access token` and `shop name`. Migrate the acquired token to Refold.
 </Note>
 
-#### 4. Migrating access token to Cobalt
+#### 4. Migrating access token to Refold
 
-Once the access token is acquired, send it to Cobalt for further handling API authentications, token expiries and retries.
+Once the access token is acquired, send it to Refold for further handling API authentications, token expiries and retries.
 ```JavaScript
 curl --location --request PUT 'https://api.gocobalt.io/api/v2/public/migrate-token' \
 --header 'x-api-key: {{Cobalt API KEY}}' \
@@ -142,7 +142,7 @@ Replace the API key, linked account ID, access token and store name with the val
 
 Shopify requires you to provide compliance webhook URLs to publish applications to the marketplace. They use this webhook URL to notify regarding **Customer data requests**, **Customer data erasure**, and **Shop data erasure** so that relevant action be taken.
 
-Copy the `Single webhook URL` from the Cobalt Shopify app setting page and paste them as Shopify `Compliance webhooks` URLs in the Shopify app configuration page. Click `Save and release` at the top to save your changes.
+Copy the `Single webhook URL` from the Refold Shopify app setting page and paste them as Shopify `Compliance webhooks` URLs in the Shopify app configuration page. Click `Save and release` at the top to save your changes.
 <img height="200" src="/images/Shopify/Shopify_compliance.png" alt="Compliance Webhooks for Shopify"/>
 
 - **Creating workflows to respond to privacy webhooks**
@@ -155,7 +155,7 @@ Next, create 3 workflows that listen for these triggers in the workflow builder 
 
 ## Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Shopify actions and triggers. Following are the set of Shopify actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

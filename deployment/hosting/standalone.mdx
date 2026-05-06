@@ -1,18 +1,18 @@
 ---
 title: On Standalone Machine
-description: This guide helps you to install Cobalt using Docker images on any standalone machine. We will use Amazon EC2 as reference in the guide.
+description: This guide helps you to install Refold using Docker images on any standalone machine. We will use Amazon EC2 as reference in the guide.
 ---
 ## **Pre-requisites**
 
 Following are the pre-requisites for deployment:
 
-1. **Docker Credentials**: You will receive a Personal Access Token (PAT) from the Cobalt team.
+1. **Docker Credentials**: You will receive a Personal Access Token (PAT) from the Refold team.
 2. **MongoDB Atlas Account**: Create or use an existing account.
-3. **Docker Registry URL**: Provided by the Cobalt team.
+3. **Docker Registry URL**: Provided by the Refold team.
 
 
-## Steps to Deploy Cobalt on an EC2 Instance
-To deploy Cobalt, follow the steps given below:
+## Steps to Deploy Refold on an EC2 Instance
+To deploy Refold, follow the steps given below:
 
 
 ### **Step 1: Ensure Docker Engine is Running**:
@@ -53,7 +53,7 @@ To deploy Cobalt, follow the steps given below:
      ```
 
 
-### **Step 3: Authenticate Docker with Cobalt Credentials**:
+### **Step 3: Authenticate Docker with Refold Credentials**:
 <Steps>
   <Step title="Log in to the Docker registry">
      ```bash
@@ -66,7 +66,7 @@ To deploy Cobalt, follow the steps given below:
 </Steps>
 
 ### **Step 4: Pull the Docker Compose File**:
-    Download the `docker-compose.yml` file provided by the Cobalt team:
+    Download the `docker-compose.yml` file provided by the Refold team:
      ```bash
      curl -O <docker-compose-url>
      ```
@@ -81,7 +81,7 @@ To deploy Cobalt, follow the steps given below:
    Add any additional environment variables specific to your deployment.
    </Note>
 
-### **Step 6: Start Cobalt Services**:
+### **Step 6: Start Refold Services**:
    - Run the Docker Compose setup:
      ```bash
      docker-compose up -d
@@ -110,12 +110,12 @@ To deploy Cobalt, follow the steps given below:
 ## **Additional Considerations**
 1. **Resource Monitoring**:
 
-   - Check the EC2 instance's CPU and memory usage to ensure it meets Cobalt's requirements.
+   - Check the EC2 instance's CPU and memory usage to ensure it meets Refold's requirements.
    - Set up **autoscaling groups** on memory usage if it exceeds **75%** for a sustained period. This ensures the system can handle increased loads efficiently.
 
 2. **Redis Configuration**:
 
-    This document assumes that **Redis** will run on the same instance as Cobalt's service. This setup is acceptable for light to moderate loads, but for high loads, consider deploying Redis on a separate instance or using a managed Redis service.
+    This document assumes that **Redis** will run on the same instance as Refold's service. This setup is acceptable for light to moderate loads, but for high loads, consider deploying Redis on a separate instance or using a managed Redis service.
 
 3. **Backup**:
 
