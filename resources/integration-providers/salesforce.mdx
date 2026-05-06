@@ -27,8 +27,8 @@ To create a Salesforce app and acquire the app credentials, please follow the st
 4. Select `New Connected App` button in the setup page.
 5. Enter the basic details of your application
 6.  Under **API (Enable OAuth Settings)**, mark the `Enable OAuth Settings` checkbox.
-7. Enter the Callback URL as provided in your Salesforce settings page in Cobalt. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Salesforce` > `Settings` > `Use your credentials` > `Callback Url`.
-8. Select the required scopes, atleast the scopes selected in your Cobalt Salesforce settings page.
+7. Enter the Callback URL as provided in your Salesforce settings page in Refold. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) > Search for `Salesforce` > `Settings` > `Use your credentials` > `Callback Url`.
+8. Select the required scopes, atleast the scopes selected in your Refold Salesforce settings page.
 9. Enable the following **App Settings**, click on the `Save` button and click `Continue`.
     - Require Secret for Refresh Token flow
     - Enable Authorization Code and Credentials Flow
@@ -39,7 +39,7 @@ To create a Salesforce app and acquire the app credentials, please follow the st
 10. Click on the `Manage Consumer Details` button under the API (Enable OAuth Settings) section, verify your identity and copy the **Consumer Key** and **Consumer Secret**.
 <img height="200" src="/images/Salesforce/Salesforce_credentials.png" alt="Getting Credentials"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -48,16 +48,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Salesforce/Salesforce_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Salesforce developer account dashboard](https://developer.salesforce.com) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Salesforce developer account dashboard](https://developer.salesforce.com) and update the scopes as added on Refold.
 
-Navigate to  `Apps` > `App Manager` > Select the OAuth App created for Cobalt > Click on the dropdown menu > Select  `Edit` > `Selected OAuth Scopes` > Add the scopes as added in Cobalt and click on `Save`.
+Navigate to  `Apps` > `App Manager` > Select the OAuth App created for Refold > Click on the dropdown menu > Select  `Edit` > `Selected OAuth Scopes` > Add the scopes as added in Refold and click on `Save`.
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -66,7 +66,7 @@ identical to the ones selected in the platform.
 
 #### Salesforce Webhooks
 
-To use Salesforce webhooks as triggers in your workflows, your end-users need to add the API base URL of Cobalt as a Remote Site in Salesforce to receive the events successfully.
+To use Salesforce webhooks as triggers in your workflows, your end-users need to add the API base URL of Refold as a Remote Site in Salesforce to receive the events successfully.
 
 Follow these steps to add as Remote Site:
 <Steps>
@@ -84,6 +84,6 @@ Follow these steps to add as Remote Site:
 </Steps>
 
 <Check>
-You have successfully added the API base URL of Cobalt in Salesforce for the triggers.
+You have successfully added the API base URL of Refold in Salesforce for the triggers.
 </Check>
 
