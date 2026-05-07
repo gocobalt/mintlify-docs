@@ -8,12 +8,12 @@ sidebarTitle: "File Handler"
 
 ## What does it do?
 
-The File Handler Node provides comprehensive file management capabilities for workflows, enabling you to transfer files between different systems, manage files in Cobalt buckets, and interact with SFTP servers. It's essential for workflows that need to process, move, or manage files as part of automated business processes.
+The File Handler Node provides comprehensive file management capabilities for workflows, enabling you to transfer files between different systems, manage files in Refold buckets, and interact with SFTP servers. It's essential for workflows that need to process, move, or manage files as part of automated business processes.
 
 **Common use cases:**
-- Delete processed Salesforce documents from Cobalt bucket after attachment
+- Delete processed Salesforce documents from Refold bucket after attachment
 - Transfer Salesforce reports to downstream SFTP-based analytics systems
-- Upload Salesforce-generated documents to Cobalt bucket for processing
+- Upload Salesforce-generated documents to Refold bucket for processing
 - Pull daily lead CSV files from partner SFTP servers for Salesforce import
 - Clean up SFTP directories after successful file processing
 - Monitor SFTP folders for new pricing sheets or data dumps
@@ -22,17 +22,17 @@ The File Handler Node provides comprehensive file management capabilities for wo
 ## Actions
 
 <Expandable title="Available Actions">
-  <ResponseField name="Move file to Cobalt bucket" type="action">
-    Moves a file to Cobalt bucket storage (deprecated functionality). Legacy action marked for removal in future versions. Use alternative transfer actions for new workflows.
+  <ResponseField name="Move file to Refold bucket" type="action">
+    Moves a file to Refold bucket storage (deprecated functionality). Legacy action marked for removal in future versions. Use alternative transfer actions for new workflows.
   </ResponseField>
-  <ResponseField name="Delete file from Cobalt bucket" type="action">
-    Removes a file from Cobalt bucket storage using file key or ID. Permanently deletes file from Cobalt storage. Requires either file key (path) or file ID. Returns success/failure status.
+  <ResponseField name="Delete file from Refold bucket" type="action">
+    Removes a file from Refold bucket storage using file key or ID. Permanently deletes file from Refold storage. Requires either file key (path) or file ID. Returns success/failure status.
   </ResponseField>
   <ResponseField name="Transfer file from source to destination" type="action">
     Transfers files between different systems using SFTP or URL protocols. Supports SFTP and URL source/destination combinations. Configurable protocol settings for both source and destination. Returns success/failure status for transfer operation.
   </ResponseField>
   <ResponseField name="Transfer file from source to cobalt bucket" type="action">
-    Uploads files from external sources to Cobalt bucket storage. Supports SFTP and URL as source protocols. Files stored in Cobalt bucket for further processing. Returns publicly accessible URL of uploaded file.
+    Uploads files from external sources to Refold bucket storage. Supports SFTP and URL as source protocols. Files stored in Refold bucket for further processing. Returns publicly accessible URL of uploaded file.
   </ResponseField>
   <ResponseField name="Read file from SFTP" type="action">
     Downloads and reads files from SFTP servers. Connects to SFTP server with provided credentials. Downloads file content for workflow processing. Returns URL to accessed file content.
@@ -50,9 +50,9 @@ The File Handler Node provides comprehensive file management capabilities for wo
 
 ## Input Parameters
 
-### Delete file from Cobalt bucket
+### Delete file from Refold bucket
 <ParamField path="File Key" type="string" required="yes">
-  Path/name of the file to delete from Cobalt bucket. Example: `"documents/invoice_12345.pdf"` or `{{uploaded_file.path}}`
+  Path/name of the file to delete from Refold bucket. Example: `"documents/invoice_12345.pdf"` or `{{uploaded_file.path}}`
 </ParamField>
 
 <ParamField path="File ID" type="string" required="optional">
@@ -158,7 +158,7 @@ The File Handler Node outputs different structures based on the selected action.
 }
 ```
 
-### Transfer to Cobalt Bucket Output
+### Transfer to Refold Bucket Output
 ```json
 {
   "file_url": "https://storage.gocobalt.io/files/abc123/document.pdf",
@@ -255,7 +255,7 @@ The File Handler Node outputs different structures based on the selected action.
 
 ### Example 1: Delete Processed Salesforce Document
 
-This example deletes a processed invoice from Cobalt bucket after attaching it to a Salesforce record:
+This example deletes a processed invoice from Refold bucket after attaching it to a Salesforce record:
 
 ```javascript
 // Workflow configuration
@@ -263,7 +263,7 @@ This example deletes a processed invoice from Cobalt bucket after attaching it t
   "name": "file_handler_task",
   "taskReferenceName": "cleanup_processed_invoice",
   "type": "FILE_HANDLER",
-  "action": "Delete file from Cobalt bucket",
+  "action": "Delete file from Refold bucket",
   "inputParameters": {
     "file_key": "{{document_processor.output_file_path}}",
     "additional_fields": true
@@ -404,7 +404,7 @@ For SFTP operations:
 - **Security**: All credentials encrypted in transit and at rest
 
 ### File Storage Behavior
-- **Cobalt Bucket**: Files stored with automatic naming if not specified
+- **Refold Bucket**: Files stored with automatic naming if not specified
 - **Temporary Files**: Read operations create temporary accessible URLs
 - **Public URLs**: Download and process files from any accessible HTTP/HTTPS URL
 - **Cloud Storage**: Supports multiple providers with configurable settings

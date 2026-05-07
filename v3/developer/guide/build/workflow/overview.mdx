@@ -38,7 +38,7 @@ The Workflow Builder simplifies the integration process, empowering developers t
 #### App Events
 
 <Accordion title="App Events">
-App Events are custom events that are sent from your application via the Cobalt SDK or API to trigger Workflows. 
+App Events are custom events that are sent from your application via the Refold SDK or API to trigger Workflows. 
 
 In general, App Events are useful for triggering workflows that map data from your application to your users' apps. For example, you might send a `Contact Created` App Event from your application to trigger a Workflow that creates a matching contact in your users' Salesforce CRM.
 
@@ -79,7 +79,7 @@ Once deployed, the workflow will run automatically at the designated time for al
 #### Workflow API
 
 <Accordion title="Workflow API">
-  The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
+  The Workflow API in Refold allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
 
   <Tip>
 Know more about Workflow API [here](https://docs.gocobalt.io/build/workflow/workflow_api).
@@ -91,14 +91,14 @@ Know more about Workflow API [here](https://docs.gocobalt.io/build/workflow/work
 Workflow actions helps you to create complex workflows. You can drag and drop them on the workflow canvas as `nodes` of a workflow, inter-connect
 and configure them to achieve required flow. These actions can be broadly categorized as:
 
-#### Cobalt's Native actions
+#### Refold's Native actions
 
-<Accordion title="Cobalt's Native actions">
+<Accordion title="Refold's Native actions">
   These actions do not make any API calls themselves but help as utility tools for making workflows.
 
-There are various utility nodes currently provided by Cobalt. You can learn more about any of the node by clicking on its card below.
+There are various utility nodes currently provided by Refold. You can learn more about any of the node by clicking on its card below.
 <CardGroup cols={2}>
-  <Card title="CSV/Excel by Cobalt" icon="file-excel" href="https://docs.gocobalt.io/build/workflow/csv">
+  <Card title="CSV/Excel by Refold" icon="file-excel" href="https://docs.gocobalt.io/build/workflow/csv">
     This node allows you to convert CSV to JSON, parse CSV to array or vice versa.
   </Card>
 
@@ -165,27 +165,27 @@ There are various utility nodes currently provided by Cobalt. You can learn more
 </CardGroup>
 </Accordion>
 
-#### Cobalt's custom actions
+#### Refold's custom actions
 
-<Accordion title="Cobalt's custom actions">
+<Accordion title="Refold's custom actions">
   You can create [API Proxies](https://docs.gocobalt.io/build/basics/proxies) of your organization to use, in the Developer settings.
 </Accordion>
 
 #### Third party application actions
 
 <Accordion title="Third party application actions">
-  Cobalt supports 100+ third party applications on its platform. Users can connect to these applications through Cobalt to make use of their APIs. 
+  Refold supports 100+ third party applications on its platform. Users can connect to these applications through Refold to make use of their APIs. 
 
-When you select an application from the `Apps` list to create a workflow, you can find it's Native node in the right panel along with the other actions. Drag and drop it on the  workflow canvas to make use of the the application's APIs supported by Cobalt.
+When you select an application from the `Apps` list to create a workflow, you can find it's Native node in the right panel along with the other actions. Drag and drop it on the  workflow canvas to make use of the the application's APIs supported by Refold.
 
 ## HTTP Request
-Users can also make any custom API call to the selected application that is not available with Cobalt as an action using the HTTP request.
+Users can also make any custom API call to the selected application that is not available with Refold as an action using the HTTP request.
 Simply setup the API in the node with all the required params like `Method`, `URL`, `Request Body` etc. and you are good to go.
 <img height="200" src="/images/Concepts/http-request-action.png" alt="HTTP Request Action in App Native node"/>
 
 ## Incremental Sync action
 
-Cobalt provides a default **Incremental Sync** action in all integrations. It lets you fetch new records added since the last sync, using a timestamp-based filter.
+Refold provides a default **Incremental Sync** action in all integrations. It lets you fetch new records added since the last sync, using a timestamp-based filter.
 
 
 #### How It Works

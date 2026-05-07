@@ -3,10 +3,10 @@ title: "Re Auth Flow"
 description: "Documentation for re auth flow"
 ---
 
-Once the end customer goes through the auth flow, Cobalt saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
+Once the end customer goes through the auth flow, Refold saves the encrypted tokens and keys and refreshes them if/when required to maintain the functionality
 of the created workflows.
 
-However, there are certain conditions where Cobalt can no longer authenticate the API on behalf of your end customers.
+However, there are certain conditions where Refold can no longer authenticate the API on behalf of your end customers.
 1. The provided API credentials for eg: API keys, Refresh token has expired.
 2. The access token or refresh token of the end customer has been revoked.
 3. The end customer uninstalls the application.
@@ -15,7 +15,7 @@ However, there are certain conditions where Cobalt can no longer authenticate th
 
 ### Handling re-auth
 
-When any of the above mentioned scenarios occur, Cobalt sets a flag `reauth-required` for the application integration of the customer. You could find this
+When any of the above mentioned scenarios occur, Refold sets a flag `reauth-required` for the application integration of the customer. You could find this
 in the application response object. See below - 
 
 ```bash cURL
@@ -43,7 +43,7 @@ below is a sample response with an application with expired authentication.
         "connected": true,
         "connected_accounts": [
             {
-                "identifier": "Cobalt",
+                "identifier": "Refold",
                 "connectedAt": "2023-05-31T07:45:59.841Z"
             }
         ],
@@ -73,8 +73,8 @@ Checkout the [auth methods](https://docs.gocobalt.io/sdks/client-side-sdks/js-sd
 <img height="200" src="/images/reconnect.png" alt="Reconnect app with expired auth"/>
 
 ### Getting notified using webhook.
-Cobalt supports webhook subscription for an event when an application auth gets expired for a linked account. You would need to subscribe for the event `Connection Expired`.
-Cobalt would then notify you whenever an app connection expires and provide details about the application and the account.
+Refold supports webhook subscription for an event when an application auth gets expired for a linked account. You would need to subscribe for the event `Connection Expired`.
+Refold would then notify you whenever an app connection expires and provide details about the application and the account.
 
 ```json Webhook payload
 {
@@ -89,4 +89,4 @@ Cobalt would then notify you whenever an app connection expires and provide deta
 ```
 <img height="200" src="/images/connection-expired-webhook.png" alt="Webhook subscription for connection expired"/>
 
-<Note>Checkout [Cobalt webhooks](https://docs.gocobalt.io/guides/platform/webhook) for more details.</Note>
+<Note>Checkout [Refold webhooks](https://docs.gocobalt.io/guides/platform/webhook) for more details.</Note>

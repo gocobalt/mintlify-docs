@@ -1,9 +1,9 @@
 ---
 title: Auth Flows
-description: "Cobalt's auth flows provides a seamless environment for your users to grant authorization to their third party application data."
+description: "Refold's auth flows provides a seamless environment for your users to grant authorization to their third party application data."
 ---
 
-When creating application integrations, accessing customer's data is a required step. Using Cobalt's auth flows this process becomes both
+When creating application integrations, accessing customer's data is a required step. Using Refold's auth flows this process becomes both
 quick and heavily customizable.
 
 ### Pre-requisites
@@ -29,9 +29,9 @@ Know more about Linked Accounts and how you can create one in the guide [here](h
   </Warning>
 
 ### Auth flow integration options
-Cobalt provides 3 different ways for Auth flow of integrations
+Refold provides 3 different ways for Auth flow of integrations
 
-  <Accordion title="Hosted flow" icon="cloud" description="Redirects user to Cobalt Connect hosted on `https://connect.gocobalt.io`.">
+  <Accordion title="Hosted flow" icon="cloud" description="Redirects user to Refold Connect hosted on `https://connect.gocobalt.io`.">
     Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
 
 - List all enabled applications
@@ -50,13 +50,13 @@ To get started, follow the 2 steps:
   <Step title="Generate Hosted URL">
     To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a `POST` request to the `Create Hosted URL` API.
 <Tip>
-Check out the [Cobalt's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
+Check out the [Refold's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
 </Tip>
   </Step>
 
   <Step title="Redirect to Hosted portal">
   The generated URL can be then used to redirect the user to the Hosted UI, or can be embedded within your UI. Your user can select the application they want to connect and perform authentication.
-  <img height="200" src="/images/Guides/hosted-portal.png" alt="Hosted Portal in Cobalt"/>
+  <img height="200" src="/images/Guides/hosted-portal.png" alt="Hosted Portal in Refold"/>
   </Step>
 
 </Steps>
@@ -67,18 +67,18 @@ You can modify the UI of Hosted Portal using the [hosted_properties](https://doc
 
 | Property | Description |
 |--------------|---------------------|
-| color | Modify the theme color of Cobalt connect|
+| color | Modify the theme color of Refold connect|
 | name | Display name of your end customer |
 | bgColor | Background Colour of your end customer |
 </Accordion>
 
   <Accordion title="Embedded Flow" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
-    Cobalt Embedded flow is a frontend SDK that allows you to embed Cobalt auth flow into your React application.
+    Refold Embedded flow is a frontend SDK that allows you to embed Refold auth flow into your React application.
 
   It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
 
     <Info>
-    Learn more about Cobalt's React SDK and how to initialize it [here](http://docs.gocobalt.io/sdks/client-side-sdks/react-sdk).
+    Learn more about Refold's React SDK and how to initialize it [here](http://docs.gocobalt.io/sdks/client-side-sdks/react-sdk).
     </Info>
 
 
@@ -86,7 +86,7 @@ For example implementation, you can check out the [App.js](https://github.com/g
   </Accordion>
 
   <Accordion title="Seamless Flow" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
-  Cobalt provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
+  Refold provides APIs and SDK functions that allow your customers to connect your platform with the third party applications.
 
 The general steps to build your own flow are:
 <AccordionGroup>
@@ -115,14 +115,14 @@ try{
 With the above call you can get all the details related to an appliction for a user.
 
 <Tip>
-We recommend using the assets provided by Cobalt as they meet the requirements of the supported integrations. For example QuickBooks 
+We recommend using the assets provided by Refold as they meet the requirements of the supported integrations. For example QuickBooks 
 Online require the specific use of QuickBooks branded buttons, including specific hover states.
 </Tip>
 </Accordion>
 
   <Accordion title="Install and Initialise SDK">
 
-  Install the Cobalt Frontend SDK for JavaScript that you want to use. You can install by either using `npm package manager` or directly in browser by using the `script` tag.
+  Install the Refold Frontend SDK for JavaScript that you want to use. You can install by either using `npm package manager` or directly in browser by using the `script` tag.
 
 ```html
 <!-- use a specific version -->
@@ -140,13 +140,13 @@ Online require the specific use of QuickBooks branded buttons, including specifi
 Initialize the javascript SDK using the Session token.
 
 <Tip>
-Learn more about Cobalt’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
+Learn more about Refold’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
 </Tip>
 
   </Accordion>
 
   <Accordion title="Manage Connections">
-Cobalt provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
+Refold provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
 lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
 
 ```Javascript
@@ -210,7 +210,7 @@ cobalt.updateConfig({
 
 
 ### Authorization journey
-Cobalt lets you take the authorization for customer's data in 3 simple steps:
+Refold lets you take the authorization for customer's data in 3 simple steps:
 1. Open the auth flow portal for the customer using any of the above mentioned integration options.
 2. Customer provides consent or API Credentials for the respective app.
 3. Customer configures the data required for the connection, such as selecting specific integration settings. 

@@ -1,6 +1,6 @@
 ---
 title: Public Workflows
-description: Public workflows in Cobalt allow linked accounts to create and execute their own workflows.
+description: Public workflows in Refold allow linked accounts to create and execute their own workflows.
 ---
 
 ## Overview
@@ -31,7 +31,7 @@ These workflows are tied to the specific app’s linked account.
 </Accordion>
 
 <Accordion title="Account-Level Public Workflows (AI Workflows)">
-These are not linked to any specific integration and are used for internal automation on Cobalt account level.
+These are not linked to any specific integration and are used for internal automation on Refold account level.
 <img height="200" src="/images/Concepts/internal-public-workflow.png" alt="Public Internal Conductor Workflows"/>
 
 </Accordion>
@@ -53,7 +53,7 @@ You need to provide the [Workflow Id](https://docs.gocobalt.io/api-reference/pub
 
 ## Creating Public Workflows
 
-To create a Public workflow, simply use Cobalt's API
+To create a Public workflow, simply use Refold's API
 ```bash Create Public Workflow
 curl --request POST \
   --url https://api.gocobalt.io/api/v2/public/workflow \
@@ -101,5 +101,5 @@ To modify a public workflow, follow these steps:
 
 ## Executing Public Workflows
 
-Public workflows are triggered just like regular workflows in Cobalt. The execution depends on the event selected in the Start node.
+Public workflows are triggered just like regular workflows in Refold. The execution depends on the event selected in the Start node.
 Once live, the workflow runs based on its configured triggers, ensuring seamless automation.

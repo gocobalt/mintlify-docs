@@ -13,7 +13,7 @@ Sub Flows node allows you to use a workflow within a workflow. It can:
 - Use any internal conductor workflow within a workflow.
 - Use a workflow recursively by calling itself.
 <Warning>
-Ensure that you put a break condition in your workflow to avoid infinite recursion. For safeguards, Cobalt sets a limit of 1000 recursions incase a break condition is not available during recursion.
+Ensure that you put a break condition in your workflow to avoid infinite recursion. For safeguards, Refold sets a limit of 1000 recursions incase a break condition is not available during recursion.
 </Warning>
 - Reduce the size of your workflows by converting repetitive steps into a separate workflow.
 
@@ -42,7 +42,7 @@ Go to [Internal Conductor](https://app.gocobalt.io/internal-workflows) in dashbo
   </Step>
   <Step title="Setup Workflow API Call">
     In the `Start` Node, set the trigger as **API Call** and add `full_name` in the payload which you will receive as an input from your main workflow and click on `Save`.
-   <img height="200" src="/images/Guides/Workflow/sub-flow.png" alt="Sub Flow setup in Cobalt"/>
+   <img height="200" src="/images/Guides/Workflow/sub-flow.png" alt="Sub Flow setup in Refold"/>
   </Step>
   <Step title="Split Full Name">
     Connect a Custom Code node to Start Node and write a function that splits the full name.
@@ -73,7 +73,7 @@ Let's use it in a HubSpot workflow to create a new contact where we need to prov
   </Step>
   <Step title="Configure the Node">
     Select the sub flow that you created in [Step 1](/build/workflow/sub_flows#step-1-creating-a-sub-flow) in **Select Workflow**. Once selected, you will see the payload that you added in the Sub Flow and add the full name that you want to pass as an input in the `full_name` key.
-    <img height="200" src="/images/Guides/Workflow/select-flow.png" alt="Selecting Sub Flow in Cobalt"/> 
+    <img height="200" src="/images/Guides/Workflow/select-flow.png" alt="Selecting Sub Flow in Refold"/> 
     <Note>
     We are passing the full name from our event using [Workflow Templating](https://docs.gocobalt.io/build/workflow/templating).
     </Note>

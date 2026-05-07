@@ -1,0 +1,76 @@
+---
+title: 'Get all Config Datastores'
+api: get /api/v2/public/datastore/config/:slug
+---
+
+This API retrieves a list of all config datastores.
+
+## Request description
+#### Headers 
+<ParamField header="linked_account_id" type="string" required>
+  Unique customer identification id. For Eg: markwood@some_email.com
+</ParamField>
+
+#### Path Parameters
+<ParamField path="slug" type="string" required>
+  Application Slug. Eg: `hubspot`
+</ParamField>
+
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    
+    An array object containing names of all config datastores for the speicified application slug.
+
+  </Tab>
+  <Tab title="Error response">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+    "key_store",
+    "user_datastore"
+]
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_LINKED_ACCOUNT_ID",
+    "message": "linked_account_id is required"
+}
+```
+```JSON 401
+{
+    "status_code": 401,
+    "http_error_type": "UNAUTHORIZED",
+    "error_code": "SERVER_ERROR",
+    "message": "Invalid Credentials"
+    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "MISSING_REQUIRED_FIELD",
+    "message": "Missing API Key"
+}
+```
+</ ResponseExample>

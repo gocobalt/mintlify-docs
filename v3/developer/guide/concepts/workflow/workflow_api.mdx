@@ -3,11 +3,11 @@ title: "Workflow Api"
 description: "Documentation for workflow_api"
 ---
 
-The Workflow API in Cobalt allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
+The Workflow API in Refold allows users to execute workflows programmatically instead of relying on event-based triggers. This API-based execution provides flexibility in triggering workflows directly through an API call.
 
 ## Setting up Workflow API as Trigger
 
-Let's first see how you can setup a Workflow API for any of the workflows that you have in Cobalt.
+Let's first see how you can setup a Workflow API for any of the workflows that you have in Refold.
 
 To set up a workflow to be triggered via the Workflow API:
 <Steps>
@@ -22,7 +22,7 @@ To set up a workflow to be triggered via the Workflow API:
     - **Workflow Alias (Optional)**: This allows you to set a unique identifier for the workflow trigger. If used, this alias can replace the workflow ID in the API endpoint for executing the workflow.
     - **URL**: The URL contains the endpoint for triggering the workflow. The format for this URL is . If you’ve set up a Workflow Alias, it can be used in place of the Workflow ID after /workflow/.
     - **Payload**: Here, you define the JSON object or payload that contains the event data you want to send to the workflow. The variables set in the payload can be accessed within the workflow just like event payloads. You can leave this field as an empty object {} if no data needs to be passed.
-<img height="200" src="/images/Guides/Workflow/workflow_api_setup.png" alt="Setup Workflow API in Cobalt"/>
+<img height="200" src="/images/Guides/Workflow/workflow_api_setup.png" alt="Setup Workflow API in Refold"/>
   </Step>
 </Steps>
 
@@ -48,7 +48,7 @@ Using Workflow API, the workflow gets executed even for those Linked Accounts wh
 
 - **slug**: Slug of the integration in which workflow is present.
 
-- **x-api-key**: Your Cobalt API key
+- **x-api-key**: Your Refold API key
 
 - **sync_execution**: By default, this is set to **false**, which means the API response will only include the `execution_id`. If you set sync_execution to **true**, the API response will include both the `execution_id` and the `return_value` object containing response as set in the Response node. 
 
@@ -96,7 +96,7 @@ To fetch the response received in a previously executed workflow, use the follow
 
 - **linked_account_id**: The Linked account for which the workflow was executed.
 
-- **x-api-key**: Your Cobalt API key
+- **x-api-key**: Your Refold API key
 
 
 Sample cURL for Execution Response API:

@@ -4,13 +4,13 @@ description: "Documentation for templating"
 ---
 ## Overview
 
-Cobalt supports **templating (dynamic variables)** in creating workflows. This essentially means that users can use these variables in their application workflows and [API Proxies](https://docs.gocobalt.io/guides/developer-settings/api_proxy) and [authorization settings](https://docs.gocobalt.io/guides/developer-settings/overview). 
+Refold supports **templating (dynamic variables)** in creating workflows. This essentially means that users can use these variables in their application workflows and [API Proxies](https://docs.gocobalt.io/guides/developer-settings/api_proxy) and [authorization settings](https://docs.gocobalt.io/guides/developer-settings/overview). 
 
 Using these templates, users can access data from previous nodes in workflows and end-users **UDF**.
 
 The templates are keywords enclosed within double-curly braces `{{}}`, with specific use cases.
 
-Cobalt dynamic variables and their templating can be broadly categorized as:
+Refold dynamic variables and their templating can be broadly categorized as:
 
 ## 1. Workflow dynamic variables
 
@@ -23,7 +23,7 @@ Data from a node can be accessed either directly from the response object using 
 
 <Accordion title="Access using template">
 
-The following template is used within Cobalt to access the response object of any other node in the workflow:
+The following template is used within Refold to access the response object of any other node in the workflow:
 
   `{{node.<node number>.response:<Response object property>}}`
 
@@ -41,7 +41,7 @@ Or if one wants to access the "name" field of the item, it can be accessed as `{
 
 <Accordion title="Access using Test Run variables">
 
-  In Cobalt workflows, you can use variables generated from tested node responses to access data dynamically.
+  In Refold workflows, you can use variables generated from tested node responses to access data dynamically.
 
   To use variables generated from node test runs, ensure that the workflow testing pre-requisites are satisfied and you have run a test execution on the node whose response you want to access.
 
@@ -94,7 +94,7 @@ The updated response structure will now be available for use as variables in oth
 
 ## 3. Linked account variables
 
-Linked account variables are used to pass on Linked account-specific data throughout the Cobalt platform. The following are the variables that be used on the execution runtime:
+Linked account variables are used to pass on Linked account-specific data throughout the Refold platform. The following are the variables that be used on the execution runtime:
 
 - UDFs - `{{linked_account.udf.<UDF property>}}`
 
