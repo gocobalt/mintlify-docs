@@ -1,0 +1,116 @@
+---
+title: 'Get all events'
+api: get /api/v2/public/application/event
+---
+
+This API lists all Refold [events](https://app.gocobalt.io/developer/events) of your org's default app.
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the event
+    </ResponseField>
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name. Nested object fields are represented using dot notation, e.g. `prospect.email`
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type. Expected values: `text`, `object`
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw JSON string of the event payload
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+    {
+        "_id": "64c8d0e22f6f5ad7ce6b4a62",
+        "name": "Add Contact",
+        "response": [
+            {
+                "key": "first_name",
+                "type": "text"
+            },
+            {
+                "key": "last_name",
+                "type": "text"
+            },
+            {
+                "key": "email",
+                "type": "text"
+            },
+            {
+                "key": "phone",
+                "type": "text"
+            },
+            {
+                "key": "id",
+                "type": "text"
+            },
+            {
+                "key": "prospect",
+                "type": "object"
+            },
+            {
+                "key": "prospect.first_name",
+                "type": "text"
+            },
+            {
+                "key": "prospect.last_name",
+                "type": "text"
+            },
+            {
+                "key": "prospect.email",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"1234567890\",\"id\":\"9876543\",\"prospect\":{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"john.doe@example.com\",\"phone\":\"1234567890\"}}"
+    },
+    {
+        "_id": "64c8d0f92f6f5ad7ce6b4a6a",
+        "name": "Delete Contact",
+        "response": [
+            {
+                "key": "contact_id",
+                "type": "text"
+            },
+            {
+                "key": "app_contact_id",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"contact_id\":\"64e4742936ee94ac84be2d35\",\"app_contact_id\":\"\"}"
+    }
+]
+```
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500"
+}
+```
+</ResponseExample>

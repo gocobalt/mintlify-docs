@@ -6,63 +6,55 @@
   "logo": {
     "dark": "/logo/white-icon.svg",
     "light": "/logo/black-icon.svg",
-    "href": "/"
+    "href": "/welcome"
   },
   "favicon": "/logo/favicon.svg",
   "colors": {
-    "primary": "#9563FF",
-    "light": "#AE87FF",
+    "primary": "#0057FF",
+    "light": "#4D8AFF",
     "dark": "#0D001D"
   },
   "modeToggle": {
     "default": "dark"
-  },    
-  "topbarLinks": [
-    {
-      "name": "Contact Us",
-      "url": "https://www.refold.ai/contact-us"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://app.gocobalt.io/"
   },
-  "anchors": [
-    {
-      "name": "Postman",
-      "icon": "code",
-      "url": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
-    },
-    {
-      "name": "Get Your API Key",
-      "icon": "gear",
-      "url": "https://app.gocobalt.io/developer"
-    },
-    {
-      "name": "Examples",
-      "icon": "book",
-      "url": "https://github.com/gocobalt/cobalt-examples"
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact Us",
+        "href": "https://www.refold.ai/contact-us"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.refold.ai"
     }
-  ],
+  },
   "navigation": {
-    "default": "v3/welcome/welcome",
+    "default": "welcome",
+    "anchors": [
+      {
+        "anchor": "Postman",
+        "icon": "code",
+        "href": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
+      },
+      {
+        "anchor": "Get Your API Key",
+        "icon": "gear",
+        "href": "https://app.gocobalt.io/developer"
+      },
+      {
+        "anchor": "Examples",
+        "icon": "book-open",
+        "href": "https://github.com/gocobalt/cobalt-examples"
+      }
+    ],
     "versions": [
       {
         "version": "v3",
         "tabs": [
           {
-            "tab": "Welcome",
-            "groups": [
-              {
-                "group": "Welcome",
-                "pages": [
-                  "v3/welcome/welcome"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developer",
+            "tab": "Platform",
             "groups": [
               {
                 "group": "Getting Started",
@@ -1003,7 +995,7 @@
             ]
           },
           {
-            "tab": "Embedded",
+            "tab": "Native",
             "groups": [
               {
                 "group": "Overview",
@@ -1090,7 +1082,7 @@
             ]
           },
           {
-            "tab": "Project",
+            "tab": "Integration Delivery",
             "groups": [
               {
                 "group": "Overview",
@@ -1177,7 +1169,7 @@
             ]
           },
           {
-            "tab": "MCP & AI Agents",
+            "tab": "MCP",
             "groups": [
               {
                 "group": "Overview",
@@ -1233,12 +1225,13 @@
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "API references & SDK",
             "groups": [
               {
                 "group": "Overview",
                 "pages": [
-                  "v3/api-reference/overview"
+                  "v3/api-reference/overview",
+                  "v3/api-reference/sdks"
                 ]
               },
               {
@@ -1260,37 +1253,60 @@
                 ]
               },
               {
+                "group": "Integration Schema",
+                "pages": [
+                  "v3/api-reference/integration-meta/get-actions-for-slug",
+                  "v3/api-reference/integration-meta/get-action-parameters",
+                  "v3/api-reference/integration-meta/execute-action"
+                ]
+              },
+              {
                 "group": "Config",
                 "pages": [
-                  "v3/api-reference/config/get-config",
-                  "v3/api-reference/config/get-all-config",
                   "v3/api-reference/config/find-or-create-config",
                   "v3/api-reference/config/update-config",
+                  "v3/api-reference/config/get-all-config",
+                  "v3/api-reference/config/get-config",
                   "v3/api-reference/config/delete-config"
                 ]
               },
               {
-                "group": "Workflows",
+                "group": "Config Fields",
                 "pages": [
-                  "v3/api-reference/public_workflows/get_public_workflows",
-                  "v3/api-reference/public_workflows/create_public_workflow",
-                  "v3/api-reference/public_workflows/get_draft"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-rule-engine"
+                ]
+              },
+              {
+                "group": "Datastores",
+                "pages": [
+                  "v3/api-reference/datastore/list-config-datastores",
+                  "v3/api-reference/datastore/config-datastore-records",
+                  "v3/api-reference/datastore/search-config-records"
                 ]
               },
               {
                 "group": "Events",
                 "pages": [
-                  "v3/api-reference/event/trigger-event",
-                  "v3/api-reference/event/trigger-an-event-from-your-application"
+                  "v3/api-reference/event/create-event",
+                  "v3/api-reference/event/get-event",
+                  "v3/api-reference/event/update-event",
+                  "v3/api-reference/event/delete-event",
+                  "v3/api-reference/event/list-events",
+                  "v3/api-reference/event/trigger-an-event-from-your-application",
+                  "v3/api-reference/event/trigger-event"
                 ]
               },
               {
                 "group": "Webhooks",
                 "pages": [
                   "v3/api-reference/webhooks/create-webhook",
+                  "v3/api-reference/webhooks/update-webhook",
                   "v3/api-reference/webhooks/get-webhook",
                   "v3/api-reference/webhooks/get-webhook-by-id",
-                  "v3/api-reference/webhooks/update-webhook",
                   "v3/api-reference/webhooks/delete-webhook",
                   "v3/api-reference/webhooks/subscribe-webhook-event",
                   "v3/api-reference/webhooks/unsubscribe-webhook-event"
@@ -1301,6 +1317,16 @@
                 "pages": [
                   "v3/api-reference/executions/get-execution",
                   "v3/api-reference/executions/list-executions"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "v3/api-reference/private_workflows/create_private_workflow",
+                  "v3/api-reference/private_workflows/get_private_workflows",
+                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
+                  "v3/api-reference/private_workflows/get_draft",
+                  "v3/api-reference/private_workflows/publish_workflow"
                 ]
               },
               {
@@ -1321,34 +1347,20 @@
                 ]
               },
               {
-                "group": "Cobalt Hosted",
+                "group": "MCP Servers",
+                "pages": [
+                  "v3/api-reference/mcp/list-mcp-servers",
+                  "v3/api-reference/mcp/get-mcp-server",
+                  "v3/api-reference/mcp/create-mcp-server",
+                  "v3/api-reference/mcp/update-mcp-server",
+                  "v3/api-reference/mcp/delete-mcp-server"
+                ]
+              },
+              {
+                "group": "Refold Hosted",
                 "pages": [
                   "v3/api-reference/cobalt-connect/get-connect-url",
                   "v3/api-reference/cobalt-connect/get-hosted-properties"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "v3/sdks/overview"
-                ]
-              },
-              {
-                "group": "Client-Side SDKs",
-                "pages": [
-                  "v3/sdks/client-side-js-sdk",
-                  "v3/sdks/client-side-react-sdk"
-                ]
-              },
-              {
-                "group": "Server-Side SDKs",
-                "pages": [
-                  "v3/sdks/server-side-nodejs-sdk"
                 ]
               }
             ]
@@ -1360,7 +1372,14 @@
                 "group": "Changes",
                 "pages": [
                   "v3/changelog/overview",
-                  "v3/changelog/v3.3.0"
+                  {
+                    "group": "2026",
+                    "pages": [
+                      "v3/changelog/2026/april",
+                      "v3/changelog/2026/march",
+                      "v3/changelog/2026/february"
+                    ]
+                  }
                 ]
               }
             ]
@@ -1602,140 +1621,142 @@
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "API references & SDK",
             "groups": [
               {
-                "group": "About API Reference",
+                "group": "Overview",
                 "pages": [
-                  "legacy/api-reference/overview"
+                  "v3/api-reference/overview",
+                  "v3/api-reference/sdks"
                 ]
               },
               {
-                "group": "Linked Account",
+                "group": "Linked Accounts",
                 "pages": [
-                  "legacy/api-reference/customer/get-linked-account",
-                  "legacy/api-reference/customer/list-linked-accounts",
-                  "legacy/api-reference/customer/create-linked-account",
-                  "legacy/api-reference/customer/upsert-a-linked-account",
-                  "legacy/api-reference/customer/delete-linked-account"
+                  "v3/api-reference/customer/create-linked-account",
+                  "v3/api-reference/customer/get-linked-account",
+                  "v3/api-reference/customer/list-linked-accounts",
+                  "v3/api-reference/customer/upsert-a-linked-account",
+                  "v3/api-reference/customer/delete-linked-account"
                 ]
               },
               {
                 "group": "Applications",
                 "pages": [
-                  "legacy/api-reference/integration-meta/list-applications",
-                  "legacy/api-reference/integration-meta/get-application",
-                  "legacy/api-reference/integration-meta/update-application-auth"
+                  "v3/api-reference/integration-meta/list-applications",
+                  "v3/api-reference/integration-meta/get-application",
+                  "v3/api-reference/integration-meta/update-application-auth"
+                ]
+              },
+              {
+                "group": "Integration Schema",
+                "pages": [
+                  "v3/api-reference/integration-meta/get-actions-for-slug",
+                  "v3/api-reference/integration-meta/get-action-parameters",
+                  "v3/api-reference/integration-meta/execute-action"
                 ]
               },
               {
                 "group": "Config",
                 "pages": [
-                  "legacy/api-reference/config/find-or-create-config",
-                  "legacy/api-reference/config/update-config",
-                  "legacy/api-reference/config/get-all-config",
-                  "legacy/api-reference/config/get-config",
-                  "legacy/api-reference/config/delete-config"
+                  "v3/api-reference/config/find-or-create-config",
+                  "v3/api-reference/config/update-config",
+                  "v3/api-reference/config/get-all-config",
+                  "v3/api-reference/config/get-config",
+                  "v3/api-reference/config/delete-config"
                 ]
               },
               {
                 "group": "Config Fields",
                 "pages": [
-                  "legacy/api-reference/config-fields/get-all-fields",
-                  "legacy/api-reference/config-fields/get-field-by-id",
-                  "legacy/api-reference/config-fields/update-field-value",
-                  "legacy/api-reference/config-fields/delete-field-value",
-                  "legacy/api-reference/config-fields/get-options-rule-engine"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-rule-engine"
                 ]
               },
               {
                 "group": "Datastores",
                 "pages": [
-                  "legacy/api-reference/datastore/list-config-datastores",
-                  "legacy/api-reference/datastore/config-datastore-records",
-                  "legacy/api-reference/datastore/search-config-records"
+                  "v3/api-reference/datastore/list-config-datastores",
+                  "v3/api-reference/datastore/config-datastore-records",
+                  "v3/api-reference/datastore/search-config-records"
                 ]
               },
               {
-                "group": "Event",
+                "group": "Events",
                 "pages": [
-                  "legacy/api-reference/event/trigger-an-event-from-your-application",
-                  "legacy/api-reference/event/trigger-event"
+                  "v3/api-reference/event/create-event",
+                  "v3/api-reference/event/get-event",
+                  "v3/api-reference/event/update-event",
+                  "v3/api-reference/event/delete-event",
+                  "v3/api-reference/event/list-events",
+                  "v3/api-reference/event/trigger-an-event-from-your-application",
+                  "v3/api-reference/event/trigger-event"
                 ]
               },
               {
                 "group": "Webhooks",
                 "pages": [
-                  "legacy/api-reference/webhooks/create-webhook",
-                  "legacy/api-reference/webhooks/update-webhook",
-                  "legacy/api-reference/webhooks/get-webhook",
-                  "legacy/api-reference/webhooks/get-webhook-by-id",
-                  "legacy/api-reference/webhooks/delete-webhook",
-                  "legacy/api-reference/webhooks/subscribe-webhook-event",
-                  "legacy/api-reference/webhooks/unsubscribe-webhook-event"
+                  "v3/api-reference/webhooks/create-webhook",
+                  "v3/api-reference/webhooks/update-webhook",
+                  "v3/api-reference/webhooks/get-webhook",
+                  "v3/api-reference/webhooks/get-webhook-by-id",
+                  "v3/api-reference/webhooks/delete-webhook",
+                  "v3/api-reference/webhooks/subscribe-webhook-event",
+                  "v3/api-reference/webhooks/unsubscribe-webhook-event"
                 ]
               },
               {
                 "group": "Executions",
                 "pages": [
-                  "legacy/api-reference/executions/get-execution",
-                  "legacy/api-reference/executions/list-executions"
+                  "v3/api-reference/executions/get-execution",
+                  "v3/api-reference/executions/list-executions"
                 ]
               },
               {
-                "group": "Public Workflows",
+                "group": "Workflows",
                 "pages": [
-                  "legacy/api-reference/public_workflows/create_public_workflow",
-                  "legacy/api-reference/public_workflows/get_public_workflows",
-                  "legacy/api-reference/public_workflows/get_draft"
+                  "v3/api-reference/private_workflows/create_private_workflow",
+                  "v3/api-reference/private_workflows/get_private_workflows",
+                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
+                  "v3/api-reference/private_workflows/get_draft",
+                  "v3/api-reference/private_workflows/publish_workflow"
                 ]
               },
               {
                 "group": "Schedule",
                 "pages": [
-                  "legacy/api-reference/schedule/register-cron",
-                  "legacy/api-reference/schedule/get-all-schedules",
-                  "legacy/api-reference/schedule/pause-schedule",
-                  "legacy/api-reference/schedule/resume-schedule",
-                  "legacy/api-reference/schedule/update-schedule-job",
-                  "legacy/api-reference/schedule/delete-schedule"
+                  "v3/api-reference/schedule/register-cron",
+                  "v3/api-reference/schedule/get-all-schedules",
+                  "v3/api-reference/schedule/pause-schedule",
+                  "v3/api-reference/schedule/resume-schedule",
+                  "v3/api-reference/schedule/update-schedule-job",
+                  "v3/api-reference/schedule/delete-schedule"
                 ]
               },
               {
                 "group": "Session Token",
                 "pages": [
-                  "legacy/api-reference/session-token/generate-token-for-linked-account"
+                  "v3/api-reference/session-token/generate-token-for-linked-account"
                 ]
               },
               {
-                "group": "Cobalt Hosted",
+                "group": "MCP Servers",
                 "pages": [
-                  "legacy/api-reference/cobalt-connect/get-connect-url",
-                  "legacy/api-reference/cobalt-connect/get-hosted-properties"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "Cobalt SDKs",
-                "pages": [
-                  "legacy/sdks/overview"
+                  "v3/api-reference/mcp/list-mcp-servers",
+                  "v3/api-reference/mcp/get-mcp-server",
+                  "v3/api-reference/mcp/create-mcp-server",
+                  "v3/api-reference/mcp/update-mcp-server",
+                  "v3/api-reference/mcp/delete-mcp-server"
                 ]
               },
               {
-                "group": "Server-side SDKs",
+                "group": "Refold Hosted",
                 "pages": [
-                  "legacy/sdks/server-side-sdks/nodejs-sdk"
-                ]
-              },
-              {
-                "group": "Client-side SDKs",
-                "pages": [
-                  "legacy/sdks/client-side-sdks/react-sdk",
-                  "legacy/sdks/client-side-sdks/js-sdk"
+                  "v3/api-reference/cobalt-connect/get-connect-url",
+                  "v3/api-reference/cobalt-connect/get-hosted-properties"
                 ]
               }
             ]
@@ -1744,24 +1765,15 @@
             "tab": "Changelog",
             "groups": [
               {
-                "group": "Resources",
+                "group": "Changes",
                 "pages": [
+                  "v3/changelog/overview",
                   {
-                    "group": "Integration Providers",
+                    "group": "2026",
                     "pages": [
-                      "legacy/applications/providers/overview",
-                      {
-                        "group": "Adobe Sign",
-                        "pages": [
-                          "legacy/applications/providers/adobesign"
-                        ]
-                      },
-                      {
-                        "group": "Adobe Workfront",
-                        "pages": [
-                          "legacy/applications/providers/adobe_workfront"
-                        ]
-                      }
+                      "v3/changelog/2026/april",
+                      "v3/changelog/2026/march",
+                      "v3/changelog/2026/february"
                     ]
                   }
                 ]
@@ -1923,12 +1935,13 @@
       }
     ]
   },
+  "openapi": "v3/api-reference/openapi.yaml",
   "api": {
     "baseUrl": "https://api.gocobalt.io",
     "auth": {
       "method": "key",
       "name": "x-api-key",
-      "inputPrefix": "<Your Cobalt API key>"
+      "inputPrefix": "<Your Refold API key>"
     },
     "playground": {
       "mode": "simple"

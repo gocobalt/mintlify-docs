@@ -66,8 +66,8 @@ Several actions share common SFTP connection parameters. These are documented on
 ## Actions
 
 <AccordionGroup>
-  <Accordion title="Delete file from Cobalt bucket">
-    Deletes a file from the Cobalt-managed cloud storage bucket (AWS S3, GCP, or MinIO) using the file key or file ID.
+  <Accordion title="Delete file from Refold bucket">
+    Deletes a file from the Refold-managed cloud storage bucket (AWS S3, GCP, or MinIO) using the file key or file ID.
 
     <ParamField path="File Key" type="string" required>
       The file path/name in the bucket. Example: `uploads/contacts/export-2024.csv` or `{{uploaded_file.key}}`
@@ -110,7 +110,7 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 
   <Accordion title="Transfer file from source to cobalt bucket">
-    Transfers a file from an SFTP server or URL to the Cobalt-managed cloud storage bucket and returns a presigned URL for access.
+    Transfers a file from an SFTP server or URL to the Refold-managed cloud storage bucket and returns a presigned URL for access.
 
     <ParamField path="Source File Details" type="object" required>
       Configuration for the source file. Select protocol (SFTP or URL) and provide corresponding connection details.
@@ -126,7 +126,7 @@ Several actions share common SFTP connection parameters. These are documented on
     |-------|------|-------------|
     | Infinite Expiry | Toggle | When enabled, the file does not expire. |
     | TTL | Integer | Time-to-live in seconds before the file is deleted. Only applies when Infinite Expiry is disabled. |
-    | Preserve Cloud Provider Presigned URL | Toggle | When enabled, returns the cloud provider's native presigned URL instead of Cobalt's URL. |
+    | Preserve Cloud Provider Presigned URL | Toggle | When enabled, returns the cloud provider's native presigned URL instead of Refold's URL. |
   </Accordion>
 
   <Accordion title="Read file from SFTP">
@@ -247,10 +247,10 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
   </Accordion>
 
-  <Accordion title="Move file to Cobalt bucket (deprecated)">
+  <Accordion title="Move file to Refold bucket (deprecated)">
     <Warning>This action is **deprecated** and will be removed in a future version. Use **Transfer file from source to cobalt bucket** instead.</Warning>
 
-    Moves a file from a URL to the Cobalt bucket.
+    Moves a file from a URL to the Refold bucket.
 
     <ParamField path="Source File URL" type="string" required>
       Public URL of the file to move. Example: `https://example.com/files/document-2024.pdf`
@@ -277,7 +277,7 @@ Several actions share common SFTP connection parameters. These are documented on
 ## Output
 
 <AccordionGroup>
-  <Accordion title="Delete file from Cobalt bucket">
+  <Accordion title="Delete file from Refold bucket">
 ```json
     {
       "status": "Success",
@@ -436,7 +436,7 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 
   <Accordion title="Archive NetSuite Reports to Cloud Storage">
-    Transfer NetSuite financial reports from SFTP to Cobalt bucket for long-term storage.
+    Transfer NetSuite financial reports from SFTP to Refold bucket for long-term storage.
 
     **Action:** Transfer file from source to cobalt bucket
 
@@ -502,16 +502,16 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 
   <Accordion title="Clean Up Processed Files">
-    Delete files from Cobalt bucket after they've been successfully processed.
+    Delete files from Refold bucket after they've been successfully processed.
 
-    **Action:** Delete file from Cobalt bucket
+    **Action:** Delete file from Refold bucket
 
     | Field | Value |
     |-------|-------|
     | File Key | `{{processed_file.key}}` |
     | File ID | `{{processed_file.etag}}` |
 
-    **Use Case:** After successfully syncing file data to SAP, delete the temporary file from the Cobalt bucket to manage storage costs.
+    **Use Case:** After successfully syncing file data to SAP, delete the temporary file from the Refold bucket to manage storage costs.
   </Accordion>
 
   <Accordion title="Transfer Files Between SFTP Servers">
@@ -552,9 +552,9 @@ Several actions share common SFTP connection parameters. These are documented on
     | Problem | Solution |
     |---------|----------|
     | Authentication failed | Verify username and password/PEM key. Check if the account is locked or credentials have expired. |
-    | Connection refused | Confirm the host and port are correct. Check if the SFTP server is running and accessible from Cobalt's network. |
+    | Connection refused | Confirm the host and port are correct. Check if the SFTP server is running and accessible from Refold's network. |
     | Host key verification failed | The SFTP server's host key may have changed. Contact your server administrator to verify the new key. |
-    | Connection timeout | Check network connectivity. The SFTP server may be behind a firewall blocking Cobalt's IP addresses. |
+    | Connection timeout | Check network connectivity. The SFTP server may be behind a firewall blocking Refold's IP addresses. |
   </Accordion>
 
   <Accordion title="File Operation Errors">

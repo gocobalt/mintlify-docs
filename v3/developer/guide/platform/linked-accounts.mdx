@@ -5,11 +5,11 @@ description: "Create and manage linked accounts for customer integrations"
 
 # Linked Accounts
 
-Learn how to manage users, roles, and permissions within your Cobalt organization.
+Learn how to manage users, roles, and permissions within your Refold organization.
 
 ## Overview
 
-Cobalt provides comprehensive user management capabilities that allow you to control access to your integration platform, manage team permissions, and maintain security across your organization.
+Refold provides comprehensive user management capabilities that allow you to control access to your integration platform, manage team permissions, and maintain security across your organization.
 
 ## User Types
 
@@ -35,7 +35,7 @@ Cobalt provides comprehensive user management capabilities that allow you to con
 
 <Steps>
   <Step title="Navigate to User Management">
-    Go to **Settings** → **Users** in your Cobalt dashboard
+    Go to **Settings** → **Users** in your Refold dashboard
   </Step>
   
   <Step title="Invite New User">
@@ -55,7 +55,7 @@ Cobalt provides comprehensive user management capabilities that allow you to con
 
 ### Role-Based Access Control (RBAC)
 
-Cobalt uses role-based access control to manage what users can see and do within the platform.
+Refold uses role-based access control to manage what users can see and do within the platform.
 
 <Tabs>
   <Tab title="Admin Permissions">
@@ -86,7 +86,7 @@ Cobalt uses role-based access control to manage what users can see and do within
 
 ### Custom Permissions
 
-For enterprise customers, Cobalt supports custom permission sets that can be tailored to your organization's specific needs.
+For enterprise customers, Refold supports custom permission sets that can be tailored to your organization's specific needs.
 
 ## User Lifecycle Management
 
@@ -152,7 +152,7 @@ SSO is available for Enterprise customers and provides seamless authentication t
 
 <Steps>
   <Step title="Contact Support">
-    Reach out to Cobalt support to initiate SSO setup for your organization
+    Reach out to Refold support to initiate SSO setup for your organization
   </Step>
   
   <Step title="Provide Configuration">
@@ -172,24 +172,24 @@ SSO is available for Enterprise customers and provides seamless authentication t
 
 ### API Keys
 
-Users with appropriate permissions can generate and manage API keys for programmatic access to the Cobalt platform.
+Users with appropriate permissions can generate and manage API keys for programmatic access to the Refold platform.
 
 <CodeGroup>
 ```javascript Node.js
-// Initialize Cobalt SDK with user-specific API key
-const { CobaltSDK } = require('@cobalt-io/sdk');
+// Initialize Refold SDK with user-specific API key
+const { RefoldSDK } = require('@cobalt-io/sdk');
 
-const cobalt = new CobaltSDK({
+const cobalt = new RefoldSDK({
   apiKey: process.env.COBALT_API_KEY,
   environment: 'production'
 });
 ```
 
 ```python Python
-from cobalt_sdk import CobaltSDK
+from cobalt_sdk import RefoldSDK
 
 # Initialize with user-specific API key
-cobalt = CobaltSDK(
+cobalt = RefoldSDK(
     api_key=os.getenv('COBALT_API_KEY'),
     environment='production'
 )
@@ -217,7 +217,7 @@ Follow the principle of least privilege - grant users only the minimum access re
 
 ### Password Policies
 
-For organizations not using SSO, Cobalt enforces strong password policies:
+For organizations not using SSO, Refold enforces strong password policies:
 
 - Minimum 12 characters
 - Must include uppercase, lowercase, numbers, and special characters

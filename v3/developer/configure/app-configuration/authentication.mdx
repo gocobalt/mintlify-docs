@@ -1,25 +1,25 @@
 ---
 title: "Authentication"
-description: "Configure authentication methods and security settings for your Cobalt platform"
+description: "Configure authentication methods and security settings for your Refold platform"
 ---
 
 # Authentication
 
-Configure secure authentication methods for your Cobalt integration platform and end users.
+Configure secure authentication methods for your Refold integration platform and end users.
 
 ## Overview
 
-Cobalt provides multiple authentication methods to ensure secure access to your integration platform while maintaining a seamless user experience. This includes API authentication, OAuth flows, and end-user authentication options.
+Refold provides multiple authentication methods to ensure secure access to your integration platform while maintaining a seamless user experience. This includes API authentication, OAuth flows, and end-user authentication options.
 
 ## API Authentication
 
 ### API Keys
 
-API keys are the primary method for authenticating server-to-server requests to the Cobalt API.
+API keys are the primary method for authenticating server-to-server requests to the Refold API.
 
 <Steps>
   <Step title="Generate API Key">
-    Navigate to **Settings** → **API Keys** in your Cobalt dashboard and click **Generate New Key**
+    Navigate to **Settings** → **API Keys** in your Refold dashboard and click **Generate New Key**
   </Step>
   
   <Step title="Configure Permissions">
@@ -37,10 +37,10 @@ API keys are the primary method for authenticating server-to-server requests to 
 
 <CodeGroup>
 ```javascript Node.js
-// Initialize Cobalt SDK with API key
-const { CobaltSDK } = require('@cobalt-io/sdk');
+// Initialize Refold SDK with API key
+const { RefoldSDK } = require('@cobalt-io/sdk');
 
-const cobalt = new CobaltSDK({
+const cobalt = new RefoldSDK({
   apiKey: process.env.COBALT_API_KEY,
   environment: 'production'
 });
@@ -48,10 +48,10 @@ const cobalt = new CobaltSDK({
 
 ```python Python
 import os
-from cobalt_sdk import CobaltSDK
+from cobalt_sdk import RefoldSDK
 
 # Initialize with API key from environment
-cobalt = CobaltSDK(
+cobalt = RefoldSDK(
     api_key=os.getenv('COBALT_API_KEY'),
     environment='production'
 )
@@ -93,24 +93,24 @@ curl -X GET 'https://api.gocobalt.io/api/v1/linked-accounts' \
 
 ### OAuth 2.0 Flow
 
-Cobalt supports OAuth 2.0 for secure authorization with third-party applications.
+Refold supports OAuth 2.0 for secure authorization with third-party applications.
 
 ```mermaid
 sequenceDiagram
     participant User
     participant YourApp
-    participant Cobalt
+    participant Refold
     participant ThirdParty
     
     User->>YourApp: Initiate Integration
-    YourApp->>Cobalt: Request Auth URL
-    Cobalt->>YourApp: Return Auth URL
+    YourApp->>Refold: Request Auth URL
+    Refold->>YourApp: Return Auth URL
     YourApp->>User: Redirect to Auth URL
     User->>ThirdParty: Authenticate
-    ThirdParty->>Cobalt: Authorization Code
-    Cobalt->>ThirdParty: Exchange for Access Token
-    ThirdParty->>Cobalt: Access Token
-    Cobalt->>YourApp: Integration Complete
+    ThirdParty->>Refold: Authorization Code
+    Refold->>ThirdParty: Exchange for Access Token
+    ThirdParty->>Refold: Access Token
+    Refold->>YourApp: Integration Complete
 ```
 
 ### OAuth Configuration Steps
@@ -131,8 +131,8 @@ sequenceDiagram
     Securely store your OAuth client ID and secret for each integration
   </Step>
   
-  <Step title="Configure in Cobalt">
-    Add OAuth credentials to your Cobalt application settings
+  <Step title="Configure in Refold">
+    Add OAuth credentials to your Refold application settings
   </Step>
 </Steps>
 
@@ -213,11 +213,11 @@ Use session tokens in embedded integration flows:
 
 <CodeGroup>
 ```javascript React Component
-import { CobaltConnect } from '@cobalt-io/react';
+import { RefoldConnect } from '@cobalt-io/react';
 
 function IntegrationFlow({ sessionToken }) {
   return (
-    <CobaltConnect
+    <RefoldConnect
       sessionToken={sessionToken}
       onSuccess={(integration) => {
         console.log('Integration connected:', integration);
@@ -236,7 +236,7 @@ function IntegrationFlow({ sessionToken }) {
 <div id="cobalt-connect"></div>
 
 <script>
-  CobaltConnect.init({
+  RefoldConnect.init({
     element: '#cobalt-connect',
     sessionToken: 'your_session_token',
     onSuccess: function(integration) {
@@ -385,14 +385,14 @@ All authentication events are logged for security and compliance purposes:
   "user_id": "user_123",
   "method": "api_key",
   "ip_address": "192.168.1.100",
-  "user_agent": "CobaltSDK/1.0.0",
+  "user_agent": "RefoldSDK/1.0.0",
   "resource": "linked_accounts.list"
 }
 ```
 
 ### Compliance Standards
 
-Cobalt authentication meets various compliance requirements:
+Refold authentication meets various compliance requirements:
 
 - **SOC 2 Type II**: Security controls and monitoring
 - **GDPR**: Data protection and privacy controls
@@ -438,7 +438,7 @@ Cobalt authentication meets various compliance requirements:
 Enable debug logging for authentication troubleshooting:
 
 ```javascript
-const cobalt = new CobaltSDK({
+const cobalt = new RefoldSDK({
   apiKey: process.env.COBALT_API_KEY,
   debug: true, // Enable debug logging
   environment: 'production'
