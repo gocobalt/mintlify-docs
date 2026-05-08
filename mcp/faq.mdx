@@ -1,0 +1,96 @@
+---
+title: "FAQ"
+description: "Common questions about Refold MCP servers, security, and operations"
+---
+
+## Setup and access
+
+<AccordionGroup>
+  <Accordion title="Can two users share the same MCP server?">
+    Yes. The MCP server configuration (name, apps, skills, toggles) is shared. But each user connects with their own token, which is tied to their linked account. They see the same tools but operate on their own credentials and data.
+  </Accordion>
+
+  <Accordion title="Can I create multiple MCP servers for different use cases?">
+    Yes. You can create as many MCP servers as you need. A common pattern is one server per use case: a "Sales Operations" server with Salesforce + HubSpot, and a "Finance" server with NetSuite + SAP. Each server has its own set of apps, actions, skills, and toggle configuration.
+  </Accordion>
+
+  <Accordion title="Which MCP clients are supported?">
+    Any client that supports the MCP protocol over Streamable HTTP transport works. This includes Claude Desktop, Cursor, Windsurf, and custom agents. Refold also provides an embeddable chat widget for testing and end-user access.
+  </Accordion>
+
+  <Accordion title="Do I need to write code to set up an MCP server?">
+    No. MCP servers are configured entirely through the Refold dashboard. You select apps, choose actions, toggle modes, and get a Server URL. No code, no deployment, no infrastructure to manage.
+  </Accordion>
+</AccordionGroup>
+
+## Security and access control
+
+<AccordionGroup>
+  <Accordion title="Can an agent access apps that aren't on the server?">
+    No. An agent can only access apps explicitly added to the MCP server's Applications tab. Within each app, only the actions you selected are exposed. Everything else is invisible to the agent.
+  </Accordion>
+
+  <Accordion title="Are third-party credentials exposed to the agent?">
+    Never. OAuth tokens and API keys for connected apps are stored encrypted in Refold and used server-side when executing actions. The agent sends an action request; Refold resolves the credentials internally. Credentials never appear in tool inputs, outputs, or audit logs.
+  </Accordion>
+
+  <Accordion title="What happens if a token is compromised?">
+    Revoke the linked account or regenerate its token in the Refold dashboard. The old token becomes invalid immediately. All requests with the old token will return HTTP 403.
+  </Accordion>
+
+  <Accordion title="Can I restrict which actions an agent can call?">
+    Yes. In direct mode, you explicitly select which actions to expose per app. The agent can only call what you added. In agent mode, `RESOLVE_ACTIONS` can only resolve actions that exist on the server configuration. There is no way for an agent to discover or call actions you haven't added.
+  </Accordion>
+
+  <Accordion title="Is data encrypted in transit?">
+    Yes. All connections use TLS 1.2+. This includes client-to-server (MCP protocol), server-to-auth-service (gRPC), server-to-workflow-service (gRPC), and workflow-service-to-third-party-apps (HTTPS).
+  </Accordion>
+</AccordionGroup>
+
+## Operations
+
+<AccordionGroup>
+  <Accordion title="What happens if credentials expire mid-session?">
+    The tool call will fail with an execution error. If the Auth Tool toggle is enabled, the agent can return an auth link to the user to re-authenticate. The failed call is logged in MCP Logs with the error details. No partial data is returned.
+  </Accordion>
+
+  <Accordion title="What happens if Refold's auth service goes down?">
+    The MCP server fails closed. If the auth service is unreachable, all requests return HTTP 503. No tools are listed, no actions execute, no unauthenticated access is possible.
+  </Accordion>
+
+  <Accordion title="How long do audit logs persist?">
+    Audit records are stored in Refold's database. Contact your account team for details on retention policies for your plan.
+  </Accordion>
+
+  <Accordion title="Can I export audit logs?">
+    Audit logs are viewable and filterable in the Refold dashboard under Maintain > MCP Logs. API-based export is on the roadmap.
+  </Accordion>
+
+  <Accordion title="Is there a rate limit on tool calls?">
+    Rate limits depend on your plan. The MCP server itself does not impose per-tool rate limits. Third-party app rate limits (e.g., Salesforce API limits) are handled by the workflow service, which returns errors when limits are hit.
+  </Accordion>
+</AccordionGroup>
+
+## Modes and patterns
+
+<AccordionGroup>
+  <Accordion title="When should I use direct mode vs agent mode?">
+    **Direct mode** when you have a small number of actions (under ~20) and want tight control over exactly what the agent sees. Each action is its own tool with a fixed schema.
+
+    **Agent mode** when you have many actions across multiple apps. The agent uses `RESOLVE_ACTIONS` to figure out which action to call from natural language, then `EXECUTE_ACTION` to run it. More flexible, works better at scale.
+
+    See the [decision framework](/mcp/overview#choosing-your-pattern) in the Overview.
+  </Accordion>
+
+  <Accordion title="Can I use skills and workflows on the same server?">
+    Yes. Skills, direct actions, and workflows can all coexist on the same server. Skills provide guidance for multi-step operations. Workflows encapsulate entire processes as single tool calls. Direct actions handle simple one-off operations. Use the right pattern for each task.
+  </Accordion>
+
+  <Accordion title="What's the difference between a skill and a workflow?">
+    A **skill** is a set of instructions the agent follows. The agent still makes individual tool calls (RESOLVE_ACTIONS, EXECUTE_ACTION) for each step. The skill just guides what to do and in what order.
+
+    A **workflow** is a complete process that runs server-side as a single tool call. The agent triggers it; Refold handles all the steps, error handling, and retries internally. The agent just gets the final result.
+
+    Use skills when you want the agent to have flexibility within a process. Use workflows when the process must run exactly the same way every time.
+  </Accordion>
+</AccordionGroup>

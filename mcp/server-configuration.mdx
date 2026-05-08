@@ -1,0 +1,78 @@
+---
+title: "Server Configuration"
+description: "Control what agents can access, how they interact with your integrations, and what's exposed"
+---
+
+Each MCP server has three configuration tabs: **Overview**, **Applications**, and **Skills**. Together, these control exactly what an agent can see and do.
+
+## Overview tab
+
+<img src="/images/mcp-server-overview.png" alt="Server Overview tab with name, description, and toggles" />
+
+### Name and description
+
+The **Name** and **Description** are sent to the MCP client when an agent connects. Write them for the agent. Be specific about what apps and actions are available so the agent knows what it can do.
+
+### Server URL
+
+```
+https://<domain>/mcp/v1/<token>/<server_id>
+```
+
+| Segment | What it is |
+|---------|------------|
+| `token` | Auth token tied to a specific [linked account](/build/basics/linked_account). Each end user gets a unique token and therefore a unique URL. |
+| `server_id` | Identifies this MCP server configuration. |
+
+The token in the URL authenticates the request. When an agent connects, Refold validates the token against the auth service and resolves which organization, linked account, and environment the request belongs to. All tool calls within that session run under those credentials.
+
+<Info>
+The Server URL is generated per linked account. You can retrieve it from the dashboard or programmatically via the [MCP Servers API](/api-reference/mcp/get-mcp-server).
+</Info>
+
+### Access controls
+
+Three toggles in the Server Details panel control what the agent can access. These are your primary governance controls for scoping agent capabilities.
+
+| Toggle | What it controls | Governance impact |
+|--------|-----------------|-------------------|
+| **Auth Tool** | Includes an inline authentication tool. When credentials are missing for an app, the agent returns an auth link instead of failing silently. | Ensures credential gaps are surfaced to the user, not swallowed. |
+| **Retrieve Skill** | Adds `SEARCH_INTEGRATION_GRAPH` and `LOAD_SKILL` tools. Agents can discover and load pre-built procedures. | Controls whether agents can access your integration knowledge base. See [Skills](/mcp/skills). |
+| **Agent Mode** | Switches from per-action tools to `RESOLVE_ACTIONS` + `EXECUTE_ACTION`. | **Direct mode** (off) = agents see only the specific actions you selected. Tightest scope. **Agent mode** (on) = agents resolve intent from natural language, then execute. More flexible, broader access. See [Tools Reference](/mcp/tools-reference). |
+
+When all toggles are off (the default), the server runs in **direct mode**: one tool per action/workflow. This is the most restrictive configuration, where each agent can only call the specific actions you explicitly added.
+
+<Info>
+Start with direct mode and a small set of actions. Expand to agent mode when you need broader coverage or when the number of actions makes individual tools unwieldy.
+</Info>
+
+### Other sections
+
+- **Prompt Suggestions**: Sample prompts shown in the embedded chat widget. Helps guide end users toward valid operations.
+- **Client Setup**: Quick-reference connection instructions for different MCP clients.
+- **Embed Chat**: Iframe snippet and standalone Chat URL for embedding the agent in your application.
+- **Debug Mode**: Shows full request/response payloads in the embedded chat. Turn this on during development, off in production.
+
+## Applications tab
+
+<img src="/images/mcp-add-application.png" alt="Adding an application and selecting actions" />
+
+Lists the apps connected to this server. This is where you define the agent's access boundary. Only apps added here are reachable. Only the actions you select within each app are exposed as tools.
+
+Each app must be:
+1. **Configured** in your Refold account with valid auth settings ([connector setup guide](/build/connectors/overview))
+2. **Authorized** by the linked account (the end user must have completed the auth flow for that app)
+
+You can connect multiple apps to a single server. A server with Salesforce + SAP + NetSuite gives the agent access to CRM, ERP, and financial actions in one session.
+
+<Warning>
+Adding an app does not give the agent access to all of its actions by default. You select which actions to expose when adding the app. This lets you follow least-privilege: only expose what agents actually need.
+</Warning>
+
+## Skills tab
+
+<img src="/images/mcp-skills-tab.png" alt="Skills tab showing a custom skill with scope, stats, and status" />
+
+Skills are reusable procedures attached to your server. They give agents step-by-step guidance for complex multi-step operations instead of letting the agent figure out the approach on its own.
+
+See the full [Skills documentation](/mcp/skills) for how to create and manage skills.

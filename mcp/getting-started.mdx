@@ -1,94 +1,150 @@
 ---
 title: "Getting Started"
-description: "Configure MCP on Refold platform and use it in your MCP client"
+description: "Create an MCP server and connect it to Claude or Cursor in under 5 minutes"
 ---
 
-## Pre-requisites
+## Prerequisites
 
-<Warning>
-Ensure you have the following before proceeding:
-</Warning>
+- A Refold account with at least one [linked account](/build/basics/linked_account) created
+- At least one application configured with valid credentials ([connector setup guide](/build/connectors/overview))
+- An MCP client installed (Claude Desktop, Cursor, or Windsurf)
 
-- **Refold account** - You have an active account on Refold
-- **Linked account** - You have created a linked account in Refold ([refer to guide](https://docs.gocobalt.io/build/basics/linked_account))
-
-<Info>
-Linked account is required to test the MCP connection.
-</Info>
-
-## Creating MCP Servers
+## Create your MCP server
 
 <Steps>
-  <Step title="Configure Application">
-    <img
-      className="block dark:hidden"
-      src="/images/mcp-step1-configure-app-light.png"
-      alt="Configure application authentication and scopes"
-    />
-    <img
-      className="hidden dark:block"
-      src="/images/mcp-step1-configure-app-light.png"
-      alt="Configure application authentication and scopes"
-    />
-    
-    **Setup authentication:**
-    - Use the setup guide of each application
-    - Define the **scopes required** for the application
-    - This ensures your MCP server has the right level of access
-    
-    <Card title="Connector Setup Guide" icon="plug" href="https://docs.gocobalt.io/build/connectors/overview">
-      Complete guide for setting up connectors
-    </Card>
+  <Step title="Open MCP Servers">
+    In the Refold dashboard, go to **Embedded Agents > MCP Servers** and click **+ Create Server**.
+
+    <img src="/images/mcp-create-server.png" alt="MCP Servers list with Create Server dialog" />
   </Step>
 
-  <Step title="Create and Configure MCP Server">
-    <img
-      className="block dark:hidden"
-      src="/images/mcp-step2-create-server-light.png"
-      alt="Create and configure MCP server in Refold dashboard"
-    />
-    <img
-      className="hidden dark:block"
-      src="/images/mcp-step2-create-server-light.png"
-      alt="Create and configure MCP server in Refold dashboard"
-    />
-    
-    **Server configuration:**
-    - Go to **MCP tab** and add a new MCP server
-    - Add your **name** and **description**
-    - Add the **application** and **workflow** to the MCP server
-    - **Save changes**
+  <Step title="Name and describe the server">
+    Set a **Name** and **Description**. These are what the agent sees when it connects, so write them for the AI, not for humans. Be specific about what apps and actions are available.
+
+    **Good example:**
+    - Name: `Acme CRM Integration`
+    - Description: `Access Salesforce and HubSpot data. Create, update, and query contacts, deals, and accounts.`
+
+    **Bad example:**
+    - Name: `My Server`
+    - Description: `Integration server`
   </Step>
 
-  <Step title="Use in the Client">
-    <img
-      className="block dark:hidden"
-      src="/images/mcp-step3-use-client-light.png"
-      alt="Generate token and use in MCP client"
-    />
-    <img
-      className="hidden dark:block"
-      src="/images/mcp-step3-use-client-light.png"
-      alt="Generate token and use in MCP client"
-    />
-    
-    **Client setup:**
-    - Generate a **token specific** for your end customer for your MCP server
-    - Copy the **URL** and use it in any client (Cursor, Claude)
-    - **Embed Playground** - Use Refold embed to try out the client agent or embed it in your application
+  <Step title="Add applications">
+    Go to the **Applications** tab and add the apps you want the agent to access. Each app's actions and workflows become available as tools.
+
+    <img src="/images/mcp-add-application.png" alt="Adding a Workday application with available actions" />
+  </Step>
+
+  <Step title="Copy the Server URL">
+    Go back to the **Overview** tab and copy the **Server URL**.
+
+    ```
+    https://<domain>/mcp/v1/<token>/<server_id>
+    ```
+
+    The `token` is tied to a specific linked account. Each of your end users gets their own URL.
+
+    <img src="/images/mcp-server-overview.png" alt="Server Overview tab showing Server URL and toggles" />
   </Step>
 </Steps>
 
-## Configuring Authentication
+## Connect to your MCP client
 
-<Tip>
-Your users need to authenticate against an app to use its MCP server through Refold.
-</Tip>
+<Tabs>
+  <Tab title="Claude Desktop">
+    Open your Claude Desktop config file:
 
-**Authentication setup:**
-- Follow the authentication flow guide for your users
-- Ensure proper user permissions and access levels
+    | OS | Path |
+    |----|------|
+    | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+    | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
-<Card title="Auth Flows Guide" icon="shield" href="https://docs.gocobalt.io/ship/auth_flows/flows">
-  Complete guide for setting up authentication flows for your users
-</Card> 
+    Add your server:
+
+    ```json
+    {
+      "mcpServers": {
+        "refold": {
+          "url": "https://<domain>/mcp/v1/<your-token>/<server-id>"
+        }
+      }
+    }
+    ```
+
+    Or use **Settings > Connectors > Add custom connector** and paste the Server URL directly:
+
+    <img src="/images/mcp-claude-desktop-setup.png" alt="Adding Refold MCP server in Claude Desktop" />
+
+    Restart Claude Desktop. You should see the tools icon in the chat input showing the tools from your server.
+  </Tab>
+
+  <Tab title="Cursor">
+    Go to **Cursor Settings > MCP** and add a new server, or add it to your project's `.cursor/mcp.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "refold": {
+          "url": "https://<domain>/mcp/v1/<your-token>/<server-id>"
+        }
+      }
+    }
+    ```
+  </Tab>
+
+  <Tab title="Windsurf">
+    Go to **Windsurf Settings > MCP** and add the Server URL as a new remote MCP server.
+  </Tab>
+
+  <Tab title="Embed Chat">
+    Refold provides an embeddable chat widget. Go to the **Embed Chat** section in your server's Overview tab to get the iframe snippet or Chat URL.
+
+    ```html
+    <iframe
+      src="<your-embed-chat-url>"
+      width="400"
+      height="600"
+      style="border: none;"
+    />
+    ```
+  </Tab>
+</Tabs>
+
+## Test the connection
+
+Try a simple prompt in your MCP client:
+
+```
+What tools do you have available?
+```
+
+The agent should list the integration actions from your connected apps. Then try an actual operation:
+
+```
+List all contacts from Salesforce
+```
+
+<Info>
+If a connected app returns an auth error, the linked account may not have completed the auth flow for that app. Check your linked account's connection status in the dashboard.
+</Info>
+
+## Troubleshooting
+
+| Problem | Likely cause | Fix |
+|---------|-------------|-----|
+| No tools visible | Server URL is wrong or token is invalid | Re-copy the URL from the dashboard. Make sure you're using the full URL including token and server ID. |
+| "Unauthorized" error | Token expired or linked account deleted | Generate a fresh token for the linked account. |
+| Action fails with auth error | App credentials missing or expired | Have the end user re-authenticate the app through your auth flow. |
+| Tools visible but calls fail | App not properly configured | Check the app's configuration in **Connectors** and verify scopes. |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Server Configuration" icon="gear" href="/mcp/server-configuration">
+    Configure modes, toggles, and advanced settings
+  </Card>
+  <Card title="Tools Reference" icon="wrench" href="/mcp/tools-reference">
+    Understand direct mode vs agent mode and all available tools
+  </Card>
+</CardGroup>

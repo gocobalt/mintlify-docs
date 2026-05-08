@@ -1,224 +1,91 @@
 ---
-title: "Workflow as MCP"
-description: "Transform complex business processes into agent-reliable workflows with enterprise-grade error handling"
+title: "Workflows as MCP Tools"
+description: "Expose tested workflows as single tool calls instead of letting agents orchestrate raw API sequences"
 ---
 
+AI agents can call individual APIs, but they struggle with complex multi-step processes that need precise sequencing, error handling, and business logic. They skip steps, make inconsistent decisions, and have no built-in compliance checks.
 
-**The fundamental challenge:** AI agents can call individual APIs, but they struggle with complex, multi-step business processes that require precise sequencing, error handling, and business logic enforcement.
+The fix: instead of letting agents orchestrate complex processes, expose your proven workflows as single MCP tools. The agent calls one tool. The workflow handles the rest.
 
-**The solution:** Instead of expecting agents to orchestrate complex processes, **expose your proven workflows as atomic MCP actions**. Agents execute battle-tested business logic with built-in reliability.
+## Why this matters
 
-<Info>
-**Game-changing shift**: From "AI agents figuring out processes" to "AI agents executing proven processes"
-</Info>
+When agents handle multi-step processes directly:
+- They may skip steps or reorder them incorrectly
+- The same process runs differently each time
+- No approval workflows, compliance checks, or rollback on failure
+- One failure breaks everything downstream
 
-## Why Workflow as MCP is Game-Changing
-
-### The Agent Reliability Problem
-
-When agents handle complex processes directly:
-- **Hallucination in critical paths** - Agents might skip steps or make incorrect decisions
-- **Inconsistent execution** - Same process executed differently each time
-- **No enterprise controls** - Missing approval workflows, compliance checks, rollback capabilities
-- **Error cascade failures** - One failure breaks the entire process
-
-### The Workflow as MCP Solution
-
-**Built-in Enterprise Reliability:**
-- **Deterministic execution** - Same process, same result, every time
-- **Comprehensive error handling** - Predefined error paths, retry mechanisms, rollback procedures
-- **Business logic enforcement** - Approval workflows, compliance checks, validation rules
-- **Audit trails** - Complete visibility into process execution
+When you wrap the process in a workflow:
+- Execution is deterministic. Same inputs, same result.
+- Error handling, retries, and rollback are built in
+- Business rules (approvals, compliance, validation) are enforced
+- Every execution is audited
 
 <Warning>
-**Enterprise Impact**: A single workflow failure in SAP can cascade across procurement, finance, and operations. Workflow as MCP prevents these failures.
+A single workflow failure in SAP can cascade across procurement, finance, and operations. Agents calling raw APIs have no guardrails against this. Workflows do.
 </Warning>
 
-## Real-World Enterprise Example: SAP Procurement
+## Example: SAP Procurement
 
-### The Complex Reality
+An agent needs to handle "Buy a laptop from Dell for $1,200." This is an 8-step process in SAP.
 
 <Tabs>
-  <Tab title="Traditional Process">
-    **8-Step SAP Procurement Process:**
+  <Tab title="Agent calling raw APIs">
+    The agent has to figure out and execute all 8 steps:
 
-    ```mermaid
-    flowchart TD
-        A["Agent Request:<br/>Buy laptop from Dell, $1,200"] --> B["1. Vendor Validation<br/>Check master data, compliance"]
-        B --> C["2. Budget Authorization<br/>Validate availability, get approvals"]
-        C --> D["3. Purchase Requisition<br/>Create PR with cost center"]
-        D --> E["4. Approval Routing<br/>Route through hierarchy"]
-        E --> F["5. Purchase Order Creation<br/>Generate PO with release strategy"]
-        F --> G["6. Vendor Notification<br/>Send PO with requirements"]
-        G --> H["7. Goods Receipt Processing<br/>Three-way matching"]
-        H --> I["8. Exception Handling<br/>Manage variances, delays"]
-        
-        B --> J["❌ Skip compliance checks"]
-        C --> K["❌ Missing budget approval"]
-        E --> L["❌ Miss approval workflows"]
-        H --> M["❌ Fail exception handling"]
-        
-        J --> N["🚨 COMPLIANCE RISK"]
-        K --> O["🚨 BUDGET OVERRUN"]
-        L --> P["🚨 UNAUTHORIZED PO"]
-        M --> Q["🚨 PAYMENT ISSUES"]
-        
-        style A fill:#e1f5fe
-        style N fill:#ffebee
-        style O fill:#ffebee
-        style P fill:#ffebee
-        style Q fill:#ffebee
-    ```
-     
-     <Warning>
-     **Agent Failure Points**: When agents handle this process directly, they often skip critical steps, leading to compliance risks and operational failures.
-     </Warning>
-   </Tab>
-   
-   <Tab title="Workflow as MCP">
-     **3 Atomic Workflows Solution:**
+    1. Validate vendor master data and compliance status
+    2. Check budget availability and get approval
+    3. Create purchase requisition with cost center
+    4. Route through approval hierarchy
+    5. Generate purchase order with release strategy
+    6. Notify vendor with requirements
+    7. Process goods receipt with three-way matching
+    8. Handle exceptions (price variance, quality, delays)
 
-     ```mermaid
-     flowchart TD
-         A["Agent Request:<br/>Buy laptop from Dell, $1,200"] --> B["Workflow 1:<br/>Vendor & Budget Validation"]
-         B --> C["Workflow 2:<br/>PO Creation & Routing"]
-         C --> D["Workflow 3:<br/>Goods Receipt & Exceptions"]
-         
-         B --> B1["✅ Vendor compliance verified"]
-         B --> B2["✅ Budget approved"]
-         B --> B3["✅ Error handling built-in"]
-         
-         C --> C1["✅ Proper approvals obtained"]
-         C --> C2["✅ PO created with controls"]
-         C --> C3["✅ Vendor automatically notified"]
-         
-         D --> D1["✅ Three-way matching"]
-         D --> D2["✅ Automatic variance handling"]
-         D --> D3["✅ Exception workflows triggered"]
-         
-         style A fill:#e1f5fe
-         style B fill:#e8f5e8
-         style C fill:#e8f5e8
-         style D fill:#e8f5e8
-     ```
-     
-     <Check>
-     **Enterprise Reliability**: Each workflow includes comprehensive error handling, retry mechanisms, and audit trails.
-     </Check>
-   </Tab>
+    **Failure points:** The agent might skip compliance checks, miss budget approval, bypass the approval hierarchy, or fail to handle exceptions. Each of these creates real business risk.
+  </Tab>
+
+  <Tab title="Agent calling workflows">
+    The same process, split into 3 workflows exposed as MCP tools:
+
+    **Workflow 1: Vendor and Budget Validation**
+    - Input: Vendor ID, material, quantity, expected price
+    - Handles: vendor compliance, budget check, pre-approval
+    - Built-in error paths: vendor not found, budget insufficient, compliance issues
+
+    **Workflow 2: PO Creation and Routing**
+    - Input: Validated vendor data, budget approval, delivery requirements
+    - Handles: PR creation, approval routing, PO generation
+    - Built-in error paths: approval rejection, budget changes, delivery conflicts
+
+    **Workflow 3: Goods Receipt and Exceptions**
+    - Input: PO number, delivery details, actual quantities and prices
+    - Handles: three-way matching, invoice verification, quality inspection
+    - Built-in error paths: price variance, quality issues, delivery delays
+
+    The agent calls 3 tools in sequence. Each workflow handles its own complexity internally.
+  </Tab>
 </Tabs>
 
-### The Transformation    
+## When to use workflows vs raw actions
 
-<AccordionGroup>
-  <Accordion title="Workflow 1: Vendor and Budget Validation">
-    **Agent Input:** Vendor ID, Material, Quantity, Expected Price
-    
-    **Workflow Logic:**
-    - Validate vendor master data and compliance status
-    - Check budget availability in controlling area
-    - Get pre-approval based on amount thresholds
-    - Handle vendor blacklist checks and payment terms validation
-    
-    **Built-in Error Handling:**
-    - Vendor not found → Alternative vendor suggestions
-    - Budget insufficient → Approval escalation workflow
-    - Compliance issues → Vendor remediation process
-    
-    **Agent Output:** Validated vendor, approved budget, compliance status
-  </Accordion>
-  
-  <Accordion title="Workflow 2: Purchase Order Creation and Routing">
-    **Agent Input:** Validated vendor data, budget approval, delivery requirements
-    
-    **Workflow Logic:**
-    - Create purchase requisition with proper cost center assignment
-    - Route through approval hierarchy based on business rules
-    - Generate PO with release strategy and output processing
-    - Handle conditional approvals and escalations
-    
-    **Built-in Error Handling:**
-    - Approval rejection → Modification workflow with stakeholder feedback
-    - Budget changes → Re-validation and approval process
-    - Delivery conflicts → Alternative delivery scheduling
-    
-    **Agent Output:** Approved PO, vendor notification sent, delivery scheduled
-  </Accordion>
-  
-  <Accordion title="Workflow 3: Goods Receipt and Exception Management">
-    **Agent Input:** PO number, delivery details, actual quantities and prices
-    
-    **Workflow Logic:**
-    - Process goods receipt with three-way matching
-    - Handle price and quantity variances automatically
-    - Trigger invoice verification and payment processing
-    - Manage quality inspection and exception reporting
-    
-    **Built-in Error Handling:**
-    - Price variance → Approval workflow or vendor negotiation
-    - Quality issues → Return process and vendor notification
-    - Delivery delays → Expediting workflow and stakeholder updates
-    
-    **Agent Output:** Goods received, invoice processed, exceptions resolved
-  </Accordion>
-</AccordionGroup>
+| Scenario | Use |
+|----------|-----|
+| Single API call (create contact, get invoice) | Raw action |
+| Multi-step process with business logic | Workflow |
+| Process requires approvals or compliance checks | Workflow |
+| Order of operations matters | Workflow |
+| Failure in one step should trigger rollback | Workflow |
 
+## How to set it up
 
+1. Build your workflow in the Refold workflow builder with proper error handling, retry logic, and validation
+2. Test it thoroughly outside of MCP
+3. Add it to your MCP server's **Applications** tab (workflows appear alongside actions)
+4. The workflow shows up as a tool the agent can call
 
-## Core Benefits of Workflow as MCP
-
-<AccordionGroup>
-  <Accordion title="Enterprise-Grade Reliability">
-    **Eliminates Agent Hallucination Risk**
-    
-    - **Deterministic execution** - Same inputs always produce same outputs
-    - **Tested business logic** - Workflows proven in production environments
-    - **Compliance enforcement** - Built-in regulatory and policy adherence
-    - **Comprehensive error handling** - Predefined responses to all failure scenarios
-    
-    **Multi-Layer Retry Mechanisms**
-    
-    - **Workflow-level retries** - Automatic retry for transient failures
-    - **Agent-level retries** - MCP client retry logic for network issues
-    - **Business logic retries** - Retry with modified parameters for business rule violations
-    - **Human intervention** - Escalation paths for manual resolution
-  </Accordion>
-  
-  <Accordion title="Simplified Agent Logic">
-    **From Complex Orchestration to Simple Execution**
-    
-    Agents transform from:
-    - **Complex decision makers** → **Simple executors**
-    - **Process orchestrators** → **Workflow consumers**
-    - **Error handlers** → **Result processors**
-    - **Business rule interpreters** → **Workflow callers**
-    
-    **Reduced Cognitive Load**
-    
-    - **No process sequencing** - Workflows handle step ordering
-    - **No error path management** - Built-in exception handling
-    - **No business rule validation** - Workflows enforce compliance
-    - **No system navigation** - Abstracted behind workflow interface
-  </Accordion>
-  
-  <Accordion title="Scalable Process Management">
-    **Workflow Evolution Without Agent Changes**
-    
-    - **Business rule updates** - Modify workflows without changing agent code
-    - **System integrations** - Add new systems behind existing workflow interfaces
-    - **Compliance changes** - Update regulatory requirements in workflows
-    - **Process optimization** - Improve workflows while maintaining agent compatibility
-    
-    **Enterprise Process Governance**
-    
-    - **Centralized process control** - Single source of truth for business logic
-    - **Version management** - Track workflow changes and rollback capabilities
-    - **Performance monitoring** - Measure workflow execution and optimization
-    - **Compliance reporting** - Automated audit trails and regulatory reporting
-  </Accordion>
-</AccordionGroup>
-
+The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
 
 <Info>
-**Result**: Organizations can confidently deploy AI agents for complex business processes, knowing that execution follows proven workflows with enterprise-grade reliability and comprehensive error handling.
+Workflows and raw actions can coexist on the same server. Use raw actions for simple operations and workflows for anything that needs sequencing or error handling.
 </Info>

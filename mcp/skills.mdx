@@ -1,0 +1,98 @@
+---
+title: "Skills"
+description: "Attach reusable multi-step procedures to your MCP server"
+---
+
+Skills are reusable procedures attached to an MCP server. They give agents structured guidance for operations that span multiple API calls, like "sync contacts from Salesforce to HubSpot" or "create a purchase order with vendor validation in SAP."
+
+Without skills, agents figure out multi-step operations on their own. With skills, they follow tested procedures with defined steps, pre-checks, and error handling.
+
+## Creating a skill
+
+Go to your MCP server's **Skills** tab and click **+ Add Skill**.
+
+<img src="/images/mcp-skill-create.png" alt="Creating a skill with name, description, app, and content" />
+
+### Skill fields
+
+| Field | Description |
+|-------|-------------|
+| **Name** | What the agent sees during discovery. Be descriptive (e.g., "Salesforce Lead Qualification Process"). |
+| **Summary** | Short description of what the skill does and when to use it. |
+| **Scope** | `MCP Server` (available only on this server) or broader org-level scopes. |
+| **Source** | `Custom` (you wrote it) or system-generated. |
+| **App** | Which connected application the skill relates to. |
+| **Content** | The procedure body: steps, API patterns, conditional logic, input/output specs. |
+| **Status** | Enable or disable the skill without deleting it. |
+
+## Writing skill content
+
+Write the content as structured instructions an agent can follow. Include clear steps, preconditions, and what to do on success or failure.
+
+**Example: Lead qualification**
+
+```markdown
+## Goal
+Qualify an inbound lead and assign to the right sales rep.
+
+## Pre-checks
+- Email address is provided
+- Salesforce connection is active
+
+## Steps
+1. Check if contact exists in Salesforce (get_contact by email)
+2. If contact exists, check for open opportunities
+3. If no contact, create new contact with lead source
+4. Score the lead based on company size and industry
+5. Assign to sales rep based on territory rules
+
+## On success
+Return the contact ID, qualification score, and assigned rep.
+
+## On failure
+If Salesforce is unreachable, return an error asking the user to retry.
+```
+
+<Tip>
+Write skills the way you'd write a runbook for a junior team member. Clear steps, explicit conditions, no ambiguity.
+</Tip>
+
+## How agents use skills
+
+When **Retrieve Skill** is enabled on your server, agents get two additional tools:
+
+**SEARCH_INTEGRATION_GRAPH** discovers available skills and entities. The agent calls this first to find skills relevant to the user's request.
+
+**LOAD_SKILL** fetches the full content of a specific skill by ID or name. The agent loads a skill when it matches the task at hand.
+
+### Typical flow
+
+```
+User: "Qualify this lead from the webinar"
+
+1. Agent calls SEARCH_INTEGRATION_GRAPH("Lead Qualification")
+   → Finds the "Lead Qualification" skill
+
+2. Agent calls LOAD_SKILL(skill_id="...")
+   → Gets the full procedure with steps
+
+3. Agent follows the steps, calling RESOLVE_ACTIONS and
+   EXECUTE_ACTION as needed for each integration action
+```
+
+## When to use skills vs raw actions
+
+| | Skills | Raw actions |
+|--|--------|-------------|
+| **Scope** | Multi-step procedures with logic | Single API calls |
+| **Agent guidance** | Agent follows your defined steps | Agent decides the approach |
+| **Error handling** | Defined in the procedure | Agent handles on its own |
+| **Best for** | Complex business processes | Simple CRUD operations |
+
+Start with raw actions. Add skills when you notice agents struggling with multi-step operations or making inconsistent decisions about step ordering.
+
+## Viewing skill details
+
+Click any skill in the Skills tab to see its rendered content, metadata, and usage stats.
+
+<img src="/images/mcp-skill-detail.png" alt="Skill detail view showing rendered content, scope, and stats" />
