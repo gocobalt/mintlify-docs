@@ -107,13 +107,14 @@ Queries the integration knowledge graph for entities, actions, and skills.
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `entity_name` | `string` | required | What to search for (e.g., `"Contacts"`, `"Purchase Orders"`) |
-| `related_entity_name` | `string` | `null` | Optional related entity to find connections between |
-| `apps` | `list[string]` | `null` | Filter to specific app slugs |
-| `min_confidence` | `float` | `0.5` | Minimum confidence threshold for results |
-| `limit` | `int` | `25` | Maximum number of results |
-| `depth` | `int` | `1` | Graph traversal depth |
-| `max_response_chars` | `int` | `12000` | Cap on response size |
-| `path_mode` | `"paths"`, `"ego_union"`, or `"both"` | `"both"` | Graph query strategy |
+| `related_entity_name` | `string` | `null` | Optional second entity. When provided, the search returns how the two entities relate across connected apps. |
+| `apps` | `list[string]` | `null` | Restrict the search to specific app slugs |
+| `limit` | `int` | `25` | Maximum number of results to return |
+| `min_confidence` | `float` | `0.5` | Drop results below this match score (0.0 – 1.0) |
+| `depth` | `int` | `1` | How far to traverse from the starting entity. Higher values surface more distant relationships at the cost of relevance. |
+| `max_response_chars` | `int` | `12000` | Cap on response size in characters |
+
+Defaults are tuned for typical use. Most agents will only need `entity_name` and optionally `apps`.
 
 ### LOAD_SKILL
 

@@ -71,7 +71,7 @@ This context is immutable for the lifetime of the request. It cannot be modified
 
 ### 2. Tool resolution
 
-The tool set is resolved on every `tools/list` and `tools/call` request from the validated identity. Tools are not cached across requests, which means two concurrent sessions never share tool objects.
+The tool set is resolved on every `tools/list` and `tools/call` request from the validated identity. Tools are not cached across requests, which means two concurrent sessions never share state.
 
 **Direct mode** (default):
 - Loads the MCP server configuration for this identity
@@ -116,7 +116,9 @@ sequenceDiagram
 
 ## Statelessness
 
-The MCP server holds no session state between requests. Identity, configuration, and credential data are resolved per-request. This is what makes horizontal scaling and tenant isolation work, and why a deployment can be replaced without breaking active sessions.
+The MCP server holds no session state between requests. Identity, configuration, and credential data are resolved per-request. This is what makes horizontal scaling and tenant isolation work, and why instances can be added, replaced, or rolled back without disrupting active agents.
+
+For the security model behind this — token validation, tenant isolation, audit guarantees — see [Security & Governance](/mcp/security-governance).
 
 ## Direct mode tool naming
 
@@ -141,3 +143,5 @@ Names are slugified (lowercased, special characters replaced with underscores) a
 | **Transport** | Streamable HTTP (stateless) |
 | **Path pattern** | `/mcp/v1/{token}/{server_id}` |
 | **Timeout** | 300 seconds per tool call (configurable per tool) |
+
+The token is in the URL path rather than an `Authorization` header because not all MCP clients support custom headers today. Treat the Server URL as a credential. See [Security & Governance](/mcp/security-governance#authentication) for the full auth model and roadmap.

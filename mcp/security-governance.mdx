@@ -27,7 +27,11 @@ flowchart LR
 | **Identity resolution** | Token resolves to org_id + linked_account_id + environment |
 | **Token scope** | One token per linked account per MCP server |
 | **Invalid token** | Returns HTTP 403 immediately. No tool listing, no partial access. |
-| **Identity lookup unavailable** | Returns HTTP 503. Fails closed, never falls back to unauthenticated access. |
+| **Validation unavailable** | Returns HTTP 503. Fails closed, never falls back to unauthenticated access. |
+
+<Note>
+**Token in URL.** The token is embedded in the Server URL path rather than an `Authorization` header because not every MCP client supports custom headers today. Treat the Server URL as a secret — store it like an API key, rotate it the same way, and prefer per-end-user URLs over shared ones. Header-based auth is on the roadmap as MCP clients add support.
+</Note>
 
 ### Linked account isolation
 
@@ -96,16 +100,15 @@ Every MCP tool call is logged automatically. Audit logging cannot be disabled an
 - **Scoped queries**: All audit queries are filtered by org_id. No org can access another org's audit records.
 - **Correlation**: Session ID and Trace ID (X-Request-Id) allow grouping all tool calls from a single agent conversation.
 
-Audit records are stored in Refold's database, partitioned by org. See [MCP Logs](/mcp/logs) for how to view and filter audit records in the dashboard.
+Audit records are partitioned by org and queryable from the dashboard. See [MCP Logs](/mcp/logs) for filtering and search, and [Architecture](/mcp/architecture) for how a single tool call flows end to end.
 
 ## Transport security
 
 | Property | Detail |
 |----------|--------|
 | **Protocol** | MCP v2025-11-25 over Streamable HTTP |
-| **Encryption** | TLS 1.2+ for all connections |
+| **Encryption** | TLS 1.2+ for all connections (agent-to-Refold, internal Refold traffic, and Refold-to-third-party apps) |
 | **Transport mode** | Stateless HTTP (no persistent WebSocket connections) |
-| **CORS** | Configurable per deployment |
 
 ## Access control
 
@@ -121,7 +124,11 @@ Audit records are stored in Refold's database, partitioned by org. See [MCP Logs
 
 ### Roadmap
 
-Per-user token management (multiple users sharing a linked account with distinct credentials) and tool-level RBAC are scoped for upcoming releases.
+The following are scoped for upcoming releases:
+
+- **Header-based auth** — bearer token in an `Authorization` header instead of the URL path, as MCP clients add support
+- **Per-user identities** — multiple end users sharing a single linked account, each with their own audited identity
+- **Tool-level RBAC** — fine-grained permissions on which tools each identity can call
 
 ## Deployment
 
