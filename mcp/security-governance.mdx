@@ -29,9 +29,7 @@ flowchart LR
 | **Invalid token** | Returns HTTP 403 immediately. No tool listing, no partial access. |
 | **Validation unavailable** | Returns HTTP 503. Fails closed, never falls back to unauthenticated access. |
 
-<Note>
-**Token in URL.** The token is embedded in the Server URL path rather than an `Authorization` header because not every MCP client supports custom headers today. Treat the Server URL as a secret — store it like an API key, rotate it the same way, and prefer per-end-user URLs over shared ones. Header-based auth is on the roadmap as MCP clients add support.
-</Note>
+The Server URL contains the auth token. Treat it as a secret: store it like an API key, rotate it the same way, and issue per-end-user URLs rather than sharing one across users.
 
 ### Linked account isolation
 
@@ -121,14 +119,6 @@ Audit records are partitioned by org and queryable from the dashboard. See [MCP 
 | **Direct vs agent mode** | Toggle Agent Mode to control whether agents see raw tools or resolve/execute |
 | **Skill access** | Toggle Retrieve Skill to control whether agents can discover and load skills |
 | **Per-user scoping** | Each linked account gets a unique token. Different users get different URLs. |
-
-### Roadmap
-
-The following are scoped for upcoming releases:
-
-- **Header-based auth** — bearer token in an `Authorization` header instead of the URL path, as MCP clients add support
-- **Per-user identities** — multiple end users sharing a single linked account, each with their own audited identity
-- **Tool-level RBAC** — fine-grained permissions on which tools each identity can call
 
 ## Deployment
 
