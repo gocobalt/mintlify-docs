@@ -81,10 +81,10 @@ An agent needs to handle "Buy a laptop from Dell for $1,200." This is an 8-step 
 
 1. Build your workflow in the Refold workflow builder with proper error handling, retry logic, and validation
 2. Test it thoroughly outside of MCP
-3. Add it to your MCP server's **Applications** tab (workflows appear alongside actions)
-4. The workflow shows up as a tool the agent can call
+3. Add it to your MCP server's **Applications** tab (workflows appear alongside actions). See [Server Configuration](/mcp/server-configuration#applications-tab).
+4. The workflow shows up as a tool the agent can call. In direct mode it appears as `<app_slug>_<workflow_name>_workflow`; in agent mode it's reachable via `EXECUTE_ACTION` with `type: "workflow"`. See [Tools Reference](/mcp/tools-reference).
 
-The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
+The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps. Each invocation is recorded in [MCP Logs](/mcp/logs) with the workflow ID, input payload, and final status.
 
 <Info>
 Workflows and raw actions can coexist on the same server. Use raw actions for simple operations and workflows for anything that needs sequencing or error handling.

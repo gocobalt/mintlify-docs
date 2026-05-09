@@ -66,7 +66,7 @@ Use the filter bar at the top of the logs view to narrow by:
 
 **Debug a failing action:** Filter by `EXECUTION_ERROR` status. The detail panel shows the exact input payload the agent sent and the error returned. Start here when an end user reports that "the agent couldn't do X."
 
-**Trace a full conversation:** Filter by Session ID to see every tool call from a single agent session in chronological order. This shows you exactly what the agent did, in what order, and how long each step took.
+**Trace a full conversation:** Filter by Session ID to see every tool call from a single agent session in chronological order. The Session ID is stable for the lifetime of an agent connection, so every `RESOLVE_ACTIONS`, `EXECUTE_ACTION`, `SEARCH_INTEGRATION_GRAPH`, and `LOAD_SKILL` call from one user-agent conversation is grouped together. This shows you exactly what the agent did, in what order, and how long each step took.
 
 **Monitor adoption:** Filter by application or MCP server to see which integrations agents are using most, how often they fail, and where response times are slow.
 

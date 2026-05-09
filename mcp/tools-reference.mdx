@@ -14,6 +14,7 @@ The tools an agent sees depend on your server's toggle configuration.
 | `EXECUTE_ACTION` | Agent Mode **ON** | Executes one action or workflow from the resolved plan |
 | `SEARCH_INTEGRATION_GRAPH` | Retrieve Skill **ON** | Discovers entities, actions, and skills in the knowledge graph |
 | `LOAD_SKILL` | Retrieve Skill **ON** | Loads the full content of a specific skill |
+| `AUTH` | Auth Tool **ON** | Returns a re-auth link when a connected app's credentials are missing or expired |
 
 ---
 
@@ -124,6 +125,20 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
 |-----------|------|-------------|
 | `skill_id` | `string` | The skill's ID (from SEARCH_INTEGRATION_GRAPH results or the Skills tab) |
 | `skill_name` | `string` | Look up a skill by name instead of ID |
+
+For how skills are surfaced to the agent at session start and the typical discovery flow, see [Skills](/mcp/skills).
+
+---
+
+## AUTH
+
+Available when the **Auth Tool** toggle is on. The agent calls `AUTH` when a downstream action fails because the linked account's credentials for that app are missing or expired. The tool returns an authentication URL the end user can complete to reconnect the app, after which the agent can retry the original action.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `application_slug` | `string` | Yes | The app the user needs to authenticate (e.g., `"salesforce"`) |
+
+**Returns:** an object with the auth URL and a short message the agent can relay to the user.
 
 ---
 
