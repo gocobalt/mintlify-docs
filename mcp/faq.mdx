@@ -43,7 +43,7 @@ description: "Common questions about Refold MCP servers, security, and operation
   </Accordion>
 
   <Accordion title="Is data encrypted in transit?">
-    Yes. All connections use TLS 1.2+. This includes client-to-server (MCP protocol), server-to-auth-service (gRPC), server-to-workflow-service (gRPC), and workflow-service-to-third-party-apps (HTTPS).
+    Yes. All connections use TLS 1.2+. This includes the agent-to-Refold MCP connection, all internal traffic within Refold, and Refold's outbound calls to third-party applications.
   </Accordion>
 </AccordionGroup>
 
@@ -54,8 +54,8 @@ description: "Common questions about Refold MCP servers, security, and operation
     The tool call will fail with an execution error. If the Auth Tool toggle is enabled, the agent can return an auth link to the user to re-authenticate. The failed call is logged in MCP Logs with the error details. No partial data is returned.
   </Accordion>
 
-  <Accordion title="What happens if Refold's auth service goes down?">
-    The MCP server fails closed. If the auth service is unreachable, all requests return HTTP 503. No tools are listed, no actions execute, no unauthenticated access is possible.
+  <Accordion title="What happens if Refold can't validate the token?">
+    The MCP server fails closed. If token validation is unavailable, all requests return HTTP 503. No tools are listed, no actions execute, no unauthenticated access is possible.
   </Accordion>
 
   <Accordion title="How long do audit logs persist?">
@@ -67,7 +67,7 @@ description: "Common questions about Refold MCP servers, security, and operation
   </Accordion>
 
   <Accordion title="Is there a rate limit on tool calls?">
-    Rate limits depend on your plan. The MCP server itself does not impose per-tool rate limits. Third-party app rate limits (e.g., Salesforce API limits) are handled by the workflow service, which returns errors when limits are hit.
+    Rate limits depend on your plan. The MCP server itself does not impose per-tool rate limits. Third-party app rate limits (e.g., Salesforce API limits) propagate back to the agent as execution errors when hit.
   </Accordion>
 </AccordionGroup>
 

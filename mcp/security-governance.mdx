@@ -7,27 +7,27 @@ This page documents how Refold MCP handles authentication, authorization, tenant
 
 ## Authentication
 
-Every MCP server connection is authenticated via a token embedded in the Server URL. The token is validated on every request against Refold's auth service over gRPC.
+Every MCP server connection is authenticated via a token embedded in the Server URL. The token is validated on every request.
 
 **Auth flow:**
 
 ```mermaid
 flowchart LR
-    A["MCP Client<br/>(Claude, Cursor)"] -->|"Server URL with token"| B["TokenAuthMiddleware"]
-    B -->|"gRPC validate"| C["Auth Service"]
+    A["MCP Client<br/>(Claude, Cursor)"] -->|"Server URL with token"| B["Refold MCP Server"]
+    B -->|"Validate token"| C["Refold Identity"]
     C -->|"org_id<br/>linked_account_id<br/>environment"| B
-    B -->|"SessionAuth<br/>(frozen, per-request)"| D["Tool Execution"]
+    B -->|"Per-request<br/>session context"| D["Tool Execution"]
     D -->|"Stored credentials<br/>(never exposed)"| E["Third-party App"]
 ```
 
 | Property | Detail |
 |----------|--------|
 | **Token type** | Linked account token (opaque, server-generated) |
-| **Validation** | Every HTTP request validated via gRPC to auth-service |
+| **Validation** | Every request validated against Refold |
 | **Identity resolution** | Token resolves to org_id + linked_account_id + environment |
 | **Token scope** | One token per linked account per MCP server |
 | **Invalid token** | Returns HTTP 403 immediately. No tool listing, no partial access. |
-| **Auth service unavailable** | Returns HTTP 503. Fails closed, never falls back to unauthenticated access. |
+| **Identity lookup unavailable** | Returns HTTP 503. Fails closed, never falls back to unauthenticated access. |
 
 ### Linked account isolation
 
@@ -58,13 +58,13 @@ MCP servers are multi-tenant by design. Isolation is enforced at multiple layers
 
 | Layer | Mechanism |
 |-------|-----------|
-| **Request identity** | SessionAuth resolved per-request from the validated token. No shared mutable state across sessions. |
+| **Request identity** | Session context resolved per-request from the validated token. No shared mutable state across sessions. |
 | **Tool resolution** | Tools are resolved per-request based on the authenticated identity. Two concurrent sessions never share tool objects. |
-| **Execution context** | Each tool call reads org_id, linked_account_id, and environment from the per-request auth context. These fields are immutable for the duration of the request. |
+| **Execution context** | Each tool call reads org_id, linked_account_id, and environment from the per-request session context. These fields are immutable for the duration of the request. |
 | **Data** | Audit records, tool outputs, and execution metadata are partitioned by org_id. Queries are always scoped. |
 
 <Info>
-Session isolation was hardened in the v3 architecture. Tools are resolved on every request via the `on_list_tools` and `on_call_tool` middleware hooks, not cached on the middleware instance.
+The MCP server is stateless. Identity and tool state are resolved on every request, never cached across requests, so concurrent sessions cannot leak into each other.
 </Info>
 
 ## Audit logging

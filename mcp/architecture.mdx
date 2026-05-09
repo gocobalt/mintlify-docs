@@ -1,9 +1,9 @@
 ---
 title: "Architecture"
-description: "How the Refold MCP server processes requests, resolves tools, and executes actions"
+description: "How Refold MCP processes requests, resolves tools, and executes actions"
 ---
 
-This page describes the internal architecture of the Refold MCP server. It is intended for technical evaluators, integration architects, and developers building against the MCP protocol.
+This page describes how the Refold MCP server handles a request end to end. It is intended for technical evaluators and developers building agents against Refold MCP servers.
 
 ## System overview
 
@@ -20,9 +20,9 @@ flowchart TD
 
     subgraph MCP["Refold MCP Server"]
         direction TB
-        AUTH["TokenAuthMiddleware<br/>Validates token → resolves identity"]
-        SESSION["LinkedAccountSessionMiddleware<br/>Resolves tools per-request<br/>Intercepts every call for audit"]
-        TOOLS["Tool Handlers"]
+        AUTH["1. Authenticate<br/>Validate token, resolve identity"]
+        SESSION["2. Resolve tools<br/>Per-request, scoped to identity"]
+        TOOLS["3. Execute<br/>Audited on every call"]
         AUTH --> SESSION --> TOOLS
     end
 
@@ -37,17 +37,7 @@ flowchart TD
 
     TOOLS --> ToolSet
 
-    subgraph Services["Backend Services"]
-        S1[("Auth Service<br/>gRPC")]
-        S2[("Workflow Service<br/>gRPC")]
-        S3[("MongoDB<br/>Audit Logs")]
-    end
-
-    AUTH -.->|"Validate token"| S1
-    ToolSet -->|"Execute actions"| S2
-    SESSION -.->|"Log every call"| S3
-
-    S2 -->|"API calls with<br/>stored credentials"| APPS
+    ToolSet -->|"Stored credentials<br/>(never exposed to agent)"| APPS
 
     subgraph APPS["Connected Applications"]
         A1["Salesforce"]
@@ -57,7 +47,6 @@ flowchart TD
     end
 
     style MCP fill:#1a1a2e,stroke:#4a4a8a
-    style Services fill:#1a2a1a,stroke:#4a8a4a
     style APPS fill:#2a1a1a,stroke:#8a4a4a
 ```
 
@@ -67,9 +56,7 @@ Every request follows the same path regardless of mode.
 
 ### 1. Token validation
 
-The `TokenAuthMiddleware` extracts the token and server_id from the URL path. It calls auth-service over gRPC to validate the token and resolve the caller's identity.
-
-The result is a `SessionAuth` context:
+Refold extracts the token and server ID from the URL path and validates the token. The result is a per-request session context:
 
 | Field | Description |
 |-------|-------------|
@@ -80,76 +67,56 @@ The result is a `SessionAuth` context:
 | `direct_mode` | `true` (default) or `false` (when `?mode=agent`) |
 | `expose_skills` | `true` or `false` (when `?expose_skills=true`) |
 
-This context is frozen for the lifetime of the request. It cannot be modified by tool handlers or downstream code.
+This context is immutable for the lifetime of the request. It cannot be modified by tool handlers or downstream code.
 
 ### 2. Tool resolution
 
-The `LinkedAccountSessionMiddleware` resolves the tool set on every `tools/list` and `tools/call` request. There is no cached tool state on the middleware instance.
+The tool set is resolved on every `tools/list` and `tools/call` request from the validated identity. Tools are not cached across requests, which means two concurrent sessions never share tool objects.
 
 **Direct mode** (default):
-- Calls workflow-service over gRPC to get the MCP server configuration
-- Reads all associated apps, their actions, and their workflows
-- Creates one `DirectActionTool` per action/workflow with auto-generated names and fixed schemas
+- Loads the MCP server configuration for this identity
+- Reads the configured apps, their actions, and their workflows
+- Exposes one tool per action and workflow with auto-generated names and fixed schemas
 - Adds skill tools if `expose_skills=true`
 
 **Agent mode** (`?mode=agent`):
-- Registers `RESOLVE_ACTIONS` and `EXECUTE_ACTION` as the primary tools
+- Exposes `RESOLVE_ACTIONS` and `EXECUTE_ACTION` as the primary tools
 - Adds skill tools if `expose_skills=true`
 - Does not create per-action tools
 
 ### 3. Tool execution
 
-When an agent calls a tool, the middleware:
+When an agent calls a tool, Refold:
 
 1. Resolves the authenticated identity from the current request
 2. Resolves the full tool set to find the requested tool
-3. Logs the invocation start (tool name, input, identity, client metadata)
-4. Executes the tool handler
-5. Logs the invocation result (output, status, duration)
+3. Records the invocation start (tool name, input, identity, client metadata)
+4. Executes the tool
+5. Records the invocation result (output, status, duration)
 6. Returns the result to the agent
 
-If the tool is `EXECUTE_ACTION` or a direct-mode tool, execution flows through to workflow-service over gRPC, which makes the actual API call to the third-party application using the linked account's stored credentials.
+If the tool runs an integration action or workflow, Refold makes the actual call to the third-party application using the linked account's stored credentials. The agent never sees the credentials.
 
 ### 4. Action execution detail
 
 ```mermaid
 sequenceDiagram
     participant Agent as MCP Client
-    participant MCP as Refold MCP Server
-    participant WF as Workflow Service
+    participant Refold as Refold MCP Server
     participant App as Salesforce
 
-    Agent->>MCP: EXECUTE_ACTION<br/>slug: salesforce<br/>action: create_contact<br/>payload: {email: "jane@example.com"}
-    MCP->>MCP: Audit log_start
-    MCP->>WF: gRPC: ExecutePhantomNode
-    WF->>WF: Load MCP server config<br/>Validate app + action exist
-    WF->>WF: Retrieve linked account credentials
-    WF->>App: POST /services/data/v59.0/sobjects/Contact
-    App-->>WF: 201 Created {id: "003..."}
-    WF-->>MCP: {success: true, data: {id: "003..."}}
-    MCP->>MCP: Audit log_complete
-    MCP-->>Agent: Tool result (structured JSON)
+    Agent->>Refold: EXECUTE_ACTION<br/>slug: salesforce<br/>action: create_contact<br/>payload: {email: "jane@example.com"}
+    Refold->>Refold: Audit start
+    Refold->>Refold: Resolve linked account credentials
+    Refold->>App: POST /services/data/v59.0/sobjects/Contact
+    App-->>Refold: 201 Created {id: "003..."}
+    Refold->>Refold: Audit complete
+    Refold-->>Agent: Tool result (structured JSON)
 ```
 
-## Service dependencies
+## Statelessness
 
-| Service | Protocol | Purpose |
-|---------|----------|---------|
-| **auth-service** | gRPC | Token validation, identity resolution |
-| **workflow-service** | gRPC | MCP server config, app/action catalog, action execution |
-| **MongoDB** | TCP | Audit log persistence |
-
-The MCP server is stateless. It holds no session state between requests. All identity, configuration, and credential data is resolved per-request from the upstream services.
-
-## Tool registration model
-
-Tools are registered using two patterns:
-
-**Static registration** (`ToolRegistration`): A fixed tool with a name, description, and handler function. Used for tools that don't need per-session customization.
-
-**Factory registration** (`ToolFactory`): An async function that takes `SessionAuth` and returns a `ToolRegistration`. Used when the tool description or behavior depends on the caller's identity. For example, `RESOLVE_ACTIONS` builds its description dynamically based on which apps are configured on the server.
-
-Both patterns produce standard FastMCP `Tool` objects at runtime.
+The MCP server holds no session state between requests. Identity, configuration, and credential data are resolved per-request. This is what makes horizontal scaling and tenant isolation work, and why a deployment can be replaced without breaking active sessions.
 
 ## Direct mode tool naming
 
@@ -164,14 +131,13 @@ Examples:
 - `workday_get_workers_action`
 - `hubspot_sync_leads_workflow`
 
-Names are slugified (lowercased, special characters replaced with underscores) and deduplicated with numeric suffixes if needed.
+Names are slugified (lowercased, special characters replaced with underscores) and deduplicated with numeric suffixes if collisions occur.
 
 ## Protocol details
 
 | Property | Value |
 |----------|-------|
 | **MCP version** | v2025-11-25 |
-| **Transport** | Streamable HTTP (`stateless_http=true`) |
-| **Server framework** | FastMCP (Python) mounted as sub-app inside FastAPI |
-| **Path pattern** | `/{token}/{server_id}` (mounted under `/mcp/v1/`) |
+| **Transport** | Streamable HTTP (stateless) |
+| **Path pattern** | `/mcp/v1/{token}/{server_id}` |
 | **Timeout** | 300 seconds per tool call (configurable per tool) |

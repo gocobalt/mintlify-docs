@@ -105,7 +105,7 @@ Refold MCP is not a demo wrapper around APIs. It runs in production across enter
 
 | Concern | How it's handled |
 |---------|-----------------|
-| **Authentication** | Token validated on every request via gRPC. Fails closed. |
+| **Authentication** | Token validated on every request. Fails closed. |
 | **Tenant isolation** | Identity resolved per-request. No shared mutable state. |
 | **Audit** | Every tool call logged with full input/output, client metadata, and timing. |
 | **Credential security** | Third-party OAuth tokens and API keys are never exposed to agents. |

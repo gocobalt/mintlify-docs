@@ -24,7 +24,7 @@ https://<domain>/mcp/v1/<token>/<server_id>
 | `token` | Auth token tied to a specific [linked account](/build/basics/linked_account). Each end user gets a unique token and therefore a unique URL. |
 | `server_id` | Identifies this MCP server configuration. |
 
-The token in the URL authenticates the request. When an agent connects, Refold validates the token against the auth service and resolves which organization, linked account, and environment the request belongs to. All tool calls within that session run under those credentials.
+The token in the URL authenticates the request. When an agent connects, Refold validates the token and resolves which organization, linked account, and environment the request belongs to. All tool calls within that session run under those credentials.
 
 <Info>
 The Server URL is generated per linked account. You can retrieve it from the dashboard or programmatically via the [MCP Servers API](/api-reference/mcp/get-mcp-server).
