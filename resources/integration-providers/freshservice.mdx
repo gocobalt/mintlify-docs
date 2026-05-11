@@ -1,0 +1,286 @@
+---
+title: "Connect"
+description: "Connect Freshservice to Refold using your API Key and Workflow Automator webhooks"
+---
+
+To set up your Freshservice integration in Refold, you will need the following credentials from your Freshservice account:
+
+- API Key
+- Freshservice Domain
+
+### Getting API credentials in Freshservice
+
+To acquire the above mentioned credentials from Freshservice, please follow the steps mentioned below:
+
+1. Log in to your Freshservice account at `https://<your_domain>.freshservice.com`.
+2. Click on your **profile picture** on the top right corner of the dashboard.
+
+<img
+  height="200"
+  src="/images/Freshservices/freshservice_dashboard.png"
+  alt="Freshservice dashboard showing profile picture location"
+/>
+
+3. Select **Profile Settings** from the dropdown menu.
+
+<img
+  height="200"
+  src="/images/Freshservices/freshservice_profilesetting.png"
+  alt="Profile Settings option in the dropdown menu"
+/>
+
+4. On your Profile Settings page, scroll down to locate your **API Key**. Copy it and store it securely.
+5. Note your **Freshservice Domain** — this is the subdomain of your account URL (e.g., if your URL is `https://yourcompany.freshservice.com`, your domain is `yourcompany`).
+
+<img
+  height="200"
+  src="/images/Freshservices/freshservice_APIkey.png"
+  alt="API Key displayed in Freshservice Profile Settings"
+/>
+
+<Warning>
+  Your API Key is tied to your agent account and inherits your role permissions. Keep it secure and do not share it publicly. If you reset your API Key, all apps using the current key will be disconnected.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Freshservice app settings page in Refold and provide the **API Key** and **Freshservice Domain** you retrieved above, then save.
+
+---
+
+## Webhook Setup
+
+Freshservice triggers in Refold are powered by **Workflow Automator** webhooks — Freshservice does not expose a public API for registering webhooks programmatically. You need to create one Automator rule per event type in your Freshservice account. This is a one-time configuration step.
+
+### Pre-requisites
+
+1. Admin access to your Freshservice account.
+2. Your Refold credentials and an active linked account for Freshservice.
+3. The three identifiers that go into your callback URL:
+   - `org_id` — your Refold Organization ID. Find this in Refold under **Dashboard → Developer → Credentials → Organization ID**.
+   - `linked_account_id` — the identifier of the Freshservice connection you created in Refold
+   - `environment` — either `test` or `production`, depending on which Refold workspace your workflow is in
+4. A workflow already published in Refold with a Freshservice trigger node (e.g., **Ticket Created**).
+
+### Callback URL
+
+The callback URL Refold expects follows this format:
+
+```
+https://app.refold.ai/api/v1/webhook/freshservice/{org_id}/{linked_account_id}/{environment}
+```
+
+<Info>
+  The `environment` segment must match the Refold workspace where your workflow is published — `test` or `production`. A mismatch means the event is received but no workflow is triggered.
+</Info>
+
+### Setting up the Workflow Automator in Freshservice
+
+#### Step 1 — Open Workflow Automator
+
+Log in to your Freshservice account. Click your avatar (or the side menu) and select **Admin**.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step1.png"
+  alt="Open the Admin menu in Freshservice"
+/>
+
+Under **Automation & Productivity**, click **Workflow Automator**.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step2.png"
+  alt="Click the Workflow Automator card"
+/>
+
+#### Step 2 — Create a new automator
+
+Click **Create** (top right) and fill in the dialog:
+
+- **Title:** `Refold — Ticket Created`
+- **Module:** Tickets
+- **Workflow Type:** Event Based Workflow
+
+Then click **Create**.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step3.png"
+  alt="Create Workflow dialog"
+/>
+
+#### Step 3 — Configure the trigger event
+
+On the canvas, click the **Event** node. Set the event to **Ticket is raised**. Leave conditions empty for an initial test. Click **Done**.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step4.png"
+  alt="Configure the Ticket is raised trigger event"
+/>
+
+#### Step 4 — Add the Trigger Webhook action
+
+From the left sidebar, drag **Action** onto the canvas. In the action dropdown, choose **Trigger Webhook**.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step5.png"
+  alt="Drag the Action node onto the canvas and select Trigger Webhook"
+/>
+
+#### Step 5 — Fill in the webhook settings
+
+Configure the action panel with the following values:
+
+| Field | Value |
+|---|---|
+| Request Type | `POST` |
+| Callback URL | Your URL from the [Callback URL](#callback-url) section above |
+| Requires Authentication | OFF (leave as default Inline Credential) |
+| Encoding | JSON |
+| Content | Switch to **Advanced** |
+
+#### Step 6 — Paste the JSON body
+
+In the **Advanced** content field, paste the following payload. Freshservice will substitute the `{{ticket.*}}` placeholders with real values when a ticket event fires.
+
+```json
+{
+  "event_type": "ticket_created",
+  "ticket": {
+    "id": "{{ticket.id}}",
+    "subject": "{{ticket.subject}}",
+    "description": "{{ticket.description_text}}",
+    "status": "{{ticket.status_name}}",
+    "priority": "{{ticket.priority_name}}",
+    "source": "{{ticket.source_name}}",
+    "requester_name": "{{ticket.requester.name}}",
+    "requester_email": "{{ticket.requester.email}}",
+    "agent_name": "{{ticket.agent.name}}",
+    "group_name": "{{ticket.group.name}}",
+    "department_name": "{{ticket.department.name}}",
+    "created_at": "{{ticket.created_at}}",
+    "updated_at": "{{ticket.updated_at}}"
+  }
+}
+```
+
+<Info>
+  The `event_type` field tells Refold which trigger to fire. The `{{ticket.*}}` placeholders are Freshservice's native template syntax — they are substituted with real values when a ticket event occurs. Note that the in-UI **Test Webhook** button does **not** expand these placeholders; you must fire a real ticket to verify the full payload.
+</Info>
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step6.png"
+  alt="Webhook configuration panel with URL, encoding, and JSON body filled in"
+/>
+
+#### Step 7 — Save and activate
+
+Click **Done** on the action panel, then click **Activate** at the top right of the canvas. Confirm in the dialog that appears.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step7.png"
+  alt="Activation confirmation dialog"
+/>
+
+Once activated, the rule will appear with an active toggle in the Workflow Automator list.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step8.png"
+  alt="Rule shown as Active in the Workflow Automator list"
+/>
+
+### Setting up additional event types
+
+Freshservice fires one webhook per Workflow Automator rule. For each additional event you want to send to Refold, create a separate rule and update the `event_type` value in the JSON body accordingly.
+
+| Freshservice event | `event_type` value |
+|---|---|
+| Ticket is Raised | `ticket_created` |
+| Ticket Updated (any change) | `ticket_updated` |
+| Status changed | `ticket_status_changed` |
+| Priority changed | `ticket_priority_changed` |
+| Assignee changed | `ticket_assignee_changed` |
+| Other ticket field changed | `ticket_field_updated` |
+| Note / comment added | `ticket_note_created` |
+
+### Verifying the connection
+
+1. Make sure the corresponding Refold workflow is **Published**.
+2. In Freshservice, go to **Tickets** → **New Ticket**, fill in a subject and requester, then click **Create**.
+3. Within a few seconds, the rule should fire. Open the ticket → **Activities** tab to confirm the webhook fired with a `200` response.
+4. In Refold, open your workflow → **Executions** tab — a new run should appear.
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step9.png"
+  alt="Ticket created in Freshservice"
+/>
+
+<img
+  height="200"
+  src="/images/Freshservices/webhook-step10.png"
+  alt="Ticket Created events arriving in Refold's Events log with SUCCESS status"
+/>
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Webhook shows non-2xx in Activities | URL malformed or Refold endpoint unreachable | Re-check URL spelling, all three path parameters, and that there is no trailing slash |
+| Webhook returns 200 but no Refold execution appears | `environment` segment doesn't match where the workflow is published | Confirm the workflow is published in the workspace that matches `test` or `production` in the URL |
+| Test Webhook button shows literal `{{ticket.id}}` text | Freshservice does not expand placeholders during the in-UI test flow | Fire a real ticket — placeholders expand correctly on real events |
+| Activities log shows unexpected field values | Placeholder names mismatched | Cross-check field names with the Freshservice Workflow Automator placeholder reference |
+| Multiple workflow runs triggered per ticket | Multiple matching Automator rules all firing | Make rules mutually exclusive using conditions, or consolidate into one rule |
+
+### Security notes
+
+<Warning>
+  Refold's webhook receiver does not verify request signatures. The uniqueness of your callback URL (containing your `org_id` and `linked_account_id`) is the only authentication boundary. Do not share the callback URL publicly — anyone who holds it can POST arbitrary payloads to your workflows. Treat it like a secret and store it in a credentials manager rather than in source control or shared documents.
+</Warning>
+
+### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Freshservice actions and triggers. Following are the set of Freshservice actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Agent">
+        1. **List Agents** - List all agents in Freshservice.
+        2. **Get Agent By ID** - Get an agent by ID in Freshservice.
+        3. **Create Agent** - Creates an agent in Freshservice.
+        4. **Update Agent** - Updates an agent in Freshservice.
+        5. **Delete Agent** - Deletes an agent in Freshservice.
+      </Accordion>
+      <Accordion title="Ticket">
+        6. **Create Ticket** - Creates a ticket in Freshservice.
+        7. **List Tickets** - Get all tickets in Freshservice.
+        8. **Update Ticket** - Updates a ticket in Freshservice.
+        9. **List Conversations of a Ticket** - Gets all conversations of a ticket in Freshservice.
+        10. **Update Conversation** - Updates a conversation on a ticket in Freshservice.
+      </Accordion>
+      <Accordion title="Others">
+        11. **HTTP Request** - Make HTTP API calls to any Freshservice documented REST APIs.
+        12. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    <Note>
+      Triggers for Freshservice are delivered via Workflow Automator webhooks. Complete the [Webhook Setup](#webhook-setup) above before using any of the triggers below in your Refold workflows.
+    </Note>
+    1. **Ticket Created** - Triggered when a new ticket is created in Freshservice.
+    2. **Ticket Updated** - Triggered when any update is made to a ticket in Freshservice.
+    3. **Ticket Status Changed** - Triggered when the status of a ticket is changed in Freshservice.
+    4. **Ticket Priority Changed** - Triggered when the priority of a ticket is changed in Freshservice.
+    5. **Ticket Assignee Changed** - Triggered when the assignee of a ticket is changed in Freshservice.
+    6. **Ticket Field Updated** - Triggered when any field of a ticket is updated in Freshservice.
+    7. **Ticket Comment Added** - Triggered when a note or comment is added to a ticket in Freshservice.
+  </Tab>
+</Tabs>
