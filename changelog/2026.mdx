@@ -3,6 +3,111 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="May 8, 2026" description="v3.5.18 · Workflow builder improvements">
+
+<Badge color="blue">Platform</Badge>
+
+**Allow Partial Success setting now configurable in the workflow builder.**
+
+**Improvements**
+
+- Workflow nodes now support an **Allow Partial Success** setting that can be configured and saved alongside other workflow changes.
+- Improved visibility of the **Hide Request** option in the node settings panel.
+
+</Update>
+
+<Update label="May 8, 2026" description="v3.5.17 · Partial success, hosted portal audit log & connector migrations">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A new Partial Success status for group and pagination nodes, an Audit Log in the hosted portal, an Application filter on Executions, and several connector migrations to the new request handler.**
+
+**New Features**
+
+- **Allow Partial Success**: Group, pagination, and subflow nodes can now finalize as **Partially Successful** when child errors are absorbed, instead of failing the entire parent.
+- **Terminate Propagation**: Terminate actions inside subflows, group, do-while, and pagination nodes now propagate cleanly to the parent workflow, draining in-flight batches before marking the instance as Terminated.
+- **Hosted Portal Audit Log**: A new Audit tab in the Connect Portal surfaces audit events scoped to the linked account, with an admin toggle to control visibility.
+- **Application Filter on Executions**: Filter hosted portal executions by application.
+- **JSON Schema on Events**: Events now support JSON schema for payload validation, matching the workflow API.
+
+**Improvements**
+
+- Environment variable templating now uses cleaner dot notation (`env.workflow.variable`).
+- Response Viewer now supports expand and collapse all.
+- Cron schedules now register against workflow aliases for improved reliability across deployments.
+
+**API Changes**
+
+- New endpoint: `GET /api/v2/public/audit/audit-trails` — paginated audit events for hosted portal consumers.
+
+**Integration Updates**
+
+- **SAP FieldGlass**: Authentication now correctly uses the identifier as the base URL. Existing connections may need to reconnect.
+- **NetSuite**: Consolidated NetSuite Demo into the main NetSuite connector with v3 actions.
+- **AdobeSign**, **FedEx**, **MailerLite**, **Adobe Workfront**, **MS Dynamics CRM**: Migrated to the new request-transform handler for improved consistency.
+- **Aha!**: Base URL now visible on the hosted portal.
+
+</Update>
+
+<Update label="May 7, 2026" description="v3.5.16 · Performance & stability improvements">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge>
+
+**Performance and stability improvements across the platform.**
+
+<Note>
+This release is a required companion to **v3.5.15** and is rolled out to every environment running v3.5.15.
+</Note>
+
+**Improvements**
+
+- Improved application performance through optimized state management and component rendering.
+- Enhanced responsiveness with better prioritization of critical state updates.
+
+</Update>
+
+<Update label="May 7, 2026" description="v3.5.15 · Terminate Iteration, Prism QA agent, ACC & Autodesk">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**New Terminate Iteration and Terminate Batch actions for fine-grained workflow control, the Prism QA agent for automated test generation, an Autodesk Construction Cloud integration, and a richer Refold AI builder experience.**
+
+**New Features**
+
+- **Terminate Iteration**: End the current loop iteration (group batch or pagination page) without stopping the rest of the workflow, with an option to mark the iteration as a clean skip.
+- **Terminate Batch**: End only the current group or pagination batch while sibling batches and the parent workflow continue running, with control over whether the batch is marked errored or successful.
+- **Prism QA Agent**: A new AI agent that generates acceptance tests from workflow specs, executes node-level tests with mock fixtures, and persists structured test reports. Available as a new Test Report tab under the Simulate group, with QA testing tools (Specimen, Crucible) accessible from the builder assistant.
+- **Per-Node Quick-Edit in Canvas**: Hover any node on the workflow canvas to reveal a quick-edit prompt bubble — ask the AI builder about a single node without opening the chat sidebar.
+- **Enriched Workflow Errored Event**: The Workflow Errored event payload now includes the failed node, attempts made, errored timestamp, and full upstream API error body — making it easier to build actionable incident alerts in Slack or downstream webhooks.
+- **Save API Proxy Responses to Bucket**: API proxy responses can now be persisted directly to bucket storage.
+- **MCP Agent Mode Toggle**: Switch an MCP server into agent mode directly from the server detail page.
+- **Project, AI & Private Workflows in Try API**: The Try API workflow picker now exposes project workflows, AI workflows, and private workflows as mutually exclusive buckets.
+- **Sync Execution Flag on MCP**: Workflow entries in the MCP server info response now expose a `sync_execution` flag.
+
+**Improvements**
+
+- Faster Refold AI builder startup with parallelized session initialization.
+- Larger workflow state now stays in fast storage instead of falling back to slower lookups.
+- Newly created nodes are placed at the visible center of the canvas with a brief highlight animation.
+- Consecutive same-tool calls in chat now collapse behind a "+N tool calls" expander while keeping interactive tools always visible.
+- One-line page descriptions added to the breadcrumb header across Dashboard, Refold AI, Linked Accounts, Integration Graph, Webhooks, Variables, AI Workflows, and MCP Servers.
+- The linked-account selector in the Execute dialog is now a searchable, creatable combobox.
+- Re-enabled date and time pickers for private workflow schedules.
+- Chains tab renamed to **Skills**, with custom category and scope filtering plus a richer skill content editor.
+
+**Integration Updates**
+
+- **Autodesk Construction Cloud**: New connector with OAuth2 authentication and three actions covering Cost Management — List Projects, List Companies, and List Budgets.
+- **Aprimo**: Now executes end-to-end through the workflow engine, with a Digital Asset Management connector including Get Classifications and a file-upload action with size validation.
+- **Kantata** and **NetSuite Demo**: Now executable end-to-end through the workflow engine.
+- **SAP S/4HANA**: Improved reliability on mutating requests with better routing and outbound DNS handling.
+- **Sage Intacct**: Improved authentication reliability under concurrent load with distributed locking and token caching.
+- **NetSuite**: Improved SuiteQL query, list-record retrieval, and authentication handling for both the main and Demo variants.
+- **Incorta Data Converter**: Integer cell formatting in merged Excel files now displays whole-number values correctly.
+
+</Update>
+
 <Update label="May 6, 2026" description="v3.5.14 · Aprimo integration">
 
 <Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
