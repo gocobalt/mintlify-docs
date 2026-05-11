@@ -1,0 +1,109 @@
+---
+title: "MCP Logs"
+description: "Audit trail for every tool call made through your MCP servers"
+---
+
+Every tool call made through an MCP server is logged automatically. Find logs under **Maintain > MCP Logs** in the Refold dashboard.
+
+<img src="/images/mcp-logs-list.png" alt="MCP Logs showing tool calls with status, application, client, and duration" />
+
+## What's logged
+
+Each log entry captures:
+
+| Field | Description |
+|-------|-------------|
+| **Status** | `success`, `pending`, `validation_error`, or `execution_error` |
+| **Tool** | Which MCP tool was called (e.g., `EXECUTE_ACTION`, `RESOLVE_ACTIONS`, `LOAD_SKILL`, or a direct-mode tool name) |
+| **Action** | The specific action or workflow that was executed (for execution calls) |
+| **Application** | Which connected app was involved |
+| **Client** | Which MCP client made the call (e.g., Claude Desktop, Cursor) |
+| **Duration** | How long the call took (milliseconds) |
+| **Timestamp** | When the call started |
+
+## Audit detail
+
+Click any log entry to open the detail panel.
+
+<img src="/images/mcp-logs-detail.png" alt="Audit detail panel showing request payload, metadata, and response" />
+
+The detail view shows:
+
+**Request and response**
+- Full JSON input the agent sent to the tool
+- Full output returned by the tool (truncated at 64KB for large responses)
+
+**Identity**
+- Linked account ID
+- MCP server ID
+- Organization ID
+- Environment (test / production)
+
+**Execution target** (for `EXECUTE_ACTION` and direct-mode tools)
+- Application slug
+- Action or workflow ID
+- Target type (action vs workflow)
+
+**Client and transport metadata**
+- MCP client name and version
+- Protocol version
+- Transport type (`streamable-http`)
+- Session ID
+- Trace ID (`X-Request-Id`)
+
+## Filtering and search
+
+Use the filter bar at the top of the logs view to narrow by:
+
+| Filter | Use case |
+|--------|----------|
+| **Status** | Find all failed calls (`execution_error`, `validation_error`) |
+| **Linked Account** | See all activity for a specific end user |
+| **Application** | Filter to a specific app (e.g., all Salesforce calls) |
+| **Tool & Action** | Find calls to a specific tool or downstream action |
+
+## Common workflows
+
+**Debug a failing action:** Filter by `execution_error` or `validation_error` status. The detail panel shows the exact input payload the agent sent and the error returned. Start here when an end user reports that "the agent couldn't do X."
+
+<Note>
+Downstream API errors from third-party apps (Salesforce, SAP, etc.) are not surfaced verbatim to the agent — the agent receives a generic message like "The action could not be completed." The full upstream error is recorded in the `internal_error` field of the audit record and visible in the detail panel.
+</Note>
+
+**Trace a full conversation:** Filter by Session ID to see every tool call from a single agent session in chronological order. The Session ID is stable for the lifetime of an agent connection, so every `RESOLVE_ACTIONS`, `EXECUTE_ACTION`, `SEARCH_INTEGRATION_GRAPH`, and `LOAD_SKILL` call from one user-agent conversation is grouped together. This shows you exactly what the agent did, in what order, and how long each step took.
+
+**Monitor adoption:** Filter by application or MCP server to see which integrations agents are using most, how often they fail, and where response times are slow.
+
+**Security review:** Filter by linked account to audit what a specific user's agent accessed. Each log entry includes the full identity chain (org, linked account, environment, server) and the exact data sent and received.
+
+## Compliance considerations
+
+MCP Logs provide the raw material for compliance and governance reviews:
+
+- **Who** accessed what: Every log ties to a specific linked account and organization
+- **What** was requested: Full input payloads are captured (up to 32KB)
+- **What** was returned: Full output payloads are captured (up to 64KB, truncation flagged)
+- **When**: Timestamps with millisecond precision on start and completion
+- **How long**: Duration in milliseconds for performance auditing
+- **From where**: MCP client name, version, and transport metadata
+
+Audit records are append-only and retained for 90 days. Longer retention is available on enterprise plans.
+
+## Exporting logs
+
+Audit logs are viewable and filterable in the dashboard under **Maintain > MCP Logs**. For bulk export or programmatic access, contact your account team.
+
+## Rate limits
+
+The MCP server does not impose per-tool rate limits. Plan-level limits apply to overall request volume. Rate limits enforced by the third-party application (for example, Salesforce API governor limits) propagate back to the agent as `EXECUTION_ERROR` entries with the downstream error message preserved.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Security & Compliance" icon="shield-halved" href="/v3/mcp-ai-agents/implementation/security-compliance">
+    The full audit, authentication, and isolation model
+  </Card>
+  <Card title="Tools" icon="wrench" href="/v3/mcp-ai-agents/tools-reference/tools">
+    What each logged tool name corresponds to
+  </Card>
+</CardGroup>
