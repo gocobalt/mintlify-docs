@@ -1,15 +1,16 @@
 ---
-title: "Connect"
-description: "Connect with the Linked Account's Databricks account."
+title: "Setup"
+description: "Connect to your Databricks app for OAuth or API Key"
 ---
 
-<Note>
-  Databricks is an **API Key** based integration and does not require the setup of an app.
-</Note>
+Databricks supports two authentication methods. Choose the one that best fits your use case:
 
-### Required Credentials of a Linked Account
+- **API Key Authentication** - Best for internal integrations using a Personal Access Token
+- **OAuth 2.0 Authentication** - Best for end-user authorization using PKCE (no client secret required)
 
-To successfully connect with the **Databricks** integration, a Linked Account or an end-user will need to provide the following to connect:
+## API Key Authentication
+
+To successfully connect with the **Databricks** integration using API Key, a Linked Account or an end-user will need to provide the following:
 
 1. API Key (Personal Access Token)
 2. Base URL
@@ -40,9 +41,8 @@ To acquire the required credentials and connect a Linked Account, please follow 
   alt="Getting Personal Access Token"
 />
 
-4. Provide a **Comment** (e.g., "Refold Integration") and set a **Lifetime** for the token. Select any particular scopes as should be accessible by the Refold Databricks connector. Click `Generate`. 
-5. Copy the token displayed on the screen. This is your **API Key**.
-
+5. Provide a **Comment** (e.g., "Refold Integration") and set a **Lifetime** for the token. Select any particular scopes as should be accessible by the Refold Databricks connector. Click `Generate`.
+6. Copy the token displayed on the screen. This is your **API Key**.
 
 <img
   height="200"
@@ -54,13 +54,94 @@ To acquire the required credentials and connect a Linked Account, please follow 
   The token will only be shown once. Copy and store it immediately. If lost, you will need to revoke and generate a new token.
 </Warning>
 
-6. Your **Base URL** is the workspace URL you used to log in (e.g., `https://<workspace-id>.azuredatabricks.net`).
+7. Your **Base URL** is the workspace URL you used to log in (e.g., `https://<workspace-id>.azuredatabricks.net`).
 
-The Linked Account or end-user now have all the credentials required to connect with Databricks.
+The Linked Account or end-user now have all the credentials required to connect with Databricks using API Key authentication.
+
+---
+
+## OAuth 2.0 Authentication
+
+To setup your Databricks app in Refold for OAuth, you will need the following credentials from your Databricks account console:
+
+- Client ID
+- Workspace URL
+
+<Info>
+  Databricks OAuth uses PKCE (Proof Key for Code Exchange), so no client secret is required. You will need to register a new app connection in the Databricks account console.
+</Info>
+
+### Creating an OAuth App Connection in Databricks
+
+To create a Databricks OAuth app connection and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Databricks account console at [https://accounts.cloud.databricks.com](https://accounts.cloud.databricks.com).
+
+<img
+  height="200"
+  src="/images/Databricks/DB_landingpage.png"
+  alt="Databricks Account Console Landing Page"
+/>
+
+2. Click on **Settings** in the left sidebar.
+3. Navigate to the **App connections** tab.
+
+<img
+  height="200"
+  src="/images/Databricks/db_appconnections.png"
+  alt="App Connections in Databricks Settings"
+/>
+
+4. Click on **Add connection** in the top right corner.
+5. Fill in the connection details:
+   - **Application Name**: Give your app a descriptive name (e.g., "Refold-databricks-app").
+   - **Redirect URLs**: Go to your [`Apps catalog`](https://app.refold.ai/apps) in **Refold** \> Search for `Databricks` \> `Settings` \> `Use your credentials` \> `Callback Url` \> Copy it and paste it here.
+   - **Access scopes**: Select the required scopes (e.g., `SQL` or `All APIs`).
+   - **Client secret**: Leave the **Generate a client secret** checkbox **unchecked** — Databricks OAuth with PKCE does not require a client secret.
+
+<img
+  height="200"
+  src="/images/Databricks/db_addConnection.png"
+  alt="Add Connection Form in Databricks"
+/>
+
+6. Click **Add**. A **Connection created** popup will appear displaying your **Client ID**. Copy it and store it securely.
+
+<img
+  height="200"
+  src="/images/Databricks/db_clientId.png"
+  alt="Client ID from Databricks App Connection"
+/>
+
+7. Navigate to **Workspaces** in the left sidebar, click on your workspace, and copy the **Workspace URL** shown in the configuration (e.g., `https://dbc-<id>.cloud.databricks.com`).
+
+<img
+  height="200"
+  src="/images/Databricks/db_copyworkspaceurl.png"
+  alt="Copy Workspace URL from Databricks"
+/>
+
+#### Configuring OAuth credentials in Refold
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+Provide the acquired **Client ID** and **Workspace URL** under Settings of the Databricks app in Refold and save it.
+
+#### Configuring Scopes
+
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes` section.
+
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any custom scopes supported by the respective platform.
+
+<Warning>
+  If you are facing scopes missing or invalid scope error, make sure the scopes selected in Refold match those configured in your Databricks app connection. And, ensure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+---
 
 #### Actions and triggers
 
-In Refold, you can create orchestrations of your use-cases using Databricks actions and triggers. Following are the set of Databricks actions and triggers supported by Refold.
+Once the above setup is completed, you can create orchestrations of your use-cases using Databricks actions and triggers. Following are the set of Databricks actions and triggers supported by Refold.
 
 <Tabs>
   <Tab title="Actions">
