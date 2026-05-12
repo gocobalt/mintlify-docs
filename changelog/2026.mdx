@@ -3,7 +3,40 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+<Update label="May 12, 2026" description="v3.5.19 · Staged comments, Databricks OAuth2 & Freshsales">
 
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Staged node comments, new visibility controls for subflow logs, a Config ID combobox in Try API, and Databricks OAuth2 support.**
+
+**New Features**
+
+- **Staged Comments on Workflows**: Stage multiple node comments from the inline toolbar and submit them in one action via the bulk action bar.
+- **Subflow Execution Visibility Toggle**: New workflow setting to control whether subflow executions appear in logs.
+- **Pre-Auth Script Toggle**: Explicit enable/disable toggle for pre-auth scripts on developer auth cards.
+- **Config ID Combobox in Try API**: The Config ID field is now a searchable combobox that auto-clears when the linked account or application changes.
+- **Type-to-Search**: Type-to-search now available in Connect Portal Map v2 and Config Map v2.
+
+**Improvements**
+
+- "All Workflows" renamed to **Shared Workflows** in linked account views, with Reset Filters disabled in shared/public views.
+- MCP audit logs now display client icons, formatted durations, and improved target labels.
+- Per-app configurable token expiry codes — connectors can now define which response codes trigger token refresh.
+- More accurate context handling in the AI builder for workflows that reference the same application multiple times.
+- Improved reliability of subflow cleanup when a parent workflow is stopped or cancelled.
+- Improved pagination handling for cursor-based responses.
+
+**Integration Updates**
+
+- **Freshsales**: New integration actions enabled.
+- **Databricks**: OAuth2 support added with both U2M and M2M client credentials flows, alongside the existing API key authentication.
+- **Incorta**: Broader token expiry handling.
+- **Sage Intacct**: Improved authentication reliability under concurrent load.
+- **Contentful**: Improved filter parameter handling on `getEntries`.
+- **Aprimo**: Simplified create project schema.
+- **Odoo**, **Hunter**, **USPS**: Migrated to the new request-layer handler for improved consistency.
+
+</Update>
 <Update label="May 8, 2026" description="v3.5.18 · Workflow builder improvements">
 
 <Badge color="blue">Platform</Badge>
