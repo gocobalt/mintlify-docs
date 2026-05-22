@@ -3,6 +3,197 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+<Update label="May 22, 2026" description="v3.5.25 · Universal Connector OAuth, SAP Ariba expansion & encrypted output fields">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Universal Connector with OAuth orchestration, expanded SAP Ariba coverage, encrypted custom output fields, and a redesigned Logs page.**
+
+**New Features**
+
+- **Universal Connector — OAuth Orchestration**: New OAuth orchestration with end-to-end authorization, token exchange, refresh, and revoke flows. Active integrations are now blocked from re-initiating `/integrate` or `/connect`.
+- **Encrypted Custom Output Fields**: Mark individual output fields as encrypted — values are redacted across logs, UI, and persisted state.
+- **Logs Page Redesign**: Fullscreen layout with filter views moved from the top bar into the sidebar.
+- **cURL Trace in Workflow Test Panel**: The parsed cURL representation of outbound HTTP calls is now always captured and displayed in the test panel for easier debugging.
+- **JSON Schema Validation**: Workflows are validated against their `json_schema` on save, and trigger payloads are validated at execution time with field-level error responses.
+
+**Improvements**
+
+- Resolved a versioning issue where the `updatedAt` field on previously-published workflow versions could shift after deployments.
+- Unauthorized linked accounts now return a clear authentication error in test workflow and test node runs instead of timing out.
+
+**API Changes**
+
+- New public endpoints for the Universal Connector OAuth flow: `GET /integrate`, `GET /callback`, `POST /connect`, `POST /refresh-tokens`, `POST /revoke`.
+
+**Integration Updates**
+
+- **SAP Ariba Catalog Content API**: New integration with full OpenAPI coverage.
+- **SAP Ariba Network Purchase Order Buyer**: New integration for purchase order workflows.
+
+</Update>
+
+<Update label="May 21, 2026" description="v3.5.24 · Org Settings redesign, double-click node creation & encrypted output fields">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Redesigned Org Settings, double-click node creation on the canvas, encrypted custom output fields end-to-end, expanded admin permissions, and SAP Ariba Document Approval support.**
+
+**New Features**
+
+- **Org Settings Redesign**: New `/settings` shell organized into User (Profile, Authentication) and Organization (Overview, Users, Roles, Workspaces, Credentials) sections, with consistent save/invite controls in the header.
+- **Double-Click on Canvas to Create a Node**: Double-click any empty area on the workflow canvas to open the new-node modal at the clicked position, with a first-time user banner.
+- **Encrypted Custom Output Fields (End-to-End)**: Individual output fields can now be marked encrypted with redaction enforced through the entire execution path.
+- **API Proxy Header Override**: Request headers now take precedence over stored auth credentials, allowing runtime overrides on API Proxy and custom-node calls.
+- **HTTP Trace Toggle**: Opt in to per-node cURL trace capture from node settings.
+- **Admin Password Reset**: Admins can now reset passwords for other users (excluding Owners), with actor-attributed audit trail.
+- **Product Switcher & Grouped Layout**: New product switcher with per-product navigation, gated behind an org preference and surfaced via a new Experiments page.
+- **Workflow Stopped & Timed Out Webhooks**: Workflow Stopped and Workflow Timed Out are now selectable webhook event options.
+- **Event Deletion Safeguard**: Deleting an event linked to workflows now shows a confirmation dialog listing the affected workflows.
+
+**Improvements**
+
+- App secret token on the hosted portal is now masked with a copy-to-clipboard control.
+- Map v2 in the Connect Portal now sorts alphabetically with LHS/RHS column headers.
+- Webhook advanced toggle state now persists across reloads.
+- Node Add button no longer scales when zooming the canvas.
+- Linked accounts requiring re-authentication are no longer shown as active.
+- Subflows now display saved payload values on open.
+- Improved authorization scoping on the workflow lookup API.
+
+**Bug Fixes**
+
+- Pipedrive action descriptions now render as plain text in the hosted portal.
+- **Sage Intacct V3**: Update operations (Update a Bill, Invoice, Adjustment, Term, Invoice Line, etc.) now resolve the full field list instead of only the key field.
+
+**Integration Updates**
+
+- **SAP Ariba**: New Document Approval integration.
+- **Pipedrive**: OpenAPI spec cleaned up — HTML and markdown stripped from action descriptions, broken paths fixed.
+
+</Update>
+
+<Update label="May 19, 2026" description="v3.5.23 · Applications redesign, execution log search & cURL trace">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**A reworked Applications experience, a redesigned Connect Portal and Developer page, full-text execution log search, and a new cURL trace on outbound HTTP calls for easier debugging.**
+
+**New Features**
+
+- **Applications Redesign**: New `/applications/[slug]` route tree with Overview, Auth, Actions, and Settings sections. Custom apps include an Auth sidebar entry; native apps include Settings. New shared components for unsaved changes, dataslot palette, and action creation.
+- **Connect Portal Redesign**: New drill-down navigation with a tabbed sidebar, deep-linkable via `?workflow=` query param, and a Preview component now wired into both the fields and workflows sidebars.
+- **Developer Page Redesign**: New fullscreen layout with a grouped left sidebar covering Developer (Overview, Events, API Proxies, Webhooks) and Resources (API Reference, SDKs).
+- **Execution Log Search**: Search executions by partial workflow name, full execution ID, event/app, and custom field name or partial value, with cursor-based pagination.
+- **cURL Trace on Outbound HTTP Calls**: Node execution results now include a `parsed_request_curl` field — a ready-to-run cURL representation of the outbound call (headers excluded for security).
+- **Custom Field Snapshot at Instance Completion**: Custom field values are now resolved using node outputs and snapshotted at instance completion.
+- **Encrypted Environment Variables**: Encrypted env var values are now redacted across logs, persisted state, and execution archives.
+- **JSON Schema Validation on Custom Nodes**: Client-side schema validation for custom node payloads.
+- **Workflow Webhook Events**: Workflow Stopped and Workflow Timed Out added as selectable webhook event options.
+- **Linked Account Guardrail**: Linked account creation is now blocked when the account ID matches the tenant ID.
+
+**Improvements**
+
+- "All Workflows" renamed to **Shared Workflows** in linked account views.
+- Try API workflow grouping — published workflows grouped by application name, private workflows grouped by linked-account name.
+- Subflow raw payload toggle now only auto-enables when a nested saved payload exists.
+- Private workflow themes now follow the hosted portal session theme.
+- Account lockout can now be disabled via a configuration toggle for ops scenarios.
+- Significant memory and performance improvements across the platform.
+- Improved archival reliability.
+
+**Integration Updates**
+
+- **SAP**: Improved connection stability for long-running scenarios.
+- **Dropbox**: Email is now visible on the hosted portal.
+- **Adobe Sign**: Improved identifier handling.
+
+</Update>
+
+<Update label="May 14, 2026" description="v3.5.22 · Read-only sessions, Cal.com v2 migration & search improvements">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Read-only session mode for hosted workflows, Cal.com migrated to v2 API, multi-slug workflow filtering, and a stage-one Universal Connector model.**
+
+**New Features**
+
+- **Read-Only Session Mode**: Session tokens can now grant view-only access to hosted workflows — the edit button is hidden and draft mode is blocked when `readOnlyWorkflow: true` is set on the token.
+- **Multi-Slug Workflow Filter**: `getAllWorkflows` now accepts a comma-separated list of slugs, with invalid slugs surfaced in the response.
+
+**Improvements**
+
+- **Skipped Loop Nodes**: A Fixed Iteration or Do-While Loop with no entry node now skips correctly and execution proceeds to the next connected nodes.
+- **Try-Catch Error Body**: The error response from a try-catch block now surfaces the actual failing node's ID and original error message instead of the catch-tail terminate message.
+- **Switch Node Error Clarity**: Switch cases with an unset `evaluator_type` now return a clear "evaluator_type is required" message.
+- **Audit Log Workflow Names**: Batched and DAG executions now show the resolved workflow name in audit log entries instead of an empty field.
+- **Delay Node Default**: The Delay node no longer auto-selects "Wait for" — users must explicitly pick "Wait for" or "Wait till".
+- **HTTP Node Save**: Editing existing query params or headers now activates the save button without requiring a new row to be added.
+- **Workflow Testing Navigation**: Replaced the cancel icon with a back-navigation button in the prerequisites tab.
+- **Incremental Sync Ledger**: Workflows finishing in TERMINATED or QUEUED states now write ledger timestamps, preventing broken chains on the next scheduled run.
+- **Terminate Node**: Input data is no longer a required field.
+
+**Integration Updates**
+
+- **Cal.com**: Migrated to the v2 API following the v1 shutdown. The outbound base URL is now `api.cal.com/v2` and a mandatory `cal-api-version: 2024-08-13` header is sent on every request. 
+⚠️ **Action required**: Existing Cal.com API keys must be regenerated as v2 Bearer tokens at `https://app.cal.com/settings/developer/api-keys`.
+- **SAP**: Improved HTTP socket reliability.
+- **SAP Ariba**: New actions added under the SAP Ariba module.
+
+</Update>
+
+<Update label="May 14, 2026" description="v3.5.21 · Token resolution for custom OAuth apps">
+
+<Badge color="blue">Platform</Badge>
+
+**Improved token resolution for custom applications using OAuth 2.0 Client Credentials.**
+
+**Improvements**
+
+- Custom applications configured with OAuth 2.0 Client Credentials now correctly inject the fetched access token into outbound request headers via the templated `{{access_token}}` placeholder.
+
+</Update>
+
+<Update label="May 13, 2026" description="v3.5.20 · Temporary account lockout, configurable subflow timeouts & Databricks OAuth2">
+
+<Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Temporary account lockout, configurable subflow timeouts, consistent node-adding behavior, expired token visibility, and Databricks OAuth2 support.**
+
+**New Features**
+
+- **Temporary Account Lockout**: Replaces permanent lock with a 3-hour auto-unlocking lock after 3 consecutive failed login attempts. Lockout duration is shown in the error message, and the counter resets on successful login.
+- **Configurable Subflow Timeouts**: New `subflow_create_rpc_timeout` and `subflow_setup_timeout` settings (default 1 minute each), resolved at workflow start so in-flight workflows use the timeout active when they started.
+- **Bulk Node Delete Confirmation**: Confirmation dialog before bulk deletion with a success notification on completion.
+- **Webhook Templating — Linked Account Name**: Webhook payload templating context now includes `linked_account_name`, making it easier to identify affected accounts in Slack and webhook error notifications.
+- **Workflow Enable/Disable API**: Now returns a descriptive 400 error when the target application isn't connected.
+- **Subflow Execution in Logs**: When `allow_subflow_execution_in_logs` is enabled on a primary workflow, subflow runs are now included in `GET /instances` results.
+
+**Improvements**
+
+- **Consistent Node-Adding Behavior**: Loop, Try-Catch, and other nodes now follow the same "add after selected" path via a unified source-node model.
+- **Loop Node Validation**: Negative or zero `concurrent_batches` values now error immediately with a clear message instead of leaving the execution in a Waiting state.
+- **Node Name on Edit**: Editing a node no longer resets a custom name back to the default — the default only applies on initial creation.
+- **Switch Case Toolbar**: Loading spinners, item counts, and count badges added to the insert-variable toolbar.
+- **Code Editor**: Word wrap now enabled by default, with the horizontal scrollbar hidden.
+- **Workflow Event Logs**: Clicking an event ID in a workflow execution now opens the correct logs, including for scheduled workflows.
+- **Phantom Nodes**: Auth checks are now skipped for default apps, so phantom nodes on default-app workflows execute correctly.
+- **Expired Token Visibility**: Expired access tokens are now surfaced cleanly instead of silently failing on retry.
+
+**API Changes**
+
+- `PATCH /api/v2/public/slug/{app}/config/{linked_account_id}/workflows/{workflow_id}` — now returns 400 with a descriptive message when the target app isn't authed (previously 500).
+- `GET /instances` — now includes subflow executions when the parent workflow opts in via `allow_subflow_execution_in_logs`.
+- Webhook templating context — new `linked_account_name` variable available to subscribers.
+
+**Integration Updates**
+
+- **Freshsales**: New integration actions enabled.
+- **Databricks**: OAuth2 support added with U2M, M2M client credentials, and static API key flows, alongside the existing PAT authentication.
+- **DocuSign**: `list_tabs` for template recipients now surfaces as a dropdown of tab names in the hosted portal.
+- **USPS**, **Odoo**, **Hunter**: Migrated to the new request-transform handler for improved consistency.
+
+</Update>
 <Update label="May 12, 2026" description="v3.5.19 · Staged comments, Databricks OAuth2 & Freshsales">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
@@ -744,7 +935,8 @@ This release is a required companion to **v3.5.15** and is rolled out to every e
 - **Contentful**: Content Management actions added to the pre-existing connector.
 - **Smartsheet**: Token refresh handles edge cases correctly.
 - **Zoom**: Webhook delivery enabled.
-- **Dropbox**: Webhook trigger restored. ⚠️ **Action required for existing users**: Accounts that were linked while this issue was active will need to reconnect via OAuth to resume receiving webhook events.
+- **Dropbox**: Webhook trigger restored. 
+⚠️ **Action required for existing users**: Accounts that were linked while this issue was active will need to reconnect via OAuth to resume receiving webhook events.
 
 </Update>
 
