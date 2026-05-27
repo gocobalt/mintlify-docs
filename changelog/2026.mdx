@@ -87,7 +87,7 @@ rss: true
 - **Execution Log Search**: Search executions by partial workflow name, full execution ID, event/app, and custom field name or partial value, with cursor-based pagination.
 - **cURL Trace on Outbound HTTP Calls**: Node execution results now include a `parsed_request_curl` field — a ready-to-run cURL representation of the outbound call (headers excluded for security).
 - **Custom Field Snapshot at Instance Completion**: Custom field values are now resolved using node outputs and snapshotted at instance completion.
-- **Encrypted Environment Variables**: Encrypted env var values are now redacted across logs, persisted state, and execution archives.
+- **Encrypted Environment Variables**: Encrypted env var values are now redacted across logs, persisted state, and execution archives. See [Environment Variables](/build/workflow/environment-variables).
 - **JSON Schema Validation on Custom Nodes**: Client-side schema validation for custom node payloads.
 - **Workflow Webhook Events**: Workflow Stopped and Workflow Timed Out added as selectable webhook event options.
 - **Linked Account Guardrail**: Linked account creation is now blocked when the account ID matches the tenant ID.
@@ -257,7 +257,7 @@ rss: true
 
 **Improvements**
 
-- Environment variable templating now uses cleaner dot notation (`env.workflow.variable`).
+- [Environment variable](/build/workflow/environment-variables) templating now uses cleaner dot notation (`env.workflow.variable`).
 - Response Viewer now supports expand and collapse all.
 - Cron schedules now register against workflow aliases for improved reliability across deployments.
 
@@ -478,7 +478,7 @@ This release is a required companion to **v3.5.15** and is rolled out to every e
 - **Custom Fields on Executions Header**: Custom fields surfaced as an executions header action with a variable-suggestion editor and keyboard navigation.
 - **MCP Audits**: New audits page with detail dialog, linked-account combobox, and an MCP-server enable/disable toggle.
 - **Subflow Sync & Fire-and-Forget**: Subflow nodes now support both synchronous and fire-and-forget execution with structured error pass-through.
-- **Templated Workflow Env Vars**: Workflow environment variable values now support templating for dynamic resolution.
+- **Templated Workflow Env Vars**: Workflow [environment variable](/build/workflow/environment-variables) values now support templating for dynamic resolution.
 - **Logger Node Enhancements**: New `message_title` and `message_body` fields with full backward compatibility for existing `message_template` configurations.
 
 **Improvements**
@@ -685,7 +685,7 @@ This release is a required companion to **v3.5.15** and is rolled out to every e
 - **Public Workflows in Hosted Portal**: A new sub-tab in the hosted portal lets you enable or disable public workflows per linked account.
 - **Workbench (formerly Scratchpad)**: AI-generated artifacts — implementation plans, reports, field mappings, code, and API contracts — now stream live into dedicated cards. The Workbench tab opens automatically when generation begins.
 - **Duplicate Node & Entry Node Management**: New context menu options in the workflow builder for duplicating nodes and managing entry nodes.
-- **Environment Variable Insertion in Data Slots**: Insert environment variables directly from the Data Slots toolbar.
+- **Environment Variable Insertion in Data Slots**: Insert [environment variables](/build/workflow/environment-variables) directly from the Data Slots toolbar.
 - **Unsaved Changes Prompt**: A navigation guard now warns you when leaving a connect portal configuration with unsaved changes.
 - **Execute Workflow Dialog**: New dialog for running non-associated workflows, with linked account selection, a payload editor, and a sync toggle.
 

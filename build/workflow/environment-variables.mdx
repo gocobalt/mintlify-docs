@@ -1,0 +1,125 @@
+---
+title: "Environment Variables"
+description: "Store API keys, secrets, and configuration values outside your workflow logic using scoped environment variables."
+---
+
+Environment variables let you store values — like API keys, secrets, or configuration data — outside of your workflow logic. Instead of hardcoding a value directly into a node, you define it once and reference it by name. The actual value is managed separately and injected at runtime, keeping your workflows clean, reusable, and secure.
+
+## Scopes
+
+Every environment variable has a **scope** that determines where its value is set and where it can be used. The scope is pre-selected based on the level you're on and cannot be changed after creation.
+
+| Scope | Where the value is set | Where it can be used | Reference syntax |
+|---|---|---|---|
+| **Organization** | Organization variables page in Settings | Across all workspaces in the organization | `{{env.org.variable-name}}` |
+| **Workspace** | Workspace variables page in Settings | Within that specific workspace (Test or Production) | `{{env.workspace.variable-name}}` |
+| **Linked Account** | Inside each Linked Account's overview page | In workflows running under that Linked Account | `{{env.linked_account.variable-name}}` |
+| **Workflow** | Inside the workflow's Environment Variables panel | Only within that specific workflow | `{{env.workflow.variable-name}}` |
+
+## Creating a Variable Definition
+
+Variable definitions are created from **Settings → Configuration → Environment Variables**. Select the scope level you want — Organization, Workspace, Linked Account, or Workflow — and click **+ Add Definition**.
+
+<img height="400" src="/images/Guides/Workflow/environment-variables/01-env-var-settings-nav.png" alt="Environment Variables section in Settings showing four scope levels" />
+
+Each definition has the following fields:
+
+| Field | Description |
+|---|---|
+| **Name** | The identifier used to reference this variable in your workflows. Use clear, descriptive names like `API_KEY` or `CLIENT_SECRET`. |
+| **Description** | A short note on what this variable is used for. |
+| **Scope** | Pre-filled based on the level you are on. Cannot be changed. |
+| **Format** | The expected format of the value: `String`, `Number`, or `URL`. |
+| **Encrypted** | Controls whether the variable's value is hidden in logs and the UI. See [Encrypted Environment Variables](#encrypted-environment-variables) below. |
+
+Once you click **Create Definition**, the variable is registered at that scope and ready for a value to be assigned.
+
+## Setting Variable Values
+
+<Tabs>
+  <Tab title="Organization">
+    After creating a definition at the Organization scope, it appears in the Organization variables list in Settings. Click **+ Value** on the variable row to enter the value. This value is shared across all workspaces in your organization.
+
+    <img height="400" src="/images/Guides/Workflow/environment-variables/15-org-variable-add-value.png" alt="Organization variables page showing a variable with + Value button highlighted" />
+  </Tab>
+  <Tab title="Workspace">
+    After creating a definition at the Workspace scope, it appears in the Workspace variables list in Settings. Click **+ Value** on the variable row to enter the value for that workspace.
+
+    Since Test and Production are separate workspaces, you set the value independently in each — useful for variables like base URLs or API keys that differ between environments.
+  </Tab>
+  <Tab title="Linked Account">
+    For Linked Account-scoped variables, navigate to **Linked Accounts** and open the specific account. In the right panel, find the **Environment Variables** section and click **+ Add**.
+
+    This opens a dialog where you select the variable definition and enter the value for that Linked Account. Once set, the variable is available to any workflow running under that account.
+
+    <img height="400" src="/images/Guides/Workflow/environment-variables/07-linked-account-add-variable.png" alt="Add Environment Variable dialog on Linked Account page showing variable definition selector" />
+  </Tab>
+  <Tab title="Workflow">
+    For workflow-scoped variables, open the workflow and click the **+** tab at the top, then select **Environment Variables** from the menu.
+
+    <img height="400" src="/images/Guides/Workflow/environment-variables/04-workflow-tab-menu.png" alt="Workflow tab menu showing Environment Variables option" />
+
+    This opens the Environment Variables panel for that workflow. Click **+ Add Variable** to assign a value to a definition.
+
+    <img height="400" src="/images/Guides/Workflow/environment-variables/05-workflow-env-panel.png" alt="Workflow Environment Variables panel showing variables with eye and delete icons" />
+  </Tab>
+</Tabs>
+
+## Using Variables in a Workflow
+
+Once a variable has a value set, reference it inside any node using the **Insert Variable** picker. Under the **Environment Variables** group, variables are listed by scope — ORG, WORKSPACE, LINKED ACCOUNT, and WORKFLOW. Selecting one from the picker inserts the correct syntax automatically.
+
+```
+{{env.org.internal-api-key}}
+{{env.workspace.base-url}}
+{{env.linked_account.client-secret}}
+{{env.workflow.private-key}}
+```
+
+## Encrypted Environment Variables
+
+When a variable holds sensitive data — an API key, client secret, or auth token — enable encryption on it. Encrypted variables are never exposed in run logs, execution history, or the UI, even when a node's request is inspected.
+
+### Enabling Encryption
+
+Toggle **Encrypted** to ON when creating the variable definition, before clicking **Create Definition**.
+
+<img height="400" src="/images/Guides/Workflow/environment-variables/09-encrypted-toggle.png" alt="Add Variable Definition form with Encrypted toggle turned ON" />
+
+Once enabled, the variable appears in the list with a **Yes** badge in the Encrypted column.
+
+<img height="400" src="/images/Guides/Workflow/environment-variables/11-linked-account-variables-encrypted.png" alt="Variables list showing a variable marked as Encrypted: Yes" />
+
+### How the Value is Stored
+
+After setting a value for an encrypted variable, it cannot be read back through the UI. Clicking the eye icon on the variable row shows a read-only popup with `[REDACTED]` in place of the actual value. This applies across all scope levels.
+
+<img height="400" src="/images/Guides/Workflow/environment-variables/14-encrypted-value-popup-linked-account.png" alt="Eye icon popup showing Value as REDACTED with Delete Value button" />
+
+### How It Appears in Logs
+
+When a workflow runs and uses an encrypted variable, the value is replaced with `[REDACTED]` in the request payload visible in the Run tab. The workflow still executes successfully — the actual value is passed securely at runtime and only the display is masked.
+
+<img height="400" src="/images/Guides/Workflow/environment-variables/12-redacted-in-run-log.png" alt="HTTP node Run tab showing Input payload with encrypted variable values replaced by REDACTED" />
+
+### When to Use Encrypted Variables
+
+Enable encryption for any variable whose value should never appear in plain text in logs or the UI:
+
+- API keys and auth tokens
+- Client secrets and credentials
+- Passwords or private URLs containing credentials
+- Any end-user-specific value that should not be visible to other users or admins
+
+<Note>
+  Encrypted values are still passed to nodes at runtime. Encryption controls visibility in the UI and logs only — it does not affect whether the value is used during execution.
+</Note>
+
+## Summary
+
+| | Organization | Workspace | Linked Account | Workflow |
+|---|---|---|---|---|
+| **Defined in** | Settings | Settings | Settings | Settings |
+| **Value set in** | Org variables page | Workspace variables page | Linked Account page | Workflow panel |
+| **Scope of use** | All workspaces | That workspace only | Workflows under that account | That workflow only |
+| **Supports encryption** | Yes | Yes | Yes | Yes |
