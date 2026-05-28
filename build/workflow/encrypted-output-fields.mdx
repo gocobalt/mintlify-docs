@@ -1,0 +1,69 @@
+---
+title: "Encrypted Output Fields"
+description: "Redact specific node output fields in logs and the UI without affecting how values flow through your workflow."
+---
+
+Refold lets you mark individual output fields on any node as **Encrypted**. When a field is encrypted, its value is stored securely and displayed as `[REDACTED]` in the Run tab, execution logs, and history — while still being passed to downstream nodes at runtime.
+
+This is useful for API keys, auth tokens, personalised data, or any field whose value must flow through the workflow but should never appear in plain text in the UI or execution history.
+
+## Configuring Encrypted Output Fields
+
+Open the node and navigate to the **Fields** tab. Scroll to the **Custom Output** section — each output key listed there has an **Encrypted** toggle on the right.
+
+| Toggle state | Behaviour |
+|---|---|
+| **Off** | Value is visible in run outputs and logs |
+| **On** | Value is stored securely and shown as `[REDACTED]` in the Run tab and logs |
+
+<img height="400" src="/images/Guides/Workflow/encrypted-output-fields/01-custom-output-fields.png" alt="Custom Code node Fields tab showing Custom Output section with per-field Encrypted toggles" />
+
+Encryption is set per field, so you can mix visible and redacted outputs in the same node.
+
+## Field Path Syntax
+
+All node outputs are nested inside a `body` object. When adding a key in the Custom Output section, enter the path **relative to `body`** — do not include `body` itself.
+
+Given the following node output:
+
+```json
+{
+  "body": {
+    "result": [
+      { "id": 1, "skill": "iPaaS" },
+      { "id": 2, "skill": "Platform" }
+    ],
+    "welcome": "Hello!"
+  }
+}
+```
+
+You would enter these keys in the Custom Output section:
+
+| Key | What it targets |
+|---|---|
+| `result.*.skill` | The `skill` field across every item in the `result` array |
+| `welcome` | The top-level `welcome` field inside `body` |
+
+The `*` wildcard traverses all items in an array. `result.*.skill` captures the `skill` value from every object in the list — you do not need a separate entry per index.
+
+## How It Appears in Run Output
+
+Once the node executes, encrypted fields show `[REDACTED]` in the Output panel of the Run tab. Non-encrypted fields render their actual values as normal.
+
+In the example below, `result.*.skill` is encrypted and redacted across all array items, while `welcome` remains visible:
+
+<img height="400" src="/images/Guides/Workflow/encrypted-output-fields/02-redacted-output.png" alt="Custom Code node Run tab showing Output with skill values redacted and welcome value visible" />
+
+## When to Use Encrypted Output Fields
+
+Use this when a node returns sensitive data that downstream nodes need but that should not be readable from the execution history or UI:
+
+- API keys or auth tokens returned by a Custom Code node
+- User-specific data such as personal identifiers or contact details
+- Credentials or secrets fetched from an external API during workflow execution
+- Any field where the value is required downstream but must not appear in logs in plain text
+
+<Note>
+  Encrypted output fields control visibility only. Values are still passed to downstream nodes in full — encryption does not block or alter the data in transit.
+</Note>
