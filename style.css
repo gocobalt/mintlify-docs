@@ -162,13 +162,19 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
 }
 
-/* Welcome page (mode:"custom") — suppress any tab "active" indicator.
-   Uses :has() to detect the welcome page via the .welcome-container div,
-   since Mintlify falls back to marking the first tab active when the current
-   page doesn't belong to any tab. */
-body:has(.welcome-container) [class*="tab-bar"] a,
-body:has(.welcome-container) [class*="tab-bar"] a[aria-current="page"],
-body:has(.welcome-container) [class*="tab-bar"] a[class*="active"] {
+/* Welcome page (mode:"custom") — hide the top tab strip entirely.
+   The cards in the hero already act as the entry points into each tab
+   (Platform, Native, Integration Delivery, MCP, API references), so the
+   duplicated nav-tabs bar is visual noise on the landing page.
+   Uses :has() to scope to the welcome page only, via the .welcome-container
+   marker div in welcome.mdx. We hide the .nav-tabs parent (the fixed-height
+   strip container) so no empty bar is left behind. */
+body:has(.welcome-container) div:has(> .nav-tabs) {
+  display: none !important;
+}
+/* Fallback active-state suppression in case the strip ever renders */
+body:has(.welcome-container) .nav-tabs a,
+body:has(.welcome-container) .nav-tabs a[aria-current="page"] {
   border-bottom-color: transparent !important;
   font-weight: 400 !important;
   color: var(--rf-base-400) !important;
