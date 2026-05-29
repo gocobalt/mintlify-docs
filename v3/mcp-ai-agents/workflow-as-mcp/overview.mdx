@@ -1,6 +1,43 @@
 ---
 title: "Overview"
-description: "Documentation for overview"
+description: "Expose tested workflows as single tool calls instead of letting agents orchestrate API sequences"
 ---
 
-Content coming soon.
+AI agents can call individual APIs, but multi-step processes that need precise sequencing, error handling, and business logic often need more structure. Instead of letting agents orchestrate a complex process step by step, you can expose a tested workflow as a single MCP tool. The agent calls one tool; the workflow handles the rest.
+
+## When to use a workflow
+
+| Scenario | Use |
+|----------|-----|
+| Single API call (create contact, get invoice) | Action |
+| Multi-step process with business logic | Workflow |
+| Process requires approvals or compliance checks | Workflow |
+| Order of operations matters | Workflow |
+| Failure in one step should trigger rollback | Workflow |
+
+Actions and workflows can coexist on the same server. Expose actions for simple operations and workflows for anything that needs sequencing or error handling.
+
+## How it appears to the agent
+
+A workflow added to an MCP server shows up as a tool the agent can call:
+
+- **In direct mode:** as `<app_slug>_<workflow_name>_workflow`
+- **In agent mode:** reachable via `EXECUTE_ACTION` with `type: "workflow"`
+
+The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
+
+See [Tools Reference](/v3/mcp-ai-agents/tools-reference/tools) for the exact parameter shape.
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Reliability" icon="shield-check" href="/v3/mcp-ai-agents/workflow-as-mcp/reliability">
+    What workflows give you that direct API calls don't
+  </Card>
+  <Card title="Configuration" icon="gear" href="/v3/mcp-ai-agents/workflow-as-mcp/configuration">
+    How to add a workflow to an MCP server
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/v3/mcp-ai-agents/workflow-as-mcp/examples">
+    Concrete multi-step examples
+  </Card>
+</CardGroup>

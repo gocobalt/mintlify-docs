@@ -1,0 +1,103 @@
+---
+title: "Server Configuration"
+description: "Control what agents can access, how they interact with your integrations, and what's exposed"
+---
+
+Each MCP server has three configuration tabs: **Overview**, **Applications**, and **Skills**. Together, these control exactly what an agent can see and do.
+
+## Overview tab
+
+<img src="/images/mcp-server-overview.png" alt="Server Overview tab with name, description, and toggles" />
+
+### Name and description
+
+The **Name** and **Description** are surfaced to the agent when it connects. Write them for the agent, not for humans. Be specific about what apps and actions are available so the agent knows what it can do.
+
+### Server URL
+
+```
+https://<domain>/mcp/v1/<token>/<server_id>
+```
+
+| Segment | What it is |
+|---------|------------|
+| `token` | Auth token tied to a specific [linked account](/v3/developer/guide/build/basics/linked_account). Each end user gets a unique token and therefore a unique URL. |
+| `server_id` | Identifies this MCP server configuration. |
+
+The token in the URL authenticates the request. When an agent connects, Refold validates the token and resolves which organization, linked account, and environment the request belongs to. All tool calls within that session run under those credentials.
+
+#### Optional query parameters
+
+| Parameter | What it does |
+|---|---|
+| `?provider=<provider>` | Identifies the MCP client connecting (e.g., `claude`, `cursor`). Used for client-specific behavior and for surfacing the client name in [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs). |
+
+<Info>
+The Server URL is generated per linked account and retrieved from the dashboard.
+</Info>
+
+### One URL per customer
+
+A single MCP server configuration (one `server_id`) is reused across every linked account on that server — but each linked account gets a different `token` in its URL. That means every end user of your product connects to the same logical server but operates on their own credentials and data.
+
+```
+Customer A → https://<domain>/mcp/v1/<token_A>/<server_id>
+Customer B → https://<domain>/mcp/v1/<token_B>/<server_id>
+Customer C → https://<domain>/mcp/v1/<token_C>/<server_id>
+```
+
+In production, the pattern is:
+
+1. Create one MCP server per use case (e.g., one "Sales Operations" server with Salesforce + HubSpot)
+2. Each customer connects through their own linked account
+3. Refold issues a unique URL per linked account; you store that URL alongside the customer record
+4. Inject the URL into the agent SDK at request time
+
+Concurrent sessions are fully isolated — the per-request session context (described in [How it works](/v3/mcp-ai-agents/overview/architecture)) ensures Customer A's agent and Customer B's agent never see each other's data, tools, or credentials. The full isolation model is documented in [Security & Compliance](/v3/mcp-ai-agents/implementation/security-compliance).
+
+### Access controls
+
+Three toggles in the Server Details panel control what the agent can access. These are your primary governance controls for scoping agent capabilities.
+
+| Toggle | What it controls | Governance impact |
+|--------|-----------------|-------------------|
+| **Auth Tool** | Adds the `AUTH` tool. When credentials are missing for an app, the agent returns an auth link instead of failing silently. | Ensures credential gaps are surfaced to the user, not swallowed. |
+| **Retrieve Skill** | Adds `SEARCH_INTEGRATION_GRAPH` and `LOAD_SKILL` tools. Agents can discover and load pre-built procedures. | Controls whether agents can access your integration knowledge base. See [Skills](/v3/mcp-ai-agents/skills/overview). |
+| **Agent Mode** | Switches from per-action tools to `RESOLVE_ACTIONS` + `EXECUTE_ACTION`. | **Direct mode** (off) = agents see only the specific actions you selected. Tightest scope. **Agent mode** (on) = agents resolve intent from natural language, then execute. More flexible, broader access. See [Tools Reference](/v3/mcp-ai-agents/tools-reference/tools). |
+
+When all toggles are off (the default), the server runs in **direct mode**: one tool per action/workflow. This is the most restrictive configuration, where each agent can only call the specific actions you explicitly added.
+
+<Info>
+Start with direct mode and a small set of actions. Expand to agent mode when you need broader coverage or when the number of actions makes individual tools unwieldy.
+</Info>
+
+### Other sections
+
+- **Prompt Suggestions**: Sample prompts shown in the embedded chat widget. Helps guide end users toward valid operations.
+- **Client Setup**: Quick-reference connection instructions for different MCP clients.
+- **Embed Chat**: Iframe snippet and standalone Chat URL for embedding the agent in your application.
+- **Debug Mode**: Shows full request/response payloads in the embedded chat. Turn this on during development, off in production.
+
+## Applications tab
+
+<img src="/images/mcp-add-application.png" alt="Adding an application and selecting actions" />
+
+Lists the apps connected to this server. This is where you define the agent's access boundary. Only apps added here are reachable. Only the actions you select within each app are exposed as tools.
+
+Each app must be:
+1. **Configured** in your Refold account with valid auth settings ([connector setup guide](/v3/developer/guide/build/connectors/overview))
+2. **Authorized** by the linked account (the end user must have completed the auth flow for that app)
+
+You can connect multiple apps to a single server. A server with Salesforce + SAP + NetSuite gives the agent access to CRM, ERP, and financial actions in one session.
+
+<Warning>
+Adding an app does not give the agent access to all of its actions by default. You select which actions to expose when adding the app. This lets you follow least-privilege: only expose what agents actually need.
+</Warning>
+
+## Skills tab
+
+<img src="/images/mcp-skills-tab.png" alt="Skills tab showing a custom skill with stats and status" />
+
+Skills are reusable procedures attached to your server. They give agents step-by-step guidance for complex multi-step operations instead of letting the agent figure out the approach on its own.
+
+Skills attached here are scoped to this MCP server only. See [Skills](/v3/mcp-ai-agents/skills/overview) for how to create and manage them.

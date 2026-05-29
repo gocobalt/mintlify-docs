@@ -1,6 +1,146 @@
 ---
-title: "Architecture"
-description: "Documentation for architecture"
+title: "How it works"
+description: "How Refold MCP processes requests, resolves tools, and executes actions"
 ---
 
-Content coming soon.
+This page describes how the Refold MCP server handles a request end to end. It is intended for technical evaluators and developers building agents against Refold MCP servers.
+
+## System overview
+
+All clients connect over Streamable HTTP using MCP protocol version `2025-11-25`.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8','clusterBkg':'#1a1a2e','clusterBorder':'#60a5fa','titleColor':'#fff','tertiaryColor':'#2a1a1a','tertiaryBorderColor':'#f87171','tertiaryTextColor':'#fff','fontFamily':'inherit'}}}%%
+flowchart TD
+    subgraph Clients["MCP Clients"]
+        C1["Claude Desktop"]
+        C2["Cursor"]
+        C3["Windsurf"]
+        C4["Custom Agent"]
+    end
+
+    Clients --> MCP
+
+    subgraph MCP["Refold MCP Server"]
+        direction TB
+        AUTH["1. Authenticate<br/>Validate token, resolve identity"]
+        SESSION["2. Resolve tools<br/>Per-request, scoped to identity"]
+        TOOLS["3. Execute<br/>Audited on every call"]
+        AUTH --> SESSION --> TOOLS
+    end
+
+    subgraph ToolSet["Available Tools"]
+        direction LR
+        T1["RESOLVE_ACTIONS"]
+        T2["EXECUTE_ACTION"]
+        T3["Direct Action Tools"]
+        T4["LOAD_SKILL"]
+        T5["SEARCH_INTEGRATION_GRAPH"]
+    end
+
+    TOOLS --> ToolSet
+
+    ToolSet -->|"Stored credentials<br/>(never exposed to agent)"| APPS
+
+    subgraph APPS["Connected Applications"]
+        A1["Salesforce"]
+        A2["SAP"]
+        A3["Workday"]
+        A4["300+ more"]
+    end
+```
+
+## Request lifecycle
+
+Every request follows the same path regardless of mode.
+
+### 1. Token validation
+
+Refold extracts the token and server ID from the URL path and validates the token. The result is a per-request session context:
+
+| Field | Description |
+|-------|-------------|
+| `org_id` | Organization this linked account belongs to |
+| `linked_account_id` | The specific end-user connection |
+| `environment` | `test` or `production` |
+| `mcp_server_id` | Which MCP server configuration to use |
+| `direct_mode` | `true` (default) or `false` (when `?mode=agent`) |
+| `expose_skills` | `true` or `false` (when `?expose_skills=true`) |
+
+This context is immutable for the lifetime of the request. It cannot be modified by tool handlers or downstream code.
+
+### 2. Tool resolution
+
+The tool set is resolved on every `tools/list` and `tools/call` request from the validated identity. Tools are not cached across requests, which means two concurrent sessions never share state.
+
+**Direct mode** (default):
+- Loads the MCP server configuration for this identity
+- Reads the configured apps, their actions, and their workflows
+- Exposes one tool per action and workflow with auto-generated names and fixed schemas
+- Adds skill tools if `expose_skills=true`
+
+**Agent mode** (`?mode=agent`):
+- Exposes `RESOLVE_ACTIONS` and `EXECUTE_ACTION` as the primary tools
+- Adds skill tools if `expose_skills=true`
+- Does not create per-action tools
+
+### 3. Tool execution
+
+When an agent calls a tool, Refold:
+
+1. Resolves the authenticated identity from the current request
+2. Resolves the full tool set to find the requested tool
+3. Records the invocation start (tool name, input, identity, client metadata)
+4. Executes the tool
+5. Records the invocation result (output, status, duration)
+6. Returns the result to the agent
+
+If the tool runs an integration action or workflow, Refold makes the actual call to the third-party application using the linked account's stored credentials. The agent never sees the credentials.
+
+### 4. Action execution detail
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8','actorBkg':'#1e3a5f','actorBorder':'#60a5fa','actorTextColor':'#fff','signalColor':'#94a3b8','signalTextColor':'#cbd5e1','noteBkgColor':'#1a1a2e','noteTextColor':'#fff','noteBorderColor':'#60a5fa','sequenceNumberColor':'#fff'}}}%%
+sequenceDiagram
+    participant Agent
+    participant Refold as Refold MCP Server
+    participant App as Salesforce
+
+    Agent->>Refold: EXECUTE_ACTION<br/>slug: salesforce<br/>action: create_contact<br/>payload: {email: "jane@example.com"}
+    Refold->>Refold: Audit start
+    Refold->>Refold: Resolve linked account credentials
+    Refold->>App: POST /services/data/v59.0/sobjects/Contact
+    App-->>Refold: 201 Created {id: "003..."}
+    Refold->>Refold: Audit complete
+    Refold-->>Agent: Tool result (structured JSON)
+```
+
+## Statelessness
+
+The MCP server holds no session state between requests. Identity, configuration, and credential data are resolved per-request. This is what makes horizontal scaling and tenant isolation work, and why instances can be added, replaced, or rolled back without disrupting active agents.
+
+For the security model behind this — token validation, tenant isolation, audit guarantees — see [Security & Compliance](/v3/mcp-ai-agents/implementation/security-compliance).
+
+## Direct mode tool naming
+
+In direct mode, tool names are auto-generated from the app slug and action name:
+
+```
+{app_slug}_{action_name}_{type}
+```
+
+Examples:
+- `salesforce_create_contact_action`
+- `workday_get_workers_action`
+- `hubspot_sync_leads_workflow`
+
+Names are slugified (lowercased, special characters replaced with underscores) and deduplicated with numeric suffixes if collisions occur.
+
+## Protocol details
+
+| Property | Value |
+|----------|-------|
+| **MCP version** | v2025-11-25 |
+| **Transport** | Streamable HTTP (stateless) |
+| **Path pattern** | `/mcp/v1/{token}/{server_id}` |
+| **Timeout** | 300 seconds per tool call (configurable per tool) |

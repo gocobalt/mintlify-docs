@@ -1,0 +1,63 @@
+---
+title: "Overview"
+description: "Reusable multi-step procedures attached to your MCP server"
+---
+
+Skills are reusable procedures attached to an MCP server. They give agents structured guidance for operations that span multiple API calls, like "sync contacts from Salesforce to HubSpot" or "create a purchase order with vendor validation in SAP."
+
+Without skills, agents figure out multi-step operations on their own. With skills, they follow tested procedures with defined steps, pre-checks, and error handling.
+
+Skills are scoped to the MCP server they're attached to.
+
+## When to use skills
+
+| | Skills | Per-action tools |
+|--|--------|-------------|
+| **Scope** | Multi-step procedures with logic | Single API calls |
+| **Agent guidance** | Agent follows your defined steps | Agent decides the approach |
+| **Error handling** | Defined in the procedure | Agent handles on its own |
+| **Best for** | Complex business processes | Simple CRUD operations |
+
+Start with per-action tools. Add skills when you notice agents struggling with multi-step operations or making inconsistent decisions about step ordering.
+
+## How agents use skills
+
+When **Retrieve Skill** is enabled, two tools are added to the server: `SEARCH_INTEGRATION_GRAPH` and `LOAD_SKILL`. The full parameter reference for both is in [Tools Reference](/v3/mcp-ai-agents/tools-reference/tools#skill-tools).
+
+### Discovery: how skills reach the agent
+
+When an agent connects to a server with skills enabled, Refold injects skill summaries (name, ID, and a short description) into the agent's context at session start. To keep the context window lean, only the **top 10 most relevant skills** are surfaced, ranked by:
+
+1. **App match** — skills associated with apps configured on this server rank higher
+2. **Usage count** — skills used more often by other agents on this server rank higher
+3. **Confidence** — Refold's match score for the skill against the server's configured apps and actions
+
+The agent doesn't get full skill content upfront. It loads content on demand when a skill matches the task.
+
+### Typical flow
+
+```
+User: "Qualify this lead from the webinar"
+
+1. Agent already sees "Lead Qualification" in the injected skill list.
+   It calls LOAD_SKILL(skill_id="...") to get the full procedure.
+
+2. If the skill isn't in the injected top 10, the agent calls
+   SEARCH_INTEGRATION_GRAPH("Lead Qualification") to find it,
+   then LOAD_SKILL on the result.
+
+3. With the procedure loaded, the agent follows the steps,
+   calling RESOLVE_ACTIONS and EXECUTE_ACTION for each
+   integration action the skill requires.
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Creating Skills" icon="pen" href="/v3/mcp-ai-agents/skills/creating-skills">
+    Skill fields, writing content, and the runbook pattern
+  </Card>
+  <Card title="Examples" icon="lightbulb" href="/v3/mcp-ai-agents/skills/examples">
+    Concrete skill examples you can adapt
+  </Card>
+</CardGroup>
