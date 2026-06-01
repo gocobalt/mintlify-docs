@@ -1,8 +1,82 @@
 ---
 title: "Certificates"
-description: "Manage SSL certificates for your organization"
+description: "Upload TLS certificates and private keys that workflows and connectors use to authenticate."
 ---
 
-# Certificates
+The **Certificates** page stores the TLS certificates and matching private
+keys your workspace needs to authenticate against third-party systems that
+require mutual TLS, SAML signing, or client-certificate authentication.
+Upload each certificate once and reference it by name from any connector
+that needs it.
 
-Content coming soon.
+Open it from **Settings > Organization > Certificates**.
+
+{/* NEEDS INPUT: confirm what this page actually holds in v3. Most likely
+    options: (a) mTLS client certificates for outbound HTTP calls,
+    (b) SAML signing certs for SSO, (c) custom CA roots that Refold's
+    HTTP client should trust. Confirm which apply and add or remove
+    sections accordingly. */}
+
+## Upload a certificate
+
+<Steps>
+  <Step title="Open Certificates">
+    Go to **Settings > Organization > Certificates**.
+  </Step>
+  <Step title="Click Add Certificate">
+    Click **+ Add Certificate** in the top-right corner.
+  </Step>
+  <Step title="Pick a type">
+    Select the certificate type from the list.
+    {/* NEEDS INPUT: list the certificate types Refold supports (mTLS
+        client, SAML signing, CA root, etc.). */}
+  </Step>
+  <Step title="Paste the PEM-encoded certificate">
+    Paste the certificate body in PEM format. Include the
+    `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
+  </Step>
+  <Step title="Paste the private key (if required)">
+    For client certificates, paste the matching private key in PEM format.
+    Refold encrypts it at rest and never returns it to the dashboard.
+  </Step>
+  <Step title="Name and save">
+    Give the certificate a **Name** you'll reference from connectors, then
+    click **Save**.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the certificate upload form with PEM
+    fields visible. */}
+<Frame caption="Uploading a TLS certificate">
+  <img src="/images/PLACEHOLDER.png" alt="Certificate upload form with certificate and key fields" />
+</Frame>
+
+## Reference a certificate from a connector
+
+{/* NEEDS INPUT: describe the picker UI in the connector configuration that
+    references uploaded certificates. */}
+
+## Rotation and expiry
+
+Refold shows each certificate's expiry date in the list. Rotate before
+expiry to avoid outbound calls failing in production.
+
+<Warning>
+  Refold does not auto-rotate certificates. Set a calendar reminder, or
+  use the [Audit](/v3/developer/configure/audit) log to monitor approaching
+  expiry.
+</Warning>
+
+{/* NEEDS INPUT: confirm whether Refold emits any expiry-warning events or
+    whether monitoring is purely manual. */}
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Credentials" href="/v3/developer/configure/settings/organization/credentials">
+    Store API keys and OAuth secrets used by connectors.
+  </Card>
+  <Card title="Policy" href="/v3/developer/configure/settings/organization/policy">
+    Set workspace policies for certificate rotation and access.
+  </Card>
+</CardGroup>

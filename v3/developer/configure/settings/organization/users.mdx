@@ -1,9 +1,86 @@
 ---
-title: "User Management"
-description: "Manage user roles, permissions, and team access"
+title: "Users"
+description: "Invite teammates to your workspace and manage who has access."
 ---
 
-# User Management
+The **Users** page lists everyone on your workspace and the role each
+person holds. Workspace admins use it to invite new teammates, change a
+teammate's role, and remove access when someone leaves.
 
-Content coming soon.
+Open it from **Settings > Organization > Users**.
 
+<Info>
+  You need the **Admin** role to invite or remove users. Editors can view
+  the page but can't change membership.
+</Info>
+
+## Invite a teammate
+
+<Steps>
+  <Step title="Open Users">
+    Go to **Settings > Organization > Users**.
+  </Step>
+  <Step title="Click Invite">
+    Click **Invite** in the top-right corner. A panel slides in for the
+    invitee's details.
+  </Step>
+  <Step title="Enter their email and name">
+    **Email** is required and is where Refold sends the invitation. **Name**
+    is optional and seeds the invitee's profile.
+  </Step>
+  <Step title="Send the invite">
+    Click **Invite**. Refold emails the invitee a sign-in link and adds them
+    to the user list with the **Editor** role.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the Invite panel with Email and Name fields,
+    showing the Invite button. */}
+<Frame caption="Inviting a teammate">
+  <img src="/images/PLACEHOLDER.png" alt="Invite user panel with email and name fields" />
+</Frame>
+
+## Roles at a glance
+
+Every user holds one role. There's exactly one Admin per workspace; every
+other user is an Editor by default.
+
+| Role | What they can do |
+|---|---|
+| **Admin** | Full control over the workspace: invite and remove users, change roles, edit organization settings, manage billing. Only one Admin per workspace. |
+| **Editor** | Build and modify integrations and workflows, manage linked accounts, view logs. Can't change workspace settings or membership. |
+
+For the full role and permission breakdown, see [Roles](/v3/developer/configure/settings/organization/roles).
+
+## Remove a teammate
+
+<Steps>
+  <Step title="Find the user">
+    Locate the teammate in the user list on **Settings > Organization >
+    Users**.
+  </Step>
+  <Step title="Click Remove">
+    Click the remove icon in the rightmost column of that user's row.
+    Refold asks you to confirm.
+  </Step>
+  <Step title="Confirm">
+    Click **Remove**. Their access is revoked immediately. Active workflows
+    they own keep running; ownership transfers to the Admin.
+  </Step>
+</Steps>
+
+<Warning>
+  Removing a user is immediate and can't be undone. Re-add them by sending
+  a fresh invite.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Roles" href="/v3/developer/configure/settings/organization/roles">
+    Read the full role and permission matrix.
+  </Card>
+  <Card title="Policy" href="/v3/developer/configure/settings/organization/policy">
+    Set password, session, and access policies for the workspace.
+  </Card>
+</CardGroup>

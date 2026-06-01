@@ -1,8 +1,80 @@
 ---
 title: "Policy"
-description: "Manage security and access policies for your organization"
+description: "Workspace-wide security and access policies that apply to every user and integration."
 ---
 
-# Policy
+The **Policy** page is where workspace admins set the security rules that
+apply to everyone in the workspace: password requirements, session
+behavior, who outside the workspace can reach it, and whether the Refold
+support team has read access for troubleshooting.
 
-Content coming soon.
+Open it from **Settings > Organization > Policy**.
+
+## Refold support access
+
+By default, the Refold support team cannot read your workspace's data.
+Grant temporary read access when you need help debugging an integration,
+then revoke it when the work is done.
+
+<Steps>
+  <Step title="Open Policy">
+    Go to **Settings > Organization > Policy**.
+  </Step>
+  <Step title="Allow access">
+    Click **Allow Access** in the **Refold Support Access** section.
+    Confirm the prompt. Refold support engineers gain read-only access to
+    the workspace.
+  </Step>
+  <Step title="Revoke when done">
+    Click **Revoke Access** in the same row to remove support access.
+    Access is revoked immediately.
+  </Step>
+</Steps>
+
+<Note>
+  Refold logs every support-access session. Open the **Access Approval
+  History** below the toggle to see active and revoked grants in order.
+</Note>
+
+## Password policy
+
+{/* NEEDS INPUT: confirm the policy fields v3 exposes (minimum length,
+    complexity, rotation interval, history). The values below are
+    reasonable defaults to describe, but should match the actual UI. */}
+
+| Field | Default | What it does |
+|---|---|---|
+| **Minimum length** | 12 characters | Refused on password create or change if shorter. |
+| **Complexity** | Upper + lower + number + symbol | Refused if any character class is missing. |
+| **History** | 12 passwords | Refused if the new password matches any of the last 12. |
+| **Rotation** | 90 days | Refold prompts for a password change every 90 days. |
+
+## Session policy
+
+{/* NEEDS INPUT: confirm session-related policy fields. Common options:
+    idle timeout, absolute session length, concurrent-session limit,
+    require MFA for every sign-in. */}
+
+## IP allowlist
+
+{/* NEEDS INPUT: does v3 support an IP allowlist (only sign-ins from these
+    CIDR ranges are accepted)? If yes, document the field. If no, delete
+    this section. */}
+
+## Audit and compliance
+
+The Policy settings on this page are enforced for every user in the
+workspace. Refold records every policy change and every support-access
+grant in the [Audit](/v3/developer/configure/audit) log so you can
+demonstrate compliance.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Security" href="/v3/developer/configure/settings/user/authentication">
+    Per-user security: change your password, set up MFA.
+  </Card>
+  <Card title="Audit" href="/v3/developer/configure/audit">
+    Review every policy change and support-access grant.
+  </Card>
+</CardGroup>

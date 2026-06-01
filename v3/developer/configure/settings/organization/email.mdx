@@ -1,8 +1,67 @@
 ---
-title: "Email Settings"
-description: "Configure email settings for your organization"
+title: "Email"
+description: "Configure the sender identity and templates Refold uses for outgoing email."
 ---
 
-# Email Settings
+The **Email** page controls how Refold-sent messages appear to your
+customers and teammates: the sender name and address, the reply-to address,
+and the templates Refold uses for invitations, password resets, and
+workflow notifications.
 
-Content coming soon.
+Open it from **Settings > Organization > Email**.
+
+{/* NEEDS INPUT: confirm what this page actually configures in v3. The
+    most common scope for a settings page named "Email" is:
+    (1) sender identity (From name, From address, Reply-to)
+    (2) SMTP relay so Refold sends via your own infrastructure
+    (3) per-template overrides for invite/reset/notification emails
+    Confirm which of these are in v3, and add or remove sections to match. */}
+
+## Sender identity
+
+Set the **From name** and **From address** that appear on every Refold
+email. Customers see this on integration-related notifications.
+
+<Steps>
+  <Step title="Open Email">
+    Go to **Settings > Organization > Email**.
+  </Step>
+  <Step title="Edit sender details">
+    Update **From name**, **From address**, and **Reply-to**. The address
+    must be a domain you control.
+  </Step>
+  <Step title="Verify the domain">
+    Refold sends a verification email and lists the DNS records to add to
+    your domain's TXT records. Add them and click **Verify**.
+  </Step>
+  <Step title="Save">
+    Click **Save**. Refold uses the new identity on the next send.
+  </Step>
+</Steps>
+
+## Templates
+
+{/* NEEDS INPUT: list the templates the v3 dashboard exposes (likely:
+    User invitation, Password reset, Workflow failure, Linked account
+    notification). Confirm what variables each template supports and
+    whether they accept raw HTML or markdown. */}
+
+Each Refold email type uses a template you can override. Pick a template
+to edit the subject line and body. Refold renders the body with workspace
+variables ({{`{{workspace.name}}`}}, {{`{{user.email}}`}}) at send time.
+
+## SMTP relay
+
+{/* NEEDS INPUT: does v3 support sending via a customer-provided SMTP relay?
+    If yes, document the host/port/auth fields. If no, delete this section. */}
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Users" href="/v3/developer/configure/settings/organization/users">
+    Invitations send through the email identity configured here.
+  </Card>
+  <Card title="Connect Portal" href="/v3/developer/configure/settings/organization/connect-portal">
+    Brand the customer-facing portal to match your email identity.
+  </Card>
+</CardGroup>

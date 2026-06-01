@@ -1,8 +1,81 @@
 ---
 title: "Connect Portal"
-description: "Configure the Connect Portal settings"
+description: "Brand the customer-facing portal where end users connect their third-party accounts."
 ---
 
-# Connect Portal
+The **Connect Portal** is the page your customers see when they authorize a
+third-party integration through Refold. Use this settings page to match the
+portal's look and the legal links to your own product, so the experience
+feels like part of your app instead of a Refold redirect.
 
-Content coming soon.
+Open it from **Settings > Organization > Connect Portal**.
+
+## Brand colors
+
+Set the brand colors Refold uses across the Connect Portal. Two colors
+matter:
+
+- **Primary color** drives the dominant accent (active states, links,
+  highlighted UI).
+- **Button color** drives the action buttons your customer clicks to
+  connect, authorize, and continue.
+
+<Steps>
+  <Step title="Open Connect Portal">
+    Go to **Settings > Organization > Connect Portal**.
+  </Step>
+  <Step title="Set the colors">
+    Enter a **hex code** in each field or pick from the color picker. The
+    preview at the right updates as you type.
+  </Step>
+  <Step title="Save">
+    Click **Save**. Customer-facing sessions pick up the new colors
+    immediately.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the brand color pickers with the
+    portal preview pane on the right. */}
+<Frame caption="Brand colors and portal preview">
+  <img src="/images/PLACEHOLDER.png" alt="Connect portal color settings with live preview" />
+</Frame>
+
+## Redirect and legal URLs
+
+These three URLs control the customer's path out of the portal after they
+finish connecting an integration, and the legal links shown inside the
+portal.
+
+| Field | Behavior |
+|---|---|
+| **App Redirection URL** | Where the customer's browser lands after a successful connection. Use a deep link into your app's "integration connected" screen. |
+| **Privacy Policy URL** | Link Refold displays in the portal footer. Shows the customer where to read your privacy policy. |
+| **Terms of Use URL** | Link Refold displays in the portal footer. Shows the customer your terms of use. |
+
+<Tip>
+  Use HTTPS URLs. Customers see a broken-link warning in the portal if a
+  link is missing or returns an error.
+</Tip>
+
+## Logo and copy
+
+{/* NEEDS INPUT: confirm whether the v3 Connect Portal page supports a logo
+    upload field and customizable header/footer copy in addition to the
+    Brand colors and URLs above. */}
+
+## Test the portal
+
+{/* NEEDS INPUT: confirm the test flow. The legacy doc didn't cover this,
+    but most portal-config pages expose a "Preview portal" or "Send test
+    link" action. Describe whichever applies. */}
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Auth flows" href="/v3/developer/guide/ship/auth_flows/hosted">
+    Pick the auth flow customers go through inside the portal.
+  </Card>
+  <Card title="Linked accounts" href="/v3/developer/configure/linked-account">
+    See what Refold records about each customer connection.
+  </Card>
+</CardGroup>
