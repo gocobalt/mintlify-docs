@@ -1,6 +1,70 @@
 ---
-title: "Refold Cp"
-description: "Deploy using Refold Control Plane for Kubernetes"
+title: "Refold Managed"
+description: "Deploy Refold on your Kubernetes cluster with the Refold-managed control plane handling orchestration, upgrades, and operations."
 ---
 
-Content coming soon.
+**Refold Managed** is the deployment option where you run Refold inside your
+own Kubernetes cluster and Refold operates the [Control
+Plane](/v3/developer/deploy/control-plane) for you. Your data stays in your
+infrastructure; Refold handles the management, upgrades, observability, and
+day-two operations.
+
+Use this when you need data residency inside your own cloud account but don't
+want to operate the control plane yourself. For the fully self-operated
+option, use [Helm](/v3/developer/deploy/kubernetes/helm).
+
+{/* NEEDS INPUT: confirm the exact name (Refold Managed vs Refold Cloud
+    Managed vs Managed Refold) and the scope (which components Refold operates
+    vs which the customer operates). */}
+
+## What Refold operates
+
+{/* NEEDS INPUT: list which components are Refold-managed (control plane,
+    upgrades, monitoring, backups, certificate rotation, etc.) and which the
+    customer is responsible for (cluster, networking, IAM, storage). */}
+
+## Install
+
+{/* NEEDS INPUT: document the install flow. Likely a Helm chart that points
+    at the customer's cluster and grants Refold a scoped service account.
+    Confirm prerequisites (kubectl access, cluster version, IAM permissions,
+    egress requirements) and the exact `helm install` invocation. */}
+
+<Steps>
+  <Step title="Add the Refold Helm repository">
+    {/* NEEDS INPUT: exact `helm repo add` command */}
+  </Step>
+  <Step title="Install the managed agent">
+    {/* NEEDS INPUT: exact `helm install` command and required values */}
+  </Step>
+  <Step title="Connect to the Refold control plane">
+    {/* NEEDS INPUT: how the customer authenticates the cluster to Refold */}
+  </Step>
+  <Step title="Verify">
+    {/* NEEDS INPUT: how to confirm the cluster is registered and healthy */}
+  </Step>
+</Steps>
+
+## Operations Refold handles
+
+{/* NEEDS INPUT: enumerate the operations Refold runs on the customer's
+    behalf: version upgrades (cadence + approval flow), security patches,
+    backup and restore, certificate rotation, observability, incident
+    response. */}
+
+## Customer responsibilities
+
+{/* NEEDS INPUT: enumerate what the customer must still do: provision the
+    cluster, manage IAM and networking, approve maintenance windows, etc. */}
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Control Plane" href="/v3/developer/deploy/control-plane">
+    What the control plane is and how it interacts with your cluster.
+  </Card>
+  <Card title="Helm install" href="/v3/developer/deploy/kubernetes/helm">
+    Self-operate Refold end-to-end with the standard Helm chart.
+  </Card>
+</CardGroup>
+
