@@ -1,6 +1,62 @@
 ---
 title: "Helm"
-description: "Deploy using Helm charts for Kubernetes"
+description: "Self-host Refold on your own Kubernetes cluster with the Refold Helm chart — you provision the cluster and operate the platform end-to-end."
 ---
 
-Content coming soon.
+**Helm** is the self-hosted, self-operated option: you run Refold on a
+Kubernetes cluster you provision, in a connected environment, and operate it
+end-to-end. Refold publishes the Helm chart; you install, configure, upgrade,
+and monitor it.
+
+<Info>
+  **Which Kubernetes option?**
+  - **Helm** *(this page)* — self-host and operate everything yourself in a connected cluster.
+  - [**Air-gapped**](/v3/developer/deploy/kubernetes/air-gapped) — you own the cluster and network; Refold installs the app in a disconnected environment.
+  - [**Refold Managed (BYOC)**](/v3/developer/deploy/kubernetes/refold-cp) — Refold provisions and manages everything in your AWS account.
+</Info>
+
+## Prerequisites
+
+{/* NEEDS INPUT: confirm the self-hosted Helm prerequisites — Kubernetes
+    version, `kubectl` + `helm` v3, an ingress controller, a default
+    StorageClass, registry access to pull the Refold images, and the backing
+    services (MongoDB, Redis, object storage) the chart expects. */}
+
+## Install
+
+{/* NEEDS INPUT: document the real install flow and the exact commands. */}
+
+<Steps>
+  <Step title="Add the Refold Helm repository">
+    {/* NEEDS INPUT: exact `helm repo add` command */}
+  </Step>
+  <Step title="Configure values">
+    {/* NEEDS INPUT: the required values.yaml keys — image tags, domain,
+        credentials, storage, object storage provider (MinIO / S3 / GCS). */}
+  </Step>
+  <Step title="Install the chart">
+    {/* NEEDS INPUT: exact `helm install` command and namespace */}
+  </Step>
+  <Step title="Verify">
+    {/* NEEDS INPUT: how to confirm pods are healthy and reach the app */}
+  </Step>
+</Steps>
+
+## Upgrading
+
+{/* NEEDS INPUT: `helm repo update` + `helm upgrade` flow, and any DB
+    migrations that run as part of an upgrade. */}
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Air-gapped" icon="network-wired" href="/v3/developer/deploy/kubernetes/air-gapped">
+    Install in a disconnected environment with an offline Terraform package.
+  </Card>
+  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/developer/deploy/kubernetes/refold-cp">
+    Have Refold provision and manage everything in your cloud account.
+  </Card>
+  <Card title="Control Plane" icon="diagram-project" href="/v3/developer/deploy/control-plane">
+    What the control plane is and how it fits in.
+  </Card>
+</CardGroup>
