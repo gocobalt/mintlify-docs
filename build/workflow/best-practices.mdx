@@ -3,8 +3,6 @@ title: "Workflow Best Practices"
 description: "Design principles, security standards, and operational patterns for building reliable, maintainable workflows in Refold."
 ---
 
-# Workflow Best Practices
-
 This guide covers the conventions, patterns, and settings that go into well-built Refold workflows — from how you name things on the canvas to how you handle security, errors, and performance at scale. Following these practices produces workflows that are easier to read, debug, and maintain over time.
 
 ---
@@ -179,18 +177,14 @@ Apply all of the following that are available in your deployment:
 Never embed a credential as a literal string in an HTTP node field. Store it in an encrypted environment variable and inject it via the variable selector. This prevents the credential from appearing in the workflow definition and in the dashboard UI.
 
 <Note>
-  Encrypted environment variables protect credentials at rest and keep them out of the workflow definition. Masking of encrypted variable values in execution logs is an upcoming feature. Until it is available, pair encrypted variables with `Hide Node Request` to prevent log exposure.
+  Encrypted environment variables protect credentials at rest and keep them out of the workflow definition. To prevent injected credential values from appearing in execution logs, pair encrypted variables with `Hide Node Request` or configure Encrypted Output Fields on the relevant response fields.
 </Note>
 
 **2. Enable Hide Node Request on nodes that handle credentials.**
 In Node Settings, enable the `Hide Node Request` toggle on any HTTP node whose request or response contains sensitive values. When enabled, Refold does not persist the request payload or response in execution logs at all — the node's log entry is suppressed rather than redacted.
 
-**3. Configure PII masking on sensitive request and response fields.**
-PII masking allows you to define specific fields — in both the request and the response — that should be redacted in execution logs. Masked values are replaced with a placeholder at log-write time without affecting node execution or inter-node data passing.
-
-<Note>
-  PII masking is an upcoming platform feature. Check the [changelog](/changelog/overview) for availability in your deployment version. Until it is available, use encrypted environment variables combined with `Hide Node Request` as the primary approach.
-</Note>
+**3. Configure Encrypted Output Fields on sensitive response fields.**
+[Encrypted Output Fields](/build/workflow/encrypted-output-fields) — Refold's implementation of output-level PII masking — let you mark individual output fields on a node so their values are stored securely and shown as `[REDACTED]` in the Run tab and execution logs, without affecting how values flow to downstream nodes. Apply this to any field that returns a credential, token, or sensitive identifier.
 
 **4. Prefer Custom Apps for any API you use more than once.**
 If you find yourself configuring the same authentication logic across multiple HTTP nodes or multiple workflows, that is a signal to create a Custom App instead. Custom Apps manage credentials entirely outside the workflow definition — they never appear in node configurations or logs. See the **Authentication & Security** section.
@@ -199,7 +193,7 @@ If you find yourself configuring the same authentication logic across multiple H
 
 It is important to understand the distinction between the HTTP node and the HTTP action available inside a Custom App or native connector.
 
-The **HTTP node** is a standalone canvas node. Any credentials it uses must be explicitly provided — via an environment variable, a hardcoded value, or a value templated from a prior node. All of these surface in execution logs unless `Hide Node Request` is enabled or PII masking is configured.
+The **HTTP node** is a standalone canvas node. Any credentials it uses must be explicitly provided — via an environment variable, a hardcoded value, or a value templated from a prior node. All of these surface in execution logs unless `Hide Node Request` is enabled or Encrypted Output Fields are configured on the relevant response fields.
 
 A **connector's HTTP action** (configured within a Custom App or native connector) is a different entity. When a user connects a Custom App or native connector, the credentials are stored securely within Refold on the server side. When a connector action executes — including an HTTP action defined within the connector — the credentials are injected internally at the server level. They are never accessible via templating, never appear in the workflow definition, and are not written to execution logs.
 
@@ -211,7 +205,7 @@ The HTTP node is appropriate when:
 - No native connector or Custom App exists for the target API.
 - The API is fully public and unauthenticated.
 - The endpoint is internal and authentication is handled entirely by the calling system, with no credentials present in the request.
-- The node handles sensitive data but `Hide Node Request` is enabled **and/or** PII masking is configured on the relevant request and response fields, ensuring no sensitive values are persisted in execution logs.
+- The node handles sensitive data but `Hide Node Request` is enabled **and/or** Encrypted Output Fields are configured on the relevant response fields, ensuring no sensitive values are persisted in execution logs.
 
 ### Use Query Params for Resource Lookup
 
@@ -462,7 +456,7 @@ Use for all sensitive values: API keys, client secrets, tokens, passwords, PEM k
 - Rotate encrypted variables on a regular cadence. Key rotation is available under Admin Settings.
 
 <Warning>
-  Encrypted variables protect credentials from dashboard exposure and storage breaches. They do not automatically prevent those values from appearing in execution logs if they are passed into an HTTP node body or returned in a node response. Pair encrypted variables with PII masking for full log protection.
+  Encrypted variables protect credentials from dashboard exposure and storage breaches. They do not automatically prevent those values from appearing in execution logs if they are passed into an HTTP node body or returned in a node response. Pair encrypted variables with Encrypted Output Fields for full log protection.
 </Warning>
 
 ---
@@ -544,27 +538,27 @@ A Custom App can be created three ways:
 
 Once a Custom App is set up, define **Custom Actions** for the API endpoints you use most. Each action appears as a selectable operation in the Custom App's native workflow node — with auth injected automatically — rather than requiring repeated HTTP node configuration across workflows.
 
-### PII Masking in Execution Logs
+### Encrypted Output Fields
 
-Refold provides a PII masking capability that allows you to define which fields in node inputs and responses should be redacted in execution logs. Matched values are replaced with a masked placeholder at log-write time without affecting node execution or inter-node data flow.
+**[Encrypted Output Fields](/build/workflow/encrypted-output-fields)** are Refold's implementation of output-level PII masking. They let you mark individual output fields on any node so their values are stored securely and shown as `[REDACTED]` in the Run tab and execution logs — without affecting how values flow to downstream nodes at runtime.
 
-<Note>
-  PII masking is an upcoming platform feature. Check the [changelog](/changelog/overview) for availability in your deployment version.
-</Note>
-
-Define masking rules for fields that contain:
-- Auth tokens and credentials returned by API calls
+Configure encrypted output fields for any node that returns:
+- Auth tokens and credentials from API calls
 - Personal data: names, emails, phone numbers, national identifiers
 - Financial data: account numbers, card numbers, transaction codes
 - Any internally sensitive identifier
 
-**Until PII masking is available or configured for existing workflows:**
-1. Enable the `Hide Node Request` toggle (in Node Settings) on any node that handles credentials. This removes the request/response from the log while preserving status and error information.
+To configure, open the node, go to the **Fields** tab, and enable the **Encrypted** toggle on the relevant keys in the **Custom Output** section. The `*` wildcard is supported for array fields — `result.*.token` encrypts the `token` field across all items in the `result` array.
+
+See the [Encrypted Output Fields](/build/workflow/encrypted-output-fields) page for full configuration details and field path syntax.
+
+**Complementary controls for nodes that handle credentials:**
+1. Enable the `Hide Node Request` toggle (in Node Settings) on any node that handles credentials in its request. This removes the entire request/response from the log — useful when the sensitive value is in the input rather than the output.
 2. Use Custom Apps for authentication so tokens are platform-managed and do not appear in node bodies.
 3. Avoid returning raw credential values from Custom Code nodes — reference them via templating (`{{node.N.body.access_token}}`) rather than including them in return objects.
 
 <Warning>
-  Hiding node request/response is a visibility mitigation, not a security control. The underlying log data is still written internally. The durable fix is removing credential exposure at source via Custom Apps and PII masking.
+  Hiding node request/response is a visibility mitigation, not a security control. The underlying log data is still written internally. The durable fix is removing credential exposure at source via Custom Apps and Encrypted Output Fields.
 </Warning>
 
 ---

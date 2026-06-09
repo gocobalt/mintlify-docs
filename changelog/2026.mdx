@@ -3,6 +3,147 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+<Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Entity Tags for events, an Autopilot AI agent, a public workflow rerun API, signal-driven execution for long-running workflows, and updates across ServiceNow, Workday, and Dropbox.**
+
+**New Features**
+
+- **Entity Tags**: Create and manage tags for events directly from Settings. Attach tags to events and filter the Events page by one or more tags using the new multi-select tag filter.
+- **Autopilot**: A new AI pilot agent that runs periodic analysis on your workflow executions. Configure schedules, view sessions, and trigger analysis runs on demand from the Autopilot dashboard.
+- **Sessions Catalog**: New global and project-level views listing all agent sessions, with shared labels, status indicators, and workflow filters.
+- **File Ingestion**: Rebuilt Documents and Artifacts pages backed by a new file-upload pipeline. Supports all content types with immediate upload — no additional dialog required.
+- **Execution Log Search**: Search execution logs by type and filter by custom fields directly from the logs page.
+- **Workflow Rerun API**: Trigger a rerun of any past workflow execution using the new public API endpoint, with instance-scoped authorization.
+- **Like Operator in Rule Conditions**: Add case-insensitive string pattern matching to rule conditions via a new "like" comparison operator.
+- **Unsaved-Changes Guard on Canvas**: Navigating away from the workflow canvas now prompts you when there are unsaved edits.
+- **Custom Action ID**: The Action ID (operationId) for custom application actions is now visible and editable directly from the application action screen.
+
+**Improvements**
+
+- Chat stop button cancels in-flight requests; draft prompts and attachments persist across navigation; tool-call details are gated behind a Debug Mode toggle for cleaner default views.
+- Error analysis now correctly surfaces for paginated workflow executions.
+- Long-running group and pagination workflows use a new signal-driven orchestration model that gracefully handles large execution histories without hitting platform limits.
+- MCP server config key rebranded from `cobalt-` to `refold-`.
+- Project sidebar streamlined: the Executions tab is renamed to **Logs**; Alerts, Error Reporting, Memories, and Mappings tabs have been removed.
+- Default product selector redirects to your workspace on login; grid/list view preference is now persisted globally.
+- An execution details link is shown immediately after triggering a project workflow.
+- User controls in the header replaced with an avatar dropdown menu.
+- Parent-child linked account tenant field removed from the create-account dialog.
+
+**API Changes**
+
+- New: `POST /api/v2/public/execution/:instanceId/rerun` — trigger a rerun of a workflow instance with instance-scoped authorization.
+
+**Integration Updates**
+
+- **ServiceNow**: New `check_appointment_availability` and `upload_attachment_by_url` actions. Fixes to `get_case_by_id`, pagination key handling, and deprecated flag removal from `get_appointment_availability`.
+- **Workday**: Custom SOAP/JSON Request action now supports pagination via `bsvc_page` and `bsvc_count` fields.
+- **Dropbox**: New `get_current_user` and `get_user` actions now visible in the workflow builder.
+- **Box**: Fixed an issue where actions on the root folder (folder ID `0`) incorrectly returned a missing URL parameter error.
+
+</Update>
+
+<Update label="June 3, 2026" description="v3.5.33 · Inbound webhooks, Workday OAuth2, MCP redesign & session chat">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Inbound webhook triggers, Workday OAuth2, a redesigned MCP server management experience, threaded session chat, linked-account scoped tables, and a new project creation wizard.**
+
+**New Features**
+
+- **Inbound Webhook Trigger**: Trigger workflows directly from any external system using a dedicated per-workflow webhook URL. Accepts JSON payloads up to 1 MB.
+- **Linked-Account Scoped Tables**: Tables can now be scoped to a specific linked account (private) or shared workspace-wide. Toggle the scope during table creation and filter results accordingly.
+- **Workday OAuth2**: Workday connections now support OAuth2 authentication alongside the existing key-based option.
+- **PostgreSQL SSL Mode**: Configure SSL mode (disable / require / verify-full) on PostgreSQL connections for compatibility with cloud providers such as Neon, RDS, and Supabase.
+- **MCP Server Management Redesign**: Fully rebuilt MCP server pages with a card-grid server list and infinite scroll, tabbed detail layout (Setup, Skills, Tools, Settings, Logs), VS Code / Claude Code / Generic client configuration tabs, and CSV/XLSX export from the Logs page.
+- **New Project Creation Wizard**: A 3-step wizard (Details → Connect → Review) replaces the previous modal when creating a new project. Invalid project names are caught before submission.
+- **Session Chat**: Threaded chat view with a sticky composer, deep-linkable sessions via `?session=` query param, and a stop button to cancel in-flight responses.
+- **Edit Table Records Inline**: Table records can now be edited directly from the UI without leaving the table view.
+- **Field Mappings**: New feature with a dedicated page, a table view, and direct integration with the AI agent for building and reviewing field mappings.
+- **Private Workflows in Try API**: Private workflows are now listed when a linked account is selected in the Try API panel.
+
+**Improvements**
+
+- **ASK_USER Questionnaire**: Redesigned with numbered, keyboard-navigable options (arrow keys, number keys, Enter), single-select auto-advance, per-question Skip, and an inline "Something else" input.
+- Agent session sidebar now surfaces recent sessions with direct links to the related workflow or mapping.
+- Execution logs now support bidirectional cursor-based pagination with a persistent cursor in the URL — bookmarking and reloading returns to the same position.
+- Password visibility toggle added to the login page.
+- OpenAPI-imported actions with object-type fields now render as expandable cards with per-subfield inputs in the developer portal and Test Action dialog.
+- Node action lists now load lazily for improved performance on large action sets.
+- Datasource dropdowns in Map v2 at workflow level now render correctly and can be cleared.
+- Row click enabled in portal tables, with context-aware back navigation.
+- Fix: updating an event with its existing trigger name no longer returns an error.
+- Fix: `terminate_with_success` inside a try-catch block now correctly stops execution instead of continuing to downstream nodes.
+- Subflow deduplication via idempotency key prevents duplicate child instances on retries.
+- Linked-account environment variable values are now scoped per environment.
+- Improved AI context awareness for more accurate workflow and mapping suggestions.
+
+**API Changes**
+
+- New: `POST /api/v1/webhook-trigger/:orgId-:environment/:workflowId/:linkedAccountId` — inbound webhook trigger endpoint; accepts JSON payloads up to 1 MB.
+- `GET /instances` — now supports bidirectional cursor pagination via `currentCursor` and `direction=next|prev`.
+- Tables endpoints now accept both org-key and token-based authentication.
+
+**Integration Updates**
+
+- **Workday**: OAuth2 authentication added alongside key-based; SOAP requests now send OAuth2 Bearer tokens and retry automatically on token expiry; Resource & Financial Management SOAP operations expanded.
+- **PostgreSQL**: SSL mode support end-to-end across connections, migrations, and connection pooling.
+- **Salesforce**: v3 pagination fixed for multi-page result sets.
+- **SAP Ariba SOAP**: Full integration with per-realm WSDL support.
+- **HubSpot**: Search lists and list selection reliability improvements.
+- **ServiceNow**: `get_case_by_id` and pagination key fixes.
+
+</Update>
+
+<Update label="May 27, 2026" description="v3.5.29 · Project redesign, Agent Sessions, expanded tables & SAP Ariba SOAP">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A redesigned project experience with a new sidebar layout, Agent Sessions for managing and resuming AI conversations, tables expanded to 30 columns, JSON Schema on Event triggers, and SAP Ariba SOAP API support.**
+
+**New Features**
+
+- **Project Redesign**: New fullscreen sidebar layout with catalog-style sub-pages for Workflows, Documents, Artifacts, Lookups, Memories, Alerts, Error Reporting, and Settings. The project overview page is now a chat prompt scoped to your project.
+- **Applications Renamed to Integrations**: The Applications sidebar item is now labelled **Integrations** throughout the platform.
+- **Agent Sessions**: Agent sessions are now tracked in the workflow builder and chat surfaces. Recent sessions appear in the sidebar for quick resume, with client-minted session IDs ensuring reliable continuity.
+- **Tables — 30-Column Limit**: The maximum number of columns per persistent table has been raised from 10 to 30.
+- **JSON Schema on Event Triggers**: Event triggers now support a JSON Schema field for payload validation, with both a Payload tab and a JSON Schema tab in the event configuration.
+- **SAP Ariba SOAP API Actions**: New integration module covering purchase-requisition actions via the SAP Ariba SOAP API.
+- **OpenAPI Import — Nested Fields**: Fields nested inside object and array types are now fully expanded when importing an API proxy from an OpenAPI spec, instead of being silently dropped.
+- **JSON-to-CSV Column Ordering**: A new optional `header_order` field on the JSON-to-CSV node lets you specify the exact column order in the generated CSV file.
+- **Terminate with Error Context**: The error context from `terminate_with_error` nodes is now surfaced on the execution details page.
+- **Workflow Version Publisher**: The name of the user who published a workflow version is now shown in the version history.
+- **Linked Account Scope**: Linked accounts can now be created and filtered by a custom `scope` identifier — useful for multi-tenant setups that need to distinguish account groups.
+
+**Improvements**
+
+- The canvas automatically switches to panning mode when the AI assistant panel opens, keeping your viewport stable.
+- Copy URL, cURL, and JavaScript actions in the Start node panel now work correctly when the workflow builder is embedded in an iframe.
+- The PDF node now accepts string-typed numbers (e.g., `"1080"`) for viewport height, viewport width, wait time, and TTL fields.
+- The PDF node Margin field now validates JSON and surfaces a clear error for invalid values.
+- Python custom code execution improved.
+- Try-Catch nodes with an empty catch body now immediately transition to an error state with a clear message instead of hanging indefinitely.
+
+**API Changes**
+
+- Event trigger create and update payloads now accept a `json_schema` field for payload validation.
+- Linked Account create, update, and upsert payloads now accept an optional `scope` field; `GET /linked-accounts` now supports `scope` as a query filter.
+- New `PATCH /api/v2/public/tables/:tableId/records/:recordId` endpoint for updating individual table records.
+
+**Integration Updates**
+
+- **SAP Ariba SOAP**: New integration with purchase-requisition actions.
+- **Salesforce**: v3 actions restored in the action picker.
+- **HubSpot**: Contact list selection migrated from the deprecated v1 Lists API to v3.
+- **Slack**: Webhook delivery restored.
+- **Zoho**: Action identifier alignment for `get_lead`, `get_task`, and `get_campaign`.
+- **CSV**: `header_order` field for column ordering; delimiter and line-ending fields now correctly interpret escape sequences such as `\n` and `\t`; `return_raw_data` now returns data inline.
+
+</Update>
+
 <Update label="May 22, 2026" description="v3.5.25 · Universal Connector OAuth, SAP Ariba expansion & encrypted output fields">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
