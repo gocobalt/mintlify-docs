@@ -98,25 +98,64 @@ rss: true
 
 </Update>
 
-<Update label="May 27, 2026" description="v3.5.29 · SAP Ariba SOAP, OpenAPI nested fields & CSV column ordering">
+<Update label="May 27, 2026" description="v3.5.29 · Project workspace redesign, Agent Sessions, DLQ & cross-service cleanup">
 
-<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**SAP Ariba SOAP actions, expanded OpenAPI imports for nested fields, configurable CSV column ordering, and a fix for Event trigger JSON schema backfill.**
+**A redesigned project workspace with Agent Sessions, a new Dead Letter Queue primitive, Entity Tags, expanded table limits, and a wave of execution and integration fixes including Salesforce v3, SAP Ariba SOAP, and HubSpot v3 Lists.**
 
 **New Features**
 
-- **CSV Column Ordering**: The JSON to CSV node now accepts an optional `header_order` field, letting you control the exact column order in the generated CSV instead of relying on insertion order.
+- **Project Workspace Redesign**: The project page now uses a fullscreen sidebar layout with a project-scoped chat prompt on the Overview, and all sub-pages — Workflows, Documents, Artifacts, Lookups, Memories, Alerts, Error Reporting, Settings, and the renamed Integrations catalog — rebuilt on the new catalog layout. Project URLs now redirect to `/project/:project/overview`.
+- **Agent Sessions**: Agent conversations are now first-class sessions tracked across the workflow builder and chat surfaces, with a sidebar showing the last 3 sessions for quick resume, mid-stream resume after reload, and project-scoped session isolation per environment. Instance analysis chat now runs on the same Agent Sessions surface.
+- **Dead Letter Queue**: New platform primitive for capturing failed work, with full CRUD APIs and per-workflow DLQ assignment.
+- **Entity Tags**: New org-scoped, environment-specific Tag entity for grouping events, with a fixed color palette, a limit of 20 tags per environment, and case-only renames preserved. Custom triggers can now carry `tag_ids` for tagging.
+- **Linked Account Scope**: Linked accounts now support an optional `scope` field, settable on create, update, upsert, and CSV upload, and queryable as a filter.
+- **JSON Schema on Event Triggers**: Event configuration now exposes both Payload and JSON Schema tabs, with client-side validation on save and field-level validation errors at execution time.
+- **CSV Column Ordering**: The JSON to CSV node now accepts an optional `header_order` field to control the column order in the generated CSV.
+- **Inline "Add an Entry Node"**: Loops with no entry node now offer an inline "Add an entry node" action with a cleaner stacked layout.
+- **Version History Publisher**: Workflow version history now shows the name of the user who published each version.
+- **Terminate Error Context on Execution Page**: The error context from a `terminate_with_error` node now surfaces directly on the execution page.
 
 **Improvements**
 
-- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside `json` and `array` types as child `properties`, instead of dropping them and creating only the parent field.
-- **PDF Node Margin Placeholder**: Placeholder text for the Margin field now uses single quotes for JSON keys to avoid copy-paste confusion with valid double-quoted JSON.
-- **Event Trigger JSON Schema Backfill**: Resolved an error in the backfill that prepared existing events for the `json_schema` field.
+- **Tables — 30 Column Limit**: The maximum number of columns per table has been raised from 10 to 30, and the limit is now environment-configurable.
+- **Canvas Panning with AI Panel**: Opening the AI window switches the canvas to panning mode with panels docked on the right.
+- **Copy URL / cURL / JavaScript in Iframes**: The Start node's API Call copy actions now work when the editor is embedded in an iframe, with a graceful fallback and clear notifications when cross-origin policy blocks clipboard access.
+- **PDF Node — Templated Numeric Fields**: Templated string values like `viewport_height: "1080"` and `wait_after_load: "500"` are now coerced to numbers before validation, so existing workflows no longer fail.
+- **PDF Node — Margin Validation**: The Margin field now validates its JSON input and surfaces clear errors instead of silently generating a PDF with defaults. The placeholder text was updated to use single quotes to avoid copy-paste confusion with valid JSON.
+- **Try-Catch with Empty Body**: An empty Try-Catch block now fails fast and transitions the instance to ERRORED with a clear message instead of hanging in RUNNING indefinitely.
+- **Python Custom Code Execution**: Python custom code nodes now execute successfully against a dedicated executor, instead of failing.
+- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside `json` and `array` types into individual child properties, instead of dropping them.
+- **Template Variable Diagnostics**: Monaco editor no longer shows spurious lint markers inside `{{…}}` template variables.
+- **CSV Escape Sequences**: The JSON to CSV lambda now interprets `\n`, `\t`, and `\r` in `delimiter` and `line_ending` as the literal control characters.
+- **CSV Inline Raw Data**: Setting `return_raw_data` at the top level of the lambda input now returns inline data as expected.
+- **Project Prompt View**: The new prompt view now includes agent chips, recent sessions, an agent context chip with predefined prompts, a floating send button, and a sticky prompt with a scrollable top.
+
+**Bug Fixes**
+
+- **Salesforce v3 Actions**: Salesforce v3 actions are visible in the action picker again after an internal misconfiguration had hidden them.
+- **Slack Webhook Delivery**: Webhook deliveries to Slack URLs using the Default or Slack template now succeed — the `text` field is now sent as a plain string instead of a JSON object that Slack rejected with a 400.
+
+**API Changes**
+
+- New: Dead Letter Queue CRUD endpoints for creating, listing, updating, and deleting DLQs and assigning them to workflows.
+- New: Entity Tags CRUD endpoints at `/api/v2/public/tags/*`.
+- New: `PATCH /api/v2/public/tables/:tableId/records/:recordId` — update a single table record.
+- `POST` and `PATCH /api/v2/public/linked-accounts*` — now accept an optional `scope` field on create, update, upsert, and CSV upload.
+- `GET /api/v2/public/linked-accounts` — now supports a `scope` query filter.
+- `GET /api/v2/public/projects` — now supports a `search` query parameter.
+- Event trigger create and update payloads now accept a `json_schema` field for payload validation.
+- Custom trigger payloads now accept a `tag_ids` field.
+- JSON to CSV node payload now accepts an optional `header_order: string[]` field.
+- OpenAPI import response — nested fields inside `json` and `array` types are now expanded as `properties` on the parent field. Consumers that parsed the previous flat shape must update to walk the new nested structure.
 
 **Integration Updates**
 
-- **SAP Ariba**: New SOAP API actions, with priority coverage for purchase-requisition workflows.
+- **SAP Ariba**: New SOAP API integration with priority coverage for purchase-requisition actions.
+- **SAP**: Authentication for SAP-backed workflows no longer expires mid-run due to a retry path that was re-expiring credentials.
+- **HubSpot**: Select Contact List now uses the HubSpot v3 CRM Lists API following the permanent sunset of the v1 Lists API, and `list_ids` is available again via v3 lists search.
+- **Zoho**: `get_lead`, `get_task`, and `get_campaign` operation identifiers aligned with the upstream spec.
 
 </Update>
 
