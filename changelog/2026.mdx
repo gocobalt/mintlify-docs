@@ -98,49 +98,25 @@ rss: true
 
 </Update>
 
-<Update label="May 27, 2026" description="v3.5.29 · Project redesign, Agent Sessions, expanded tables & SAP Ariba SOAP">
+<Update label="May 27, 2026" description="v3.5.29 · SAP Ariba SOAP, OpenAPI nested fields & CSV column ordering">
 
-<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
 
-**A redesigned project experience with a new sidebar layout, Agent Sessions for managing and resuming AI conversations, tables expanded to 30 columns, JSON Schema on Event triggers, and SAP Ariba SOAP API support.**
+**SAP Ariba SOAP actions, expanded OpenAPI imports for nested fields, configurable CSV column ordering, and a fix for Event trigger JSON schema backfill.**
 
 **New Features**
 
-- **Project Redesign**: New fullscreen sidebar layout with catalog-style sub-pages for Workflows, Documents, Artifacts, Lookups, Memories, Alerts, Error Reporting, and Settings. The project overview page is now a chat prompt scoped to your project.
-- **Applications Renamed to Integrations**: The Applications sidebar item is now labelled **Integrations** throughout the platform.
-- **Agent Sessions**: Agent sessions are now tracked in the workflow builder and chat surfaces. Recent sessions appear in the sidebar for quick resume, with client-minted session IDs ensuring reliable continuity.
-- **Tables — 30-Column Limit**: The maximum number of columns per persistent table has been raised from 10 to 30.
-- **JSON Schema on Event Triggers**: Event triggers now support a JSON Schema field for payload validation, with both a Payload tab and a JSON Schema tab in the event configuration.
-- **SAP Ariba SOAP API Actions**: New integration module covering purchase-requisition actions via the SAP Ariba SOAP API.
-- **OpenAPI Import — Nested Fields**: Fields nested inside object and array types are now fully expanded when importing an API proxy from an OpenAPI spec, instead of being silently dropped.
-- **JSON-to-CSV Column Ordering**: A new optional `header_order` field on the JSON-to-CSV node lets you specify the exact column order in the generated CSV file.
-- **Terminate with Error Context**: The error context from `terminate_with_error` nodes is now surfaced on the execution details page.
-- **Workflow Version Publisher**: The name of the user who published a workflow version is now shown in the version history.
-- **Linked Account Scope**: Linked accounts can now be created and filtered by a custom `scope` identifier — useful for multi-tenant setups that need to distinguish account groups.
+- **CSV Column Ordering**: The JSON to CSV node now accepts an optional `header_order` field, letting you control the exact column order in the generated CSV instead of relying on insertion order.
 
 **Improvements**
 
-- The canvas automatically switches to panning mode when the AI assistant panel opens, keeping your viewport stable.
-- Copy URL, cURL, and JavaScript actions in the Start node panel now work correctly when the workflow builder is embedded in an iframe.
-- The PDF node now accepts string-typed numbers (e.g., `"1080"`) for viewport height, viewport width, wait time, and TTL fields.
-- The PDF node Margin field now validates JSON and surfaces a clear error for invalid values.
-- Python custom code execution improved.
-- Try-Catch nodes with an empty catch body now immediately transition to an error state with a clear message instead of hanging indefinitely.
-
-**API Changes**
-
-- Event trigger create and update payloads now accept a `json_schema` field for payload validation.
-- Linked Account create, update, and upsert payloads now accept an optional `scope` field; `GET /linked-accounts` now supports `scope` as a query filter.
-- New `PATCH /api/v2/public/tables/:tableId/records/:recordId` endpoint for updating individual table records.
+- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside `json` and `array` types as child `properties`, instead of dropping them and creating only the parent field.
+- **PDF Node Margin Placeholder**: Placeholder text for the Margin field now uses single quotes for JSON keys to avoid copy-paste confusion with valid double-quoted JSON.
+- **Event Trigger JSON Schema Backfill**: Resolved an error in the backfill that prepared existing events for the `json_schema` field.
 
 **Integration Updates**
 
-- **SAP Ariba SOAP**: New integration with purchase-requisition actions.
-- **Salesforce**: v3 actions restored in the action picker.
-- **HubSpot**: Contact list selection migrated from the deprecated v1 Lists API to v3.
-- **Slack**: Webhook delivery restored.
-- **Zoho**: Action identifier alignment for `get_lead`, `get_task`, and `get_campaign`.
-- **CSV**: `header_order` field for column ordering; delimiter and line-ending fields now correctly interpret escape sequences such as `\n` and `\t`; `return_raw_data` now returns data inline.
+- **SAP Ariba**: New SOAP API actions, with priority coverage for purchase-requisition workflows.
 
 </Update>
 
