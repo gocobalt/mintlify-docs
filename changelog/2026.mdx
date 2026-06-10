@@ -3,6 +3,59 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 9, 2026" description="v3.5.35 · Workspaces & environments, DLQ resolution, table audit events & HubSpot v3 actions">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Workspaces and environments with per-environment API keys, a Dead Letter Queue with resolution workflows, audit events for persistent tables, refreshed navigation and Assets consolidation, and new HubSpot v3 actions.**
+
+**New Features**
+
+- **Workspaces & Environments**: Organizations are now structured around environments, each with its own API keys and configuration. A default environment is created automatically on org creation, and you can switch workspaces from the new navigation header to re-scope your session.
+- **Per-Environment API Key Rotation**: Rotate API keys independently per environment without affecting other workspaces in your organization.
+- **Dead Letter Queue with Resolution Workflows**: Failed messages now land in a Dead Letter Queue where you can edit the payload and resolve them by running a configured resolution workflow. DLQs are scoped per integration project, and resolved records older than 7 days drop out of the default view to keep the queue focused.
+- **Table Audit Events**: Persistent table mutations — create and delete tables, add, remove, and rename columns, and add, update, and delete rows — now emit audit events that render on the audit log page.
+- **New Navigation Header**: Refreshed top navigation with a logo menu, product switcher, and context switcher on project and MCP server pages.
+- **Assets Page**: Documents, Artifacts, and Lookups are now consolidated into a single tabbed Assets page. The standalone pages and sidebar entries have been removed.
+- **Project Settings Integrations Tab**: Integration cards now live in a dedicated tab inside Project Settings; the standalone project integrations page has been removed.
+- **Multi-Role Support per User**: Users can now hold multiple roles scoped to organizations, environments, or linked accounts.
+
+**Improvements**
+
+- **Execution Log Node Details**: Execution logs now display per-node status, request, response, and completion percentage for workflows executed by the new runtime.
+- **Workflow AI Chat**: The workflow AI chat is now available regardless of draft state.
+- **Logs Search Persistence**: The search type and custom field values on the logs page now persist in the URL across refresh.
+- **Sidebar Session Grouping**: Recent sessions in the sidebar are now grouped into Design and Maintain buckets, and the BUILD section has been renamed AGENT with a New Session entry.
+- **MCP Tools Page**: Tool counts are now split into actions versus workflows for clearer visibility.
+- **Queued Workflow Resilience**: Brief runtime outages no longer strand instances in the QUEUED state, thanks to extended persistence retries.
+- **Workday Pagination**: Pagination now works correctly for Workday and other native actions flagged as paginated, even when not yet present in the native actions list.
+- **Hosted Portal Config Tab**: Fixed label wrapping and overflow on the config tab.
+
+**Bug Fixes**
+
+- **Stuck RUNNING Instances**: Large workflow trees no longer leave instances stuck in RUNNING while their nodes are already in terminal states.
+- **Try-Catch Stop Propagation**: Stopping a workflow now correctly cancels descendants of try-catch sub-workflows.
+- **Subflow Termination**: Fixed incorrect termination of subflow nodes.
+- **Do-While Iteration Counts**: Errored iterations in `do_while` loops now appear in the batches drill-down, so the failed final iteration is no longer hidden.
+
+**API Changes**
+
+- New: `POST /api/v1/auth-service/environments` — create an environment.
+- New: `GET /api/v1/auth-service/environments` — list environments for the organization.
+- New: `GET /api/v1/auth-service/environments/:id` — retrieve a single environment.
+- New: `PUT /api/v1/auth-service/environments/:id` — update an environment.
+- New: `DELETE /api/v1/auth-service/environments/:id` — soft-delete an environment.
+- New: `POST /api/v1/auth-service/environments/:environment/api-key/rotate` — rotate the API key for an environment.
+- New: `POST /api/v1/auth-service/switch-workspace` — switch the active workspace and re-issue an access and refresh token pair scoped to the target environment.
+- DLQ APIs now accept an optional `project_id` query parameter to narrow results to a single integration project.
+
+**Integration Updates**
+
+- **HubSpot**: New v3 actions `update_task_v3`, `search_tasks_v3`, and `search_tickets_v3`, with pagination support on the search actions. The `list_webhook_subscriptions` action has been removed as it is incompatible with OAuth user tokens.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
