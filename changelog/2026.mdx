@@ -98,49 +98,87 @@ rss: true
 
 </Update>
 
-<Update label="May 27, 2026" description="v3.5.29 · Project redesign, Agent Sessions, expanded tables & SAP Ariba SOAP">
+<Update label="May 27, 2026" description="v3.5.29 · Project redesign, agent sessions, DLQ & integration fixes">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**A redesigned project experience with a new sidebar layout, Agent Sessions for managing and resuming AI conversations, tables expanded to 30 columns, JSON Schema on Event triggers, and SAP Ariba SOAP API support.**
+**A redesigned project workspace with agent sessions, a Dead Letter Queue platform primitive, JSON schema validation for Event triggers, expanded integration coverage, and fixes for SAP, HubSpot, Salesforce, Slack, and Python custom code.**
 
 **New Features**
 
-- **Project Redesign**: New fullscreen sidebar layout with catalog-style sub-pages for Workflows, Documents, Artifacts, Lookups, Memories, Alerts, Error Reporting, and Settings. The project overview page is now a chat prompt scoped to your project.
-- **Applications Renamed to Integrations**: The Applications sidebar item is now labelled **Integrations** throughout the platform.
-- **Agent Sessions**: Agent sessions are now tracked in the workflow builder and chat surfaces. Recent sessions appear in the sidebar for quick resume, with client-minted session IDs ensuring reliable continuity.
-- **Tables — 30-Column Limit**: The maximum number of columns per persistent table has been raised from 10 to 30.
-- **JSON Schema on Event Triggers**: Event triggers now support a JSON Schema field for payload validation, with both a Payload tab and a JSON Schema tab in the event configuration.
-- **SAP Ariba SOAP API Actions**: New integration module covering purchase-requisition actions via the SAP Ariba SOAP API.
-- **OpenAPI Import — Nested Fields**: Fields nested inside object and array types are now fully expanded when importing an API proxy from an OpenAPI spec, instead of being silently dropped.
-- **JSON-to-CSV Column Ordering**: A new optional `header_order` field on the JSON-to-CSV node lets you specify the exact column order in the generated CSV file.
-- **Terminate with Error Context**: The error context from `terminate_with_error` nodes is now surfaced on the execution details page.
-- **Workflow Version Publisher**: The name of the user who published a workflow version is now shown in the version history.
-- **Linked Account Scope**: Linked accounts can now be created and filtered by a custom `scope` identifier — useful for multi-tenant setups that need to distinguish account groups.
+- **Project Workspace Redesign**: The project page has been rebuilt with a full-screen sidebar layout and a catalog-style listing across Workflows, Documents, Artifacts, Lookups, Memories, Alerts, Error Reporting, Settings, and Integrations. The Overview tab is now a project-scoped chat prompt for talking directly to your project, and a new Agent sidebar item surfaces your three most recent sessions for quick resume. Existing `/project/:project` links automatically redirect to `/project/:project/overview`.
+- **Applications Renamed to Integrations**: The "Applications" project section is now called "Integrations" and uses the new catalog-style listing.
+- **Agent Sessions**: Workflow builder chat and instance analysis chat are now backed by persistent agent sessions. Sessions are scoped per project and environment, list your recent conversations on the empty state, and resume streaming after a reload.
+- **Dead Letter Queue**: A new DLQ platform primitive with full CRUD APIs lets you define DLQs, assign them to workflows, and manage failed-message handling.
+- **Entity Tags**: A new org-scoped, environment-specific Tag entity for grouping events, with full CRUD, a fixed color palette aligned with Connect Portal, and a 20-tag-per-environment limit. Custom triggers can now carry `tag_ids` for tagging.
+- **Linked Account Scope**: Linked accounts now support an optional `scope` identifier that can be set on create, update, upsert, and CSV upload, and used as a filter when listing accounts.
+- **JSON Schema for Event Triggers**: Event trigger configuration now exposes both Payload and JSON Schema tabs. Schemas are validated client-side on save, and incoming event payloads are validated against the schema with field-level errors on mismatch.
+- **Worker Observability**: BullMQ workers across the platform now emit structured logs and OpenTelemetry spans for improved tracing of background work.
+- **Project Search**: Project lists now support search and infinite scroll for faster navigation in large workspaces.
+- **Table Record Editing API**: A new endpoint to update individual table records by ID.
+- **CSV Column Ordering**: The JSON-to-CSV node now accepts an optional `header_order` field to control the column order in the generated CSV instead of relying on insertion order.
 
 **Improvements**
 
-- The canvas automatically switches to panning mode when the AI assistant panel opens, keeping your viewport stable.
-- Copy URL, cURL, and JavaScript actions in the Start node panel now work correctly when the workflow builder is embedded in an iframe.
-- The PDF node now accepts string-typed numbers (e.g., `"1080"`) for viewport height, viewport width, wait time, and TTL fields.
-- The PDF node Margin field now validates JSON and surfaces a clear error for invalid values.
-- Python custom code execution improved.
-- Try-Catch nodes with an empty catch body now immediately transition to an error state with a clear message instead of hanging indefinitely.
+- **Table Column Limit Raised to 30**: Tables now support up to 30 columns (previously 10), configurable per environment.
+- **Version History Publisher**: Workflow version history now records and displays the name of the user who published each version.
+- **Terminate-With-Error Context on Execution Page**: The error context from a Terminate node now surfaces on the execution detail page.
+- **Canvas Panning With Side Panels**: When the AI window is open in the workflow builder, the canvas switches to panning mode with panels docked on the right.
+- **Inline "Add Entry Node"**: The empty-workflow entry-node prompt now uses a cleaner inline layout.
+- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside object and array types as individual child properties instead of silently dropping them. Previously affected specs such as Mavenlink's now import completely.
+- **OpenAPI Import — Circular References & Type Inference**: OpenAPI imports now handle circular references and have improved type inference for numbers, booleans, objects, arrays, and strings.
+- **Switch & Rule Nodes Inside Try-Catch**: More reliable behavior when Switch and Rule nodes execute inside try-catch blocks.
+- **PDF Node — Templated Numbers**: The PDF node now coerces templated string values like `viewport_height: "1080"` to numbers before validation, matching the behavior elsewhere in the platform.
+- **PDF Node — Margin Field Validation**: The Margin field now validates its JSON input and surfaces a clear error on invalid JSON instead of silently falling back to defaults. The placeholder example now uses single quotes around keys to avoid copy-paste confusion with valid JSON.
+- **CSV — Escape Sequences in Delimiters**: The JSON-to-CSV node now interprets `\n`, `\t`, and `\r` in the `delimiter` and `line_ending` fields as the corresponding control characters.
+- **CSV — Inline Raw Data**: When `return_raw_data` is set at the top level of the input, CSV output is returned inline.
+- **Snowflake Query Editor**: The Snowflake query field editor has been refreshed.
+- **Incremental Sync Time Window**: Incremental sync now correctly preserves the original time window across retries.
+- **API Token UTM Forwarding**: API tokens now forward UTM parameters for source attribution on audit events.
+- **Faster Audit Log Queries**: Audit log queries are now faster.
+- **MCP Direct Mode**: Configured actions are now exposed as raw tools by default on the MCP server. Use `?mode=agent` to enable the search/plan flow.
+- **MCP Audits — Search Tool Filter**: MCP audit listing now supports filtering by whether search tools were included.
+- **Monaco Template Variables**: Diagnostic markers are no longer shown for `{{…}}` template expressions in Monaco-backed fields, so template variables no longer appear as lint errors.
+- **Copy URL / cURL / JavaScript in Iframes**: The Start node's API Call panel copy actions now work when the workflow editor is embedded in an iframe, with a graceful manual-copy fallback when clipboard access is blocked.
+
+**Bug Fixes**
+
+- **Salesforce v3 Actions Restored**: Salesforce v3 actions are visible again in the action picker.
+- **Slack Webhook Delivery**: Slack webhook subscribers were rejecting deliveries with a 400 because the `text` payload was sent as a JSON object instead of a string. Slack webhooks now deliver successfully.
+- **SAP Authentication Expiry**: SAP-backed workflows no longer experience credentials repeatedly expiring mid-run due to a faulty retry path.
+- **Python Custom Code Execution**: Python custom code nodes now execute successfully. JavaScript and Python custom code are routed to separate executors.
+- **Empty Try-Catch Hangs**: Workflows containing an empty Try-Catch block were hanging indefinitely in RUNNING. Validation now fails fast and the instance transitions to ERRORED with a clear message.
+- **HTTP Node Save Button**: Editing existing query params or headers in the HTTP node now correctly activates the save button.
+- **Code Executor Node Naming**: Resolved a naming inconsistency on the Code Executor node.
 
 **API Changes**
 
+- New: CRUD endpoints for the Dead Letter Queue entity, including workflow assignment.
+- New: CRUD endpoints for org-scoped Entity Tags.
+- New: `PATCH` endpoint for updating individual table records by ID.
+- `POST` / `PATCH` linked account endpoints now accept an optional `scope` field, and the list endpoint supports a `scope` query filter.
+- Custom trigger payloads now accept a `tag_ids` field for associating triggers with tags.
 - Event trigger create and update payloads now accept a `json_schema` field for payload validation.
-- Linked Account create, update, and upsert payloads now accept an optional `scope` field; `GET /linked-accounts` now supports `scope` as a query filter.
-- New `PATCH /api/v2/public/tables/:tableId/records/:recordId` endpoint for updating individual table records.
+- The JSON-to-CSV node payload now accepts an optional `header_order` array for controlling column order.
+- OpenAPI import responses now expand nested object and array fields as child `properties` instead of returning the parent field alone. Consumers that parsed the previous flat shape should walk the new `properties` array.
+- MCP audit listing accepts a new `include_search_tools` query parameter.
+- The Project listing endpoint now accepts a `search` query parameter.
 
 **Integration Updates**
 
-- **SAP Ariba SOAP**: New integration with purchase-requisition actions.
-- **Salesforce**: v3 actions restored in the action picker.
-- **HubSpot**: Contact list selection migrated from the deprecated v1 Lists API to v3.
-- **Slack**: Webhook delivery restored.
-- **Zoho**: Action identifier alignment for `get_lead`, `get_task`, and `get_campaign`.
-- **CSV**: `header_order` field for column ordering; delimiter and line-ending fields now correctly interpret escape sequences such as `\n` and `\t`; `return_raw_data` now returns data inline.
+- **SAP Ariba**: New SOAP API actions, with priority coverage for purchase-requisition workflows.
+- **HubSpot**: Migrated the Select Contact List action from the sunset v1 CRM Lists API to the v3 CRM Lists API. The `list_ids` action has been restored via the v3 search endpoint.
+- **HubSpot**: Improved request body handling on outbound calls.
+- **Salesforce**: v3 actions are once again available in the action picker.
+- **SAP**: Improved HTTP socket reliability and CSRF failure handling, and fixed an authentication-retry loop that was causing credentials to repeatedly expire.
+- **Zoho**: Aligned `get_lead`, `get_task`, and `get_campaign` operation identifiers.
+- **Incorta**: New `loadData` endpoint supporting full and incremental schema loading.
+- **Freshservice**: New webhook endpoint with automatic event-type detection and multi-event handling.
+- **Pipedrive**: Improved token refresh handling.
+- **Workable**: Request body handling improvements.
+- **Cal.com**: Migrated to the v2 API following the v1 shutdown. The outbound base URL is now `api.cal.com/v2` and a mandatory `cal-api-version: 2024-08-13` header is sent on every request.
+- **Oracle Sales**, **HighLevel**, **Bitbucket**, **Greenhouse**, **Workable**, **Twilio**, **Attio**, **Trello**: Migrated to the new request-transform handler for improved consistency.
+- ⚠️ **Action required**: Existing Cal.com API keys must be regenerated as v2 Bearer tokens at `https://app.cal.com/settings/developer/api-keys`.
 
 </Update>
 
