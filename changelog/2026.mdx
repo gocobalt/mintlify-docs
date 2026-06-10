@@ -98,27 +98,26 @@ rss: true
 
 </Update>
 
-<Update label="May 27, 2026" description="v3.5.29 · SAP Ariba SOAP actions, CSV column ordering & OpenAPI import fixes">
+<Update label="May 27, 2026" description="v3.5.29 · SAP Ariba SOAP, OpenAPI nested fields & CSV column ordering">
 
 <Badge color="blue">Platform</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**New SAP Ariba SOAP actions, configurable column ordering on JSON-to-CSV, and an OpenAPI importer that preserves nested fields.**
+**New SAP Ariba SOAP actions, control over CSV column ordering, and richer OpenAPI imports that now preserve nested field structures.**
 
 **New Features**
 
-- **JSON to CSV Column Ordering**: The JSON-to-CSV node now accepts an optional `header_order` field so you can control the column order in the generated CSV instead of relying on insertion order.
+- **CSV Column Ordering**: The JSON to CSV node now accepts an optional `header_order` field, letting you control the exact column order in the generated CSV instead of relying on insertion order.
 
 **Improvements**
 
-- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside object and array types instead of dropping child properties.
-- **PDF Margin Placeholder**: The placeholder text for the Margin field now uses single quotes for JSON keys to avoid copy-paste confusion with valid double-quoted JSON.
-- **Event JSON Schema Backfill**: Resolved an error in the backfill that prepared existing events for payload schema validation.
+- **OpenAPI Import — Nested Fields**: Importing an API proxy from an OpenAPI spec now recursively expands fields nested inside object and array types. Previously, only the parent field was created and child properties were dropped.
+- **PDF Margin Placeholder**: The Margin field placeholder now uses single quotes for JSON keys to make it visually distinct from the double-quoted valid JSON users should enter.
 
 **API Changes**
 
-- The JSON-to-CSV node payload now accepts an optional `header_order` array to control output column order.
-- The Custom Trigger schema now accepts a `tag_ids` field so triggers can be tagged.
-- OpenAPI import responses now expand nested object and array fields as `properties` on the parent field. Consumers that parsed the previous flat shape should update to walk the nested `properties` array.
+- The `json-to-csv` node payload now accepts an optional `header_order: string[]` field to control output column order.
+- OpenAPI import response shape — fields nested inside `json` and `array` types are now expanded as child entries under a `properties` array on the parent field. Consumers that parsed the previous flat shape need to handle nested children.
+- The `CustomTrigger` schema now includes a `tag_ids` field so triggers can be tagged.
 
 **Integration Updates**
 
