@@ -251,35 +251,40 @@ rss: true
 
 </Update>
 
-<Update label="May 14, 2026" description="v3.5.22 · Read-only sessions, Cal.com v2 migration & search improvements">
+<Update label="May 14, 2026" description="v3.5.22 · Cal.com v2 migration, read-only sessions & loop reliability">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
 
-**Read-only session mode for hosted workflows, Cal.com migrated to v2 API, multi-slug workflow filtering, and a stage-one Universal Connector model.**
+**Cal.com migrated to v2 API, read-only session mode for hosted workflows, multi-slug workflow filtering, and reliability fixes across loops, try-catch, and incremental sync.**
 
 **New Features**
 
 - **Read-Only Session Mode**: Session tokens can now grant view-only access to hosted workflows — the edit button is hidden and draft mode is blocked when `readOnlyWorkflow: true` is set on the token.
-- **Multi-Slug Workflow Filter**: `getAllWorkflows` now accepts a comma-separated list of slugs, with invalid slugs surfaced in the response.
+- **Multi-Slug Workflow Filter**: `getAllWorkflows` now accepts a comma-separated list of slugs, returning workflows for valid slugs and surfacing any invalid slugs in the response.
+- **CSV Raw Data Output**: XML and EDI converter actions now support a `return_raw_data` option to retrieve the raw payload alongside parsed output.
 
 **Improvements**
 
 - **Skipped Loop Nodes**: A Fixed Iteration or Do-While Loop with no entry node now skips correctly and execution proceeds to the next connected nodes.
 - **Try-Catch Error Body**: The error response from a try-catch block now surfaces the actual failing node's ID and original error message instead of the catch-tail terminate message.
-- **Switch Node Error Clarity**: Switch cases with an unset `evaluator_type` now return a clear "evaluator_type is required" message.
-- **Audit Log Workflow Names**: Batched and DAG executions now show the resolved workflow name in audit log entries instead of an empty field.
+- **Switch Node Error Clarity**: Switch cases with an unset `evaluator_type` now return a clear "evaluator_type is required" message instead of a misleading invalid-value error, and `evaluator_type` is now optional in the input payload.
+- **Audit Log Workflow Names**: Batched and DAG executions now show the resolved workflow name in audit log entries instead of an empty field. Existing entries written before this release are not backfilled.
+- **Incremental Sync Continuity**: Workflows finishing in TERMINATED or QUEUED states now write ledger timestamps, preventing broken chains where the next scheduled run executed without a reference timestamp.
 - **Delay Node Default**: The Delay node no longer auto-selects "Wait for" — users must explicitly pick "Wait for" or "Wait till".
-- **HTTP Node Save**: Editing existing query params or headers now activates the save button without requiring a new row to be added.
-- **Workflow Testing Navigation**: Replaced the cancel icon with a back-navigation button in the prerequisites tab.
-- **Incremental Sync Ledger**: Workflows finishing in TERMINATED or QUEUED states now write ledger timestamps, preventing broken chains on the next scheduled run.
+- **HTTP Node Save**: Editing existing query parameters or headers now activates the save button without needing to add a new row first.
+- **Map Input Reactivity**: Map fields now correctly reflect external value updates after the first render.
+- **Workflow Testing Navigation**: The cancel icon in the prerequisites tab has been replaced with a back-navigation button with corrected tooltip positioning.
+- **Execution Messages Scrolling**: The execution messages tab in logs now scrolls correctly.
 - **Terminate Node**: Input data is no longer a required field.
+- **MCP Tool Schemas**: MCP debug output now shows the real tool name instead of a random identifier.
+- **LLM Retry Reliability**: Transient LLM errors now propagate so retry policies fire correctly, and the OpenRouter fallback path no longer attempts Azure or Google Vertex providers for Claude 4.6 prefill calls.
 
 **Integration Updates**
 
-- **Cal.com**: Migrated to the v2 API following the v1 shutdown. The outbound base URL is now `api.cal.com/v2` and a mandatory `cal-api-version: 2024-08-13` header is sent on every request. 
-⚠️ **Action required**: Existing Cal.com API keys must be regenerated as v2 Bearer tokens at `https://app.cal.com/settings/developer/api-keys`.
-- **SAP**: Improved HTTP socket reliability.
+- **SAP**: Improved HTTP socket reliability, with added CSRF failure diagnostics and a longer auto-select family attempt timeout.
 - **SAP Ariba**: New actions added under the SAP Ariba module.
+- **Cal.com**: Migrated to the v2 API following the v1 shutdown on April 8, 2026. The outbound base URL is now `api.cal.com/v2`, authentication uses `Authorization: Bearer <key>` (the `?apiKey=` query parameter has been removed), and a mandatory `cal-api-version: 2024-08-13` header is sent on every request. Endpoint paths have been updated accordingly (for example, `GET /v2/me` replaces `/v1/users`, and `DELETE /v2/bookings/{id}/cancel` replaces `DELETE /v1/bookings/{id}`).
+- ⚠️ **Action required**: Existing Cal.com API keys must be regenerated as v2 Bearer tokens at `https://app.cal.com/settings/developer/api-keys`. Existing v1 keys will fail until regenerated.
 
 </Update>
 
