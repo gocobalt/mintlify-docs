@@ -14,23 +14,23 @@ Open the role list from **Settings > Organization > Roles**.
 
 ## Built-in roles
 
-{/* NEEDS INPUT: confirm the exact v3 role list. The v2 model was Admin +
-    Editor only, but the new UI has a dedicated Roles page suggesting more
-    roles exist (Viewer? Developer? Custom?). List each role's permissions. */}
+Refold ships with a set of built-in roles. Each grants a fixed set of
+permissions, which you can review per role on the **Roles** page in the
+dashboard.
+
+| Role | What they can do |
+|---|---|
+| **Owner** | Everything an Admin can do, plus ownership of the organization. The owner's email is the one associated with the org. There is exactly one owner. |
+| **Admin** | Full access to all features and settings. |
+| **Developer** | Manage applications and their configurations. |
+| **Solutions** | Manage workflows and view logs. |
+| **External** | Read-only access to applications, workflows, and logs. |
 
 <Note>
-  This page is being kept in sync with the Refold dashboard. If a role
-  appears in the dashboard but isn't documented here, the dashboard is the
-  source of truth.
+  Every organization has exactly one **Owner**. To change the owner, the
+  current owner transfers ownership by selecting which Admin becomes the new
+  owner.
 </Note>
-
-| Role | Scope | Typical user |
-|---|---|---|
-| **Admin** | Full control over the workspace, including users, billing, and organization settings. Exactly one per workspace. | Workspace owner |
-| **Editor** | Build and modify integrations, workflows, and linked accounts. Can't change workspace settings or membership. | Integration developer |
-
-{/* NEEDS INPUT: confirm whether v3 adds Viewer, Developer, or other roles,
-    and whether custom roles are supported. */}
 
 ## Change a user's role
 
@@ -49,8 +49,12 @@ Open the role list from **Settings > Organization > Roles**.
 
 ## Custom roles
 
-{/* NEEDS INPUT: does v3 support custom roles? If so, describe the create-role
-    flow and the permission picker. If not, delete this section. */}
+Custom roles let an admin create a role with a specific set of permissions,
+beyond the built-in roles, when none of the defaults fit a teammate's needs.
+
+<Note>
+  Custom roles are **coming soon**.
+</Note>
 
 ## Next steps
 
