@@ -3,6 +3,46 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 9, 2026" description="v3.5.35 · DLQ resolution, Autopilot enhancements, table audit events & HubSpot V3">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Dead-letter queue resolution workflows, expanded Autopilot capabilities, audit events for table mutations, a redesigned navigation header with consolidated Assets, and new HubSpot V3 actions.**
+
+**New Features**
+
+- **DLQ Resolution Workflows**: Resolve dead-letter queue messages by running their configured resolution workflow with the edited payload and error context. DLQs can be scoped to a specific integration project, and resolved records older than seven days drop out of the default message listing.
+- **Table Audit Events**: Persistent table mutations — creating or deleting tables, adding, removing, or renaming columns, and adding, updating, or deleting rows — now emit audit events visible on the audit log page.
+- **Navigation Header Redesign**: New top-level header with a logo menu, product switcher, and context switcher on project and MCP server pages.
+- **Assets Page**: Documents, Artifacts, and Lookups are now consolidated into a single tabbed Assets page; the standalone pages and sidebar entries have been removed.
+- **Project Settings — Integrations Tab**: Integration cards have moved into a new Integrations tab inside Project Settings; the standalone integrations page has been removed.
+- **Autopilot Run Now**: Trigger Autopilot analysis on demand from the dashboard with a backend-driven progress toast.
+- **Autopilot Library**: A unified cross-layer library view aggregates skills, patterns, episodes, use cases, and mappings with per-artifact usage sparklines and distinct-workflow counts. Field mappings are now first-class library artifacts.
+- **Agent Session Grouping**: Recent sessions in the sidebar are now grouped into Design and Maintain buckets, and the BUILD section has been renamed to AGENT with a New Session entry.
+
+**Improvements**
+
+- **Execution Logs Node Data**: The execution logs page now surfaces top-level node status, request, response, and completion percentage for workflows run on the new execution engine.
+- **MCP Tools Page**: Tool counts are now split into actions and workflows for clearer accounting.
+- **Workflow AI Chat Availability**: The workflow AI chat is now available regardless of draft state.
+- **Logs Search Persistence**: Search type and custom-field filter values on the logs page are now persisted in the URL across refresh.
+- **MCP Tool Error Detail**: MCP tool failures now surface the underlying error code and message instead of a generic execution error.
+- **Org-Scoped Artifacts**: Artifacts are now visible across the entire organization (previously scoped to a single linked account).
+- **MCP Tools Page**: Tool counts are now split into actions and workflows for clearer accounting.
+- **Execution Reliability for Large Workflow Trees**: Improved terminal-status handling so large workflow trees complete reliably.
+- **Workflow Stop Propagation**: Stopping a workflow now extends to try-catch sub-workflow descendants.
+- **Subflow Execution**: Optimized subflow node execution.
+- **Do-While Batches Drill-Down**: Expanded the batches drill-down to surface errored final iterations of do-while loops with group iterations.
+- **Extended Retry Backoff**: Extended retry backoff to ensure execution completion through transient platform conditions.
+
+**Integration Updates**
+
+- **HubSpot**: New V3 actions for updating tasks, searching tasks, and searching tickets, with pagination support on search actions. The `list_webhook_subscriptions` action has been removed as it is incompatible with OAuth user tokens.
+- **Workday**: Improved pagination support for external app actions.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
