@@ -3,6 +3,50 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 9, 2026" description="v3.5.35 · Autopilot pilots, DLQ resolution, table audit events & HubSpot V3 actions">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Autopilot pilot management with Run Now, dead-letter queue resolution workflows, audit events for table mutations, a consolidated Assets page, and new HubSpot V3 actions.**
+
+**New Features**
+
+- **Autopilot Pilots**: Create, pause, resume, and trigger Autopilot pilots on demand. Each pilot periodically analyzes workflow instances, compares failures against the last successful run, and writes diagnostic REPORT artifacts visible across your organization.
+- **DLQ Message Resolution**: Resolve dead-letter queue messages by running their configured resolution workflow with the edited payload, original error, and resolution context. The run outcome stamps the message's terminal status.
+- **Project-Scoped DLQs**: Dead-letter queues are now scoped to a project. DLQ APIs accept an optional `project_id` filter, and DLQs created by workflow nodes inherit the workflow's project.
+- **Table Audit Events**: Persistent table mutations — creating or deleting tables, adding, removing, or renaming columns, and adding, updating, or deleting rows — now appear on the audit log page.
+- **Assets Page**: A new tabbed Assets page consolidates Documents, Artifacts, and Lookups in one place. The standalone pages and sidebar entries have been removed.
+- **Project Settings — Integrations Tab**: Integration cards now live in a dedicated Integrations tab inside Project Settings; the standalone integrations page has been removed.
+- **New Navigation Header**: A new top navigation header introduces a logo menu, product switcher, and a context switcher on project and MCP server pages.
+- **Persistent Logs Search State**: The execution logs page now persists search type and custom field values in the URL across refreshes.
+
+**Improvements**
+
+- Sidebar recent sessions are now grouped into Design and Maintain buckets. The BUILD section has been renamed **AGENT** and includes a New Session entry.
+- The workflow AI chat is now available regardless of draft state.
+- The MCP tools page splits counts into actions versus workflows for clearer attribution.
+- Cross-layer Library view aggregates skills, patterns, episodes, use cases, and mappings, with per-artifact usage sparklines and distinct-workflow counts.
+- Library artifacts now use a content-first model with a unified scope and mandatory title across all artifact kinds.
+- gRPC error details from MCP tool invocations now surface the underlying status code and message instead of a generic execution error.
+- Hosted portal config tab labels no longer wrap or overflow.
+
+**Bug Fixes**
+
+- Large workflow trees no longer leave instances stuck in RUNNING when all nodes have reached a terminal state — terminal status now persists before cleanup walks the tree.
+- Stopping a workflow now correctly cancels try-catch sub-workflow descendants.
+- Subflow nodes are no longer incorrectly terminated during execution.
+- Failed final iterations of do-while loops now appear in the batches drill-down for group iterations.
+- Brief execution-engine outages no longer strand instances in QUEUED — retry backoff has been extended.
+- Artifacts are now correctly visible across the entire organization rather than scoped to a single linked account.
+
+**Integration Updates**
+
+- **HubSpot**: New V3 actions for updating tasks, searching tasks, and searching tickets, with pagination support on search actions.
+- **Workday**: External app actions flagged as paginated now paginate correctly in the workflow builder.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
