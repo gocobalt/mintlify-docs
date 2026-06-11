@@ -3,6 +3,42 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 9, 2026" description="v3.5.35 · Dead Letter Queue, table audit events & HubSpot V3 actions">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Dead Letter Queue with resolution workflows, audit logging for table mutations, expanded HubSpot V3 actions, and reliability improvements across execution and subflows.**
+
+**New Features**
+
+- **Dead Letter Queue Resolution**: Failed messages routed to a Dead Letter Queue can now be resolved by running a configured resolution workflow with the edited payload, error context, and resolution context. DLQs are scoped to integration projects, and records resolved more than 7 days ago drop out of the default listing.
+- **Table Audit Events**: Persistent table mutations — create and delete table, add, remove, and rename columns, and add, update, and delete rows — now emit audit-trail events that appear on the audit log page.
+- **Assets Page**: A new tabbed Assets page consolidates Documents, Artifacts, and Lookups into a single project surface.
+- **Project Settings — Integrations Tab**: Integration cards are now managed from a dedicated Integrations tab within Project Settings.
+- **Navigation Header**: New top-level navigation header with a logo menu, product switcher, and a context switcher on project and MCP server pages.
+- **Session Grouping**: Recent sessions in the sidebar are grouped into Design and Maintain buckets, and the BUILD section is renamed to AGENT with a New Session entry.
+
+**Improvements**
+
+- **Execution Logs for Thanos-Executed Runs**: Execution logs now surface top-level node execution details and completion percentage for runs executed by the Refold execution engine.
+- **Logs Search Persistence**: The logs search type and custom-field filter values are now persisted in the URL across reloads.
+- **MCP Tools Page**: Tool counts are now split into actions and workflows for clearer visibility.
+- **Workflow AI Chat**: The workflow AI chat is now available regardless of draft state.
+- **MCP Tool Error Detail**: MCP tool failures now surface the underlying error message instead of a generic execution error.
+- **Enhanced execution reliability for large workflow trees.**
+- **Optimized subflow execution.**
+- **Workflow stop now extends to try-catch sub-workflow descendants.**
+- **Expanded batches drill-down to surface failed final iterations of do-while loops with group iterations.**
+- **Extended retry backoff to ensure execution completion through transient platform conditions.**
+
+**Integration Updates**
+
+- **HubSpot**: New V3 actions `update_task_v3`, `search_tasks_v3`, and `search_tickets_v3`, with pagination enabled on search actions. The `list_webhook_subscriptions` action has been removed as it is no longer supported by the application.
+- **Workday**: Improved pagination support for external app actions.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
