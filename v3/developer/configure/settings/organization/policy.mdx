@@ -1,80 +1,41 @@
 ---
 title: "Policy"
-description: "Workspace-wide security and access policies that apply to every user and integration."
+description: "Set organization-wide security and data retention policies."
 ---
 
-The **Policy** page is where workspace admins set the security rules that
-apply to everyone in the workspace: password requirements, session
-behavior, who outside the workspace can reach it, and whether the Refold
-support team has read access for troubleshooting.
+The **Policy** page is where admins set organization-wide rules, such as
+requiring multi-factor authentication and how long logs are kept.
 
-Open it from **Settings > Organization > Policy**.
+Open it from **Settings > Configuration > Policy**, then click **Save** to
+apply your changes.
 
-## Refold support access
+## Enforce MFA
 
-By default, the Refold support team cannot read your workspace's data.
-Grant temporary read access when you need help debugging an integration,
-then revoke it when the work is done.
+Turn on **Enforce MFA** to require every user to use multi-factor
+authentication to access the platform. Users who haven't set up MFA are
+prompted to configure it before they can continue.
 
-<Steps>
-  <Step title="Open Policy">
-    Go to **Settings > Organization > Policy**.
-  </Step>
-  <Step title="Allow access">
-    Click **Allow Access** in the **Refold Support Access** section.
-    Confirm the prompt. Refold support engineers gain read-only access to
-    the workspace.
-  </Step>
-  <Step title="Revoke when done">
-    Click **Revoke Access** in the same row to remove support access.
-    Access is revoked immediately.
-  </Step>
-</Steps>
+<Tip>
+  Users set up MFA from their own [Authentication](/v3/developer/configure/settings/user/authentication)
+  page.
+</Tip>
 
-<Note>
-  Refold logs every support-access session. Open the **Access Approval
-  History** below the toggle to see active and revoked grants in order.
-</Note>
+## Data retention
 
-## Password policy
+The **Data Retention** section controls how long Refold keeps your
+organization's data.
 
-{/* NEEDS INPUT: confirm the policy fields v3 exposes (minimum length,
-    complexity, rotation interval, history). The values below are
-    reasonable defaults to describe, but should match the actual UI. */}
-
-| Field | Default | What it does |
-|---|---|---|
-| **Minimum length** | 12 characters | Refused on password create or change if shorter. |
-| **Complexity** | Upper + lower + number + symbol | Refused if any character class is missing. |
-| **History** | 12 passwords | Refused if the new password matches any of the last 12. |
-| **Rotation** | 90 days | Refold prompts for a password change every 90 days. |
-
-## Session policy
-
-{/* NEEDS INPUT: confirm session-related policy fields. Common options:
-    idle timeout, absolute session length, concurrent-session limit,
-    require MFA for every sign-in. */}
-
-## IP allowlist
-
-{/* NEEDS INPUT: does v3 support an IP allowlist (only sign-ins from these
-    CIDR ranges are accepted)? If yes, document the field. If no, delete
-    this section. */}
-
-## Audit and compliance
-
-The Policy settings on this page are enforced for every user in the
-workspace. Refold records every policy change and every support-access
-grant in the [Audit](/v3/developer/configure/audit) log so you can
-demonstrate compliance.
+**Log Retention** sets the number of days logs are kept for your
+organization (30 days by default). To change the retention period, contact
+support.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Security" href="/v3/developer/configure/settings/user/authentication">
-    Per-user security: change your password, set up MFA.
+  <Card title="Authentication" href="/v3/developer/configure/settings/user/authentication">
+    Per-user security: change your password and set up MFA.
   </Card>
-  <Card title="Audit" href="/v3/developer/configure/audit">
-    Review every policy change and support-access grant.
+  <Card title="Roles" href="/v3/developer/configure/settings/organization/roles">
+    Control what each user can do across the organization.
   </Card>
 </CardGroup>
