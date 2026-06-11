@@ -10,8 +10,8 @@ teammate's role, and remove access when someone leaves.
 Open it from **Settings > Organization > Users**.
 
 <Info>
-  You need the **Admin** role to invite or remove users. Editors can view
-  the page but can't change membership.
+  You need the **Admin** role to invite, manage, or remove users. Editors can
+  view the page but can't change membership.
 </Info>
 
 ## Invite a teammate
@@ -40,39 +40,87 @@ Open it from **Settings > Organization > Users**.
   <img src="/images/PLACEHOLDER.png" alt="Invite user panel with email and name fields" />
 </Frame>
 
-## Roles at a glance
+Every user has a role that, through role-based access control (RBAC),
+determines what they can do across the organization. To see each role and
+the permissions it grants, see [Roles](/v3/developer/configure/settings/organization/roles).
 
-Every user holds one role. There's exactly one Admin per workspace; every
-other user is an Editor by default.
+## Reset a password
 
-| Role | What they can do |
-|---|---|
-| **Admin** | Full control over the workspace: invite and remove users, change roles, edit organization settings, manage billing. Only one Admin per workspace. |
-| **Editor** | Build and modify integrations and workflows, manage linked accounts, view logs. Can't change workspace settings or membership. |
-
-For the full role and permission breakdown, see [Roles](/v3/developer/configure/settings/organization/roles).
-
-## Remove a teammate
+If a teammate is locked out, an admin can start a password reset from the
+user's row. The teammate then completes it from their own inbox.
 
 <Steps>
-  <Step title="Find the user">
-    Locate the teammate in the user list on **Settings > Organization >
-    Users**.
+  <Step title="Start the reset">
+    Select **Reset password** from the user's row, or have the teammate click
+    **Forgot password** on the sign-in screen and enter their email.
   </Step>
-  <Step title="Click Remove">
-    Click the remove icon in the rightmost column of that user's row.
-    Refold asks you to confirm.
+  <Step title="Enter the code and a new password">
+    Refold emails a 6-digit code that's valid for 10 minutes. The teammate
+    enters the code and a new password, which must differ from their current
+    one.
   </Step>
-  <Step title="Confirm">
-    Click **Remove**. Their access is revoked immediately. Active workflows
-    they own keep running; ownership transfers to the Admin.
+  <Step title="Done">
+    On success, the teammate is signed in on this device and signed out of all
+    other devices, and Refold sends a confirmation email.
+  </Step>
+</Steps>
+
+<Note>
+  Up to 3 reset requests are allowed per email each hour.
+</Note>
+
+## Change email
+
+Changing a user's email uses dual verification: the change is confirmed from
+both the old and the new address before it takes effect.
+
+<Steps>
+  <Step title="Enter the new email">
+    Open the user's settings and enter the new email address.
+  </Step>
+  <Step title="Confirm from the old address">
+    Refold sends a code to the **old** email. Enter it to confirm.
+  </Step>
+  <Step title="Confirm from the new address">
+    Refold then sends a code to the **new** email. Enter it to confirm.
+  </Step>
+  <Step title="Done">
+    With both codes confirmed, the email is updated, all sessions are signed
+    out, and the old address is notified of the change.
   </Step>
 </Steps>
 
 <Warning>
-  Removing a user is immediate and can't be undone. Re-add them by sending
-  a fresh invite.
+  If a code expires or is entered incorrectly 3 times, the change is cancelled
+  and you'll need to start over.
 </Warning>
+
+## Delete a user
+
+Only workspace admins can delete a user — there's no self-serve
+deactivation. Deletion is reversible for 30 days, so it's safe to undo if
+done by mistake.
+
+<Steps>
+  <Step title="Mark the user for deletion">
+    From the admin console, find the user in the list and mark them for
+    deletion. Their sessions are signed out immediately and they can no longer
+    log in.
+  </Step>
+  <Step title="The user is tagged as deleted">
+    The user stays in the workspace list with a **Deleted** tag, and appears as
+    "Name (deleted)" in audit logs and anywhere else their name is shown.
+  </Step>
+  <Step title="Restore within 30 days (optional)">
+    Within 30 days, an admin can restore the user. Access is regained
+    immediately on restore.
+  </Step>
+</Steps>
+
+<Note>
+  After 30 days the user is permanently deleted. Audit log entries are
+  retained and continue to point to the deleted user's name.
+</Note>
 
 ## Next steps
 
