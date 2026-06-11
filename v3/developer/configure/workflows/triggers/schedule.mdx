@@ -1,0 +1,45 @@
+---
+title: "Schedule"
+description: "Run a workflow automatically at a set time or on a recurring interval."
+---
+
+The **Schedule** trigger runs a workflow automatically at predefined times
+or intervals — without any external event. It's ideal for recurring jobs
+like sending regular reports or periodically syncing data.
+
+## Schedule types
+
+Refold supports two ways to define a schedule.
+
+### CRON expression
+
+Use a CRON expression when you want precise control over when the workflow
+runs. The schedule is evaluated in **UTC**.
+
+| Expression | Runs |
+|---|---|
+| `*/30 * * * *` | Every 30 minutes |
+| `15 * * * *` | At 15 minutes past every hour |
+| `0 9 * * *` | At 9:00 AM every day |
+
+### Date / time intervals
+
+Use this mode to run the workflow at specific dates and times. For each run,
+choose a **date**, **time**, and **timezone**, then click **Add Date**. You
+can add multiple run times. Click **Save** when you're done.
+
+<Note>
+  The minimum schedule interval is 5 minutes.
+</Note>
+
+Once deployed, the workflow runs automatically at the scheduled times for
+every user who has enabled it.
+
+## Manage schedules via API
+
+You can also register and manage scheduled jobs programmatically, per linked
+account.
+
+<Card title="Schedule APIs" href="/v3/api-reference/schedule/register-cron">
+  Register, get, pause, resume, update, and delete scheduled jobs.
+</Card>
