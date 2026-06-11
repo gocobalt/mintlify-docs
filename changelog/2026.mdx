@@ -3,6 +3,51 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 11, 2026" description="v3.5.36 · Webhook trigger UI, Knowledge Library & execution reliability">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A webhook trigger UI on the workflow Start node, a new Knowledge Library replacing the legacy Integration Graph, execution search in project logs, and reliability improvements across sync/async execution and Zoho webhook fan-out.**
+
+<Note>The webhook trigger UI is gated behind the `webhook_trigger` feature flag. Contact support to enable it for your workspace.</Note>
+
+**New Features**
+
+- **Webhook Trigger on Start Node**: Configure an inbound webhook trigger directly from the workflow Start node, including support for private workflows scoped to a specific linked account.
+- **Knowledge Library**: The legacy Integration Graph has been replaced by a new Knowledge Library with an apps landing page, per-app library views, and subtle tab tags surfacing layer counts.
+- **Execution Search in Project Logs**: The execution search bar is now available in project logs, bringing project-level logs to parity with the native logs page.
+- **Expired Password Login Response**: Login attempts with an expired password now return a distinct `PASSWORD_EXPIRED` response so clients can route users to a password-reset flow instead of showing a generic lockout message.
+- **Admin Password Reset Unlocks Account**: When an admin resets a user's password, the account is automatically unlocked and the password timestamp is refreshed.
+- **Two-Factor Status in Org Users API**: `GET /api/v1/org/users` now includes `two_factor_enabled` along with accurate `createdAt` and `updatedAt` timestamps for each user.
+
+**Improvements**
+
+- **Sync and Async Execution Tiering**: Synchronous and asynchronous workflow executions now run on separate task queues for improved isolation and throughput under mixed load.
+- **Transient Execution Recovery**: Workflow executions now retry transient runtime failures with backoff, allowing instances to recover automatically through brief platform conditions.
+- **Try-Catch Node Duplication**: Duplicating a try-catch node now produces fully independent try-success and try-failed branches.
+- **Cursor-Paginated Execution Lists**: Cursor-based pagination on instance lists now returns results in consistent creation-time order across pages.
+- **Dependent Config Fields**: Config fields with dependent options now resolve their available options inline in the hosted portal.
+- **Workflow Alias in Linked Account Views**: The `workflow_alias` is now included in workflow details on the linked account Workflows tab.
+- **Node Settings Cleanup**: The Node Settings panel is now hidden for Try & Catch and Delay nodes, where it had no applicable options.
+- **Partial Table Record Saves**: Table records can now be saved with only a subset of fields populated.
+- **Unsaved Changes on Member Role Edit**: Changing a member's role in settings now surfaces an "unsaved changes" indicator.
+- **Reset Password Controls**: Admin password reset values are masked until hover, copyable to clipboard, and cleared when switching between users.
+- **Execution Detail Back Navigation**: The back button on the execution detail page now returns to the project executions view it was opened from.
+
+**API Changes**
+
+- ⚠️ Breaking: Login responses for expired passwords now return `PASSWORD_EXPIRED` instead of `ACCOUNT_LOCKED`. Clients handling login errors should add a case for the new code.
+- Cursor-paginated instance list endpoints now sort by `createdAt`. Clients with persisted cursors from the previous ordering should re-fetch.
+- Webhook trigger URLs for private workflows now validate the associated `linked_account_id` before firing.
+
+**Integration Updates**
+
+- **Zoho**: Webhook subscriptions now use a unique channel per linked-account registration, so events fan out to all linked accounts subscribed to an app rather than only one. Existing subscriptions are migrated automatically.
+- **Workday**: Improved pagination for the Get Companies action under the Financial Management module, and a new Get Supplier Invoice Adjustments operation under Resource Management.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
