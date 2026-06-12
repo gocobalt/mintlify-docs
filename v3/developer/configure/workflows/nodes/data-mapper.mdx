@@ -17,20 +17,16 @@ The Data Mapper Node transforms field names between different systems by applyin
 
 ## Input Parameters
 
-<ParamField path="Input" type="object" required>
-  Source data object containing fields to map. Accepts static data or variables from previous nodes.
+<ParamField path="Input" type="JSON" required>
+  Source data object whose field names you want to map. Accepts static data or variables from previous nodes.
 </ParamField>
 
-<ParamField path="Mapping" type="object" required>
-  Field mapping configuration as key-value pairs. Maps source field names to destination field names.
+<ParamField path="Mapping" type="JSON" required>
+  Field mapping configuration as a JSON object with key-value pairs.
 </ParamField>
 
 <ParamField path="Direction" type="dropdown" required>
-  Mapping direction. Options: `Source to Destination`, `Destination to Source`.
-</ParamField>
-
-<ParamField path="Output Schema" type="string">
-  Optional output schema definition for advanced mapping scenarios.
+  Mapping direction, applied to the **Mapping** field. Options: `Source to Destination`, `Destination to Source`.
 </ParamField>
 
 ## Output
