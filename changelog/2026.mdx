@@ -4,7 +4,7 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
-<Update label="June 9, 2026" description="v3.5.35 · Workspaces & environments, DLQ resolution, table audit events & HubSpot V3 actions">
+<Update label="June 9, 2026" description="v3.5.35 · Workspaces & environments, table audit events & HubSpot V3 actions">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
 
@@ -13,9 +13,6 @@ rss: true
 **New Features**
 
 - **Workspaces & Environments**: Organizations now have dedicated environments with per-environment API key rotation and environment-scoped JWTs. A default environment is provisioned on org creation, and a new workspace switcher re-issues tokens for the target environment.
-- **DLQ Resolution Pipeline**: Resolve Dead Letter Queue messages by running the DLQ's configured resolution workflow with the edited payload and original error context. Resolved messages older than 7 days drop out of the default listing automatically.
-- **DLQ Project Scoping**: Dead Letter Queues can now be scoped to a specific integration project, with project filtering across all DLQ views.
-- **Table Audit Events**: Audit events are now emitted for persistent Table mutations — create and delete table, add/remove/rename columns, and add/update/delete rows — and render on the audit log page.
 - **Assets Page**: A new tabbed Assets page consolidates Documents, Artifacts, and Lookups into a single workspace, replacing the previous standalone pages and sidebar entries.
 - **Project Settings — Integrations Tab**: Integration cards have moved into a dedicated Integrations tab within Project Settings.
 - **Navigation Header**: A new top navigation header with a logo menu, product switcher, and context switcher on project and MCP server pages.
