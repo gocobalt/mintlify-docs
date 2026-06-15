@@ -1,9 +1,9 @@
 ---
-title: "Security"
-description: "Manage your password and multi-factor authentication for the Refold platform."
+title: "Authentication"
+description: "Manage the password and multi-factor authentication methods linked to your account."
 ---
 
-The **Security** page holds the two controls that protect your Refold
+The **Authentication** page holds the two controls that protect your Refold
 account: your **password** and **multi-factor authentication** (MFA). Turn
 on MFA as soon as you've signed in for the first time. It's the single
 biggest reduction in account-takeover risk you can make.
@@ -64,11 +64,6 @@ the recommended method.
     Type the six-digit code your app generates, then click **Verify**.
     Refold confirms MFA is on for your account.
   </Step>
-  <Step title="Save your recovery codes">
-    Copy the recovery codes Refold shows and store them somewhere safe (a
-    password manager, not the same device as your authenticator). You'll
-    need one to sign in if you lose access to the authenticator app.
-  </Step>
 </Steps>
 
 {/* MEDIA-TODO (video, preferred): 20s screen recording of the Authenticator
@@ -79,9 +74,27 @@ the recommended method.
 
 ### Email codes
 
-Email one-time codes are listed as **Coming Soon** in the Refold dashboard.
-This method will send a six-digit code to your account email each time you
-sign in. Use the authenticator app in the meantime.
+Email one-time codes send a six-digit code to your account email each time
+you sign in. Use this if you'd rather not set up an authenticator app.
+
+<Steps>
+  <Step title="Open Authentication">
+    Go to **Settings > User > Authentication**.
+  </Step>
+  <Step title="Enable email codes">
+    In the **Multi-Factor Authentication** section, turn on the **Email** row.
+    Codes are sent to your account email address.
+  </Step>
+  <Step title="Verify your email">
+    Enter the six-digit code Refold emails you to confirm the method is
+    working. From now on, you'll be asked for an email code at each sign-in.
+  </Step>
+</Steps>
+
+<Note>
+  Email codes are rolling out and may still appear as **Coming Soon** in your
+  dashboard until the method is enabled for your workspace.
+</Note>
 
 ## Next steps
 

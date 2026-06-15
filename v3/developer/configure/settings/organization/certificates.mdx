@@ -1,74 +1,48 @@
 ---
 title: "Certificates"
-description: "Upload TLS certificates and private keys that workflows and connectors use to authenticate."
+description: "Manage the TLS certificates integrations use for certificate-based authentication."
 ---
 
-The **Certificates** page stores the TLS certificates and matching private
-keys your workspace needs to authenticate against third-party systems that
-require mutual TLS, SAML signing, or client-certificate authentication.
-Upload each certificate once and reference it by name from any connector
-that needs it.
+The **Certificates** page holds the custom mTLS and inbound certificates
+used by integrations that require certificate-based authentication. Upload
+your certificates here so connectors can present and validate them when they
+connect.
 
-Open it from **Settings > Organization > Certificates**.
+Open it from **Settings > Configuration > Certificates**.
 
-{/* NEEDS INPUT: confirm what this page actually holds in v3. Most likely
-    options: (a) mTLS client certificates for outbound HTTP calls,
-    (b) SAML signing certs for SSO, (c) custom CA roots that Refold's
-    HTTP client should trust. Confirm which apply and add or remove
-    sections accordingly. */}
+## Certificate stores
 
-## Upload a certificate
+Certificates are organized into three tabs, each for a different part of a
+TLS handshake:
 
-<Steps>
-  <Step title="Open Certificates">
-    Go to **Settings > Organization > Certificates**.
-  </Step>
-  <Step title="Click Add Certificate">
-    Click **+ Add Certificate** in the top-right corner.
-  </Step>
-  <Step title="Pick a type">
-    Select the certificate type from the list.
-    {/* NEEDS INPUT: list the certificate types Refold supports (mTLS
-        client, SAML signing, CA root, etc.). */}
-  </Step>
-  <Step title="Paste the PEM-encoded certificate">
-    Paste the certificate body in PEM format. Include the
-    `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
-  </Step>
-  <Step title="Paste the private key (if required)">
-    For client certificates, paste the matching private key in PEM format.
-    Refold encrypts it at rest and never returns it to the dashboard.
-  </Step>
-  <Step title="Name and save">
-    Give the certificate a **Name** you'll reference from connectors, then
-    click **Save**.
-  </Step>
-</Steps>
+- **mTLS Trust Store** — the certificates Refold trusts when verifying a
+  partner's server during mutual TLS.
+- **mTLS Certificate Store** — the client certificates Refold presents to a
+  partner during mutual TLS.
+- **Server Trust Store** — additional certificate authorities Refold trusts
+  for server TLS connections.
 
-{/* MEDIA-TODO (image): screenshot of the certificate upload form with PEM
-    fields visible. */}
-<Frame caption="Uploading a TLS certificate">
-  <img src="/images/PLACEHOLDER.png" alt="Certificate upload form with certificate and key fields" />
-</Frame>
+Each store lists its certificates with the **Common Name (CN)**, the date it
+was **uploaded**, and the **expiry** dates so you can track upcoming renewals.
 
-## Reference a certificate from a connector
+{/* NEEDS INPUT: confirm the exact role of each store and which certificate
+    types belong in each, so the one-line descriptions above are accurate. */}
 
-{/* NEEDS INPUT: describe the picker UI in the connector configuration that
-    references uploaded certificates. */}
+## Add a certificate
 
-## Rotation and expiry
+Click **+ Certificate** in the top-right and upload your certificate to the
+relevant store. New certificates appear in the list with their CN and expiry.
 
-Refold shows each certificate's expiry date in the list. Rotate before
-expiry to avoid outbound calls failing in production.
+## Download a CSR
+
+Click **CSR** to download a certificate signing request. Have it signed by
+your certificate authority, then upload the signed certificate back here.
 
 <Warning>
-  Refold does not auto-rotate certificates. Set a calendar reminder, or
-  use the [Audit](/v3/developer/configure/audit) log to monitor approaching
-  expiry.
+  Refold doesn't auto-renew certificates. Track the expiry dates shown in
+  each store and replace certificates before they lapse to avoid failed
+  connections.
 </Warning>
-
-{/* NEEDS INPUT: confirm whether Refold emits any expiry-warning events or
-    whether monitoring is purely manual. */}
 
 ## Next steps
 
@@ -77,6 +51,6 @@ expiry to avoid outbound calls failing in production.
     Store API keys and OAuth secrets used by connectors.
   </Card>
   <Card title="Policy" href="/v3/developer/configure/settings/organization/policy">
-    Set workspace policies for certificate rotation and access.
+    Set the workspace-level security policies for your organization.
   </Card>
 </CardGroup>
