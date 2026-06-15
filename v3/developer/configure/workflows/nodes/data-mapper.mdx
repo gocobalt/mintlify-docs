@@ -15,6 +15,26 @@ The Data Mapper Node transforms field names between different systems by applyin
 
 <Info>Data Mapper handles flat field mapping only. For nested objects, arrays, or data type conversion, use the Transform Node or Custom Code Node.</Info>
 
+## How It Works
+
+The node renames the fields of an **Input** object using a **Mapping** of key-value pairs, where each pair defines a rename relationship (`"source_name": "destination_name"`). The **Direction** decides which side of the mapping is matched against the input and which side is used for the output:
+
+- **Source to Destination** — the node looks at the input field names, finds the matching **keys** in the mapping, and writes them out under the mapping **values**.
+- **Destination to Source** — the reverse: the input field names match the mapping **values**, and the output uses the mapping **keys**.
+
+Only fields present in the mapping are carried into the output — any unmapped input fields are dropped. The mapped object is returned under `body`.
+
+**Example (Source to Destination):**
+
+| | |
+|---|---|
+| Input | `{"fname": "abc", "lname": "def"}` |
+| Mapping | `{"fname": "firstname", "lname": "lastname"}` |
+| Direction | `Source to Destination` |
+| Output (`body`) | `{"firstname": "abc", "lastname": "def"}` |
+
+The input keys `fname` and `lname` match the mapping keys, so the values `abc` and `def` are re-keyed to `firstname` and `lastname`. Switching the direction to **Destination to Source** would instead expect input keyed by `firstname`/`lastname` and produce `fname`/`lname`.
+
 ## Input Parameters
 
 <ParamField path="Input" type="JSON" required>
@@ -26,28 +46,25 @@ The Data Mapper Node transforms field names between different systems by applyin
 </ParamField>
 
 <ParamField path="Direction" type="dropdown" required>
-  Mapping direction, applied to the **Mapping** field. Options: `Source to Destination`, `Destination to Source`.
+  Mapping direction, applied to the **Mapping** field's key-value pairs:
+
+  - **Source to Destination** — input field names match the mapping **keys**; the output uses the mapping **values**.
+  - **Destination to Source** — input field names match the mapping **values**; the output uses the mapping **keys**.
 </ParamField>
 
 ## Output
 
-Returns an object with transformed field names. Only mapped fields appear in output.
+The node returns a standard response envelope. The mapped object — with transformed field names — is returned under `body`. Only fields included in the **Mapping** appear in the output; unmapped input fields are dropped.
 
-**Source to Destination:**
 ```json
 {
-  "FirstName": "John",
-  "LastName": "Doe",
-  "Email": "john@example.com"
-}
-```
-
-**Destination to Source:**
-```json
-{
-  "fname": "John",
-  "lname": "Doe", 
-  "email_id": "john@example.com"
+  "status": "Success",
+  "node_id": "8",
+  "node_name": "Data Mapper",
+  "body": {
+    "firstname": "abc",
+    "lastname": "def"
+  }
 }
 ```
 
