@@ -4,6 +4,44 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="June 11, 2026" description="v3.5.36 · Webhook trigger UI, Knowledge Library & execution reliability">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**A webhook trigger picker on the workflow Start node, a new Knowledge Library replacing the Integration Graph, password-expiry handling improvements, and Workday and Zoho integration enhancements.**
+
+**New Features**
+
+- **Webhook Trigger on Start Node**: A new webhook trigger entry is available in the Start node trigger picker, with configuration UI for inbound webhook workflows. Available behind a feature flag.
+- **Knowledge Library**: The Integration Graph has been replaced with a new Knowledge Library, featuring an apps landing page, per-app library pages, and subtle layer count tags on each tab.
+- **Execution Search in Project Logs**: Project logs now include a search bar, bringing project-level logs to parity with the native logs page.
+- **Partial Table Record Saves**: Table records can now be saved with partial field values without being blocked.
+
+**Improvements**
+
+- **Password Expiry Handling**: Expired passwords at login now return a distinct error code so the login screen can guide the user to reset, instead of showing a generic locked-account message.
+- **Admin Password Reset Flow**: Resetting a user's password from the members settings now unlocks the account, refreshes the password change timestamp, and surfaces the new password with a clipboard copy control and hover-to-reveal masking.
+- **Two-Factor Status on Organization Users**: The organization users list now shows each user's two-factor enrollment status alongside accurate account-creation and last-updated timestamps.
+- **Unsaved Changes on Role Edits**: Changing a member's role in the settings dialog now surfaces an "unsaved changes" indicator.
+- **Webhook Triggers in Private Workflows**: Webhook trigger URLs for private workflows are now validated against the workflow's linked account.
+- **Execution Cursor Pagination Ordering**: Cursor-based pagination for instance lists now returns results in consistent creation-time order.
+- **Workflow Alias in Linked Account View**: The workflow alias is now included in the Workflows tab on linked accounts across both list responses.
+- **Dependent Config Field Resolution**: Config fields with dependent options now resolve their option lists inline for the hosted portal.
+- **Try-Catch Node Duplication**: Duplicating a Try & Catch node now produces independent try-success and try-failed branches.
+- **Cleaner Node Settings Panel**: The Node Settings section is now hidden for Try & Catch and Delay nodes, where it had no applicable options.
+- **Execution Detail Back Navigation**: The back button on execution detail now reliably returns to project executions.
+- **Execution Engine Queue Tiering**: Sync and async workflow executions are now routed through separate task queues for better isolation and throughput.
+- **Resilient Execution Retries**: Transient execution failures are now retried automatically with backoff, improving reliability through intermittent platform conditions.
+- **Workspace-Disabled JWTs**: When workspace mode is off, session tokens no longer carry an environment claim.
+
+**Integration Updates**
+
+- **Workday**: Improved pagination handling for the Companies action under the Financial Management module, plus a new `Get_Supplier_Invoice_Adjustments` operation in Resource Management.
+- **Zoho**: Webhook subscriptions now fan out to all linked accounts subscribed to an app, so a single event reliably triggers every connected workflow. An automatic migration backfills existing subscriptions.
+- **Universal Connector**: Reworked action management with create, update, and delete support, partial-merge updates on existing actions, and optional OAuth2 client credentials at connector creation time.
+
+</Update>
+
 <Update label="June 9, 2026" description="v3.5.35 · Workspaces & environments, table audit events & HubSpot V3 actions">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
