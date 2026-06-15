@@ -3,6 +3,43 @@ title: "2026"
 description: "All platform updates, API changes, and integration additions for 2026."
 rss: true
 ---
+
+<Update label="June 9, 2026" description="v3.5.35 · Workspaces & environments, table audit events & HubSpot V3 actions">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Workspaces and environments with per-environment API keys, table-level audit events, a consolidated Assets page, and new HubSpot V3 actions.**
+
+**New Features**
+
+- **Workspaces & Environments**: Organizations now have dedicated environments with per-environment API key rotation and environment-scoped JWTs. A default environment is provisioned on org creation, and a new workspace switcher re-issues tokens for the target environment.
+- **Assets Page**: A new tabbed Assets page consolidates Documents, Artifacts, and Lookups into a single workspace, replacing the previous standalone pages and sidebar entries.
+- **Project Settings — Integrations Tab**: Integration cards have moved into a dedicated Integrations tab within Project Settings.
+- **Navigation Header**: A new top navigation header with a logo menu, product switcher, and context switcher on project and MCP server pages.
+- **Persistent Logs Search State**: Execution log search type and custom-field filter values now persist in the URL across refreshes.
+
+**Improvements**
+
+- **Execution Logs Node Detail**: The execution logs page now surfaces top-level node status, request, response, and completion percentage for workflow runs on the new execution engine.
+- **Sidebar Session Grouping**: Recent sessions in the sidebar are now grouped into Design and Maintain buckets, and the BUILD section has been renamed to AGENT with a New Session entry.
+- **MCP Tools Page**: Tool counts are now split into separate actions and workflows totals.
+- **Workflow AI Chat Availability**: The workflow AI chat is now available regardless of draft state.
+- **Artifact Visibility Scope**: Artifacts are now visible across the entire organization (previously scoped to a single linked account).
+- **Enhanced Execution Reliability for Large Workflow Trees**: Terminal status is now persisted before cleanup runs, and cleanup operations have an extended timeout with heartbeating.
+- **Workflow Stop Semantics**: Stopping a workflow now extends cancellation to try-catch sub-workflow descendants.
+- **Optimized Subflow Execution**: Improved reliability of subflow node execution.
+- **Batches Drill-Down Coverage**: The batches drill-down now surfaces failed final iterations of do-while loops with group iterations.
+- **Extended Execution Retry Backoff**: Increased retry backoff for instance persistence to ensure execution completion through transient platform conditions.
+- **MCP Tool Error Detail**: MCP tool failures now surface the underlying error message instead of a generic execution error.
+- **Multi-Role User Support**: Users can now hold multiple roles scoped to org, environment, or linked-account levels.
+
+**Integration Updates**
+
+- **HubSpot**: New `update_task_v3`, `search_tasks_v3`, and `search_tickets_v3` actions with pagination support on search actions. The `list_webhook_subscriptions` action has been removed.
+- **Workday**: Improved pagination support for external app actions flagged as paginated.
+
+</Update>
+
 <Update label="June 5, 2026" description="v3.5.34 · Entity Tags, Autopilot, workflow rerun & execution improvements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
