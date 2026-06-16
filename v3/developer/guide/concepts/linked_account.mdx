@@ -1,122 +1,132 @@
 ---
-title: "Linked Accounts"
-description: "Linked Account represents your app's `end user` or `customer` who connects and uses **third-party apps** through your platform."
+title: "Linked accounts"
+description: "Represent each of your customers, track their integration usage, and manage their connections from one place."
 ---
 
-### Overview
+A linked account represents one of your end users or customers — the person who connects and uses third-party apps through your platform. Use linked accounts to track every customer's connections, executions, and API calls, and to create, configure, and monitor their integrations from the dashboard or the API.
 
-Linked Account contains detailed information about your users' integration, allowing you to efficiently monitor and manage integrations.
+## How linked accounts work
 
-You can track `app connections`, `total executions`, and `API calls` at the customer level.
+Each linked account holds the integration details for a single customer, so you can monitor and manage their connections independently.
 
-<Frame>
-    <img src="/images/Guides/Linked-account/Overview.png" />
-</Frame>
+At the customer level, you can track:
 
-<br/>
-### Managing Linked Account
-Linked Accounts can be `created`, `updated` or `deleted` either through the **dashboard** or **via API**.
-
-<AccordionGroup>
-    <Accordion title="via Refold Dashboard" icon="laptop">
-In the Refold Dashboard, go to `Dashboard` > `Linked Accounts`. Click **+ Add Account**, then enter the `Linked Account ID`, `Name` and `UDF Parameter`.
-
-<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
+- **App connections** — which third-party apps the customer has connected
+- **Total executions** — how many times their workflows have run
+- **API calls** — their usage against your integration
 
 <Frame>
-    <img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
+  <img src="/images/Guides/Linked-account/Overview.png" alt="Linked account overview in the Refold dashboard" />
 </Frame>
-<br/>
-You can also `bulk` create linked accounts by importing a `.csv` file.
 
-</Accordion>
+<Info>
+A linked account ID must be **unique** for every user. Use any stable unique value — an email address or the primary key that represents the user in your system.
+</Info>
 
-<Accordion title="via API" icon="code">
-You can create the [**Linked Account**](https://docs.gocobalt.io/api-reference/linked-accounts/create-linked-account) using the below curl.
-<Note>Linked account operations should always happen on the server side</Note>
+## Managing linked accounts
+
+Create, update, and delete linked accounts from the Refold dashboard or programmatically through the API.
+
+### Using the dashboard
+
+<Steps>
+  <Step title="Open Linked Accounts">
+    In the Refold dashboard, go to **Dashboard > Linked Accounts**.
+  </Step>
+  <Step title="Add an account">
+    Click **+ Add Account**, then enter the **Linked Account ID**, **Name**, and **UDF Parameter**.
+    <Frame>
+      <img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single linked account" />
+    </Frame>
+  </Step>
+  <Step title="Bulk import (optional)">
+    To create many accounts at once, import a `.csv` file instead of adding them one by one.
+  </Step>
+</Steps>
+
+<Tip>
+{/* TODO: link to the v3 UDF parameters page once it exists (legacy: docs.gocobalt.io/guides/platform/linked-account/udf) */}
+UDF (user-defined fields) let you attach your own metadata to a linked account, such as a phone number or address.
+</Tip>
+
+### Using the API
+
+Create a linked account with a `POST` request to the [Create linked account](https://docs.gocobalt.io/api-reference/linked-accounts/create-linked-account) endpoint.
+
+<Note>
+Linked account operations should always run on the server side, never from client-side code.
+</Note>
 
 <CodeGroup>
-    ```JavaScript cURL
-    curl --request POST \
+```bash cURL
+curl --request POST \
   --url https://api.gocobalt.io/api/v2/public/linked-account \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
-  "linked_account_id": "<string>",
-  "name": "<string>",
-  "your_app": {}
-}'
-    ```
-    ```JavaScript SDK
-   try{
-    await Client.createLinkedAccount({
-        linked_account_id: "user@example.com",
-        name: "User",
-        udf: {
-            "phone": "1234567890",
-            "address": "123, Queen Street"
-        },
-        your_app:{
-            app_id: "64da0b57c9ae95561bb0a2ea",
-            auth_credentials:{
-                "Authorization": "eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NjQzMDg5LCJleHAiOjE2ODY5MDIyODl9"
-            }
-        }
-    })
-}catch(error){
-    //Catch any error
+    "linked_account_id": "<string>",
+    "name": "<string>",
+    "your_app": {}
+  }'
+```
+
+```javascript SDK
+try {
+  await Client.createLinkedAccount({
+    linked_account_id: "user@example.com",
+    name: "User",
+    udf: {
+      phone: "1234567890",
+      address: "123, Queen Street",
+    },
+    your_app: {
+      app_id: "64da0b57c9ae95561bb0a2ea",
+      auth_credentials: {
+        Authorization: "<token>",
+      },
+    },
+  });
+} catch (error) {
+  // Handle any error
 }
-    ```
+```
 </CodeGroup>
-</Accordion>
-  
-</AccordionGroup>
 
+## Monitoring linked accounts
 
-<Info>**Linked account id** should be `unique` for every user. It can be any unique `id` eg. `email` or a `primary key` representing the user</Info>
+See how each customer uses their integration through logs for executions, schedules, events, and webhooks. These give you the observability you need to debug a specific customer's setup.
 
-### Monitoring Linked Account
-You can get insights into how each customer uses the integration, including logs for `executions`, `schedules`, `events`, and `webhooks`, aiding in observability and debugging.
+### End-user app configuration
 
-<Tip>
-To learn more about the Logs available, refer [here](/concepts/logs).
-</Tip>
-
-
-<AccordionGroup>
-<Accordion title=" End user app configuration">
-Your customer must have set certain configuration after authentication. You can change your user configuration from the dashboard.
+Your customer sets their own configuration after they authenticate. You can review or change it from the dashboard.
 
 <Steps>
-  <Step title="Navigate to Config">
-    Within the Linked Account **Overview** tab, locate the Application under **Integrations**, click on the `three-dot` button in the respective row and select `Configure`.
+  <Step title="Open the integration's config">
+    In the linked account's **Overview** tab, find the app under **Integrations**, click the **⋯** menu in its row, and select **Configure**.
   </Step>
-  <Step title="Select Config from the Dropdown">
-    Choose the desired configuration settings like the value for the **Fields** or Enable or Disable **Workflows** for the Linked Account.
+  <Step title="Choose what to configure">
+    Set the value for a **Field**, or enable or disable a **Workflow** for this linked account.
   </Step>
-  <Step title="Modify the Configurations and Save">
-    Make any necessary modifications to the configuration settings as required by the end customer. Once the changes are made, click on `Save` to update configurations.
-<img height="200" src="/images/Guides/Linked-account/linked-config.png" alt="Config Management in Linked Account"/>
+  <Step title="Save your changes">
+    Make the changes the customer needs, then click **Save**.
+    <Frame>
+      <img height="200" src="/images/Guides/Linked-account/linked-config.png" alt="Configuration management in a linked account" />
+    </Frame>
   </Step>
 </Steps>
 
-</Accordion>
+### Integration logs
 
-<Accordion title=" Integration Logs">
-You can monitor and troubleshoot the `authentication` and `connectivity` status of an integration.
+Integration logs let you monitor and troubleshoot the authentication and connectivity status of a customer's integration.
 
+In **Integrations** under the **Overview** tab, click the **⋯** menu of any integration and select **Logs**. Refold shows every auth event for that integration in chronological order.
 
-To check the Integration Logs, under **Integrations** in `Overview`, click on the three-dot menu of any integration and select `Logs`.
+<Frame>
+  <img height="200" src="/images/Guides/Linked-account/logs-navigation.png" alt="Navigating to integration logs for a linked account" />
+</Frame>
 
-<img height="200" src="/images/Guides/Linked-account/logs-navigation.png" alt="Navigation for Linked Account Integration Logs"/>
+## See also
 
-This will display logs in chronological order of all auth events associated with the integration.
-
-
-</Accordion>
-</AccordionGroup>
-
-
-
-
-By leveraging the features available within Linked Accounts, users can effectively monitor, manage, and optimize their integrations.
+- [Logs](/concepts/logs) — the full reference for execution, schedule, event, and webhook logs
+- [Create linked account](/v3/api-reference/customer/create-linked-account) — API reference
+- [Upsert a linked account](/v3/api-reference/customer/upsert-a-linked-account) · [List linked accounts](/v3/api-reference/customer/list-linked-accounts)

@@ -1,24 +1,24 @@
 ---
-title: "Tools"
-description: "All MCP tools, their parameters, and when each is available"
+title: "Tools reference"
+description: "Every MCP tool exposed by a Refold server — parameters, return shapes, and availability conditions."
 ---
 
-The tools an agent sees depend on your server's toggle configuration.
+The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp-ai-agents/overview/architecture). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp-ai-agents/overview/choose-your-pattern).
 
 ## Tool availability
 
 | Tool | Available when | Purpose |
 |------|---------------|---------|
-| Per-action tools | Agent Mode **OFF** (default) | One tool per app action/workflow |
+| Per-action tools | Agent Mode **OFF** (default) | One tool per app action or workflow |
 | `RESOLVE_ACTIONS` | Agent Mode **ON** | Resolves user intent to a list of specific actions |
-| `EXECUTE_ACTION` | Agent Mode **ON** | Executes one action or workflow from the resolved plan |
+| `EXECUTE_ACTION` | Agent Mode **ON** | Executes one action or workflow from a resolved plan |
 | `SEARCH_INTEGRATION_GRAPH` | Retrieve Skill **ON** | Discovers entities, actions, and skills in the knowledge graph |
 | `LOAD_SKILL` | Retrieve Skill **ON** | Loads the full content of a specific skill |
 | `AUTH` | Auth Tool **ON** | Returns a re-auth link when a connected app's credentials are missing or expired |
 
 ---
 
-## Direct mode (default)
+## Direct mode
 
 When Agent Mode is off, each action and workflow on the server becomes its own tool. Names are auto-generated from the app slug and action name.
 
@@ -30,27 +30,23 @@ sap_get_purchase_order_action
 hubspot_sync_leads_workflow
 ```
 
-Each tool has a fixed schema. The `application_slug`, `action_id`, and `type` fields are pre-bound by Refold so the agent cannot change them. The only thing the agent fills in is the `input_payload`.
-
-**When to use direct mode:** Your server has a small number of actions (under ~20) and you want the agent to see exactly what's available without an extra resolution step.
+Each tool has a fixed schema. The `application_slug`, `action_id`, and `type` fields are pre-bound by Refold — the agent cannot change them. The agent supplies only the `input_payload`.
 
 ---
 
 ## Agent mode
 
-When Agent Mode is on, per-action tools are replaced with two meta-tools.
+When Agent Mode is on, per-action tools are replaced with two meta-tools: `RESOLVE_ACTIONS` and `EXECUTE_ACTION`.
 
 ### RESOLVE_ACTIONS
 
-Takes the user's request and figures out which actions need to run.
+Takes the user's request and resolves it to a list of specific actions to run.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `integration_query` | `list[string]` | Yes | Action descriptions extracted from the user's request. Each entry describes one action. |
 
-**How to build `integration_query`:**
-- Break the user's request into individual actions
-- Each entry should be a short description including the action and the target app
+**Building `integration_query`:** Break the user's request into individual actions. Each entry should be a short description of the action and the target app.
 
 **Example:**
 ```
@@ -62,9 +58,9 @@ integration_query: [
 ]
 ```
 
-**Returns:** A list of resolved entities. Example:
+**Returns:** A list of resolved entities.
 
-```json
+```json Output
 [
   {
     "slug": "salesforce",
@@ -88,22 +84,22 @@ integration_query: [
 ```
 
 | Field | Type | Description |
-|---|---|---|
-| `slug` | string | Application slug (e.g., `salesforce`, `hubspot`) |
-| `type` | `"action"` \| `"workflow"` | What the entity is |
-| `identifier` | string | The action or workflow ID — pass this as `action_id` to `EXECUTE_ACTION` |
-| `json_schema` | object | JSON Schema for the action's input. Pass-through to `input_payload`. May be `{}` if the entity has no inputs. |
+|-------|------|-------------|
+| `slug` | `string` | Application slug (e.g., `salesforce`, `hubspot`) |
+| `type` | `"action"` \| `"workflow"` | Whether the entity is an action or a workflow |
+| `identifier` | `string` | The action or workflow ID — pass this as `action_id` to `EXECUTE_ACTION` |
+| `json_schema` | `object` | JSON Schema for the action's input. Pass through to `input_payload`. May be `{}` if the entity has no inputs. |
 
 ### EXECUTE_ACTION
 
-Runs a single action or workflow. Call this once per resolved action from the RESOLVE_ACTIONS output.
+Runs a single action or workflow. Call once per resolved action from the `RESOLVE_ACTIONS` output.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `application_slug` | `string` | Yes | The app to run against (e.g., `"salesforce"`) |
 | `action_id` | `string` | Yes | The action or workflow ID from the resolved plan |
 | `input_payload` | `object` | Yes | Input fields for the action (e.g., `{"email": "user@example.com"}`) |
-| `type` | `"action"` or `"workflow"` | Yes | Whether this is an action or a workflow |
+| `type` | `"action"` \| `"workflow"` | Yes | Whether this is an action or a workflow |
 
 **Example call:**
 
@@ -122,7 +118,7 @@ Runs a single action or workflow. Call this once per resolved action from the RE
 
 **Returns:** An object with the downstream result.
 
-```json
+```json Output
 {
   "success": true,
   "data": {
@@ -132,15 +128,13 @@ Runs a single action or workflow. Call this once per resolved action from the RE
 }
 ```
 
-The shape of `data` depends on the action — it's the third-party app's response passed through. On failure, the call surfaces a generic error to the agent (the detailed upstream error is recorded in the audit log's `internal_error` field, not returned to the agent).
-
-**When to use agent mode:** Your server has many actions across multiple apps. The resolve/execute pattern keeps the tool list short and lets the agent figure out the right action from natural language.
+The shape of `data` is the third-party app's response passed through — it varies by action. On failure, a generic error is surfaced to the agent. The detailed upstream error is recorded in the audit log's `internal_error` field and is not returned to the agent.
 
 ---
 
 ## Skill tools
 
-Available when Retrieve Skill is enabled. These can be combined with either direct or agent mode.
+Available when Retrieve Skill is enabled. Skill tools can be combined with either direct or agent mode.
 
 ### SEARCH_INTEGRATION_GRAPH
 
@@ -156,7 +150,9 @@ Queries the integration knowledge graph for entities, actions, and skills.
 | `depth` | `int` | `1` | How far to traverse from the starting entity. Higher values surface more distant relationships at the cost of relevance. |
 | `max_response_chars` | `int` | `12000` | Cap on response size in characters |
 
-Defaults are tuned for typical use. Most agents will only need `entity_name` and optionally `apps`.
+<Tip>
+Defaults are tuned for typical use. Most agents only need `entity_name` and optionally `apps`.
+</Tip>
 
 **Returns:** A rendered markdown string (not a structured object). The agent reads the markdown directly to find relevant entities, actions, and skills to call next.
 
@@ -166,12 +162,12 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `skill_id` | `string` | The skill's ID (from SEARCH_INTEGRATION_GRAPH results or the Skills tab) |
+| `skill_id` | `string` | The skill's ID (from `SEARCH_INTEGRATION_GRAPH` results or the Skills tab) |
 | `skill_name` | `string` | Look up a skill by name instead of ID |
 
 **Returns:**
 
-```json
+```json Output
 {
   "success": true,
   "results": [
@@ -190,7 +186,7 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
 The full skill content is in `results[0].snippet`. Content over 100,000 characters is truncated with an explicit marker appended.
 
 <Note>
-LOAD_SKILL never raises an exception on failure — it returns `{"success": false, "error": "..."}`. The audit log will show `success` for the tool call even when the agent received a logical failure. Inspect the response payload in the audit detail to see whether the skill actually loaded.
+`LOAD_SKILL` never raises an exception on failure — it returns `{"success": false, "error": "..."}`. The audit log records `success` for the tool call even when the agent received a logical failure. Inspect the response payload in the audit detail to verify whether the skill actually loaded.
 </Note>
 
 For how skills are surfaced to the agent at session start and the typical discovery flow, see [Skills](/v3/mcp-ai-agents/skills/overview).
@@ -199,17 +195,17 @@ For how skills are surfaced to the agent at session start and the typical discov
 
 ## AUTH
 
-Available when the **Auth Tool** toggle is on. The agent calls `AUTH` when a downstream action fails because the linked account's credentials for that app are missing or expired. The tool returns an authentication URL the end user can complete to reconnect the app, after which the agent can retry the original action.
+Available when the **Auth Tool** toggle is on.
+
+The agent calls `AUTH` when a downstream action fails because a linked account's credentials for that app are missing or expired. The tool returns an authentication URL the end user can complete to reconnect the app, after which the agent retries the original action.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `application_slug` | `string` | Yes | The app the user needs to authenticate (e.g., `"salesforce"`) |
 
-**Returns:** an object with the auth URL and a short message the agent can relay to the user.
+**Returns:** An object with the auth URL and a short message the agent can relay to the user.
 
-### Recover flow
-
-When credentials are missing or expired mid-session, the agent follows this pattern:
+**Recover flow:**
 
 1. The agent calls an action (for example, `EXECUTE_ACTION` against Salesforce).
 2. Refold returns an `EXECUTION_ERROR` with a credentials-missing status.
@@ -220,36 +216,30 @@ When credentials are missing or expired mid-session, the agent follows this patt
 
 The failed first call and the eventual successful retry are both recorded in [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) under the same Session ID.
 
+For the underlying token and access model, see [Authentication](/v3/mcp-ai-agents/authentication).
+
 ---
 
 ## Execution sequence
 
-When both Agent Mode and Retrieve Skill are enabled, the recommended tool call order is:
+When both Agent Mode and Retrieve Skill are enabled, call the tools in this order:
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
 flowchart LR
     A["SEARCH_INTEGRATION_GRAPH<br/>Find entities and skills"] --> B["LOAD_SKILL<br/>(if relevant)<br/>Load procedure"]
     B --> C["RESOLVE_ACTIONS<br/>Resolve intent<br/>to specific actions"]
     C --> D["EXECUTE_ACTION<br/>Run each action<br/>from the plan"]
-
-    style A fill:#1a2a3a,stroke:#60a5fa,color:#fff
-    style B fill:#1a2a3a,stroke:#60a5fa,color:#fff
-    style C fill:#1a3a2a,stroke:#4ade80,color:#fff
-    style D fill:#2a1a1a,stroke:#f87171,color:#fff
 ```
 
-<Warning>
-The tool descriptions enforce this ordering. `EXECUTE_ACTION` should only be called after `RESOLVE_ACTIONS` returns a plan. Agents that skip `RESOLVE_ACTIONS` will get an error-guidance response from the tool description.
-</Warning>
+<Note>
+The tool descriptions enforce this ordering. Call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. Agents that skip `RESOLVE_ACTIONS` receive an error-guidance response from the tool description.
+</Note>
 
-## Next steps
+## See also
 
-<CardGroup cols={2}>
-  <Card title="MCP Logs" icon="clipboard-list" href="/v3/mcp-ai-agents/security/mcp-logs">
-    See every tool call as it's made, with full input and output
-  </Card>
-  <Card title="Skills" icon="book" href="/v3/mcp-ai-agents/skills/overview">
-    How agents discover and run multi-step procedures
-  </Card>
-</CardGroup>
+- [Architecture](/v3/mcp-ai-agents/overview/architecture) — how tools map to actions, workflows, and skills
+- [Choose your pattern](/v3/mcp-ai-agents/overview/choose-your-pattern) — when to use direct mode, agent mode, or skill tools
+- [Skills](/v3/mcp-ai-agents/skills/overview) — how agents discover and run multi-step procedures
+- [Authentication](/v3/mcp-ai-agents/authentication) — the token model and access toggles
+- [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) — per-call audit trail with input and output
