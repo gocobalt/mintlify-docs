@@ -1,62 +1,72 @@
 ---
 title: "Debugging"
-description: "Use MCP Inspector against a Refold MCP server, and read MCP Logs to trace what your agent did"
+description: "Isolate MCP tool failures with MCP Inspector and MCP Logs."
 ---
 
-When an agent doesn't see the tools you expect, or a tool call fails in a way that isn't obvious from the agent's reply, two tools cover most debugging:
+When an agent doesn't see the tools you expect, or a tool call fails silently, two tools cover most cases:
 
-1. **MCP Inspector** — Anthropic's official debugger. Points at any MCP server, lists tools, lets you call them with arbitrary input.
-2. **MCP Logs** — the audit panel in the Refold dashboard. Shows every tool call your agent actually made and what came back.
+- **[MCP Inspector](https://github.com/modelcontextprotocol/inspector)** — points at your Refold MCP server before you wire it into an agent, lists tools, and lets you call them with arbitrary input.
+- **[MCP Logs](/v3/mcp-ai-agents/security/mcp-logs)** — the audit panel in the Refold dashboard. Shows every tool call your agent made, the exact input it sent, and what came back.
+
+Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what the agent actually did once it's running.
 
 ## MCP Inspector
 
-[MCP Inspector](https://github.com/modelcontextprotocol/inspector) is a local UI and CLI for talking to any MCP server. Use it to verify Refold is exposing the tools you expect before you wire the URL into your agent.
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector) is Anthropic's open-source debugger for any MCP server.
 
-### Launch the UI
+### Connect to your server
 
-```bash
-npx @modelcontextprotocol/inspector
-```
+<Steps>
+  <Step title="Start the Inspector">
+    ```bash
+    npx @modelcontextprotocol/inspector
+    ```
+    The Inspector opens a local web UI.
+  </Step>
+  <Step title="Set the transport">
+    In the server connection pane, select **Streamable HTTP** from the transport dropdown.
+  </Step>
+  <Step title="Paste your Server URL">
+    Enter your Refold Server URL: `https://<domain>/mcp/v1/<token>/<server_id>`
+  </Step>
+  <Step title="Connect">
+    Click **Connect**. The Inspector lists the tools your server exposes and shows the JSON schema for each.
+  </Step>
+</Steps>
 
-The Inspector opens a local web UI. In the server connection pane:
-
-1. Select **Streamable HTTP** from the transport dropdown
-2. Paste your Refold Server URL: `https://<domain>/mcp/v1/<token>/<server_id>`
-3. Click **Connect**
-
-The Inspector connects, lists the tools your server exposes, and shows the schema for each one.
-
-### Key panels
+### Panels
 
 | Panel | What it shows |
 |---|---|
-| **Tools** | Every MCP tool the server exposes, with its JSON schema. Click any tool to fill in arguments and run it. |
-| **Resources** | MCP resources (Refold doesn't currently expose resources — this panel will be empty) |
-| **Prompts** | MCP prompts (same — empty for Refold) |
-| **Notifications** | Server logs and the raw JSON-RPC traffic |
+| **Tools** | Every MCP tool the server exposes with its JSON schema. Click any tool to fill in arguments and run it. |
+| **Resources** | MCP resources — empty for Refold servers. |
+| **Prompts** | MCP prompts — empty for Refold servers. |
+| **Notifications** | Server logs and raw JSON-RPC traffic. |
 
 ### Call a tool
 
-In the **Tools** panel, click the tool you want to test. The Inspector renders an input form from the tool's JSON schema. Fill in the fields, click **Run Tool**, and the response appears inline.
+In the **Tools** panel, click the tool you want to test. The Inspector renders an input form from the tool's JSON schema. Fill in the fields and click **Run Tool**.
 
-For agent mode servers, the typical test sequence:
+For agent mode servers, the typical test sequence is:
 
 1. Run `RESOLVE_ACTIONS` with `integration_query: ["List Contacts Salesforce"]`
 2. Copy the returned `slug`, `identifier`, and `json_schema`
 3. Run `EXECUTE_ACTION` with `application_slug`, `action_id`, `type`, and an `input_payload` that matches the schema
 
+See [Tools](/v3/mcp-ai-agents/tools-reference/tools) for the full request and response shapes.
+
 ### CLI mode
 
-For scripting or remote-server smoke tests without the UI:
+For scripting or smoke-testing without the UI:
 
-```bash
-# List tools
+```bash CLI — list tools
 npx @modelcontextprotocol/inspector --cli \
   https://<domain>/mcp/v1/<token>/<server_id> \
   --transport http \
   --method tools/list
+```
 
-# Call a tool
+```bash CLI — call a tool
 npx @modelcontextprotocol/inspector --cli \
   https://<domain>/mcp/v1/<token>/<server_id> \
   --transport http \
@@ -65,31 +75,42 @@ npx @modelcontextprotocol/inspector --cli \
   --tool-arg input_payload='{"limit":10}'
 ```
 
-## Reading MCP Logs
+## Debugging with MCP Logs
 
-Once your agent is running against the Refold server, every tool call is captured in **Maintain > MCP Logs**. See [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) for the full field reference.
+Once your agent is running, every tool call is captured in **Maintain > MCP Logs**. See [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) for the full field reference, filters, and compliance details.
 
-### Workflow: an agent call returned nothing useful
+### A tool call returned nothing useful
 
-1. Open **MCP Logs**, filter by your agent's linked account
-2. Find the call that should have produced the result (sort by timestamp)
-3. Open the audit detail panel — check the **Status** field:
-   - `success` — Refold completed the call. The issue is on the agent's interpretation side. Look at the response payload and compare it to what the agent told the user.
-   - `validation_error` — The agent sent an input that didn't match the tool's schema, referenced an app or action that isn't on the server, or hit a known business-rule rejection. The `user_message` field shows what the agent saw.
-   - `execution_error` — Refold couldn't reach the workflow service or another internal dependency. The agent sees a generic message; the detailed error is in `internal_error`.
-   - `pending` — The call started but never completed (process crashed between log_start and log_complete).
+<Steps>
+  <Step title="Open MCP Logs and filter by linked account">
+    Go to **Maintain > MCP Logs** and filter by your agent's linked account.
+  </Step>
+  <Step title="Find the call">
+    Sort by timestamp and locate the call that should have produced the result.
+  </Step>
+  <Step title="Check the Status field">
+    Open the audit detail panel:
 
-### Workflow: trace a full agent conversation
+    | Status | What it means |
+    |---|---|
+    | `success` | Refold completed the call. The issue is on the agent's interpretation side — compare the response payload to what the agent told the user. |
+    | `validation_error` | The agent sent input that didn't match the tool's schema, referenced an app or action that isn't on the server, or hit a known business-rule rejection. The `user_message` field shows what the agent received. |
+    | `execution_error` | Refold couldn't reach the downstream service. The agent receives a generic message; the full error is in `internal_error`. |
+    | `pending` | The call started but never completed — the process crashed between log start and log completion. |
+  </Step>
+</Steps>
 
-Filter by **Session ID** to see every tool call from a single agent session in order. This is the fastest way to understand what an agent actually did, especially when it called several tools in sequence (e.g., `RESOLVE_ACTIONS` → `LOAD_SKILL` → `EXECUTE_ACTION` × 3).
+<Note>
+Downstream API errors from third-party apps are not surfaced verbatim to the agent. The agent receives a generic message; the full upstream error is recorded in the `internal_error` field and visible in the detail panel.
+</Note>
 
-## Next steps
+### Trace a full agent conversation
 
-<CardGroup cols={2}>
-  <Card title="MCP Logs" icon="clipboard-list" href="/v3/mcp-ai-agents/security/mcp-logs">
-    Full field reference and filters
-  </Card>
-  <Card title="Tools" icon="wrench" href="/v3/mcp-ai-agents/tools-reference/tools">
-    The shape of each tool's request and response
-  </Card>
-</CardGroup>
+Filter **MCP Logs** by **Session ID** to see every tool call from a single agent session in chronological order. This is the fastest way to understand what an agent actually did when it called several tools in sequence — for example, `RESOLVE_ACTIONS` → `LOAD_SKILL` → `EXECUTE_ACTION` × 3.
+
+## See also
+
+- [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) — full field reference, filters, and compliance details
+- [Tools](/v3/mcp-ai-agents/tools-reference/tools) — request and response shapes for every tool
+- [Connect from agent code](/v3/mcp-ai-agents/overview/connect-from-agent-code) — wiring the Server URL into your agent
+- [Authentication](/v3/mcp-ai-agents/authentication) — token model and per-user Server URLs
