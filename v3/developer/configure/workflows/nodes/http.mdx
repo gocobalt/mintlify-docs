@@ -20,15 +20,15 @@ The HTTP Node enables you to make HTTP requests to external REST APIs and webhoo
 
 ### Request Configuration
 
-<ParamField path="Method" type="dropdown" required>
+<ParamField path="Select HTTP Method" type="dropdown" required>
   HTTP method for the request. Options: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
 </ParamField>
 
-<ParamField path="Base URL" type="string" required>
+<ParamField path="Set Base URL" type="string">
   The base URL of the API endpoint. Example: `https://api.example.com`
 </ParamField>
 
-<ParamField path="Path" type="string" required>
+<ParamField path="Set URL Path" type="string">
   The API path appended to the base URL. Supports dynamic variables. Example: `/v1/users` or `/vendors/{{vendor_id}}`
 </ParamField>
 
@@ -52,8 +52,12 @@ Add HTTP headers as key-value pairs. Click the **+** button to add additional he
 
 ### Body
 
-<ParamField path="Body" type="code editor">
+<ParamField path="Set Request Body" type="code editor">
   Request body for POST, PUT, and PATCH requests. Enter JSON, XML, or other formats as required by the target API. Supports dynamic variables using `{{variable}}` syntax.
+</ParamField>
+
+<ParamField path="Set Request Body Type" type="dropdown">
+  Format of the request body. Options: `JSON`, `HTML`, `XML`, `TEXT`, `Form Data`, `X-WWW-FORM-URLENCODED`.
 </ParamField>
 
 <Info>The Body field only appears when the method is set to POST, PUT, or PATCH.</Info>
@@ -69,7 +73,7 @@ Add HTTP headers as key-value pairs. Click the **+** button to add additional he
 </ParamField>
 
 <ParamField path="Select Trust Store / Select Certificate Store" type="dropdown">
-  Select the configured trust store or certificate store from your organization settings. Configure stores under **Settings > Organization > Certificates**.
+  Select the configured trust store or certificate store from your organization settings. Configure stores under [**Settings > Organization > Certificates**](/v3/developer/configure/settings/organization/certificates).
 </ParamField>
 
 <ParamField path="Use Server Trust Store" type="boolean">
@@ -84,17 +88,33 @@ Add HTTP headers as key-value pairs. Click the **+** button to add additional he
 
 <AccordionGroup>
   <Accordion title="Pagination Types">
-    | Type | Description |
-    |------|-------------|
-    | No pagination | Single request, no automatic pagination |
-    | Page Based | Uses page number parameter to fetch subsequent pages |
-    | Offset Based | Uses offset and limit parameters for pagination |
-    | Cursor Based | Uses cursor tokens returned by the API for next page |
-    | Time Based | Paginates based on timestamp ranges |
-    | SQL Query Based | Uses SQL-style LIMIT and OFFSET for pagination |
-    | Custom | Define custom pagination logic |
+    | Type | Description | Key fields |
+    |------|-------------|------------|
+    | No pagination | Single request, no automatic pagination | — |
+    | Page Based | Increments a page number to fetch subsequent pages | Page Key, Per Page Limit Key, Limit (default 50), Start Page, Max End Page, and Total Page Path *or* Response records Path |
+    | Offset Based | Uses offset + limit to page through records | Limit Key, Offset Key, Limit (default 100), and Total Records Path *or* Response records Path |
+    | Cursor Based | Follows cursor tokens returned by the API | Next Page Cursor Path |
+    | Time Based | Paginates across timestamp ranges | — |
+    | SQL Query Based | Builds a SQL-style query that advances a start position by a limit | Query (Primary Clause, Start Position, Limit, Max Records, Batch Size, Order of Start and Limit) |
+    | Custom | Define custom pagination logic | — |
   </Accordion>
 </AccordionGroup>
+
+<Info>For Page, Offset, Cursor, and SQL Query pagination, you also choose where the pagination value is sent on each request via **Inject to** — `No Injection`, `Request Body`, `Request Headers`, or `Request Query Parameters`.</Info>
+
+### Response
+
+<ParamField path="Response Type" type="dropdown">
+  How the response is returned. Options: `Default`, `Stream`.
+</ParamField>
+
+<ParamField path="Use Response Bucket" type="boolean">
+  When enabled, the response is stored in the response bucket and returned as a hosted file rather than inline.
+</ParamField>
+
+<ParamField path="Bucket Object Settings" type="object">
+  Storage settings for the response file when **Use Response Bucket** is enabled — Infinite Expiry, TTL, and Preserve Cloud Provider Presigned URL.
+</ParamField>
 
 ## Output
 
@@ -364,7 +384,7 @@ The node returns the complete API response. The output structure depends on the 
   <Accordion title="mTLS Errors">
     | Problem | Solution |
     |---------|----------|
-    | Certificate not found | Verify the trust store or certificate is configured under **Settings > Organization > Certificates**. |
+    | Certificate not found | Verify the trust store or certificate is configured under [**Settings > Organization > Certificates**](/v3/developer/configure/settings/organization/certificates). |
     | SSL handshake failed | Check certificate validity and expiration. Ensure the certificate matches the API requirements. |
   </Accordion>
 </AccordionGroup>
