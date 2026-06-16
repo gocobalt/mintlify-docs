@@ -38,12 +38,12 @@ Users can subscribe to Cobalt Webhooks to receive real-time notifications about 
 To learn more about the Cobalt Webhooks, you can refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
 </Tip>
 
-Cobalt Webhook Subscription can be done either through the dashboard or the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+Cobalt Webhook Subscription can be done either through the dashboard or the [Subscribe to Events](https://docs.gocobalt.io/api-reference/deprecated/webhook-subscribe) API.
 
 1. **Subscription via Dashboard**: Navigate to the `Webhooks` section in the Cobalt dashboard, enter the `Webhook URL`, choose the Webhook Payload as either `Default` or `Slack` and select the `Workflow Errored` event for which the notifications will be sent.
 <img height="200" src="/images/implementation/webhook-subscribe.png" alt="Subscribe to Webhooks in Cobalt"/>
 
-2. **Subscription via API**: Users can subscribe to Cobalt Webhooks using the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+2. **Subscription via API**: Users can subscribe to Cobalt Webhooks using the [Subscribe to Events](https://docs.gocobalt.io/api-reference/deprecated/webhook-subscribe) API.
  - **Request** - Make a POST request to the `/webhook/subscribe` endpoint with the webhook event as `workflow-errored`.
  ``` JavaScript cURL
  curl --request POST \
