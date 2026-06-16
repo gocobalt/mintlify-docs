@@ -30,10 +30,6 @@ The Sub Flows Node executes another workflow from within your current workflow u
   When Sync Execution is disabled, enabling this option makes the parent workflow wait for the sub flow to complete before continuing. The response is returned once the sub flow finishes. Default: `false`
 </ParamField>
 
-<ParamField path="Raw Payload" type="toggle">
-  When enabled, displays the raw JSON payload editor for the sub flow. Use this to pass dynamic data from the parent workflow to the sub flow.
-</ParamField>
-
 ### Execution Modes
 
 | Mode | Sync Execution | Wait for Completion | Behavior |
@@ -130,10 +126,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     Set **Sync Execution** based on whether you need the sub flow's response immediately or can process it later.
   </Step>
   
-  <Step title="Pass payload data">
-    Enable **Raw Payload** if you need to pass data to the sub flow. Enter the JSON payload with values from previous nodes using templating.
-  </Step>
-  
   <Step title="Use the response">
     Access the sub flow's response in subsequent nodes using `{{sub_flows_node.body.return_value.field_name}}`.
   </Step>
@@ -173,7 +165,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     |-------|-------|
     | Select Workflow | `Name Parser` |
     | Sync Execution | Enabled |
-    | Raw Payload | `{"full_name": "{{sap_contact.FullName}}"}` |
 
     **Using the Response:**
 ```
@@ -211,16 +202,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     | Sync Execution | Disabled |
     | Wait for completion | Disabled |
 
-    **Raw Payload:**
-```json
-    {
-      "workflow_name": "NetSuite Invoice Sync",
-      "error_message": "{{http_node.body.error.message}}",
-      "linked_account_id": "{{linked_account.id}}",
-      "severity": "error"
-    }
-```
-
     **Use Case:** Fire-and-forget pattern where the parent workflow continues immediately while notifications are sent asynchronously.
   </Accordion>
 
@@ -241,7 +222,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     |-------|-------|
     | Select Workflow | `Tax ID Validator` |
     | Sync Execution | Enabled |
-    | Raw Payload | `{"tax_id": "{{tipalti_vendor.taxId}}", "country": "{{tipalti_vendor.country}}"}` |
 
     **Step 2 - Rule Node (Check Tax Validation):**
     Condition: `{{tax_validator.body.return_value.is_valid}}` equals `true`
@@ -251,7 +231,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     |-------|-------|
     | Select Workflow | `Bank Account Verifier` |
     | Sync Execution | Enabled |
-    | Raw Payload | `{"routing_number": "{{tipalti_vendor.routingNumber}}", "account_number": "{{tipalti_vendor.accountNumber}}"}` |
 
     **Use Case:** Build complex validation pipelines by composing simple, focused sub flows.
   </Accordion>
@@ -285,7 +264,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     |-------|-------|
     | Select Workflow | `Hierarchy Processor` (self) |
     | Sync Execution | Enabled |
-    | Raw Payload | `{"parent_id": "{{loop.body.array_item.id}}", "depth": {{depth + 1}}, "max_depth": {{max_depth}}}` |
 
     <Warning>Always include a depth check or other break condition to prevent infinite recursion. The platform enforces a 1000 recursion limit.</Warning>
   </Accordion>
@@ -308,14 +286,6 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     | No return_value in response | Enable **Sync Execution** or **Wait for completion** to receive the sub flow's response. |
     | Empty return_value | Ensure the sub flow includes a **Response Node** that returns the expected data. |
     | Only execution_id returned | With async execution (Sync Execution: Off), only the execution ID is returned. Enable sync mode or use the Response API to fetch results later. |
-  </Accordion>
-
-  <Accordion title="Payload Issues">
-    | Problem | Solution |
-    |---------|----------|
-    | Payload not received by sub flow | Enable **Raw Payload** and verify the JSON structure matches what the sub flow expects in its Start Node. |
-    | Variables not resolving | Check templating syntax. Use `{{node_name.body.field}}` format and ensure referenced nodes have executed. |
-    | Invalid JSON error | Validate your payload JSON syntax. Use the code editor's built-in validation. |
   </Accordion>
 
   <Accordion title="Recursion Issues">
