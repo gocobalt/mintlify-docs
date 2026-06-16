@@ -1,302 +1,227 @@
 ---
-title: "Linked Accounts"
-description: "Create and manage linked accounts for customer integrations"
+title: "Linked accounts"
+description: "How Refold represents each of your customers and the third-party apps they've connected."
 ---
 
-# Linked Accounts
+A **linked account** represents one of your customers (your app's end user),
+together with the third-party apps they've connected through your platform.
+It's the unit Refold uses to track and manage integrations per customer: each
+linked account holds that customer's connections, configuration, executions,
+and API calls, so you can monitor and troubleshoot them one customer at a time.
 
-Learn how to manage users, roles, and permissions within your Cobalt organization.
+A few things to know before you start:
 
-## Overview
+- **`linked_account_id` must be unique per user.** Use any stable unique value,
+  such as an email or your own primary key for that user.
+- **Create and modify linked accounts server-side.** These operations involve
+  your API key and customer credentials, so they should never run in the
+  browser.
 
-Cobalt provides comprehensive user management capabilities that allow you to control access to your integration platform, manage team permissions, and maintain security across your organization.
+## Create a linked account
 
-## User Types
+You can create linked accounts from the dashboard for one-off setup, or via the
+API to provision them programmatically.
 
-### Organization Admin
-- Full access to all platform features
-- Can manage users, billing, and organization settings
-- Can create and modify integrations and workflows
-- Access to all logs and analytics
+<AccordionGroup>
+  <Accordion title="via Dashboard" icon="laptop">
+    <Steps>
+      <Step title="Open Linked Accounts">
+        Go to **Dashboard > Linked Accounts**.
+      </Step>
+      <Step title="Add the account">
+        Click **+ Add Account**, then enter the **Linked Account ID**,
+        **Name**, and any **UDF parameters** you want to attach to this
+        customer.
+      </Step>
+      <Step title="(Optional) Bulk import">
+        To create many accounts at once, import a `.csv` file instead.
+      </Step>
+    </Steps>
 
-### Developer
-- Can create and modify integrations and workflows
-- Access to development tools and testing environments
-- Can view logs and execution history
-- Limited access to organization settings
+    {/* MEDIA-TODO (video, preferred): 15s screen recording of Dashboard >
+        Linked Accounts > + Add Account, filling in Linked Account ID, Name,
+        and a UDF parameter, then clicking Save. */}
+    <Frame caption="Creating a linked account from the dashboard">
+      <video controls className="w-full aspect-video rounded-xl" src="/videos/PLACEHOLDER.mp4" />
+    </Frame>
+  </Accordion>
 
-### Viewer
-- Read-only access to integrations and workflows
-- Can view logs and execution history
-- Cannot modify configurations or settings
-- Suitable for stakeholders and auditors
+  <Accordion title="via API" icon="code">
+    <Warning>
+      Run linked account operations from your server, never from client-side
+      code. The request uses your secret API key.
+    </Warning>
 
-## Adding Users
+    <CodeGroup>
+
+    ```bash cURL
+    curl --request POST \
+      --url https://api.gocobalt.io/api/v2/public/linked-account \
+      --header 'Content-Type: application/json' \
+      --header 'x-api-key: YOUR_API_KEY' \
+      --data '{
+        "linked_account_id": "user@example.com",
+        "name": "User",
+        "your_app": {}
+      }'
+    ```
+
+    ```javascript Node.js
+    try {
+      await Client.createLinkedAccount({
+        linked_account_id: "user@example.com",
+        name: "User",
+        udf: {
+          phone: "1234567890",
+          address: "123, Queen Street",
+        },
+        your_app: {
+          app_id: "YOUR_APP_ID",
+          auth_credentials: {
+            Authorization: "YOUR_APP_AUTH_TOKEN",
+          },
+        },
+      });
+    } catch (error) {
+      // Handle the error
+    }
+    ```
+
+    </CodeGroup>
+
+    Replace `YOUR_API_KEY` with your server-side API key, `YOUR_APP_ID` with
+    your application's ID, and `YOUR_APP_AUTH_TOKEN` with the auth credential
+    for the customer's connection to your app. See the [create linked account
+    API reference](/v3/api-reference/customer/create-linked-account) for the
+    full schema.
+  </Accordion>
+</AccordionGroup>
+
+## Configure a linked account
+
+After a customer authenticates, you can adjust the configuration for any of
+their connected applications. For example, set field values or enable and
+disable specific workflows for that customer.
 
 <Steps>
-  <Step title="Navigate to User Management">
-    Go to **Settings** → **Users** in your Cobalt dashboard
+  <Step title="Open the integration's configuration">
+    In the linked account's **Overview** tab, find the application under
+    **Integrations**. Click the three-dot menu in that row and select
+    **Configure**.
   </Step>
-  
-  <Step title="Invite New User">
-    Click **Invite User** and enter the email address of the person you want to invite
+  <Step title="Adjust the settings">
+    Set the **Fields** values, or enable and disable **Workflows**, to match
+    what the customer needs.
   </Step>
-  
-  <Step title="Assign Role">
-    Select the appropriate role based on the user's responsibilities and required access level
-  </Step>
-  
-  <Step title="Send Invitation">
-    Click **Send Invitation** to email the user with setup instructions
+  <Step title="Save">
+    Click **Save** to apply the configuration.
   </Step>
 </Steps>
 
-## Managing Permissions
+{/* MEDIA-TODO (image): screenshot of the Overview > Integrations row with the
+    three-dot menu open, highlighting the Configure option. */}
+<Frame caption="Opening an integration's configuration">
+  <img src="/images/PLACEHOLDER.png" alt="Integrations row with the three-dot menu open on Configure" />
+</Frame>
 
-### Role-Based Access Control (RBAC)
+## Monitor a linked account
 
-Cobalt uses role-based access control to manage what users can see and do within the platform.
+Each linked account gives you per-customer visibility into how the integration
+is behaving. Open the account from **Dashboard > Linked Accounts** and use the
+tabs across the top to inspect each kind of activity.
 
-<Tabs>
-  <Tab title="Admin Permissions">
-    - Create, edit, and delete integrations
-    - Manage workflows and configurations
-    - Access all logs and analytics
-    - Manage users and permissions
-    - Configure organization settings
-    - Manage billing and subscriptions
-  </Tab>
-  
-  <Tab title="Developer Permissions">
-    - Create, edit, and delete integrations
-    - Manage workflows and configurations
-    - Access development logs and testing tools
-    - View execution history and debugging information
-    - Limited access to user management
-  </Tab>
-  
-  <Tab title="Viewer Permissions">
-    - View integrations and workflows (read-only)
-    - Access logs and execution history
-    - View analytics and reports
-    - Cannot modify any configurations
-    - Cannot access sensitive settings
-  </Tab>
-</Tabs>
+<AccordionGroup>
+  <Accordion title="Execution logs" icon="bolt">
+    Every workflow run for this customer, with inputs, outputs, status, and
+    duration. Open the **Executions** tab.
+  </Accordion>
+  <Accordion title="Auth" icon="key">
+    Authentication and connectivity events for each connected integration. In
+    **Overview > Integrations**, open the three-dot menu on the integration
+    row and select **Logs** to see auth events in chronological order.
+  </Accordion>
+  <Accordion title="User configs" icon="sliders">
+    The field values and workflows the customer has enabled for each connected
+    integration. Open the **Workflows** tab to review what the customer has
+    turned on.
+  </Accordion>
+  <Accordion title="Schedules" icon="calendar">
+    Scheduled triggers running for this customer, with the next-fire time and
+    history of past runs. Open the **Schedules** tab.
+  </Accordion>
+  <Accordion title="Events" icon="bell">
+    Inbound events for this customer that triggered workflows. Open the
+    **Events** tab to see event payloads and the workflows they fired.
+  </Accordion>
+  <Accordion title="Webhook logs" icon="webhook">
+    Outbound webhook deliveries from this customer's workflows, with status
+    and retry history. Open the **Webhooks** tab.
+  </Accordion>
+  <Accordion title="Polling" icon="rotate">
+    Polling activity for data refs and connectors that pull on a schedule.
+    Open the **Polling** tab.
+  </Accordion>
+</AccordionGroup>
 
-### Custom Permissions
+For the full reference on what each log type records, see
+[Logs](/v3/developer/monitor/logs).
 
-For enterprise customers, Cobalt supports custom permission sets that can be tailored to your organization's specific needs.
+## Personal access tokens
 
-## User Lifecycle Management
-
-### User Onboarding
-
-<Callout type="info">
-New users receive an email invitation with instructions to set up their account and access the platform.
-</Callout>
-
-1. **Email Invitation**: Users receive a secure invitation link
-2. **Account Setup**: Users create their password and complete profile
-3. **Role Assignment**: Automatic role assignment based on invitation
-4. **Initial Access**: Users can immediately access permitted features
-
-### Modifying User Access
+A **personal access token** (PAT) authenticates API calls scoped to a single
+linked account. Use a PAT when an end-user-facing tool or script needs to act
+as one specific customer without exposing your platform API key.
 
 <Steps>
-  <Step title="Select User">
-    Navigate to **Settings** → **Users** and select the user you want to modify
+  <Step title="Open the linked account">
+    Go to **Dashboard > Linked Accounts** and open the account you want a
+    token for.
   </Step>
-  
-  <Step title="Edit Role">
-    Click **Edit** next to the user's current role
-  </Step>
-  
-  <Step title="Update Permissions">
-    Select the new role or modify custom permissions as needed
-  </Step>
-  
-  <Step title="Save Changes">
-    Click **Save** to apply the new permissions immediately
+  <Step title="Generate the token">
+    In the detail panel on the right, click **Generate** next to **Personal
+    Access Token**. Copy the token immediately. Refold won't show it again.
   </Step>
 </Steps>
-
-### Removing Users
 
 <Warning>
-Removing a user will immediately revoke their access to the platform. This action cannot be undone.
+  Treat a PAT like a password. Store it in a secrets manager and rotate it if
+  it leaks.
 </Warning>
 
-To remove a user:
-1. Navigate to **Settings** → **Users**
-2. Find the user you want to remove
-3. Click the **Remove** button
-4. Confirm the action in the dialog box
+## Environment variables
 
-## Single Sign-On (SSO)
-
-<Callout type="info">
-SSO is available for Enterprise customers and provides seamless authentication through your organization's identity provider.
-</Callout>
-
-### Supported Identity Providers
-
-- **Active Directory / Azure AD**
-- **Google Workspace**
-- **Okta**
-- **OneLogin**
-- **Auth0**
-- **Custom SAML 2.0 providers**
-
-### SSO Configuration
+Attach **per-customer environment variables** to a linked account when a
+workflow needs values that differ between customers (a region, an account
+number, a feature flag). Workflows reference these by name at runtime, and
+Refold substitutes the linked account's value at execution time.
 
 <Steps>
-  <Step title="Contact Support">
-    Reach out to Cobalt support to initiate SSO setup for your organization
+  <Step title="Open the linked account">
+    Go to **Dashboard > Linked Accounts** and open the account.
   </Step>
-  
-  <Step title="Provide Configuration">
-    Share your identity provider configuration details with our team
+  <Step title="Add a variable">
+    In the detail panel on the right, click **+ Add** next to **Environment
+    Variables**, then enter a name and value.
   </Step>
-  
-  <Step title="Testing">
-    Work with our team to test the SSO integration in a staging environment
-  </Step>
-  
-  <Step title="Go Live">
-    Once testing is complete, SSO will be enabled for your organization
+  <Step title="Reference it from a workflow">
+    Use the variable name in any workflow node that needs the value. Refold
+    resolves it per linked account at execution time.
   </Step>
 </Steps>
 
-## API Access Management
-
-### API Keys
-
-Users with appropriate permissions can generate and manage API keys for programmatic access to the Cobalt platform.
-
-<CodeGroup>
-```javascript Node.js
-// Initialize Cobalt SDK with user-specific API key
-const { CobaltSDK } = require('@cobalt-io/sdk');
-
-const cobalt = new CobaltSDK({
-  apiKey: process.env.COBALT_API_KEY,
-  environment: 'production'
-});
-```
-
-```python Python
-from cobalt_sdk import CobaltSDK
-
-# Initialize with user-specific API key
-cobalt = CobaltSDK(
-    api_key=os.getenv('COBALT_API_KEY'),
-    environment='production'
-)
-```
-</CodeGroup>
-
-### API Key Management
-
-- **Generation**: Users can generate multiple API keys for different purposes
-- **Rotation**: Regular key rotation is recommended for security
-- **Scoping**: Keys can be scoped to specific resources or actions
-- **Monitoring**: API key usage is logged and can be monitored
-
-## Security Best Practices
-
-### Access Control
-
-<Tip>
-Follow the principle of least privilege - grant users only the minimum access required for their role.
-</Tip>
-
-- **Regular Reviews**: Conduct periodic access reviews to ensure permissions remain appropriate
-- **Temporary Access**: Use time-limited access for contractors or temporary team members
-- **Audit Trails**: Monitor user activity through comprehensive audit logs
-
-### Password Policies
-
-For organizations not using SSO, Cobalt enforces strong password policies:
-
-- Minimum 12 characters
-- Must include uppercase, lowercase, numbers, and special characters
-- Password history prevents reuse of last 12 passwords
-- Mandatory password changes every 90 days
-
-## Monitoring and Auditing
-
-### User Activity Logs
-
-Track all user activities within the platform:
-
-```json
-{
-  "timestamp": "2024-01-15T10:30:00Z",
-  "user_id": "user_123",
-  "action": "integration.created",
-  "resource": "salesforce_integration",
-  "ip_address": "192.168.1.100",
-  "user_agent": "Mozilla/5.0..."
-}
-```
-
-### Access Reports
-
-Generate reports on user access patterns:
-
-- **Login Frequency**: Track how often users access the platform
-- **Feature Usage**: Monitor which features are being used by whom
-- **Permission Changes**: Log all permission modifications
-- **Failed Access Attempts**: Track and alert on suspicious activity
-
-## Troubleshooting
-
-### Common Issues
-
-<Accordion title="User Cannot Access Platform">
-**Possible Causes:**
-- User invitation not sent or expired
-- Incorrect role assignment
-- SSO configuration issues
-
-**Solutions:**
-- Resend invitation or create new one
-- Verify role permissions
-- Check SSO provider configuration
-</Accordion>
-
-<Accordion title="API Key Not Working">
-**Possible Causes:**
-- Key expired or revoked
-- Insufficient permissions
-- Incorrect environment configuration
-
-**Solutions:**
-- Generate new API key
-- Verify key permissions and scoping
-- Check environment settings
-</Accordion>
-
-<Accordion title="SSO Login Failures">
-**Possible Causes:**
-- Identity provider configuration issues
-- User not provisioned in identity provider
-- SAML assertion problems
-
-**Solutions:**
-- Verify identity provider settings
-- Check user provisioning status
-- Review SAML configuration and logs
-</Accordion>
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Authentication Setup" icon="key" href="/v3/developer-guide/platform/authentication">
-    Configure authentication methods for your platform
+  <Card title="Auth flows" href="/v3/developer/guide/ship/auth_flows/hosted">
+    Let customers connect their own accounts.
   </Card>
-  <Card title="Events Configuration" icon="bell" href="/v3/developer-guide/platform/events">
-    Set up event handling and notifications
+  <Card title="Logs" href="/v3/developer/monitor/logs">
+    Understand each log type Refold records.
   </Card>
-</CardGroup> 
+  <Card title="Workflows" href="/v3/developer/configure/workflows/overview">
+    Automate what happens after a customer connects.
+  </Card>
+  <Card title="API reference" href="/v3/api-reference/customer/create-linked-account">
+    Create, update, and delete linked accounts programmatically.
+  </Card>
+</CardGroup>

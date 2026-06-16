@@ -6,422 +6,247 @@
   "logo": {
     "dark": "/logo/white-icon.svg",
     "light": "/logo/black-icon.svg",
-    "href": "/"
+    "href": "/welcome"
   },
   "favicon": "/logo/favicon.svg",
   "colors": {
-    "primary": "#9563FF",
-    "light": "#AE87FF",
+    "primary": "#0057FF",
+    "light": "#4D8AFF",
     "dark": "#0D001D"
   },
   "modeToggle": {
     "default": "dark"
-  },    
-  "topbarLinks": [
-    {
-      "name": "Contact Us",
-      "url": "https://www.refold.ai/contact-us"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://app.gocobalt.io/"
   },
-  "anchors": [
-    {
-      "name": "Postman",
-      "icon": "code",
-      "url": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
-    },
-    {
-      "name": "Get Your API Key",
-      "icon": "gear",
-      "url": "https://app.gocobalt.io/developer"
-    },
-    {
-      "name": "Examples",
-      "icon": "book",
-      "url": "https://github.com/gocobalt/cobalt-examples"
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact Us",
+        "href": "https://www.refold.ai/contact-us"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.refold.ai"
     }
-  ],
+  },
   "navigation": {
-    "default": "v3/welcome/welcome",
+    "default": "welcome",
+    "anchors": [
+      {
+        "anchor": "Postman",
+        "icon": "code",
+        "href": "https://www.postman.com/orange-meteor-40853/workspace/cobalt/collection/2602341-7c966e1e-c2dd-4307-b4b3-ed985430ab71"
+      },
+      {
+        "anchor": "Get Your API Key",
+        "icon": "gear",
+        "href": "https://app.gocobalt.io/developer"
+      },
+      {
+        "anchor": "Examples",
+        "icon": "book-open",
+        "href": "https://github.com/gocobalt/cobalt-examples"
+      }
+    ],
     "versions": [
       {
         "version": "v3",
         "tabs": [
           {
-            "tab": "Welcome",
-            "groups": [
-              {
-                "group": "Welcome",
-                "pages": [
-                  "v3/welcome/welcome"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Developer",
+            "tab": "Platform",
             "groups": [
               {
                 "group": "Getting Started",
                 "pages": [
                   "v3/developer/getting-started/overview",
-                  "v3/developer/getting-started/quickstart",
-                  "v3/developer/getting-started/terminology",
-                  {
-                    "group": "Core Concepts",
-                    "pages": [
-                      "v3/developer/getting-started/core-concepts/workflows",
-                      "v3/developer/getting-started/core-concepts/linked-accounts",
-                      "v3/developer/getting-started/core-concepts/field-mapping",
-                      "v3/developer/getting-started/core-concepts/triggers-actions",
-                      "v3/developer/getting-started/core-concepts/applications-connectors"
-                    ]
-                  }
+                  "v3/developer/getting-started/quickstart"
                 ]
               },
               {
-                "group": "Platform",
+                "group": "Products",
                 "pages": [
-                  {
-                    "group": "Authentication",
-                    "pages": [
-                      "v3/developer/platform/authentication/overview",
-                      "v3/developer/platform/authentication/api-keys",
-                      "v3/developer/platform/authentication/session-tokens",
-                      "v3/developer/platform/authentication/token-management"
-                    ]
-                  },
-                  {
-                    "group": "Linked Accounts",
-                    "pages": [
-                      "v3/developer/platform/linked-accounts/overview",
-                      "v3/developer/platform/linked-accounts/creating-linked-accounts",
-                      "v3/developer/platform/linked-accounts/managing-connections",
-                      "v3/developer/platform/linked-accounts/multi-tenant-vs-single-tenant",
-                      "v3/developer/platform/linked-accounts/monitoring-linked-accounts"
-                    ]
-                  },
-                  {
-                    "group": "Events",
-                    "pages": [
-                      "v3/developer/platform/events/overview",
-                      "v3/developer/platform/events/app-events",
-                      "v3/developer/platform/events/event-payloads",
-                      "v3/developer/platform/events/creating-events"
-                    ]
-                  },
-                  {
-                    "group": "API Proxies",
-                    "pages": [
-                      "v3/developer/platform/api-proxies/overview",
-                      "v3/developer/platform/api-proxies/creating-api-proxies",
-                      "v3/developer/platform/api-proxies/configuring-api-calls",
-                      "v3/developer/platform/api-proxies/using-in-workflows"
-                    ]
-                  },
-                  {
-                    "group": "Variables",
-                    "pages": [
-                      "v3/developer/platform/variables/overview",
-                      "v3/developer/platform/variables/environment-variables",
-                      "v3/developer/platform/variables/workflow-variables",
-                      "v3/developer/platform/variables/data-slots"
-                    ]
-                  },
-                  {
-                    "group": "Webhooks",
-                    "pages": [
-                      "v3/developer/platform/webhooks/overview",
-                      "v3/developer/platform/webhooks/webhook-events",
-                      "v3/developer/platform/webhooks/webhook-security",
-                      "v3/developer/platform/webhooks/payload-structure"
-                    ]
-                  }
+                  "v3/developer/products/native",
+                  "v3/developer/products/integration-delivery",
+                  "v3/developer/products/mcp"
                 ]
               },
               {
-                "group": "Workflows",
+                "group": "Concepts",
                 "pages": [
+                  "v3/developer/configure/linked-account",
                   {
-                    "group": "Fundamentals",
+                    "group": "Connector",
                     "pages": [
-                      "v3/developer/workflows/fundamentals/overview",
-                      "v3/developer/workflows/fundamentals/workflow-builder",
-                      "v3/developer/workflows/fundamentals/dag-architecture",
-                      "v3/developer/workflows/fundamentals/workflow-lifecycle"
-                    ]
-                  },
-                  {
-                    "group": "Triggers",
-                    "pages": [
-                      "v3/developer/workflows/triggers/event-triggers",
-                      "v3/developer/workflows/triggers/webhook-triggers",
-                      "v3/developer/workflows/triggers/schedule-triggers",
-                      "v3/developer/workflows/triggers/manual-triggers"
-                    ]
-                  },
-                  {
-                    "group": "Nodes",
-                    "pages": [
-                      "v3/developer/workflows/nodes/agent-node",
-                      "v3/developer/workflows/nodes/csv-excel",
-                      "v3/developer/workflows/nodes/custom-code",
-                      "v3/developer/workflows/nodes/data-mapper",
-                      "v3/developer/workflows/nodes/data-ref-node",
-                      "v3/developer/workflows/nodes/delay",
-                      "v3/developer/workflows/nodes/file-handler",
-                      "v3/developer/workflows/nodes/function-node",
-                      "v3/developer/workflows/nodes/http",
-                      "v3/developer/workflows/nodes/human-task",
-                      "v3/developer/workflows/nodes/log-node",
-                      "v3/developer/workflows/nodes/loop",
-                      "v3/developer/workflows/nodes/pdf",
-                      "v3/developer/workflows/nodes/response",
-                      "v3/developer/workflows/nodes/rule",
-                      "v3/developer/workflows/nodes/send-email",
-                      "v3/developer/workflows/nodes/sub-flows",
-                      "v3/developer/workflows/nodes/switch-case",
-                      "v3/developer/workflows/nodes/tables",
-                      "v3/developer/workflows/nodes/terminate-node",
-                      "v3/developer/workflows/nodes/transform",
-                      "v3/developer/workflows/nodes/try-catch-node",
-                      "v3/developer/workflows/nodes/wait-for-webhook"
-                    ]
-                  },
-                  {
-                    "group": "Advanced Features",
-                    "pages": [
-                      "v3/developer/workflows/advanced-features/overview",
-                      "v3/developer/workflows/advanced-features/error-handling",
-                      "v3/developer/workflows/advanced-features/parallel-execution",
-                      "v3/developer/workflows/advanced-features/data-slots-variables",
-                      "v3/developer/workflows/advanced-features/internal-functions",
-                      "v3/developer/workflows/advanced-features/tables",
-                      "v3/developer/workflows/advanced-features/user-forms",
-                      "v3/developer/workflows/advanced-features/templating"
-                    ]
-                  },
-                  {
-                    "group": "Testing",
-                    "pages": [
-                      "v3/developer/workflows/testing/workflow-testing",
-                      "v3/developer/workflows/testing/debug-workflows",
-                      "v3/developer/workflows/testing/test-data",
-                      "v3/developer/workflows/testing/node-level-testing"
-                    ]
-                  },
-                  {
-                    "group": "AI-Powered Workflow Generation",
-                    "pages": [
-                      "v3/developer/workflows/ai-powered/overview",
-                      "v3/developer/workflows/ai-powered/how-refold-ai-builds-workflows"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Custom Apps",
-                "pages": [
-                  "v3/developer/custom-apps/overview",
-                  {
-                    "group": "Building Methods",
-                    "pages": [
-                      "v3/developer/custom-apps/building-methods/from-scratch",
-                      "v3/developer/custom-apps/building-methods/using-openapi-spec",
-                      "v3/developer/custom-apps/building-methods/ai-assisted-building"
-                    ]
-                  },
-                  {
-                    "group": "Configuration",
-                    "pages": [
-                      "v3/developer/custom-apps/configuration/authentication-setup",
-                      "v3/developer/custom-apps/configuration/action-configuration",
-                      "v3/developer/custom-apps/configuration/field-configuration"
-                    ]
-                  },
-                  {
-                    "group": "Testing & Publishing",
-                    "pages": [
-                      "v3/developer/custom-apps/testing-publishing/testing-actions",
-                      "v3/developer/custom-apps/testing-publishing/publishing-the-app",
-                      "v3/developer/custom-apps/testing-publishing/versioning"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Platform Administration",
-                "pages": [
-                  {
-                    "group": "Dashboard",
-                    "pages": [
-                      "v3/developer/platform-administration/dashboard/admin-dashboard-overview",
-                      "v3/developer/platform-administration/dashboard/analytics-overview",
-                      "v3/developer/platform-administration/dashboard/usage-metrics"
-                    ]
-                  },
-                  {
-                    "group": "User Management",
-                    "pages": [
-                      "v3/developer/platform-administration/user-management/user-roles",
-                      "v3/developer/platform-administration/user-management/permissions",
-                      "v3/developer/platform-administration/user-management/team-management",
-                      "v3/developer/platform-administration/user-management/inviting-users"
-                    ]
-                  },
-                  {
-                    "group": "Organization",
-                    "pages": [
-                      "v3/developer/platform-administration/organization/organization-settings",
-                      "v3/developer/platform-administration/organization/billing-usage",
-                      "v3/developer/platform-administration/organization/subscription-management",
-                      "v3/developer/platform-administration/organization/plan-limits"
-                    ]
-                  },
-                  {
-                    "group": "Customization",
-                    "pages": [
-                      "v3/developer/platform-administration/customization/branding",
-                      "v3/developer/platform-administration/customization/custom-domains",
-                      "v3/developer/platform-administration/customization/white-labeling"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Monitoring & Logs",
-                "pages": [
-                  {
-                    "group": "Log Types",
-                    "pages": [
-                      "v3/developer/monitoring-logs/log-types/event-logs",
-                      "v3/developer/monitoring-logs/log-types/workflow-logs",
-                      "v3/developer/monitoring-logs/log-types/webhook-logs",
-                      "v3/developer/monitoring-logs/log-types/integration-logs",
-                      "v3/developer/monitoring-logs/log-types/execution-logs"
-                    ]
-                  },
-                  {
-                    "group": "Monitoring",
-                    "pages": [
-                      "v3/developer/monitoring-logs/monitoring/real-time-monitoring",
-                      "v3/developer/monitoring-logs/monitoring/performance-metrics",
-                      "v3/developer/monitoring-logs/monitoring/health-checks",
-                      "v3/developer/monitoring-logs/monitoring/alerts-configuration"
-                    ]
-                  },
-                  {
-                    "group": "Troubleshooting",
-                    "pages": [
-                      "v3/developer/monitoring-logs/troubleshooting/error-tracking",
-                      "v3/developer/monitoring-logs/troubleshooting/debug-tools",
-                      "v3/developer/monitoring-logs/troubleshooting/common-issues-solutions",
-                      "v3/developer/monitoring-logs/troubleshooting/log-analysis"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Deployment",
-                "pages": [
-                  "v3/developer/deployment/overview",
-                  "v3/developer/deployment/docker-compose",
-                  "v3/developer/deployment/deployment-variables",
-                  "v3/developer/deployment/hardware-requirements",
-                  "v3/developer/deployment/network-requirements",
-                  {
-                    "group": "Hosting Solutions",
-                    "pages": [
+                      "v3/developer/configure/connector/supported-apps-actions",
+                      "v3/developer/configure/connector/custom-actions",
                       {
-                        "group": "AWS",
+                        "group": "App Settings",
                         "pages": [
-                          "v3/developer/deployment/hosting-solutions/aws/prerequisites",
-                          "v3/developer/deployment/hosting-solutions/aws/setup-guide",
-                          "v3/developer/deployment/hosting-solutions/aws/configuration"
-                        ]
-                      },
-                      {
-                        "group": "Azure",
-                        "pages": [
-                          "v3/developer/deployment/hosting-solutions/azure/prerequisites",
-                          "v3/developer/deployment/hosting-solutions/azure/setup-guide",
-                          "v3/developer/deployment/hosting-solutions/azure/configuration"
-                        ]
-                      },
-                      {
-                        "group": "GCP",
-                        "pages": [
-                          "v3/developer/deployment/hosting-solutions/gcp/prerequisites",
-                          "v3/developer/deployment/hosting-solutions/gcp/setup-guide",
-                          "v3/developer/deployment/hosting-solutions/gcp/configuration"
-                        ]
-                      },
-                      {
-                        "group": "Standalone",
-                        "pages": [
-                          "v3/developer/deployment/hosting-solutions/standalone/system-requirements",
-                          "v3/developer/deployment/hosting-solutions/standalone/installation-guide",
-                          "v3/developer/deployment/hosting-solutions/standalone/configuration"
+                          "v3/developer/configure/app-configuration/auth-config",
+                          "v3/developer/configure/app-configuration/multi-auth",
+                          "v3/developer/configure/app-configuration/authentication"
                         ]
                       }
                     ]
                   },
                   {
+                    "group": "Workflows",
+                    "pages": [
+                      "v3/developer/configure/workflows/overview",
+                      {
+                        "group": "Triggers",
+                        "pages": [
+                          "v3/developer/configure/workflows/triggers/overview",
+                          "v3/developer/configure/workflows/triggers/schedule",
+                          "v3/developer/configure/workflows/triggers/polling",
+                          "v3/developer/configure/workflows/triggers/webhook",
+                          "v3/developer/configure/workflows/triggers/events",
+                          "v3/developer/configure/workflows/triggers/app-events",
+                          "v3/developer/configure/workflows/triggers/api-trigger"
+                        ]
+                      },
+                      {
+                        "group": "Nodes",
+                        "pages": [
+                          "v3/developer/configure/workflows/nodes/agent-node",
+                          "v3/developer/configure/workflows/nodes/csv-excel",
+                          "v3/developer/configure/workflows/nodes/custom-code",
+                          "v3/developer/configure/workflows/nodes/data-mapper",
+                          "v3/developer/configure/workflows/nodes/data-ref-node",
+                          "v3/developer/configure/workflows/nodes/delay",
+                          "v3/developer/configure/workflows/nodes/file-handler",
+                          "v3/developer/configure/workflows/nodes/function-node",
+                          "v3/developer/configure/workflows/nodes/http",
+                          "v3/developer/configure/workflows/nodes/human-task",
+                          "v3/developer/configure/workflows/nodes/log-node",
+                          "v3/developer/configure/workflows/nodes/loop",
+                          "v3/developer/configure/workflows/nodes/pdf",
+                          "v3/developer/configure/workflows/nodes/response",
+                          "v3/developer/configure/workflows/nodes/rule",
+                          "v3/developer/configure/workflows/nodes/send-email",
+                          "v3/developer/configure/workflows/nodes/sub-flows",
+                          "v3/developer/configure/workflows/nodes/switch-case",
+                          "v3/developer/configure/workflows/nodes/tables",
+                          "v3/developer/configure/workflows/nodes/terminate-node",
+                          "v3/developer/configure/workflows/nodes/transform",
+                          "v3/developer/configure/workflows/nodes/try-catch-node",
+                          "v3/developer/configure/workflows/nodes/wait-for-webhook"
+                        ]
+                      },
+                      "v3/developer/configure/workflows/data-variables",
+                      "v3/developer/configure/workflows/templating",
+                      "v3/developer/configure/workflows/custom-output",
+                      "v3/developer/configure/workflows/testing",
+                      "v3/developer/configure/workflows/best-practices"
+                    ]
+                  },
+                  {
+                    "group": "Advanced",
+                    "pages": [
+                      "v3/developer/advanced/tables",
+                      "v3/developer/advanced/internal-functions",
+                      "v3/developer/advanced/data-ref-node"
+                    ]
+                  },
+                  "v3/developer/configure/audit"
+                ]
+              },
+              {
+                "group": "Platform Settings",
+                "pages": [
+                  {
+                    "group": "Personal",
+                    "pages": [
+                      "v3/developer/configure/settings/user/profile",
+                      "v3/developer/configure/settings/user/authentication"
+                    ]
+                  },
+                  {
+                    "group": "Workspace Settings",
+                    "pages": [
+                      "v3/developer/configure/settings/organization/workspaces",
+                      "v3/developer/configure/settings/organization/overview",
+                      "v3/developer/configure/settings/organization/users",
+                      "v3/developer/configure/settings/organization/roles",
+                      "v3/developer/configure/settings/organization/credentials",
+                      "v3/developer/configure/settings/organization/email",
+                      "v3/developer/configure/settings/organization/connect-portal",
+                      "v3/developer/configure/settings/organization/environment-variables",
+                      "v3/developer/configure/settings/organization/certificates",
+                      "v3/developer/configure/settings/organization/policy"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Authenticating User",
+                "pages": [
+                  "v3/developer/guide/ship/auth_flows/hosted",
+                  "v3/developer/guide/ship/auth_flows/build_your_own",
+                  "v3/developer/auth/bring-your-vault",
+                  "v3/developer/guide/ship/auth_flows/re-auth-flow",
+                  "v3/developer/auth/importing-existing-auth",
+                  "v3/developer/auth/auth-logs"
+                ]
+              },
+              {
+                "group": "Deployment",
+                "pages": [
+                  "v3/developer/deploy/overview",
+                  "v3/developer/deploy/control-plane",
+                  "v3/developer/deploy/docker-compose",
+                  {
                     "group": "Kubernetes",
                     "pages": [
-                      "v3/developer/deployment/kubernetes/helm",
-                      "v3/developer/deployment/kubernetes/refold-cp"
+                      "v3/developer/deploy/kubernetes/helm",
+                      "v3/developer/deploy/kubernetes/refold-cp",
+                      "v3/developer/deploy/kubernetes/air-gapped"
                     ]
                   },
                   {
                     "group": "How-tos",
                     "pages": [
-                      "v3/developer/deployment/how-tos/setup-https",
-                      "v3/developer/deployment/how-tos/setup-opentelemetry",
-                      "v3/developer/deployment/how-tos/storage-minio"
+                      "v3/developer/deploy/how-tos/setup-https",
+                      "v3/developer/deploy/how-tos/setup-opentelemetry",
+                      "v3/developer/deploy/how-tos/storage-minio"
                     ]
                   },
-                  "v3/developer/deployment/upgrades",
-                  "v3/developer/deployment/backup-restore",
-                  "v3/developer/deployment/troubleshooting",
+                  "v3/developer/deploy/backup-restore",
+                  "v3/developer/deploy/troubleshooting",
                   {
                     "group": "Architecture",
                     "pages": [
-                      "v3/developer/deployment/architecture/overview",
-                      "v3/developer/deployment/architecture/benchmarking"
+                      "v3/developer/deploy/architecture/overview",
+                      "v3/developer/deploy/architecture/benchmarking"
                     ]
                   },
-                  "v3/developer/deployment/go-live-checklist"
+                  "v3/developer/deploy/go-live-checklist"
                 ]
               },
               {
-                "group": "Security & Compliance",
+                "group": "Custom App",
                 "pages": [
-                  {
-                    "group": "Application Security",
-                    "pages": [
-                      "v3/developer/security-compliance/application-security/overview",
-                      "v3/developer/security-compliance/application-security/data-encryption",
-                      "v3/developer/security-compliance/application-security/access-controls",
-                      "v3/developer/security-compliance/application-security/audit-logging"
-                    ]
-                  },
-                  {
-                    "group": "Certifications",
-                    "pages": [
-                      "v3/developer/security-compliance/certifications/overview"
-                    ]
-                  },
-                  {
-                    "group": "Privacy",
-                    "pages": [
-                      "v3/developer/security-compliance/privacy/overview"
-                    ]
-                  },
-                  "v3/developer/security-compliance/terms-of-use"
+                  "v3/developer/guide/custom-apps/getting-started",
+                  "v3/developer/guide/custom-apps/authentication-setup",
+                  "v3/developer/guide/custom-apps/field-configuration",
+                  "v3/developer/guide/custom-apps/testing-publishing"
+                ]
+              },
+              {
+                "group": "Monitor",
+                "pages": [
+                  "v3/developer/monitor/logs",
+                  "v3/developer/monitor/reliability",
+                  "v3/developer/monitor/testing"
+                ]
+              },
+              {
+                "group": "Security",
+                "pages": [
+                  "v3/developer/security/application-security",
+                  "v3/developer/security/certifications",
+                  "v3/developer/security/privacy"
                 ]
               },
               {
@@ -1200,7 +1025,7 @@
             ]
           },
           {
-            "tab": "Embedded",
+            "tab": "Native",
             "groups": [
               {
                 "group": "Overview",
@@ -1287,7 +1112,7 @@
             ]
           },
           {
-            "tab": "Project",
+            "tab": "Integration Delivery",
             "groups": [
               {
                 "group": "Overview",
@@ -1374,68 +1199,68 @@
             ]
           },
           {
-            "tab": "MCP & AI Agents",
+            "tab": "MCP",
             "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "v3/mcp-ai-agents/overview/what-is-mcp",
-                  "v3/mcp-ai-agents/overview/use-cases",
-                  "v3/mcp-ai-agents/overview/architecture"
-                ]
-              },
               {
                 "group": "Getting Started",
                 "pages": [
-                  "v3/mcp-ai-agents/overview/getting-started"
+                  "v3/mcp-ai-agents/overview/what-is-mcp",
+                  "v3/mcp-ai-agents/overview/architecture",
+                  "v3/mcp-ai-agents/overview/choose-your-pattern",
+                  "v3/mcp-ai-agents/overview/getting-started",
+                  "v3/mcp-ai-agents/overview/connect-from-agent-code"
                 ]
               },
               {
-                "group": "MCP Setup",
+                "group": "Build",
                 "pages": [
-                  "v3/mcp-ai-agents/implementation/account-hierarchy",
-                  "v3/mcp-ai-agents/implementation/multi-tenant-workflows"
+                  "v3/mcp-ai-agents/overview/server-configuration",
+                  {
+                    "group": "Skills",
+                    "expanded": true,
+                    "pages": [
+                      "v3/mcp-ai-agents/skills/overview",
+                      "v3/mcp-ai-agents/skills/creating-skills",
+                      "v3/mcp-ai-agents/skills/examples"
+                    ]
+                  },
+                  {
+                    "group": "Workflows",
+                    "expanded": true,
+                    "pages": [
+                      "v3/mcp-ai-agents/workflow-as-mcp/overview",
+                      "v3/mcp-ai-agents/workflow-as-mcp/reliability",
+                      "v3/mcp-ai-agents/workflow-as-mcp/configuration",
+                      "v3/mcp-ai-agents/workflow-as-mcp/examples"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Chains",
+                "group": "Reference",
                 "pages": [
-                  "v3/mcp-ai-agents/chains/overview",
-                  "v3/mcp-ai-agents/chains/creating-chains",
-                  "v3/mcp-ai-agents/chains/examples"
+                  "v3/mcp-ai-agents/overview/concepts",
+                  "v3/mcp-ai-agents/tools-reference/tools"
                 ]
               },
               {
-                "group": "Workflow as MCP",
+                "group": "Operate",
                 "pages": [
-                  "v3/mcp-ai-agents/workflow-as-mcp/overview",
-                  "v3/mcp-ai-agents/workflow-as-mcp/reliability",
-                  "v3/mcp-ai-agents/workflow-as-mcp/configuration",
-                  "v3/mcp-ai-agents/workflow-as-mcp/examples"
-                ]
-              },
-              {
-                "group": "Use Cases",
-                "pages": [
-                  "v3/mcp-ai-agents/overview/use-cases"
-                ]
-              },
-              {
-                "group": "Security",
-                "pages": [
-                  "v3/mcp-ai-agents/implementation/security-compliance",
-                  "v3/mcp-ai-agents/enterprise/advanced-security"
+                  "v3/mcp-ai-agents/security/mcp-logs",
+                  "v3/mcp-ai-agents/security/debugging",
+                  "v3/mcp-ai-agents/implementation/security-compliance"
                 ]
               }
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "API references & SDK",
             "groups": [
               {
                 "group": "Overview",
                 "pages": [
-                  "v3/api-reference/overview"
+                  "v3/api-reference/overview",
+                  "v3/api-reference/sdks"
                 ]
               },
               {
@@ -1459,76 +1284,58 @@
               {
                 "group": "Integration Schema",
                 "pages": [
-                  "v3/api-reference/integration-schema/get-actions-for-an-application",
-                  "v3/api-reference/integration-schema/get-action-parameters",
-                  "v3/api-reference/integration-schema/execute-action"
+                  "v3/api-reference/integration-meta/get-actions-for-slug",
+                  "v3/api-reference/integration-meta/get-action-parameters",
+                  "v3/api-reference/integration-meta/execute-action"
                 ]
               },
               {
                 "group": "Config",
                 "pages": [
-                  "v3/api-reference/config/get-config",
-                  "v3/api-reference/config/get-all-config",
-                  "v3/api-reference/config/upsert-config",
+                  "v3/api-reference/config/find-or-create-config",
                   "v3/api-reference/config/update-config",
+                  "v3/api-reference/config/get-all-config",
+                  "v3/api-reference/config/get-config",
                   "v3/api-reference/config/delete-config"
                 ]
               },
               {
                 "group": "Config Fields",
                 "pages": [
-                  "v3/api-reference/config-fields/get-all-config-fields",
-                  "v3/api-reference/config-fields/config-field-by-id",
-                  "v3/api-reference/config-fields/update-field-value-by-id",
-                  "v3/api-reference/config-fields/delete-field-by-id",
-                  "v3/api-reference/config-fields/get-options-for-rule-engine"
-                ]
-              },
-              {
-                "group": "Workflows",
-                "pages": [
-                  "v3/api-reference/public_workflows/get_public_workflows",
-                  "v3/api-reference/public_workflows/create_public_workflow",
-                  "v3/api-reference/public_workflows/get_draft"
-                ]
-              },
-              {
-                "group": "Events",
-                "pages": [
-                  "v3/api-reference/event/create_event",
-                  "v3/api-reference/event/get_event",
-                  "v3/api-reference/event/update_event_by_id",
-                  "v3/api-reference/event/delete_event",
-                  "v3/api-reference/event/list_event",
-                  "v3/api-reference/event/trigger-event",
-                  "v3/api-reference/event/trigger-an-event-from-your-application"
-                ]
-              },
-              {
-                "group": "MCP Server",
-                "pages": [
-                  "v3/api-reference/mcp-server/list-mcp-server",
-                  "v3/api-reference/mcp-server/create-mcp-server",
-                  "v3/api-reference/mcp-server/get-mcp-server",
-                  "v3/api-reference/mcp-server/update-mcp-server",
-                  "v3/api-reference/mcp-server/delete-mcp-server"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-rule-engine"
                 ]
               },
               {
                 "group": "Datastores",
                 "pages": [
-                  "v3/api-reference/datastore/list-config-datastore",
-                  "v3/api-reference/datastore/list-records-in-datastore",
-                  "v3/api-reference/datastore/search-datastore-record"
+                  "v3/api-reference/datastore/list-config-datastores",
+                  "v3/api-reference/datastore/config-datastore-records",
+                  "v3/api-reference/datastore/search-config-records"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "v3/api-reference/event/create-event",
+                  "v3/api-reference/event/get-event",
+                  "v3/api-reference/event/update-event",
+                  "v3/api-reference/event/delete-event",
+                  "v3/api-reference/event/list-events",
+                  "v3/api-reference/event/trigger-an-event-from-your-application",
+                  "v3/api-reference/event/trigger-event"
                 ]
               },
               {
                 "group": "Webhooks",
                 "pages": [
                   "v3/api-reference/webhooks/create-webhook",
+                  "v3/api-reference/webhooks/update-webhook",
                   "v3/api-reference/webhooks/get-webhook",
                   "v3/api-reference/webhooks/get-webhook-by-id",
-                  "v3/api-reference/webhooks/update-webhook",
                   "v3/api-reference/webhooks/delete-webhook",
                   "v3/api-reference/webhooks/subscribe-webhook-event",
                   "v3/api-reference/webhooks/unsubscribe-webhook-event"
@@ -1539,6 +1346,16 @@
                 "pages": [
                   "v3/api-reference/executions/get-execution",
                   "v3/api-reference/executions/list-executions"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "v3/api-reference/private_workflows/create_private_workflow",
+                  "v3/api-reference/private_workflows/get_private_workflows",
+                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
+                  "v3/api-reference/private_workflows/get_draft",
+                  "v3/api-reference/private_workflows/publish_workflow"
                 ]
               },
               {
@@ -1559,34 +1376,20 @@
                 ]
               },
               {
-                "group": "Hosted Portal",
+                "group": "MCP Servers",
                 "pages": [
-                  "v3/api-reference/hosted-portal/get-connect-url",
-                  "v3/api-reference/hosted-portal/get-hosted-properties"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "v3/sdks/overview"
+                  "v3/api-reference/mcp/list-mcp-servers",
+                  "v3/api-reference/mcp/get-mcp-server",
+                  "v3/api-reference/mcp/create-mcp-server",
+                  "v3/api-reference/mcp/update-mcp-server",
+                  "v3/api-reference/mcp/delete-mcp-server"
                 ]
               },
               {
-                "group": "Client-Side SDKs",
+                "group": "Refold Hosted",
                 "pages": [
-                  "v3/sdks/client-side/javascript-sdk",
-                  "v3/sdks/client-side/react-sdk"
-                ]
-              },
-              {
-                "group": "Server-Side SDKs",
-                "pages": [
-                  "v3/sdks/server-side/nodejs-sdk"
+                  "v3/api-reference/cobalt-connect/get-connect-url",
+                  "v3/api-reference/cobalt-connect/get-hosted-properties"
                 ]
               }
             ]
@@ -1598,7 +1401,14 @@
                 "group": "Changes",
                 "pages": [
                   "v3/changelog/overview",
-                  "v3/changelog/2026"
+                  {
+                    "group": "2026",
+                    "pages": [
+                      "v3/changelog/2026/april",
+                      "v3/changelog/2026/march",
+                      "v3/changelog/2026/february"
+                    ]
+                  }
                 ]
               }
             ]
@@ -1840,140 +1650,142 @@
             ]
           },
           {
-            "tab": "API Reference",
+            "tab": "API references & SDK",
             "groups": [
               {
-                "group": "About API Reference",
+                "group": "Overview",
                 "pages": [
-                  "legacy/api-reference/overview"
+                  "v3/api-reference/overview",
+                  "v3/api-reference/sdks"
                 ]
               },
               {
-                "group": "Linked Account",
+                "group": "Linked Accounts",
                 "pages": [
-                  "legacy/api-reference/customer/get-linked-account",
-                  "legacy/api-reference/customer/list-linked-accounts",
-                  "legacy/api-reference/customer/create-linked-account",
-                  "legacy/api-reference/customer/upsert-a-linked-account",
-                  "legacy/api-reference/customer/delete-linked-account"
+                  "v3/api-reference/customer/create-linked-account",
+                  "v3/api-reference/customer/get-linked-account",
+                  "v3/api-reference/customer/list-linked-accounts",
+                  "v3/api-reference/customer/upsert-a-linked-account",
+                  "v3/api-reference/customer/delete-linked-account"
                 ]
               },
               {
                 "group": "Applications",
                 "pages": [
-                  "legacy/api-reference/integration-meta/list-applications",
-                  "legacy/api-reference/integration-meta/get-application",
-                  "legacy/api-reference/integration-meta/update-application-auth"
+                  "v3/api-reference/integration-meta/list-applications",
+                  "v3/api-reference/integration-meta/get-application",
+                  "v3/api-reference/integration-meta/update-application-auth"
+                ]
+              },
+              {
+                "group": "Integration Schema",
+                "pages": [
+                  "v3/api-reference/integration-meta/get-actions-for-slug",
+                  "v3/api-reference/integration-meta/get-action-parameters",
+                  "v3/api-reference/integration-meta/execute-action"
                 ]
               },
               {
                 "group": "Config",
                 "pages": [
-                  "legacy/api-reference/config/find-or-create-config",
-                  "legacy/api-reference/config/update-config",
-                  "legacy/api-reference/config/get-all-config",
-                  "legacy/api-reference/config/get-config",
-                  "legacy/api-reference/config/delete-config"
+                  "v3/api-reference/config/find-or-create-config",
+                  "v3/api-reference/config/update-config",
+                  "v3/api-reference/config/get-all-config",
+                  "v3/api-reference/config/get-config",
+                  "v3/api-reference/config/delete-config"
                 ]
               },
               {
                 "group": "Config Fields",
                 "pages": [
-                  "legacy/api-reference/config-fields/get-all-fields",
-                  "legacy/api-reference/config-fields/get-field-by-id",
-                  "legacy/api-reference/config-fields/update-field-value",
-                  "legacy/api-reference/config-fields/delete-field-value",
-                  "legacy/api-reference/config-fields/get-options-rule-engine"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-rule-engine"
                 ]
               },
               {
                 "group": "Datastores",
                 "pages": [
-                  "legacy/api-reference/datastore/list-config-datastores",
-                  "legacy/api-reference/datastore/config-datastore-records",
-                  "legacy/api-reference/datastore/search-config-records"
+                  "v3/api-reference/datastore/list-config-datastores",
+                  "v3/api-reference/datastore/config-datastore-records",
+                  "v3/api-reference/datastore/search-config-records"
                 ]
               },
               {
-                "group": "Event",
+                "group": "Events",
                 "pages": [
-                  "legacy/api-reference/event/trigger-an-event-from-your-application",
-                  "legacy/api-reference/event/trigger-event"
+                  "v3/api-reference/event/create-event",
+                  "v3/api-reference/event/get-event",
+                  "v3/api-reference/event/update-event",
+                  "v3/api-reference/event/delete-event",
+                  "v3/api-reference/event/list-events",
+                  "v3/api-reference/event/trigger-an-event-from-your-application",
+                  "v3/api-reference/event/trigger-event"
                 ]
               },
               {
                 "group": "Webhooks",
                 "pages": [
-                  "legacy/api-reference/webhooks/create-webhook",
-                  "legacy/api-reference/webhooks/update-webhook",
-                  "legacy/api-reference/webhooks/get-webhook",
-                  "legacy/api-reference/webhooks/get-webhook-by-id",
-                  "legacy/api-reference/webhooks/delete-webhook",
-                  "legacy/api-reference/webhooks/subscribe-webhook-event",
-                  "legacy/api-reference/webhooks/unsubscribe-webhook-event"
+                  "v3/api-reference/webhooks/create-webhook",
+                  "v3/api-reference/webhooks/update-webhook",
+                  "v3/api-reference/webhooks/get-webhook",
+                  "v3/api-reference/webhooks/get-webhook-by-id",
+                  "v3/api-reference/webhooks/delete-webhook",
+                  "v3/api-reference/webhooks/subscribe-webhook-event",
+                  "v3/api-reference/webhooks/unsubscribe-webhook-event"
                 ]
               },
               {
                 "group": "Executions",
                 "pages": [
-                  "legacy/api-reference/executions/get-execution",
-                  "legacy/api-reference/executions/list-executions"
+                  "v3/api-reference/executions/get-execution",
+                  "v3/api-reference/executions/list-executions"
                 ]
               },
               {
-                "group": "Public Workflows",
+                "group": "Workflows",
                 "pages": [
-                  "legacy/api-reference/public_workflows/create_public_workflow",
-                  "legacy/api-reference/public_workflows/get_public_workflows",
-                  "legacy/api-reference/public_workflows/get_draft"
+                  "v3/api-reference/private_workflows/create_private_workflow",
+                  "v3/api-reference/private_workflows/get_private_workflows",
+                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
+                  "v3/api-reference/private_workflows/get_draft",
+                  "v3/api-reference/private_workflows/publish_workflow"
                 ]
               },
               {
                 "group": "Schedule",
                 "pages": [
-                  "legacy/api-reference/schedule/register-cron",
-                  "legacy/api-reference/schedule/get-all-schedules",
-                  "legacy/api-reference/schedule/pause-schedule",
-                  "legacy/api-reference/schedule/resume-schedule",
-                  "legacy/api-reference/schedule/update-schedule-job",
-                  "legacy/api-reference/schedule/delete-schedule"
+                  "v3/api-reference/schedule/register-cron",
+                  "v3/api-reference/schedule/get-all-schedules",
+                  "v3/api-reference/schedule/pause-schedule",
+                  "v3/api-reference/schedule/resume-schedule",
+                  "v3/api-reference/schedule/update-schedule-job",
+                  "v3/api-reference/schedule/delete-schedule"
                 ]
               },
               {
                 "group": "Session Token",
                 "pages": [
-                  "legacy/api-reference/session-token/generate-token-for-linked-account"
+                  "v3/api-reference/session-token/generate-token-for-linked-account"
                 ]
               },
               {
-                "group": "Cobalt Hosted",
+                "group": "MCP Servers",
                 "pages": [
-                  "legacy/api-reference/cobalt-connect/get-connect-url",
-                  "legacy/api-reference/cobalt-connect/get-hosted-properties"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "groups": [
-              {
-                "group": "Cobalt SDKs",
-                "pages": [
-                  "legacy/sdks/overview"
+                  "v3/api-reference/mcp/list-mcp-servers",
+                  "v3/api-reference/mcp/get-mcp-server",
+                  "v3/api-reference/mcp/create-mcp-server",
+                  "v3/api-reference/mcp/update-mcp-server",
+                  "v3/api-reference/mcp/delete-mcp-server"
                 ]
               },
               {
-                "group": "Server-side SDKs",
+                "group": "Refold Hosted",
                 "pages": [
-                  "legacy/sdks/server-side-sdks/nodejs-sdk"
-                ]
-              },
-              {
-                "group": "Client-side SDKs",
-                "pages": [
-                  "legacy/sdks/client-side-sdks/react-sdk",
-                  "legacy/sdks/client-side-sdks/js-sdk"
+                  "v3/api-reference/cobalt-connect/get-connect-url",
+                  "v3/api-reference/cobalt-connect/get-hosted-properties"
                 ]
               }
             ]
@@ -1982,24 +1794,15 @@
             "tab": "Changelog",
             "groups": [
               {
-                "group": "Resources",
+                "group": "Changes",
                 "pages": [
+                  "v3/changelog/overview",
                   {
-                    "group": "Integration Providers",
+                    "group": "2026",
                     "pages": [
-                      "legacy/applications/providers/overview",
-                      {
-                        "group": "Adobe Sign",
-                        "pages": [
-                          "legacy/applications/providers/adobesign"
-                        ]
-                      },
-                      {
-                        "group": "Adobe Workfront",
-                        "pages": [
-                          "legacy/applications/providers/adobe_workfront"
-                        ]
-                      }
+                      "v3/changelog/2026/april",
+                      "v3/changelog/2026/march",
+                      "v3/changelog/2026/february"
                     ]
                   }
                 ]
@@ -2161,15 +1964,16 @@
       }
     ]
   },
+  "openapi": "v3/api-reference/openapi.yaml",
   "api": {
     "baseUrl": "https://api.gocobalt.io",
     "auth": {
       "method": "key",
       "name": "x-api-key",
-      "inputPrefix": "<Your Cobalt API key>"
+      "inputPrefix": "<Your Refold API key>"
     },
     "playground": {
-      "mode": "show"
+      "mode": "simple"
     }
   },
   "footerSocials": {

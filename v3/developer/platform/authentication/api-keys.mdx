@@ -1,15 +1,15 @@
 ---
-title: "API Keys"
-description: "Authenticate server-to-server requests with API keys"
+title: "API Key"
+description: "Generate and manage API keys for Refold platform authentication"
 ---
 
-# API Keys
+# API Key
 
-API keys are the primary method for authenticating server-to-server requests to the Cobalt API.
+API keys are the primary method for authenticating server-to-server requests to the Refold API.
 
 <Steps>
   <Step title="Generate API Key">
-    Navigate to **Settings** → **API Keys** in your Cobalt dashboard and click **Generate New Key**
+    Navigate to **Settings** → **API Keys** in your Refold dashboard and click **Generate New Key**
   </Step>
   
   <Step title="Configure Permissions">
@@ -27,10 +27,10 @@ API keys are the primary method for authenticating server-to-server requests to 
 
 <CodeGroup>
 ```javascript Node.js
-// Initialize Cobalt SDK with API key
-const { CobaltSDK } = require('@cobalt-io/sdk');
+// Initialize Refold SDK with API key
+const { RefoldSDK } = require('@cobalt-io/sdk');
 
-const cobalt = new CobaltSDK({
+const cobalt = new RefoldSDK({
   apiKey: process.env.COBALT_API_KEY,
   environment: 'production'
 });
@@ -38,10 +38,10 @@ const cobalt = new CobaltSDK({
 
 ```python Python
 import os
-from cobalt_sdk import CobaltSDK
+from cobalt_sdk import RefoldSDK
 
 # Initialize with API key from environment
-cobalt = CobaltSDK(
+cobalt = RefoldSDK(
     api_key=os.getenv('COBALT_API_KEY'),
     environment='production'
 )
@@ -79,6 +79,28 @@ curl -X GET 'https://api.gocobalt.io/api/v1/linked-accounts' \
   </Tab>
 </Tabs>
 
+## Security Best Practices
+
 <Warning>
 Never expose API keys in client-side code or public repositories. Always use environment variables or secure secret management.
 </Warning>
+
+```javascript
+// ✅ Good - Server-side with environment variable
+const apiKey = process.env.COBALT_API_KEY;
+
+// ❌ Bad - Client-side or hardcoded
+const apiKey = 'pk_live_abc123...'; // Never do this!
+```
+
+## Troubleshooting
+
+<Accordion title="Invalid API Key">
+**Symptoms**: 401 Unauthorized responses
+
+**Solutions**:
+- Verify API key is correct and not expired
+- Check API key permissions and scopes
+- Ensure proper header format: `x-api-key: YOUR_KEY`
+- Regenerate API key if necessary
+</Accordion>

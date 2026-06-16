@@ -1,0 +1,84 @@
+---
+title: "Connect Portal"
+description: "Brand the Connect Portal and control what customers can see and do when they link their accounts."
+---
+
+The **Connect Portal** is the public-facing portal your customers use to
+link their accounts and manage their integrations. This page controls its
+branding, which sections and workflow nodes customers can see, the AI
+features available to them, and the legal and redirect URLs.
+
+Open it from **Settings > Configuration > Connect Portal**, then click
+**Save** to apply your changes.
+
+## Design
+
+Customize the look of the portal.
+
+- **Theme** — `Auto`, `Light`, or `Dark`.
+- **Color Palette** — the accent color used across the portal: Gray, Red,
+  Pink, Purple, Cyan, Blue, Teal, Green, Yellow, or Orange.
+- **Navigation** — where the portal navigation sits: `Top`, `Left`, or
+  `Right`.
+- **Collection** — how items are displayed: `List` or `Card`.
+
+{/* MEDIA-TODO (image): screenshot of the Design section showing Theme,
+    Color Palette, Navigation, and Collection options. */}
+<Frame caption="Connect Portal design options">
+  <img src="/images/PLACEHOLDER.png" alt="Connect Portal theme, color palette, navigation, and collection settings" />
+</Frame>
+
+## Visibility
+
+The **Visibility** section controls which parts of the portal customers see
+and what they can do with their private workflows. Each option is a toggle
+with an inline description in the dashboard.
+
+For example, you can let customers view projects and project workflows,
+create their own application or AI workflows, see execution logs, switch
+between saved configs, or view audit logs — and choose whether workflows
+open in a new tab.
+
+### Hidden nodes
+
+If customers build their own workflows, **Hidden Nodes** lets you hide
+specific node types from them — for example, **Custom Code**, **HTTP Node**,
+or **Send Emails**. The counter (such as `0 / 23`) shows how many nodes are
+currently hidden.
+
+## AI
+
+The **AI** section turns on AI-assisted features in the portal, such as
+generating and editing workflows or automatically mapping config fields.
+
+<Note>
+  AI agents must be enabled for your organization first. **Contact support**
+  to turn them on.
+</Note>
+
+## Experimental features
+
+<Warning>
+  These features are experimental and may be changed or removed in the future.
+</Warning>
+
+The **Experimental Features** section lets you opt into early functionality —
+for example, allowing customers to create pipelines, showing organization or
+linked-account details in the portal, or removing Refold's branding.
+
+## URLs
+
+The **URLs** section configures the links used in the portal: the
+**Redirection URL** customers return to after authenticating, and your
+**Terms of Service** and **Privacy Policy** links shown to customers.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Auth flows" href="/v3/developer/guide/ship/auth_flows/hosted">
+    Pick the auth flow customers go through inside the portal.
+  </Card>
+  <Card title="Linked accounts" href="/v3/developer/configure/linked-account">
+    See what Refold records about each customer connection.
+  </Card>
+</CardGroup>

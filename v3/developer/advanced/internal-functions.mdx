@@ -1,49 +1,83 @@
 ---
-title: Internal Functions
-description: Create reusable functions or provides built-in, non-editable library functions in workflows.
+title: "Internal Functions"
+description: "Reusable JavaScript-style functions you can call from any workflow."
 ---
 
-A Custom Code node is used to solve any data-related issues that required coding in the workflows. If the same code was needed at multiple places, the users need to use a Custom code node with the same code in different workflows. 
+Internal Functions are reusable JavaScript functions defined once at the workspace level and called from any workflow through the Functions node. Use them to share logic, like data transforms, signature generation, or date math, across multiple workflows without copy-pasting Custom Code into each one.
 
-<Info>
-If you want to learn more about Custom Code Node, refer [here](https://docs.gocobalt.io/build/workflow/custom-code).
-</Info>
+<Note>
+For one-off scripts that live inside a single workflow, use the [Custom Code node](https://docs.gocobalt.io/build/workflow/custom-code) instead. Internal Functions are for logic you want to call from more than one place.
+</Note>
 
-To reduct this repetitive process, the solution is the Functions node. Using this, you can create reusable functions at the global level for your Cobalt account, which can then be used inside workflows.
+## Define a function
 
-## Create your Functions
+A function definition has three parts:
 
-You can create your own functions to be used in the node by providing three things:
-- Code for the function
-- Input fields
-- Output fields.
+- **Code**: the JavaScript body that runs when the function is called.
+- **Input fields**: the parameters the function accepts.
+- **Output fields**: the keys the function returns.
 
-To create your own function, follow these steps:
+The runtime is server-side JavaScript. Each function exports a single entry point named `yourFunction` that takes a `params` object and returns an object whose keys match the declared output fields. Async functions are supported.
+
+### Create a function
+
 <Steps>
-  <Step title="Navigate">
-    In the Cobalt dashboard, navigate to `Functions` under **Advanced** in the side menu.
+  <Step title="Open the Functions page">
+    In the Refold dashboard, go to **Advanced > Functions** in the side menu.
   </Step>
+  <Step title="Start a new function">
+    Click **+ Create Function** and enter a **Name** for the function.
 
-  <Step title="Create function">
-    Click on `+ Create Function` button and provide its **Name**.
-<img height="200" src="/images/Guides/Nodes/functions_create.png" alt="Create Functions"/>
+    {/* MEDIA-TODO (image): screenshot of the Create Function dialog with the Name field filled in */}
+    <Frame>
+      <img height="200" src="/images/Guides/Nodes/functions_create.png" alt="Create Functions" />
+    </Frame>
   </Step>
+  <Step title="Write the code and declare inputs and outputs">
+    Write the function body, then declare the **input** parameters the function expects and the **output** fields it returns. Click **Create** to save.
 
-  <Step title="Write function">
-    Write your function and also define the input and output parameters that you require.
-    Once done, click on `Create`.
     <Info>
-    You can also use JavaScript Libraries supported by Cobalt in the function code. Refer [here](/build/workflow/internal_functions#supported-javascript-libraries-and-usage) to check the list of supported libraries.
+    You can `require` any of the supported npm libraries inside the function body. See [Supported libraries](#supported-libraries) for the full list.
     </Info>
   </Step>
 </Steps>
+
 <Tip>
-Once a function is created, you can also edit it as required by selecting that function from `Functions`.
+To change a function later, open **Advanced > Functions**, select it, and edit the code, inputs, or outputs in place.
 </Tip>
 
-## Supported JavaScript Libraries & Usage
+### Function shape
 
-The full list for the supported npm modules that can be used to write your own internal function is below. If you don't see the module that you want, [contact us](mailto:integrations@gocobalt.io) and we will get that added.
+Every function follows the same shape:
+
+```javascript
+function yourFunction(params) {
+    // params.<inputField> matches each declared input
+    return {
+        // each key matches a declared output field
+        data: "value"
+    };
+}
+```
+
+For async work (HTTP calls, awaits), use `async`:
+
+```javascript
+async function yourFunction(params) {
+    const result = await someAsyncCall();
+    return { data: result };
+}
+```
+
+## Call a function from a workflow
+
+To run an internal function inside a workflow, add a **Functions node** and pick the function by name. The node exposes one form field per declared input. Map workflow data into each input the same way you map data into any other node.
+
+The function's return object becomes the node's output. Downstream nodes can reference any returned key (for example, `{{functions_node.data}}`) just as they would with any other node's output.
+
+## Supported libraries
+
+You can `require` any of the npm modules below inside a function body. If a module you need is not in this list, email [integrations@gocobalt.io](mailto:integrations@gocobalt.io) to request it.
 
 - [axios](https://www.npmjs.com/package/axios)
 - [cheerio](https://www.npmjs.com/package/cheerio)
@@ -51,35 +85,58 @@ The full list for the supported npm modules that can be used to write your own i
 - [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
 - [fuse.js](https://www.npmjs.com/package/fuse.js)
 - [lodash](https://www.npmjs.com/package/lodash)
-- [mime](https://www.npmjs.com/package/mime/v/3.0.0)
+- [mime](https://www.npmjs.com/package/mime/v/3.0.0) (pinned to v3.0.0)
 - [number-to-words](https://www.npmjs.com/package/number-to-words)
 - [url](https://www.npmjs.com/package/url)
 - [uuid](https://www.npmjs.com/package/uuid)
 - [danfo](https://danfo.jsdata.org/getting-started)
 
-**How to use Libraries**
+<Note>
+The `danfo` library is loaded with `require('dfd')`, not `require('danfojs')`.
+</Note>
 
-To know how you can use these external libraries in your Internal Code function, refer to the examples below for axios and lodash.
+## Library functions
+
+Refold ships a set of pre-defined functions called **Library functions** that appear in the Functions node by default. You can call them but you cannot edit them.
+
+Common Library functions include:
+
+- Find element in array
+- Encrypt string
+- Get current date
+
+To use one, select it in the Functions node and fill in the required inputs.
+
+{/* MEDIA-TODO (image): screenshot of the Functions node showing the list of Library functions */}
+<Frame>
+  <img height="200" src="/images/Guides/Nodes/functions.png" alt="Library Functions" />
+</Frame>
+
+## Examples
+
 <CodeGroup>
-```JavaScript axios
+```javascript axios
 const axios = require('axios');
 
 async function yourFunction(params) {
     const res = await axios.get("https://genshin-impact.up.railway.app/characters");
 
-    return{
+    return {
         data: res.data
-    }
+    };
 }
 ```
-```JavaScript danfo
-const dfd = require('dfd')
+
+```javascript danfo
+const dfd = require('dfd');
+
 function yourFunction(params) {
-    const s = new dfd.Series([1, 3, 5, undefined, 6, 8])
-    return dfd.toJSON(s)
+    const s = new dfd.Series([1, 3, 5, undefined, 6, 8]);
+    return dfd.toJSON(s);
 }
 ```
-``` JavaScript lodash
+
+```javascript lodash
 const _ = require('lodash');
 
 function yourFunction(params) {
@@ -93,20 +150,13 @@ function yourFunction(params) {
 ```
 </CodeGroup>
 
+## Next steps
 
-## Pre-defined Library functions
-
-You can also use some pre-defined functions, also known as Library functions offered by Cobalt. These functions show up in the Functions node by default and can't be edited.
-
-Few of the library functions are:
-- Find element in array,
-- Encrypt string,
-- Get current date; & many more.
-
-Once you select a function, simply provide the required inputs to perform it.
-
-<img height="200" src="/images/Guides/Nodes/functions.png" alt="Library Functions"/>
-
-
-
-
+<CardGroup cols={2}>
+  <Card title="Custom Code node" href="https://docs.gocobalt.io/build/workflow/custom-code">
+    Run one-off JavaScript inside a single workflow without creating a reusable function.
+  </Card>
+  <Card title="Request a library" href="mailto:integrations@gocobalt.io">
+    Need an npm module that is not on the supported list? Email the integrations team.
+  </Card>
+</CardGroup>

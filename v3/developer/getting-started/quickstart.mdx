@@ -4,30 +4,30 @@ description: "Get your first integration running in 5 minutes"
 ---
 
 
-Get up and running with Cobalt in under 10 minutes. You'll test a complete integration workflow and see real data flowing between applications.
+Get up and running with Refold in under 10 minutes. You'll test a complete integration workflow and see real data flowing between applications.
 
 ## What You'll Accomplish
 
 By the end of this guide, you'll have:
 - ✅ Tested a live integration workflow
 - ✅ Seen data sync between your app and a third-party platform
-- ✅ Understanding of how Cobalt's core components work together
+- ✅ Understanding of how Refold's core components work together
 
 <Info>
-**Before you start**: You'll need a Cobalt account. [Sign up here](https://app.gocobalt.io/) if you haven't already.
+**Before you start**: You'll need a Refold account. [Sign up here](https://app.gocobalt.io/) if you haven't already.
 </Info>
 
 ---
 
 ## Step 1: Choose Your Test Integration
 
-Navigate to your Cobalt dashboard and pick an integration to test.
+Navigate to your Refold dashboard and pick an integration to test.
 
 <Steps>
 <Step title="Go to Apps">
-In your Cobalt dashboard, click **Apps** in the sidebar. You'll see all available integrations.
+In your Refold dashboard, click **Apps** in the sidebar. You'll see all available integrations.
 
-<img height="200" src="/images/quickstart/apps-sidebar.png" alt="Apps section in Cobalt sidebar navigation" />
+<img height="200" src="/images/quickstart/apps-sidebar.png" alt="Apps section in Refold sidebar navigation" />
 </Step>
 
 <Step title="Pick an Integration">
@@ -155,7 +155,7 @@ Create a linked account to represent your end user and authenticate them.
 </Steps>
 
 <Info>
-The **Hosted Portal** is Cobalt's no-code authentication UI. Later, you can build your own UI using our SDKs.
+The **Hosted Portal** is Refold's no-code authentication UI. Later, you can build your own UI using our SDKs.
 </Info>
 
 ---
@@ -168,7 +168,7 @@ Now trigger the workflow and watch data flow.
 <Step title="Trigger the Workflow">
 
 **For Event-Based Workflows:**
-1. Go to **Try API** in Cobalt
+1. Go to **Try API** in Refold
 2. Select your event (e.g., "Contact Created")
 3. Add test data:
 
@@ -189,7 +189,7 @@ Create a test record directly in your connected app (e.g., add a contact in HubS
 </Step>
 
 <Step title="Check Execution">
-1. Go to **Logs** in Cobalt
+1. Go to **Logs** in Refold
 2. Find your workflow execution
 3. Check the status and any error messages
 
@@ -213,7 +213,7 @@ Here's what just happened behind the scenes:
 
 <CodeGroup>
 ```javascript JavaScript
-// This is what Cobalt did when you fired the event
+// This is what Refold did when you fired the event
 const response = await fetch('https://api.gocobalt.io/api/v2/public/event/contact-created', {
   method: 'POST',
   headers: {
@@ -265,7 +265,7 @@ curl -X POST https://api.gocobalt.io/api/v2/public/event/contact-created \
 
 ## What's Next?
 
-You've successfully tested a Cobalt integration! Here's what to explore next:
+You've successfully tested a Refold integration! Here's what to explore next:
 
 <CardGroup cols={2}>
 <Card title="Build Your First Integration" href="/getting-started/first-integration">
@@ -281,7 +281,7 @@ Set up OAuth apps and API keys for production use
 </Card>
 
 <Card title="Frontend SDK" href="/building-your-frontend/overview">
-Integrate Cobalt's auth flow directly into your application
+Integrate Refold's auth flow directly into your application
 </Card>
 </CardGroup>
 

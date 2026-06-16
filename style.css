@@ -1,174 +1,580 @@
-/* Custom CSS for Cobalt Documentation */
+/* ==========================================================================
+   Refold Documentation — Mintlify Theme
+   Refold Design System tokens (PT Serif / DM Sans / DM Mono · charcoal + blue)
+   This file restyles Mintlify's native components — it does not change layout
+   or replace components. Only the Welcome page uses custom HTML.
+   ========================================================================== */
 
-/* Welcome Page Styling - Anthropic Inspired Design */
-.welcome-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+@import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=PT+Serif:wght@400;700&display=swap");
+
+:root {
+  /* ---- Brand ---- */
+  --rf-charcoal:        #191B20;
+  --rf-charcoal-2:      #2D3036;
+  --rf-electric-blue:   #0057FF;
+  --rf-sky-cyan:        #04CFFF;
+  --rf-lime-mist:       #D8FF70;
+  --rf-warn:            #F23E11;
+
+  /* ---- Grays ---- */
+  --rf-base-500: #46484C;
+  --rf-base-400: #757679;
+  --rf-base-300: #A3A3A5;
+  --rf-base-200: #D1D1D2;
+  --rf-base-150: #F7F7F7;
+  --rf-base-100: #FFFFFF;
+
+  /* ---- Hairlines ---- */
+  --rf-border:        #EAEAEA;
+  --rf-border-dark:   #3A3E49;
+
+  /* ---- Signature gradients ---- */
+  --rf-gradient-1: linear-gradient(90deg, #0057FF 0%, #04CFFF 33.33%, #D8FF70 66.66%, #FFFFFF 100%);
+  --rf-gradient-vertical: linear-gradient(180deg, #191B20 0%, #0057FF 35%, #04CFFF 53%, #D8FF70 100%);
+
+  /* ---- Type families ---- */
+  --rf-font-serif: "PT Serif", Georgia, serif;
+  --rf-font-sans:  "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --rf-font-mono:  "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Mintlify primary color overrides */
+  --primary: var(--rf-electric-blue);
+  --primary-light: #4D8AFF;
+  --primary-dark: #003FB5;
 }
 
-/* Hero Section Styling */
-.hero-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4rem;
-  margin: 4rem 0 6rem 0;
-  min-height: 400px;
+/* ============================================================
+   GLOBAL TYPE — change fonts and color, not sizes/layout
+   ============================================================ */
+html, body {
+  font-family: var(--rf-font-sans);
+  color: var(--rf-charcoal);
+  -webkit-font-smoothing: antialiased;
 }
 
-.hero-content {
-  flex: 1;
-  max-width: 600px;
-}
-
-.hero-title {
-  font-size: 3.5rem;
+h1, h2, h3, h4, h5, h6,
+#content-area h1, #content-area h2, #content-area h3,
+#content-area h4, #content-area h5, #content-area h6 {
+  font-family: var(--rf-font-serif);
   font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  color: #1f2937;
+  letter-spacing: -0.02em;
 }
 
-.dark .hero-title {
-  color: #f9fafb;
+#content-area p, #content-area li {
+  font-family: var(--rf-font-sans);
+  color: var(--rf-base-500);
+}
+.dark #content-area p, .dark #content-area li { color: var(--rf-base-200); }
+
+#content-area a {
+  color: var(--rf-electric-blue);
 }
 
-.hero-subtitle {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  color: #6b7280;
-  margin-bottom: 2rem;
+/* Inline code — square corners, hairline */
+#content-area :not(pre) > code {
+  border-radius: 0;
 }
 
-.dark .hero-subtitle {
-  color: #d1d5db;
+/* Code blocks — square corners only; keep Mintlify's syntax highlighting,
+   tabs, copy button, and colors as-is */
+#content-area pre,
+#content-area [class*="code-block"],
+#content-area [class*="codeblock"],
+#content-area [class*="code-group"],
+#content-area [class*="codeGroup"],
+#content-area figure[class*="code"] {
+  border-radius: 0 !important;
 }
 
-.hero-image {
-  flex: 0 0 400px;
-  display: flex;
+/* Mintlify callouts (Info / Tip / Warning) — square, hairline + colored stripe */
+#content-area [class*="callout"],
+#content-area [data-component="info"],
+#content-area [data-component="tip"],
+#content-area [data-component="warning"],
+#content-area .callout {
+  border-radius: 0 !important;
+  border: 1px solid var(--rf-border);
+  border-left: 4px solid var(--rf-electric-blue);
+  font-family: var(--rf-font-sans);
+}
+#content-area [data-component="warning"] { border-left-color: var(--rf-warn); }
+#content-area [data-component="tip"]     { border-left-color: var(--rf-sky-cyan); }
+
+/* Mintlify Cards / CardGroup — square, hairline */
+#content-area [class*="card-group"] [class*="card"],
+#content-area a[class*="card"] {
+  border-radius: 0 !important;
+}
+
+/* Mintlify Steps — keep default behavior, just refresh hairlines */
+#content-area [class*="steps"] [class*="step"] {
+  border-radius: 0 !important;
+}
+
+/* Tabs — square, mono labels */
+#content-area [class*="tab"] button,
+#content-area [role="tab"] {
+  border-radius: 0 !important;
+  font-family: var(--rf-font-mono);
+  letter-spacing: 0.04em;
+}
+
+/* Sidebar — square corners, mono group headers, sans link font.
+   Explicitly highlight the active page so it's clearly visible in both light
+   and dark modes (don't rely on Mintlify's default which can be too subtle). */
+#sidebar-content,
+[class*="sidebar"] { font-family: var(--rf-font-sans); }
+#sidebar-content h5,
+[class*="sidebar"] [class*="group-title"] {
+  font-family: var(--rf-font-mono) !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase;
+}
+#sidebar-content a {
+  border-radius: 0 !important;
+  font-family: var(--rf-font-sans);
+}
+/* Active sidebar item — light mode: pale electric-blue tint + blue text */
+#sidebar-content a[aria-current="page"],
+#sidebar-content a[class*="active"],
+[class*="sidebar"] a[aria-current="page"],
+[class*="sidebar"] a[class*="active"] {
+  background: rgba(0, 87, 255, 0.08) !important;
+  color: var(--rf-electric-blue) !important;
+  font-weight: 600 !important;
+  border-left: 2px solid var(--rf-electric-blue);
+}
+/* Active sidebar item — dark mode: lime accent on charcoal */
+.dark #sidebar-content a[aria-current="page"],
+.dark #sidebar-content a[class*="active"],
+.dark [class*="sidebar"] a[aria-current="page"],
+.dark [class*="sidebar"] a[class*="active"] {
+  background: var(--rf-charcoal-2) !important;
+  color: var(--rf-lime-mist) !important;
+  border-left-color: var(--rf-lime-mist);
+}
+
+/* Top tabs — electric-blue underline on active.
+   Scoped to the tab-bar so it can't accidentally style the logo or other nav anchors. */
+[class*="tab-bar"] a[class*="active"],
+[class*="tab-bar"] a[aria-current="page"] {
+  border-bottom: 2px solid var(--rf-electric-blue) !important;
+  font-weight: 600;
+}
+
+/* Welcome page (mode:"custom") — hide the top tab strip entirely.
+   The cards in the hero already act as the entry points into each tab
+   (Platform, Native, Integration Delivery, MCP, API references), so the
+   duplicated nav-tabs bar is visual noise on the landing page.
+   Uses :has() to scope to the welcome page only, via the .welcome-container
+   marker div in welcome.mdx. We hide the .nav-tabs parent (the fixed-height
+   strip container) so no empty bar is left behind. */
+body:has(.welcome-container) div:has(> .nav-tabs) {
+  display: none !important;
+}
+/* Fallback active-state suppression in case the strip ever renders */
+body:has(.welcome-container) .nav-tabs a,
+body:has(.welcome-container) .nav-tabs a[aria-current="page"] {
+  border-bottom-color: transparent !important;
+  font-weight: 400 !important;
+  color: var(--rf-base-400) !important;
+}
+
+/* Copy-page CTA — square, mono */
+button[aria-label*="copy" i],
+[class*="copy-page"] {
+  border-radius: 0 !important;
+  font-family: var(--rf-font-mono) !important;
+  letter-spacing: 0.04em;
+}
+
+/* TOC (right rail) */
+[class*="on-this-page"] a,
+[class*="toc"] a {
+  font-family: var(--rf-font-sans);
+  border-radius: 0 !important;
+}
+[class*="on-this-page"] a[class*="active"],
+[class*="toc"] a[class*="active"] {
+  color: var(--rf-electric-blue) !important;
+  font-weight: 600;
+}
+
+/* Primary Mintlify buttons (topbar CTA, etc.) — square, charcoal/lime */
+button[class*="primary"],
+a[class*="primary"][class*="button"] {
+  border-radius: 0 !important;
+}
+
+/* ============================================================
+   WELCOME PAGE — custom-mode landing with full-bleed hero
+   Only this page uses bespoke HTML; everything below scopes only
+   to .welcome-container so it doesn't bleed into other pages.
+   ============================================================ */
+
+.welcome-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0;
+  border-left: 1px solid var(--rf-border);
+  border-right: 1px solid var(--rf-border);
+  font-family: var(--rf-font-sans);
+}
+.dark .welcome-container { border-color: var(--rf-border-dark); }
+
+.welcome-container .rf-eyebrow {
+  display: inline-flex;
   align-items: center;
+  gap: 10px;
+  font-family: var(--rf-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rf-electric-blue);
+}
+.welcome-container .rf-eyebrow::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 10px;
+  background: var(--rf-gradient-1);
+}
+
+.welcome-container .hero-section {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--rf-border);
+  min-height: 520px;
+  margin: 0;
+}
+.dark .welcome-container .hero-section { border-color: var(--rf-border-dark); }
+
+.welcome-container .hero-content {
+  padding: 80px 64px;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  border-right: 1px solid var(--rf-border);
+}
+.dark .welcome-container .hero-content { border-color: var(--rf-border-dark); }
+
+.welcome-container .hero-title {
+  font-family: var(--rf-font-serif);
+  font-size: 84px;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  color: var(--rf-charcoal);
+  margin: 24px 0 28px 0;
+}
+.dark .welcome-container .hero-title { color: var(--rf-base-100); }
+.welcome-container .hero-title .accent {
+  color: var(--rf-electric-blue);
+  font-style: italic;
+  font-weight: 700;
 }
 
-.hero-image img {
+.welcome-container .hero-subtitle {
+  font-family: var(--rf-font-sans);
+  font-size: 19px;
+  line-height: 30px;
+  color: var(--rf-base-400);
+  max-width: 480px;
+  margin: 0 0 36px 0;
+}
+.dark .welcome-container .hero-subtitle { color: var(--rf-base-300); }
+
+.welcome-container .hero-search { position: relative; margin-bottom: 0; }
+.welcome-container .hero-search::before {
+  content: "";
+  position: absolute;
+  left: 18px; top: 50%;
+  width: 16px; height: 16px;
+  transform: translateY(-50%);
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23191B20' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>") center/contain no-repeat;
+  opacity: 0.55;
+}
+.welcome-container .hero-search input {
   width: 100%;
-  height: auto;
-  max-width: 400px;
+  padding: 18px 80px 18px 44px;
+  font-family: var(--rf-font-sans);
+  font-size: 15px;
+  color: var(--rf-charcoal);
+  background: var(--rf-base-100);
+  border: 1px solid var(--rf-charcoal);
+  border-radius: 0;
+  transition: box-shadow 200ms ease;
 }
-
-/* Search Input Styling */
-.hero-search {
-  position: relative;
-  margin-bottom: 3rem;
+.welcome-container .hero-search input::placeholder {
+  color: var(--rf-base-400);
+  font-family: var(--rf-font-sans);
 }
-
-.hero-search input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  background: #ffffff;
-  color: #374151;
-  transition: all 0.2s ease;
-}
-
-.dark .hero-search input {
-  background: #1f2937;
-  border-color: #374151;
-  color: #f9fafb;
-}
-
-.hero-search input:focus {
+.welcome-container .hero-search input:focus {
   outline: none;
-  border-color: #9563ff;
-  box-shadow: 0 0 0 3px rgba(149, 99, 255, 0.1);
+  box-shadow: 4px 4px 0 0 var(--rf-electric-blue);
+}
+.welcome-container .hero-search::after {
+  content: "ASK →";
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 72px;
+  background: var(--rf-lime-mist);
+  border-left: 1px solid var(--rf-charcoal);
+  font-family: var(--rf-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--rf-charcoal);
+  pointer-events: none;
 }
 
-.hero-search input::placeholder {
-  color: #9ca3af;
+.welcome-container .hero-meta {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-family: var(--rf-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--rf-base-400);
 }
 
-.dark .hero-search input::placeholder {
-  color: #6b7280;
+.welcome-container .hero-image {
+  position: relative;
+  background: var(--rf-charcoal);
+  display: block;
+  padding: 0;
+  overflow: hidden;
+}
+.welcome-container .hero-image > div {
+  width: 100%;
+  min-height: 520px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 48px;
+  color: transparent;
+}
+.welcome-container .hero-image > div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg,
+      transparent 0 64px,
+      rgba(255,255,255,0.08) 64px 65px),
+    var(--rf-gradient-vertical);
+  background-size: 100% 100%;
+}
+.welcome-container .hero-image > div::after {
+  content: "Build native integrations.\AIn days, not quarters.";
+  white-space: pre;
+  position: relative;
+  z-index: 1;
+  font-family: var(--rf-font-serif);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.welcome-container .hero-image::before {
+  content: "// PLATFORM";
+  position: absolute;
+  top: 32px; left: 48px;
+  z-index: 2;
+  font-family: var(--rf-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--rf-lime-mist);
 }
 
-/* Cards Section Styling */
-.cards-section {
-  margin: 4rem 0;
+.welcome-container .stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--rf-border);
+}
+.dark .welcome-container .stats-strip { border-color: var(--rf-border-dark); }
+.welcome-container .stats-strip .stat {
+  padding: 32px;
+  border-right: 1px solid var(--rf-border);
+}
+.dark .welcome-container .stats-strip .stat { border-color: var(--rf-border-dark); }
+.welcome-container .stats-strip .stat:last-child { border-right: 0; }
+.welcome-container .stats-strip .num {
+  font-family: var(--rf-font-serif);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--rf-charcoal);
+  letter-spacing: -0.02em;
+}
+.dark .welcome-container .stats-strip .num { color: var(--rf-base-100); }
+.welcome-container .stats-strip .num .accent { color: var(--rf-electric-blue); }
+.welcome-container .stats-strip .lbl {
+  margin-top: 10px;
+  font-family: var(--rf-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rf-base-400);
 }
 
-/* Override Mintlify CardGroup styling for better integration */
-.cards-section .card-group {
-  gap: 1.5rem;
+.welcome-container .section-head {
+  padding: 48px 64px 24px 64px;
+  border-bottom: 1px solid var(--rf-border);
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
-
-.cards-section .card {
-  transition: all 0.2s ease;
+.dark .welcome-container .section-head { border-color: var(--rf-border-dark); }
+.welcome-container .section-head h2 {
+  margin: 0;
+  font-family: var(--rf-font-serif);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  border: 0;
+  padding: 0;
 }
-
-.cards-section .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(149, 99, 255, 0.15);
+.welcome-container .section-head .lead {
+  max-width: 380px;
+  margin: 6px 0 0 0;
+  color: var(--rf-base-400);
+  font-size: 15px;
 }
+.welcome-container .section-head .right {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--rf-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rf-charcoal);
+}
+.dark .welcome-container .section-head .right { color: var(--rf-base-100); }
 
-/* Responsive Design */
+.welcome-container .cards-section {
+  margin: 0;
+  border-bottom: 1px solid var(--rf-border);
+}
+.dark .welcome-container .cards-section { border-color: var(--rf-border-dark); }
+.welcome-container .cards-section .card-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.welcome-container .cards-section .card {
+  position: relative;
+  display: block;
+  padding: 40px 32px 36px 32px;
+  background: var(--rf-base-100);
+  border: 0;
+  border-right: 1px solid var(--rf-border);
+  border-bottom: 1px solid var(--rf-border);
+  border-radius: 0;
+  transition: background 200ms ease, color 200ms ease;
+  box-shadow: none;
+  min-height: 220px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--rf-charcoal);
+}
+.welcome-container .cards-section .card:nth-child(3n) { border-right: 0; }
+.dark .welcome-container .cards-section .card { border-color: var(--rf-border-dark); background: var(--rf-charcoal); color: var(--rf-base-100); }
+.welcome-container .cards-section .card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--rf-gradient-1);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 400ms ease;
+}
+.welcome-container .cards-section .card:hover { background: var(--rf-base-150); }
+.dark .welcome-container .cards-section .card:hover { background: var(--rf-charcoal-2); }
+.welcome-container .cards-section .card:hover::before { transform: scaleX(1); }
+.welcome-container .cards-section .card h3 {
+  font-family: var(--rf-font-serif);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 16px 0 8px 0;
+  color: inherit;
+  letter-spacing: -0.01em;
+}
+.welcome-container .cards-section .card p {
+  font-family: var(--rf-font-sans);
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--rf-base-400);
+  margin: 0;
+}
+.welcome-container .cards-section .card svg {
+  width: 20px; height: 20px;
+  color: var(--rf-electric-blue);
+  margin-bottom: 4px;
+}
+.welcome-container .cards-section .card::after {
+  content: "→";
+  position: absolute;
+  top: 32px; right: 32px;
+  font-family: var(--rf-font-mono);
+  font-size: 16px;
+  color: var(--rf-base-300);
+  transition: transform 200ms ease, color 200ms ease;
+}
+.welcome-container .cards-section .card:hover::after {
+  color: var(--rf-charcoal);
+  transform: translate(4px, -2px);
+}
+.dark .welcome-container .cards-section .card:hover::after { color: var(--rf-base-100); }
+
+.welcome-container .docs-footer {
+  border-top: 1px solid var(--rf-border);
+  padding: 40px 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--rf-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rf-base-400);
+}
+.dark .welcome-container .docs-footer { border-color: var(--rf-border-dark); }
+.welcome-container .docs-footer a { color: inherit; border: 0; text-decoration: none; }
+
+/* Welcome page — responsive */
 @media (max-width: 1024px) {
-  .hero-section {
-    flex-direction: column;
-    text-align: center;
-    gap: 2rem;
-    margin: 2rem 0 4rem 0;
-  }
-  
-  .hero-image {
-    flex: none;
-    max-width: 300px;
-  }
-  
-  .hero-title {
-    font-size: 2.5rem;
-  }
+  .welcome-container .hero-section { grid-template-columns: 1fr; }
+  .welcome-container .hero-content { border-right: 0; border-bottom: 1px solid var(--rf-border); padding: 56px 32px; }
+  .welcome-container .hero-title { font-size: 56px; }
+  .welcome-container .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .welcome-container .stats-strip .stat:nth-child(2) { border-right: 0; }
+  .welcome-container .section-head { padding: 40px 32px 20px 32px; flex-direction: column; align-items: flex-start; }
+  .welcome-container .cards-section .card-group { grid-template-columns: 1fr 1fr; }
+  .welcome-container .cards-section .card:nth-child(3n) { border-right: 1px solid var(--rf-border); }
+  .welcome-container .cards-section .card:nth-child(2n) { border-right: 0; }
+  .welcome-container .docs-footer { padding: 32px; flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+@media (max-width: 640px) {
+  .welcome-container .hero-content { padding: 40px 20px; }
+  .welcome-container .hero-title { font-size: 44px; }
+  .welcome-container .stats-strip { grid-template-columns: 1fr; }
+  .welcome-container .stats-strip .stat { border-right: 0; border-bottom: 1px solid var(--rf-border); }
+  .welcome-container .stats-strip .stat:last-child { border-bottom: 0; }
+  .welcome-container .cards-section .card-group { grid-template-columns: 1fr; }
+  .welcome-container .cards-section .card { border-right: 0; }
 }
 
-@media (max-width: 768px) {
-  .welcome-container {
-    padding: 0 1rem;
-  }
-  
-  .hero-title {
-    font-size: 2rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.125rem;
-  }
-}
-
-/* Content Area Adjustments for Welcome Page */
-.is-custom #content-area {
-  max-width: none;
-  padding: 0;
-}
-
-.is-custom .mdx-content {
-  max-width: none;
-  padding: 0;
-}
-
-/* Override default page margins for welcome page */
+/* Custom-mode reset for welcome — Mintlify wraps custom pages */
+.is-custom #content-area,
+.is-custom .mdx-content,
 [data-page="welcome"] #content-area,
 [data-page="welcome"] .mdx-content {
   max-width: none;
-  padding: 2rem 0;
+  padding: 0;
 }
-
-/* Ensure proper spacing in custom mode */
-.is-custom .welcome-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-} 

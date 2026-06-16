@@ -1,0 +1,67 @@
+---
+title: "Choose your pattern"
+description: "Pick how much agent guidance you want — direct, skill-guided, or workflow-driven"
+---
+
+Refold MCP gives you three patterns for exposing integration capability to an agent. Pick based on how much control you want over the agent's behavior and how strict the process needs to be.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8'}}}%%
+flowchart TD
+    Q["How complex is the operation?"] --> S1
+    Q --> S2
+    Q --> S3
+
+    S1["Single call"]
+    S2["Multi-step, flexible"]
+    S3["Multi-step, strict"]
+
+    S1 --> P1["<b>Direct Mode</b><br/>One tool per action<br/>Agent calls it directly"]
+    S2 --> P2["<b>Agent Mode + Skills</b><br/>Agent discovers the right skill,<br/>follows its steps, resolves and executes"]
+    S3 --> P3["<b>Workflows as MCP Tools</b><br/>Entire process runs as one tool call<br/>with built-in retries and validation"]
+
+    style P1 fill:#1a3a2a,stroke:#4ade80,color:#fff
+    style P2 fill:#1a2a3a,stroke:#60a5fa,color:#fff
+    style P3 fill:#2a1a3a,stroke:#a78bfa,color:#fff
+```
+
+## The three patterns
+
+| Pattern | Agent decides | You define | Best for |
+|---------|--------------|-----------|----------|
+| **Direct mode** | Which tool to call and with what input | The exact set of available actions | Simple CRUD. Under 20 actions. |
+| **Agent mode + Skills** | How to decompose the task, which skills to load | The procedures (skills) the agent can follow | Complex tasks where you want guidance but flexibility |
+| **Workflows as MCP tools** | When to trigger the workflow | The full process: steps, error handling, retries, rollback | Business-critical processes where consistency matters more than flexibility |
+
+## Direct mode
+
+Each action and workflow you select on the server becomes its own MCP tool with a fixed schema. The agent sees the full list and calls them directly.
+
+Direct mode is the default — leave the **Agent Mode** toggle off. See [Server Configuration](/v3/mcp-ai-agents/overview/server-configuration) for the toggle reference.
+
+## Agent mode + Skills
+
+Two meta-tools (`RESOLVE_ACTIONS`, `EXECUTE_ACTION`) let the agent resolve user intent first, then execute. Pair with skills to give the agent step-by-step procedures for multi-step operations.
+
+Turn on the **Agent Mode** and **Retrieve Skill** toggles. See [Skills](/v3/mcp-ai-agents/skills/overview) for how to write procedures the agent can follow.
+
+## Workflows as MCP tools
+
+A workflow built in the Refold workflow builder is attached to the server and appears as a single tool the agent calls. The workflow handles sequencing, retries, and rollback internally. The agent receives one result.
+
+See [Workflows](/v3/mcp-ai-agents/workflow-as-mcp/overview) for the full pattern.
+
+## You can combine them
+
+These patterns are not mutually exclusive. A single server can expose direct actions for simple lookups, skills for multi-step procedures, and workflows for mission-critical processes. The toggles are independent.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="play" href="/v3/mcp-ai-agents/overview/getting-started">
+    Set up your first MCP server
+  </Card>
+  <Card title="Server Configuration" icon="gear" href="/v3/mcp-ai-agents/overview/server-configuration">
+    The toggles and tabs reference
+  </Card>
+</CardGroup>

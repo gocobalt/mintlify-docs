@@ -1,0 +1,55 @@
+---
+title: "Concepts"
+description: "The core Refold objects an MCP server is built from"
+---
+
+Refold MCP sits on top of existing Refold primitives. If you're new to Refold, this page defines the few you need to know in MCP context. Each links to the canonical reference if you want more depth.
+
+## MCP server
+
+A configuration unit in the Refold dashboard under **Embedded Agents > MCP Servers**. It bundles a name and description, a set of connected applications and their actions, a set of skills, three toggles (Auth Tool, Retrieve Skill, Agent Mode), and a generated Server URL.
+
+One MCP server is what an agent connects to. You can create as many as you need — a common pattern is one server per use case (a "Sales Operations" server, a "Finance" server).
+
+## Application
+
+An app Refold has a connector for: Salesforce, SAP, NetSuite, Workday, HubSpot, and [300+ others](/v3/developer/guide/build/connectors/overview). On an MCP server, an application appears under the **Applications** tab. Once added, its **actions** and **workflows** become tools the agent can call.
+
+## Action
+
+A single operation on an application: `create_contact`, `list_deals`, `get_purchase_order`. Each action has a fixed input schema. In direct mode, every selected action is exposed as its own MCP tool. In agent mode, actions are reached through `RESOLVE_ACTIONS` → `EXECUTE_ACTION`.
+
+## Workflow
+
+A multi-step process built in the Refold workflow builder, exposed as a single MCP tool. The agent calls one tool; the workflow handles the steps, error paths, retries, and any business logic internally. See [Workflows Overview](/v3/mcp-ai-agents/workflow-as-mcp/overview).
+
+## Skill
+
+A reusable procedure attached to an MCP server. Skills give agents step-by-step guidance for multi-step operations without moving the logic server-side. Unlike workflows, the agent still makes the individual tool calls — the skill just tells it what to do and in what order. See [Skills Overview](/v3/mcp-ai-agents/skills/overview).
+
+## Linked account
+
+A single end user's connection to Refold. It holds their credentials for the connected applications. The auth token in an MCP Server URL is tied to one linked account, so each end user gets their own URL and operates on their own data. See [Linked Account](/v3/developer/guide/build/basics/linked_account) for the underlying model.
+
+## Connector
+
+The Refold-built integration package for a specific application — the OAuth flow, the action and workflow catalog, the auth settings. You configure a connector once per application; linked accounts then authenticate against it. See [Connectors](/v3/developer/guide/build/connectors/overview).
+
+## How they fit together
+
+```
+Application (Salesforce)
+    └── has many → Actions (create_contact, list_deals, ...)
+                   Workflows (sync_leads, ...)
+
+MCP Server
+    ├── attaches → Applications (selects which actions/workflows to expose)
+    └── attaches → Skills (multi-step procedures)
+    └── generates → Server URL per Linked Account
+
+Linked Account
+    ├── owns credentials for → Applications (via Connector)
+    └── owns → Server URL token
+```
+
+When an agent connects with a Server URL, Refold resolves the linked account from the token, loads the MCP server's configuration, and exposes the selected actions, workflows, and skills as MCP tools — running every call under that linked account's credentials.

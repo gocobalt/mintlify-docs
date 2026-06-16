@@ -1,0 +1,57 @@
+---
+title: "Email"
+description: "Configure the SMTP server Refold uses to send invitations and system notifications."
+---
+
+The **Email** page connects your own SMTP server so Refold sends outgoing
+mail — user invitations and system notifications — from your infrastructure
+and From address.
+
+Open it from **Settings > Configuration > Email**.
+
+## Connect your SMTP server
+
+Enter your SMTP connection details, then click **Save**.
+
+| Field | Description |
+|---|---|
+| **Host** | The hostname or IP address of your SMTP server — the server responsible for sending your emails. |
+| **Port** | The port your SMTP server uses. Common ports are `25`, `465`, and `587`. |
+| **Username** | The username for your SMTP server. This is often your email address or username. |
+| **Password** | The password associated with the SMTP username. |
+| **From Address** *(optional)* | Overrides the sender email address. Required when the SMTP username isn't an email address — for example, AWS SES access keys. |
+| **Use TLS** | Turn on if your SMTP server requires TLS for a secure connection. |
+
+<Note>
+  Use **From Address** to control the address recipients see. If your SMTP
+  username is already the email you want to send from, you can leave it blank.
+</Note>
+
+## Send a test email
+
+Before relying on the configuration, verify it delivers.
+
+<Steps>
+  <Step title="Save your settings">
+    Make sure your SMTP details are saved.
+  </Step>
+  <Step title="Enter a recipient">
+    Under **Test Email Delivery**, type an address in the **To** field that
+    you can check.
+  </Step>
+  <Step title="Send the test">
+    Click **Send Test Email** and confirm the message arrives. If it doesn't,
+    re-check the host, port, credentials, and TLS setting.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Users" href="/v3/developer/configure/settings/organization/users">
+    Invitations send through the SMTP server configured here.
+  </Card>
+  <Card title="Connect Portal" href="/v3/developer/configure/settings/organization/connect-portal">
+    Brand the customer-facing portal to match your sender identity.
+  </Card>
+</CardGroup>
