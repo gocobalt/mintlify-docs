@@ -1,0 +1,336 @@
+---
+title: "HTTP Request Node"
+description: "Make HTTP requests to external APIs with dynamic parameters, authentication, and response handling"
+sidebarTitle: "HTTP Request"
+---
+
+## What does it do?
+
+The HTTP Request Node allows you to make HTTP requests to external APIs during workflow execution. It acts as an external API call function within your workflow, enabling you to interact with any REST API or webhook endpoint with dynamic parameters from previous nodes.
+
+**Common use cases:**
+- Call internal APIs to create records after Salesforce contact sync
+- Send contact data to external webhook endpoints
+- Fetch additional data from third-party services using contact information
+- Trigger notifications in external systems when workflow events occur
+- Integrate with custom applications and microservices
+
+## Input Parameters
+
+### Request Configuration
+
+<ParamField path="Method" type="dropdown" required="yes">
+  HTTP method for the request. Options: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, `OPTIONS`. Example: `POST`
+</ParamField>
+
+<ParamField path="URL" type="string" required="yes">
+  Target API endpoint URL. Supports dynamic variables from previous nodes. Example: `https://api.company.com/contacts` or `{{config.api_base_url}}/users`
+</ParamField>
+
+<ParamField path="Params" type="object" required="optional">
+  Query parameters as key-value pairs. Supports dynamic variables. Example: `{"limit": "10", "email": "{{salesforce_contact.Email}}"}`
+</ParamField>
+
+<ParamField path="Headers" type="object" required="optional">
+  Custom HTTP headers as key-value pairs. Supports dynamic variables. Example: `{"Authorization": "Bearer {{config.api_token}}", "Content-Type": "application/json"}`
+</ParamField>
+
+<ParamField path="Body" type="string" required="conditional">
+  Request body for POST/PUT/PATCH requests. Supports JSON, form-data, or raw text with dynamic variables. Example: `{"name": "{{salesforce_contact.Name}}", "email": "{{salesforce_contact.Email}}"}`
+</ParamField>
+
+### Scripts
+
+<ParamField path="Pre Script" type="string" required="optional">
+  JavaScript code that runs before the HTTP request. Can modify request parameters, headers, or body. Example: `console.log("Making request to: " + url);`
+</ParamField>
+
+<ParamField path="Post Script" type="string" required="optional">
+  JavaScript code that runs after receiving the HTTP response. Can process or transform response data. Example: `response.processed_at = new Date().toISOString();`
+</ParamField>
+
+### Settings
+
+<ParamField path="Response Format" type="dropdown" required="optional">
+  Format for response handling. Options: `Default`, `Stream`. Default processes full response, Stream handles large responses incrementally. Example: `Default`
+</ParamField>
+
+<ParamField path="Use mTLS" type="boolean" required="optional">
+  Enable mutual TLS authentication for secure connections. Example: `false`
+</ParamField>
+
+<ParamField path="Save Response to Bucket" type="boolean" required="optional">
+  Save response data to cloud storage bucket for large responses. Example: `false`
+</ParamField>
+
+<ParamField path="Use Public URL" type="boolean" required="optional">
+  Make request accessible via public URL for webhook callbacks. Example: `false`
+</ParamField>
+
+<ParamField path="Enable Pagination" type="boolean" required="optional">
+  Automatically handle paginated API responses. Supports multiple pagination methods. Example: `true`
+</ParamField>
+
+<Note>
+All parameter fields support dynamic variables from previous nodes using `{{node_name.field}}` syntax. Authentication can be handled through headers or pre-scripts.
+</Note>
+
+## Output
+
+The HTTP Request Node outputs complete response information including status, headers, and body data.
+
+### Output Structure
+
+```json
+{
+  "status_code": 200,
+  "status_text": "OK",
+  "headers": {
+    "content-type": "application/json",
+    "content-length": "156"
+  },
+  "body": {
+    "id": "12345",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  "response_time": 245,
+  "request_url": "https://api.company.com/contacts",
+  "pagination": {
+    "has_more": true,
+    "next_page": "https://api.company.com/contacts?page=2"
+  }
+}
+```
+
+### Status Types
+
+- **2xx Success**: Request completed successfully
+- **4xx Client Error**: Invalid request, authentication, or authorization issues
+- **5xx Server Error**: External API server errors
+- **Timeout**: Request exceeded timeout limits
+- **Network Error**: Connection or DNS resolution failures
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag HTTP Request Node to canvas">
+    From the **Utility Nodes** section, drag the HTTP Request Node to your workflow canvas where you need to make API calls.
+    
+    <img height="200" src="/images/workflow/nodes/http-request-node-drag-drop.png" alt="Dragging HTTP Request Node from utility nodes"/>
+  </Step>
+
+  <Step title="Configure request details">
+    Set up your HTTP request:
+    - Method (GET, POST, etc.)
+    - URL with dynamic variables if needed
+    - Headers for authentication and content-type
+    
+    <img height="200" src="/images/workflow/nodes/http-request-node-basic-configuration.png" alt="Configuring basic HTTP request details"/>
+  </Step>
+
+  <Step title="Add parameters and body">
+    Configure additional request details:
+    - Query parameters for filtering or pagination
+    - Request body for POST/PUT operations
+    - Custom headers for API requirements
+    
+    <img height="200" src="/images/workflow/nodes/http-request-node-parameters-configuration.png" alt="Configuring HTTP request parameters and body"/>
+  </Step>
+
+  <Step title="Configure advanced settings">
+    Set up advanced options if needed:
+    - Pre/Post scripts for custom processing
+    - Response format and storage options
+    - Pagination and security settings
+    
+    <img height="200" src="/images/workflow/nodes/http-request-node-advanced-configuration.png" alt="Configuring advanced HTTP request settings"/>
+  </Step>
+
+  <Step title="Run/Test Node">
+    Test your HTTP request configuration to verify connectivity and response handling work correctly.
+    
+    <img height="200" src="/images/workflow/nodes/http-request-node-test-execution.png" alt="Testing HTTP request node configuration"/>
+  </Step>
+</Steps>
+
+<Note>
+Use the Debug Node after HTTP Request to inspect response data structure and verify API integration works as expected.
+</Note>
+
+## Examples
+
+### Example 1: Create Contact in Internal System
+
+This example sends Salesforce contact data to your internal API after sync completion:
+
+```javascript
+// Workflow configuration
+{
+  "name": "http_request_task",
+  "taskReferenceName": "create_internal_contact",
+  "type": "HTTP_REQUEST",
+  "inputParameters": {
+    "method": "POST",
+    "url": "https://internal-api.company.com/contacts",
+    "headers": {
+      "Authorization": "Bearer {{config.internal_api_token}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "external_id": "{{salesforce_contact.Id}}",
+      "name": "{{salesforce_contact.Name}}",
+      "email": "{{salesforce_contact.Email}}",
+      "phone": "{{salesforce_contact.Phone}}",
+      "source": "salesforce",
+      "lead_score": "{{salesforce_contact.Lead_Score__c}}"
+    }
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "status_code": 201,
+  "status_text": "Created",
+  "headers": {
+    "content-type": "application/json",
+    "location": "/contacts/67890"
+  },
+  "body": {
+    "id": "67890",
+    "external_id": "003xx000002ABC",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "created_at": "2024-01-15T14:30:00Z"
+  },
+  "response_time": 156,
+  "request_url": "https://internal-api.company.com/contacts"
+}
+```
+
+### Example 2: Webhook Notification with Pre-Script
+
+This example sends a notification webhook with custom processing:
+
+```javascript
+// Workflow configuration
+{
+  "name": "http_request_task",
+  "taskReferenceName": "webhook_notification",
+  "type": "HTTP_REQUEST",
+  "inputParameters": {
+    "method": "POST",
+    "url": "{{config.webhook_url}}",
+    "headers": {
+      "X-Webhook-Secret": "{{config.webhook_secret}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "event": "contact_synced",
+      "contact": "{{salesforce_contact}}",
+      "timestamp": "{{instance_meta_data.instance_created_time}}"
+    },
+    "preScript": "const timestamp = new Date().toISOString(); body.processed_at = timestamp; console.log('Sending webhook for contact:', body.contact.Name);",
+    "postScript": "if (response.status_code === 200) { console.log('Webhook delivered successfully'); } else { console.error('Webhook delivery failed:', response.status_code); }"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "status_code": 200,
+  "status_text": "OK",
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body": {
+    "message": "Webhook received",
+    "webhook_id": "wh_12345"
+  },
+  "response_time": 89,
+  "request_url": "https://webhooks.external-service.com/cobalt"
+}
+```
+
+## Runtime Behavior
+
+<Warning>
+HTTP Request Node respects external API rate limits and timeout settings. Failed requests will retry based on workflow retry configuration. Large responses may impact workflow performance.
+</Warning>
+
+### Request Processing
+
+The HTTP Request Node processes requests in the following order:
+
+1. **Variable Resolution**: Resolves dynamic variables in URL, headers, params, and body
+2. **Pre-Script Execution**: Runs custom JavaScript before request
+3. **Request Assembly**: Builds complete HTTP request with all parameters
+4. **API Call**: Sends request to target endpoint
+5. **Response Processing**: Captures status, headers, and body
+6. **Post-Script Execution**: Runs custom JavaScript on response
+7. **Pagination Handling**: Processes additional pages if enabled
+
+### Authentication Methods
+
+Common authentication patterns:
+- **Bearer Token**: `"Authorization": "Bearer {{token}}"`
+- **API Key**: `"X-API-Key": "{{api_key}}"` or as query parameter
+- **Basic Auth**: `"Authorization": "Basic {{base64_credentials}}"`
+- **Custom Headers**: Any custom authentication scheme
+
+## Troubleshooting
+
+### HTTP Request Timeout
+
+**Problem**: Request fails with timeout error
+
+**Solutions**:
+- Check if external API endpoint is accessible
+- Verify network connectivity and DNS resolution
+- Increase timeout settings in workflow configuration
+- Check external API response times and performance
+
+### Authentication Failed (401/403)
+
+**Problem**: Request fails with authentication or authorization errors
+
+**Solutions**:
+- Verify API credentials are correct and not expired
+- Check authentication method matches API requirements
+- Ensure required headers or parameters are included
+- Test credentials outside of workflow first
+
+### Invalid Request Format (400)
+
+**Problem**: Request fails with bad request error
+
+**Solutions**:
+- Validate request body format matches API expectations
+- Check Content-Type header matches body format
+- Verify required parameters are included
+- Use Debug Node to inspect resolved request parameters
+
+### Response Parsing Error
+
+**Problem**: Cannot process API response data
+
+**Solutions**:
+- Check if API returns valid JSON format
+- Verify response Content-Type header
+- Use Post-Script to handle non-standard response formats
+- Enable response streaming for large responses
+
+<Tip>
+Use Pre/Post Scripts to add custom logging and inspect request/response data for debugging API integration issues.
+</Tip>
+
+## What's Next?
+
+- Learn about [Transform Node](/nodes/transform-node) to format data before HTTP requests
+- Explore [Rule Node](/nodes/rule-node) to add conditional API calls
+- Check out [Custom Code Node](/nodes/custom-code-node) for advanced request processing
+- Review [Error Handling](/advanced/error-handling) for robust API integration

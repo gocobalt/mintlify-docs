@@ -1,0 +1,231 @@
+---
+title: "Log Node"
+description: "Record custom messages to workflow execution logs for debugging and monitoring"
+sidebarTitle: "Log"
+---
+
+The Log Node records custom messages to workflow execution logs during runtime. It enables you to track workflow progress, capture variable values at specific points, and add contextual information that helps with debugging and monitoring integration workflows.
+
+## When to Use
+
+- Debug complex workflows by logging intermediate values
+- Track workflow progress through multi-step processes
+- Capture error context before handling failures
+- Record audit information for compliance requirements
+- Monitor data transformations between nodes
+
+<Info>Log messages appear in **Logs > Executions** and are visible in the workflow execution details for each run.</Info>
+
+## Input Parameters
+
+<ParamField path="Log Level" type="dropdown" required>
+  Severity level for the log entry. Select based on the type of information being logged.
+
+  | Level | Use Case |
+  |-------|----------|
+  | Debug | Detailed diagnostic information for development and troubleshooting |
+  | Info | General operational messages confirming workflow progress |
+  | Warning | Potential issues that don't stop execution but need attention |
+  | Error | Failures or problems that may affect workflow results |
+</ParamField>
+
+<ParamField path="Message Template" type="textarea" required>
+  The message content to record. Supports dynamic variables using `{{variable}}` syntax to include data from previous nodes.
+</ParamField>
+
+<ParamField path="Custom Fields" type="code editor">
+  Additional structured data to include with the log entry as JSON key-value pairs. Values support templating.
+</ParamField>
+
+**Custom Fields Example:**
+```json
+{
+  "record_id": "{{netsuite_customer.id}}",
+  "workflow_step": "validation",
+  "timestamp": "{{instance_meta_data.instance_created_time}}"
+}
+```
+
+## Output
+
+The Log Node returns a minimal response confirming the log was recorded.
+
+**Success Response:**
+```json
+{
+  "status": "Success",
+  "node_id": "9",
+  "node_name": "Log",
+  "body": {}
+}
+```
+
+**Error Response:**
+```json
+{
+  "status": "Errored",
+  "node_id": "24",
+  "node_name": "Log",
+  "body": "Instance with id 696d306cb46e93331ac32f8d not found"
+}
+```
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Add the Log Node">
+    In the workflow editor, click **Add Node** and select **Log** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select action">
+    Choose **Log Message** from the Action dropdown.
+  </Step>
+  
+  <Step title="Set log level">
+    Select the appropriate **Log Level** based on the type of information you're recording.
+  </Step>
+  
+  <Step title="Configure message template">
+    Enter your message in the **Message Template** field. Use `{{variable}}` syntax to include dynamic values from previous nodes.
+  </Step>
+  
+  <Step title="Add custom fields (optional)">
+    Expand **Custom Fields** to include additional structured data with your log entry.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute a test and verify the log output in **Logs > Executions**.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Debug SAP Purchase Order Processing">
+    Log detailed information when processing purchase orders from SAP for troubleshooting sync issues.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Log Level | `Debug` |
+    | Message Template | `Processing SAP PO {{sap_purchase_order.PONumber}} for vendor {{sap_purchase_order.VendorName}}` |
+
+    **Custom Fields:**
+```json
+    {
+      "po_number": "{{sap_purchase_order.PONumber}}",
+      "vendor_id": "{{sap_purchase_order.VendorID}}",
+      "total_amount": "{{sap_purchase_order.TotalAmount}}",
+      "line_item_count": "{{sap_purchase_order.Items.length}}"
+    }
+```
+
+    **Use Case:** Track each purchase order as it flows through the workflow to identify where failures occur during high-volume syncs.
+  </Accordion>
+
+  <Accordion title="Track NetSuite Customer Creation">
+    Record successful customer creation in NetSuite for audit trails.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Log Level | `Info` |
+    | Message Template | `Created NetSuite customer {{netsuite_response.entityId}} - {{netsuite_response.companyName}}` |
+
+    **Custom Fields:**
+```json
+    {
+      "internal_id": "{{netsuite_response.internalId}}",
+      "entity_id": "{{netsuite_response.entityId}}",
+      "source_system": "crm_sync",
+      "linked_account": "{{linked_account.udf.company_name}}"
+    }
+```
+
+    **Use Case:** Maintain a record of all customers created through the integration for compliance and reconciliation.
+  </Accordion>
+
+  <Accordion title="Warning for Tipalti Payment Validation">
+    Flag potential issues when payment data doesn't meet expected criteria.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Log Level | `Warning` |
+    | Message Template | `Payment validation warning: Vendor {{tipalti_vendor.name}} missing {{validation_result.missing_field}}` |
+
+    **Custom Fields:**
+```json
+    {
+      "vendor_id": "{{tipalti_vendor.id}}",
+      "payment_amount": "{{payment_request.amount}}",
+      "missing_fields": "{{validation_result.missing_fields}}",
+      "validation_status": "incomplete"
+    }
+```
+
+    **Use Case:** Identify payments that may fail due to incomplete vendor data before they're submitted.
+  </Accordion>
+
+  <Accordion title="Error Logging Before Failure Handling">
+    Capture detailed error context before routing to error handling logic.
+
+    **Configuration:**
+
+    | Field | Value |
+    |-------|-------|
+    | Log Level | `Error` |
+    | Message Template | `API request failed: {{http_response.status}} - {{http_response.body.error.message}}` |
+
+    **Custom Fields:**
+```json
+    {
+      "endpoint": "{{http_request.url}}",
+      "status_code": "{{http_response.status}}",
+      "error_code": "{{http_response.body.error.code}}",
+      "request_id": "{{instance_meta_data.instance_id}}",
+      "retry_count": "{{loop_node.body.iteration_count}}"
+    }
+```
+
+    **Use Case:** Capture comprehensive error details that help diagnose integration failures without needing to reproduce the issue.
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Log Messages Not Appearing">
+    | Problem | Solution |
+    |---------|----------|
+    | Logs not visible in execution details | Navigate to **Logs > Executions** and select the specific workflow run. Log messages appear in the node execution details. |
+    | Message template shows raw variable syntax | Verify the variable path is correct. Check that the referenced node executed successfully before the Log node. |
+    | Custom fields not appearing | Ensure the JSON syntax is valid. Use the code editor's validation to check for formatting errors. |
+  </Accordion>
+
+  <Accordion title="Variable Resolution Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Variable returns empty or undefined | Confirm the source node has output data. Run the source node individually to verify its response structure. |
+    | Nested properties not resolving | Use dot notation for nested objects: `{{node.body.data.property}}`. Check the exact path in the source node's output. |
+    | Array values not displaying correctly | Access specific array items using index: `{{node.body.items[0].name}}` or use a Loop node to iterate. |
+  </Accordion>
+
+  <Accordion title="Execution Errors">
+    | Problem | Solution |
+    |---------|----------|
+    | "Instance not found" error | The workflow execution context is no longer available. This can occur if the workflow was terminated or timed out. |
+    | Log node causing workflow delays | Log nodes execute synchronously but should complete instantly. Check if variable resolution is causing delays by simplifying the message template. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Place Log nodes at key decision points in your workflow to create a clear execution trail. This makes debugging complex multi-branch workflows significantly easier.</Tip>
+
+## What's Next
+
+- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing and conditional logging
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic that determines when to log
+- [Workflow Testing](/developer-guide/workflows/testing) to verify log output during development

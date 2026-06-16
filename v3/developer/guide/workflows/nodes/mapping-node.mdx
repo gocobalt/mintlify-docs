@@ -1,0 +1,323 @@
+---
+title: "Data Mapper Node"
+description: "Transform field names between systems with configurable mappings for seamless data integration"
+sidebarTitle: "Data Mapper"
+---
+
+# Data Mapper Node
+
+## What does it do?
+
+The Data Mapper Node transforms field names between different systems by applying configurable field mappings. It eliminates the need for custom code to resolve field mapping configurations, making it easy to translate data formats between your internal system and external applications like Salesforce.
+
+**Common use cases:**
+- Map internal contact fields to Salesforce Contact object field names
+- Transform Salesforce data fields to match your internal system format
+- Convert field names when integrating with different CRM systems
+- Standardize data formats between multiple third-party applications
+- Handle field mapping configurations from user-defined schemas
+
+## Input Parameters
+
+<ParamField path="Input" type="object" required="yes">
+  Source data object containing the fields to be mapped. Can include variables from previous nodes. Example: `{"fname": "John", "lname": "Doe", "email_id": "john@example.com"}` or `{{salesforce_contact}}`
+</ParamField>
+
+<ParamField path="Mapping" type="object" required="yes">
+  Field mapping configuration as key-value pairs. Maps source field names to destination field names. Example: `{"fname": "FirstName", "lname": "LastName", "email_id": "Email"}`
+</ParamField>
+
+<ParamField path="Direction" type="dropdown" required="yes">
+  Mapping direction between systems. Options: `Source to Destination`, `Destination to Source`. Example: `Source to Destination`
+</ParamField>
+
+<ParamField path="Output Schema" type="string" required="optional">
+  Optional output schema definition. Can be left empty for standard field mapping operations.
+</ParamField>
+
+<ParamField path="Additional Fields" type="boolean" required="optional">
+  Toggle to include additional field processing options. Default behavior when disabled.
+</ParamField>
+
+<Info>The Data Mapper only handles flat field mapping and does not support nested objects, arrays, or data type conversion. Only mapped fields appear in the output.</Info>
+
+## Output
+
+The Data Mapper Node outputs an object with transformed field names based on the mapping configuration.
+
+### Source to Destination Output
+
+```json
+{
+  "FirstName": "John",
+  "LastName": "Doe", 
+  "Email": "john@example.com"
+}
+```
+
+### Destination to Source Output
+
+```json
+{
+  "fname": "John",
+  "lname": "Doe",
+  "email_id": "john@example.com"
+}
+```
+
+### Partial Mapping Output
+
+```json
+{
+  "FullName": "John Doe"
+}
+```
+
+<Info>Only fields specified in the mapping configuration will appear in the output. Unmapped fields from the input are excluded from the result.</Info>
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Data Mapper Node to canvas">
+    From the **Utility Nodes** section, drag the Data Mapper Node to your workflow canvas where you need field transformation.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/data-mapper-node-drag-drop.png" alt="Dragging Data Mapper Node from utility nodes" />
+    </Frame>
+  </Step>
+  <Step title="Configure input data">
+    Set up your source data:
+    - Provide input object from previous nodes or static data
+    - Ensure input is a flat JSON object with key-value pairs
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/data-mapper-node-input-configuration.png" alt="Configuring input data" />
+    </Frame>
+  </Step>
+  <Step title="Define field mapping">
+    Create your field transformation rules:
+    - Map source field names to destination field names
+    - Use key-value pairs: `{"source_field": "destination_field"}`
+    - Only include fields you want to transform
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/data-mapper-node-mapping-configuration.png" alt="Defining field mappings" />
+    </Frame>
+  </Step>
+  <Step title="Select mapping direction">
+    Choose the transformation direction:
+    - **Source to Destination**: Map from your system to external app
+    - **Destination to Source**: Map from external app to your system
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/data-mapper-node-direction-selection.png" alt="Selecting mapping direction" />
+    </Frame>
+  </Step>
+  <Step title="Run/Test Node">
+    Test your mapping configuration to verify field transformations work correctly.
+    <Frame>
+      <img height="200" src="/images/workflow/nodes/data-mapper-node-test-execution.png" alt="Testing data mapper configuration" />
+    </Frame>
+  </Step>
+</Steps>
+
+## Examples
+
+### Example 1: Source to Destination - Internal System to Salesforce
+
+This example maps internal contact fields to Salesforce Contact object format:
+
+```javascript
+// Workflow configuration
+{
+  "name": "data_mapper_task",
+  "taskReferenceName": "map_to_salesforce",
+  "type": "DATA_MAPPER",
+  "inputParameters": {
+    "direction": "Source to Destination",
+    "input": {
+      "fname": "Alice",
+      "lname": "Johnson", 
+      "email_id": "alice@example.com",
+      "phone_num": "+1-555-123-4567",
+      "company_name": "TechCorp"
+    },
+    "mapping": {
+      "fname": "FirstName",
+      "lname": "LastName", 
+      "email_id": "Email",
+      "phone_num": "Phone",
+      "company_name": "Account"
+    }
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "FirstName": "Alice",
+  "LastName": "Johnson",
+  "Email": "alice@example.com", 
+  "Phone": "+1-555-123-4567",
+  "Account": "TechCorp"
+}
+```
+
+### Example 2: Destination to Source - Salesforce to Internal System
+
+This example maps Salesforce Contact data to internal system format:
+
+```javascript
+// Workflow configuration
+{
+  "name": "data_mapper_task",
+  "taskReferenceName": "map_from_salesforce", 
+  "type": "DATA_MAPPER",
+  "inputParameters": {
+    "direction": "Destination to Source",
+    "input": "{{salesforce_contact}}",
+    "mapping": {
+      "internal_first_name": "FirstName",
+      "internal_last_name": "LastName",
+      "internal_email": "Email",
+      "internal_status": "Status"
+    }
+  }
+}
+```
+
+**Input (from Salesforce):**
+```json
+{
+  "FirstName": "Bob",
+  "LastName": "Smith",
+  "Email": "bob@company.com",
+  "Status": "Qualified",
+  "Id": "003xx000002ABC",
+  "CreatedDate": "2024-01-15T10:30:00Z"
+}
+```
+
+**Expected Output:**
+```json
+{
+  "internal_first_name": "Bob", 
+  "internal_last_name": "Smith",
+  "internal_email": "bob@company.com",
+  "internal_status": "Qualified"
+}
+```
+
+### Example 3: Partial Mapping for Specific Fields
+
+This example maps only selected fields needed for a specific integration:
+
+```javascript
+// Workflow configuration
+{
+  "name": "data_mapper_task",
+  "taskReferenceName": "partial_field_mapping",
+  "type": "DATA_MAPPER",
+  "inputParameters": {
+    "direction": "Source to Destination",
+    "input": {
+      "amount": "10000",
+      "closedate": null,
+      "createdate": "2025-07-17T15:18:42.306Z", 
+      "dealname": "Sample Deal 1",
+      "dealstage": "appointmentscheduled",
+      "hs_lastmodifieddate": "2025-07-17T15:18:43.194Z",
+      "hs_object_id": "122783379192",
+      "pipeline": "default"
+    },
+    "mapping": {
+      "amount": "money_value",
+      "dealname": "opportunity_name",
+      "dealstage": "stage"
+    }
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "money_value": "10000",
+  "opportunity_name": "Sample Deal 1", 
+  "stage": "appointmentscheduled"
+}
+```
+
+## Runtime Behavior
+
+<Warning>The Data Mapper only processes flat objects and does not support nested fields, arrays, or data type conversion. Missing input fields referenced in mapping will not appear in output.</Warning>
+
+### Mapping Process
+
+The Data Mapper processes field transformations in the following order:
+
+1. **Input Validation**: Validates input is a flat JSON object
+2. **Mapping Resolution**: Resolves field mappings based on direction
+3. **Field Extraction**: Extracts only mapped fields from input data
+4. **Name Transformation**: Applies field name transformations per mapping
+5. **Output Generation**: Creates output object with transformed field names
+
+### Direction Behavior
+
+**Source to Destination:**
+- Maps `input[source_key]` → `output[destination_key]`
+- Use when sending data from your system to external applications
+- Mapping: `{"internal_field": "external_field"}`
+
+**Destination to Source:**
+- Maps `input[destination_key]` → `output[source_key]`  
+- Use when receiving data from external applications to your system
+- Mapping: `{"internal_field": "external_field"}` (automatically reversed)
+
+## Troubleshooting
+
+### Missing Fields in Output
+
+**Problem**: Expected fields don't appear in the mapped output
+
+**Solutions**:
+- Verify input object contains the fields referenced in mapping
+- Check that field names in mapping exactly match input field names (case-sensitive)
+- Ensure mapping syntax uses correct key-value format
+- Use Debug Node before Data Mapper to inspect input structure
+
+### Incorrect Field Mapping Direction
+
+**Problem**: Fields are mapped in wrong direction or with wrong names
+
+**Solutions**:
+- Verify direction setting matches your data flow intention
+- Check mapping configuration uses correct source → destination format
+- For Destination to Source, ensure mapping represents the reverse relationship
+- Test with simple mapping first to verify direction behavior
+
+### Empty Output Object
+
+**Problem**: Data Mapper returns empty object or no results
+
+**Solutions**:
+- Confirm input object is not empty or null
+- Verify at least one field in mapping exists in input data
+- Check that input is a flat object, not an array or nested structure
+- Ensure Additional Fields toggle is configured correctly
+
+### Nested Field Mapping Errors
+
+**Problem**: Attempting to map nested fields fails
+
+**Solutions**:
+- Data Mapper only supports flat field mapping
+- Use Transform Node or Custom Code Node for nested object handling
+- Flatten nested objects before using Data Mapper
+- Extract specific nested values into flat structure first
+
+<Tip>Use the Debug Node before and after Data Mapper to compare input and output structures and verify your field mappings are working correctly.</Tip>
+
+## What's Next?
+
+- Learn about [Transform Node](/nodes/transform-node) for complex data transformations
+- Explore [Custom Code Node](/nodes/custom-code-node) for advanced field processing
+- Check out [HTTP Request Node](/nodes/http-request-node) to send mapped data to external APIs
+- Review [Workflow Testing](/testing/workflow-testing) to test field mapping configurations

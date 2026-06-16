@@ -1,0 +1,462 @@
+---
+title: "Custom Code Node"
+description: "Execute custom JavaScript or Python code within workflows to process, transform, and manipulate data"
+sidebarTitle: "Custom Code"
+---
+
+## What does it do?
+
+The Custom Code Node enables you to execute custom JavaScript or Python code within workflows. It acts as a code executor that allows you to create custom logic, manipulate data structures, and perform complex operations that aren't available in standard workflow nodes.
+
+**Common use cases:**
+- Transform Salesforce contact data into custom formats for external APIs
+- Filter and process large datasets from API responses
+- Perform complex calculations on contact scores or metrics
+- Validate and clean data before sending to external systems
+- Integrate with external libraries for specialized processing
+
+## Input Parameters
+
+### Code Configuration
+
+<ParamField path="Input Parameters" type="object" required="optional">
+  Key-value pairs of data to pass into your custom function. Can include variables from previous nodes. Example: `{"contact": "{{salesforce_contact}}", "threshold": 80}`
+</ParamField>
+
+<ParamField path="Language" type="dropdown" required="yes">
+  Programming language for your custom code. Options: `JavaScript`, `Python`. Example: `JavaScript`
+</ParamField>
+
+<ParamField path="Code" type="string" required="yes">
+  Your custom code logic written inside the `yourFunction` function. Function receives input parameters and must return a result object.
+</ParamField>
+
+<Info>Your code must be written inside the `yourFunction` wrapper. The function receives input parameters as arguments and should return an object with your processed data.</Info>
+
+## Supported Libraries
+
+### JavaScript Libraries
+
+<ParamField path="axios" type="library">
+  HTTP client library for making API requests. Example: `const axios = require('axios');`
+</ParamField>
+
+<ParamField path="lodash" type="library">
+  Utility library for data manipulation and functional programming. Example: `const _ = require('lodash');`
+</ParamField>
+
+<ParamField path="cheerio" type="library">
+  Server-side jQuery implementation for HTML parsing. Example: `const cheerio = require('cheerio');`
+</ParamField>
+
+<ParamField path="date-fns" type="library">
+  Modern date utility library for parsing and formatting dates. Example: `const { format } = require('date-fns');`
+</ParamField>
+
+<ParamField path="fast-xml-parser" type="library">
+  Fast XML to JSON converter. Example: `const parser = require('fast-xml-parser');`
+</ParamField>
+
+<ParamField path="fuse.js" type="library">
+  Fuzzy search library for approximate string matching. Example: `const Fuse = require('fuse.js');`
+</ParamField>
+
+<ParamField path="uuid" type="library">
+  Generate RFC-compliant UUIDs. Example: `const { v4: uuidv4 } = require('uuid');`
+</ParamField>
+
+### Python Libraries
+
+<ParamField path="pandas" type="library">
+  Data analysis and manipulation library. Example: `import pandas as pd`
+</ParamField>
+
+<ParamField path="numpy" type="library">
+  Numerical computing library. Example: `import numpy as np`
+</ParamField>
+
+<ParamField path="requests" type="library">
+  HTTP library for Python. Example: `import requests`
+</ParamField>
+
+<Info>Need Additional Libraries? Contact our support team to request additional libraries for JavaScript or Python support.</Info>
+
+## Output
+
+The Custom Code Node outputs the exact return value from your custom function.
+
+### Output Structure
+
+```json
+{
+  "processed_contact": {
+    "id": "003xx000002ABC",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "score_category": "high_value"
+  },
+  "original_score": 85,
+  "meets_threshold": true
+}
+```
+
+### Return Value Notes
+
+- **Direct Output**: Whatever you return from `yourFunction` becomes the node output
+- **JSON Serializable**: Return values must be JSON serializable (objects, arrays, strings, numbers, booleans)
+- **Structured Data**: Use objects and arrays to organize complex return data
+- **Error Handling**: Runtime errors will be captured and displayed in workflow logs
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Custom Code Node to canvas">
+    From the **Utility Nodes** section, drag the Custom Code Node to your workflow canvas where you need custom processing.
+    
+    <img height="200" src="/images/workflow/nodes/custom-code-node-drag-drop.png" alt="Dragging Custom Code Node from utility nodes"/>
+  </Step>
+
+  <Step title="Configure input parameters">
+    Define the data you want to pass into your function:
+    - Add key-value pairs for variables from previous nodes
+    - Include any static values needed for processing
+    
+    <img height="200" src="/images/workflow/nodes/custom-code-node-input-configuration.png" alt="Configuring custom code input parameters"/>
+  </Step>
+
+  <Step title="Select programming language">
+    Choose your preferred language:
+    - **JavaScript**: For web-focused processing and API integrations
+    - **Python**: For data analysis and scientific computing
+    
+    <img height="200" src="/images/workflow/nodes/custom-code-node-language-selection.png" alt="Selecting programming language"/>
+  </Step>
+
+  <Step title="Write your custom code">
+    Implement your logic inside the `yourFunction` wrapper:
+    - Access input parameters through function arguments
+    - Use supported libraries with require/import statements
+    - Return an object with your processed results
+    
+    <img height="200" src="/images/workflow/nodes/custom-code-node-code-editor.png" alt="Writing custom code logic"/>
+  </Step>
+
+  <Step title="Run/Test Node">
+    Test your custom code with sample data to verify logic and output format work correctly.
+    
+    <img height="200" src="/images/workflow/nodes/custom-code-node-test-execution.png" alt="Testing custom code execution"/>
+  </Step>
+</Steps>
+
+<Info>Code execution has timeout and memory limits. Keep functions efficient and avoid infinite loops or excessive memory usage.</Info>
+
+## Examples
+
+### Example 1: Transform Salesforce Contact Data (JavaScript)
+
+This example processes Salesforce contact data and categorizes it for external API integration:
+
+```javascript
+// Input Parameters: {"contact": "{{salesforce_contact}}", "score_threshold": 75}
+
+const _ = require('lodash');
+
+async function yourFunction(params) {
+    const contact = params.contact;
+    const threshold = params.score_threshold;
+    
+    // Transform contact data
+    const transformedContact = {
+        external_id: contact.Id,
+        full_name: contact.Name,
+        email_address: contact.Email,
+        phone_number: contact.Phone || null,
+        lead_source: contact.LeadSource,
+        created_date: contact.CreatedDate
+    };
+    
+    // Categorize based on lead score
+    const leadScore = contact.Lead_Score__c || 0;
+    if (leadScore >= threshold) {
+        transformedContact.category = 'high_value';
+        transformedContact.priority = 1;
+    } else if (leadScore >= threshold * 0.6) {
+        transformedContact.category = 'medium_value';
+        transformedContact.priority = 2;
+    } else {
+        transformedContact.category = 'low_value';
+        transformedContact.priority = 3;
+    }
+    
+    // Add computed fields
+    transformedContact.domain = contact.Email ? contact.Email.split('@')[1] : null;
+    transformedContact.processed_at = new Date().toISOString();
+    
+    return {
+        processed_contact: transformedContact,
+        original_score: leadScore,
+        meets_threshold: leadScore >= threshold
+    };
+}
+```
+
+**Expected Output:**
+```json
+{
+  "processed_contact": {
+    "external_id": "003xx000002ABC",
+    "full_name": "John Doe",
+    "email_address": "john@company.com",
+    "phone_number": "+1-555-123-4567",
+    "lead_source": "Website",
+    "created_date": "2024-01-15T10:30:00Z",
+    "category": "high_value",
+    "priority": 1,
+    "domain": "company.com",
+    "processed_at": "2024-01-15T14:30:00Z"
+  },
+  "original_score": 85,
+  "meets_threshold": true
+}
+```
+
+### Example 2: Data Enrichment with External API (JavaScript)
+
+This example enriches contact data by calling an external company information API:
+
+```javascript
+// Input Parameters: {"contact": "{{salesforce_contact}}", "api_key": "{{config.company_api_key}}"}
+
+const axios = require('axios');
+const _ = require('lodash');
+
+async function yourFunction(params) {
+    const contact = params.contact;
+    const apiKey = params.api_key;
+    
+    let enrichedData = {
+        contact_id: contact.Id,
+        name: contact.Name,
+        email: contact.Email
+    };
+    
+    // Extract company domain
+    const domain = contact.Email ? contact.Email.split('@')[1] : null;
+    
+    if (domain && !_.includes(['gmail.com', 'yahoo.com', 'hotmail.com'], domain)) {
+        try {
+            // Call company enrichment API
+            const response = await axios.get(`https://api.company-data.com/lookup`, {
+                params: { domain: domain, api_key: apiKey },
+                timeout: 5000
+            });
+            
+            if (response.data && response.data.company) {
+                enrichedData.company_info = {
+                    name: response.data.company.name,
+                    industry: response.data.company.industry,
+                    size: response.data.company.employee_count,
+                    location: response.data.company.location,
+                    website: response.data.company.website
+                };
+                enrichedData.enrichment_source = 'external_api';
+            }
+        } catch (error) {
+            console.log('Company lookup failed:', error.message);
+            enrichedData.enrichment_error = error.message;
+        }
+    } else {
+        enrichedData.enrichment_source = 'personal_email';
+    }
+    
+    // Add processing metadata
+    enrichedData.processed_at = new Date().toISOString();
+    enrichedData.domain = domain;
+    
+    return {
+        enriched_contact: enrichedData,
+        enrichment_attempted: !!domain,
+        api_called: !!domain && !_.includes(['gmail.com', 'yahoo.com', 'hotmail.com'], domain)
+    };
+}
+```
+
+**Expected Output:**
+```json
+{
+  "enriched_contact": {
+    "contact_id": "003xx000002ABC",
+    "name": "John Doe",
+    "email": "john@techcorp.com",
+    "company_info": {
+      "name": "TechCorp Solutions",
+      "industry": "Software",
+      "size": "50-200",
+      "location": "San Francisco, CA",
+      "website": "https://techcorp.com"
+    },
+    "enrichment_source": "external_api",
+    "processed_at": "2024-01-15T14:30:00Z",
+    "domain": "techcorp.com"
+  },
+  "enrichment_attempted": true,
+  "api_called": true
+}
+```
+
+### Example 3: Data Analysis with Python
+
+This example analyzes contact data using Python pandas:
+
+```python
+# Input Parameters: {"contacts": "{{contact_list}}", "analysis_type": "lead_scoring"}
+
+import pandas as pd
+import numpy as np
+from datetime import datetime
+
+async def yourFunction(params):
+    contacts = params['contacts']
+    analysis_type = params['analysis_type']
+    
+    # Convert to DataFrame
+    df = pd.DataFrame(contacts)
+    
+    # Perform lead scoring analysis
+    if analysis_type == 'lead_scoring':
+        # Calculate lead scores based on multiple factors
+        df['email_score'] = df['Email'].apply(lambda x: 10 if x and '@' in x else 0)
+        df['phone_score'] = df['Phone'].apply(lambda x: 5 if x else 0)
+        df['source_score'] = df['LeadSource'].map({
+            'Website': 15,
+            'Referral': 20,
+            'Advertisement': 10,
+            'Trade Show': 12
+        }).fillna(5)
+        
+        # Calculate total score
+        df['calculated_score'] = df['email_score'] + df['phone_score'] + df['source_score']
+        
+        # Add percentile ranking
+        df['score_percentile'] = df['calculated_score'].rank(pct=True) * 100
+        
+        # Categorize contacts
+        df['category'] = pd.cut(df['calculated_score'], 
+                               bins=[0, 15, 25, 35], 
+                               labels=['Low', 'Medium', 'High'])
+    
+    # Generate summary statistics
+    summary = {
+        'total_contacts': len(df),
+        'avg_score': float(df['calculated_score'].mean()),
+        'score_distribution': df['category'].value_counts().to_dict(),
+        'top_sources': df['LeadSource'].value_counts().head(3).to_dict()
+    }
+    
+    # Convert DataFrame back to records
+    processed_contacts = df.to_dict('records')
+    
+    return {
+        'processed_contacts': processed_contacts,
+        'analysis_summary': summary,
+        'processed_at': datetime.now().isoformat()
+    }
+```
+
+**Expected Output:**
+```json
+{
+  "processed_contacts": [
+    {
+      "Id": "003xx000001",
+      "Name": "John Doe",
+      "Email": "john@company.com",
+      "calculated_score": 30,
+      "category": "High"
+    }
+  ],
+  "analysis_summary": {
+    "total_contacts": 150,
+    "avg_score": 22.5,
+    "score_distribution": {
+      "Low": 45,
+      "Medium": 67,
+      "High": 38
+    }
+  },
+  "processed_at": "2024-01-15T14:30:00Z"
+}
+```
+
+## Runtime Behavior
+
+<Warning>Custom code execution has timeout limits (30 seconds) and memory restrictions. Avoid infinite loops, excessive API calls, or large data processing that may exceed these limits.</Warning>
+
+### Execution Environment
+
+The Custom Code Node provides:
+
+1. **Isolated Execution**: Code runs in secure, isolated containers
+2. **Library Access**: Pre-installed libraries available via require/import
+3. **Parameter Injection**: Input parameters passed as function arguments
+4. **Error Handling**: Runtime errors captured and returned as node output
+5. **Resource Limits**: CPU time and memory usage monitored
+
+### Best Practices
+
+- **Keep functions focused**: Break complex logic into smaller operations
+- **Handle errors gracefully**: Use try-catch blocks for external API calls
+- **Return structured data**: Always return objects that other nodes can consume
+- **Use efficient algorithms**: Optimize for performance within timeout limits
+- **Log debug information**: Use console.log for troubleshooting
+
+## Troubleshooting
+
+### Code Execution Timeout
+
+**Problem**: Custom code execution exceeds time limits
+
+**Solutions**:
+- Optimize algorithms and reduce computational complexity
+- Remove unnecessary loops or recursive operations
+- Cache repeated calculations or API calls
+- Break large operations into multiple Custom Code nodes
+
+### Library Import Error
+
+**Problem**: Cannot import or require specified library
+
+**Solutions**:
+- Check library name spelling and case sensitivity
+- Verify library is in supported libraries list
+- Use correct import syntax for JavaScript (`require`) or Python (`import`)
+- Contact support team to request additional library support
+
+### Runtime Error in Custom Code
+
+**Problem**: Code throws exceptions or errors during execution
+
+**Solutions**:
+- Add try-catch blocks around risky operations
+- Validate input parameters before processing
+- Check for null or undefined values in data
+- Use Debug Node to inspect input parameter structure
+
+### Memory Limit Exceeded
+
+**Problem**: Code execution exceeds memory allocation
+
+**Solutions**:
+- Process data in smaller chunks or batches
+- Avoid storing large objects in memory
+- Use streaming approaches for large datasets
+- Optimize data structures and variable usage
+
+<Tip>Use console.log statements in your custom code to debug issues. Logs will appear in the workflow execution details for troubleshooting.</Tip>
+
+## What's Next?
+
+- Learn about [Transform Node](/nodes/transform-node) for simpler data transformations
+- Explore [HTTP Request Node](/nodes/http-request-node) to call external APIs from custom code
+- Check out [Rule Node](/nodes/rule-node) to add conditional logic around custom code
+- Review [Workflow Testing](/testing/workflow-testing) to test custom code behavior

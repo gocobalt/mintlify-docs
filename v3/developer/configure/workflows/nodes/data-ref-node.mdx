@@ -1,0 +1,430 @@
+---
+title: "Data Refs Node"
+description: "Store and retrieve bidirectional mappings between internal record IDs and external system IDs"
+sidebarTitle: "Data Refs"
+---
+
+The Data Refs Node maintains bidirectional mappings between your internal record IDs and external system IDs. It enables you to track which records in your system correspond to which records in external applications like SAP, NetSuite, or Tipalti, making it essential for sync workflows that need to update existing records rather than create duplicates.
+
+## When to Use
+
+- Store mappings when creating records in external systems
+- Look up external IDs before updating records in connected applications
+- Check if a record already exists in an external system before creating
+- Maintain sync state between your application and enterprise systems
+- Clean up mappings when records are deleted
+
+<Info>DataRef entities must be created first via **More > Data Refs** before using this node. Each entity stores mappings specific to your workflow context.</Info>
+
+## Actions
+
+<AccordionGroup>
+  <Accordion title="Create Ref">
+    Creates a single mapping between an internal record ID and an external system ID.
+
+    <ParamField path="Name" type="dropdown" required>
+      Select the DataRef entity to store the mapping. Entities are created via **More > Data Refs**.
+    </ParamField>
+
+    <ParamField path="Record ID" type="string" required>
+      Your internal system's record identifier. Supports dynamic variables. Example: `{{user.internal_id}}` or `user_12345`
+    </ParamField>
+
+    <ParamField path="External ID" type="string" required>
+      The external system's record identifier. Supports dynamic variables. Example: `{{salesforce_contact.Id}}` or `003xx000002ABC`
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Create Bulk Refs">
+    Creates multiple mappings in a single operation. Use this when processing batches of records.
+
+    <ParamField path="Name" type="dropdown" required>
+      Select the DataRef entity to store the mappings.
+    </ParamField>
+
+    <ParamField path="Refs" type="code editor" required>
+      Array of objects containing `record_id` and `external_id` pairs.
+    </ParamField>
+
+    **Refs Format:**
+```json
+    [
+      {"record_id": "user_001", "external_id": "003xx000001ABC"},
+      {"record_id": "user_002", "external_id": "003xx000002DEF"}
+    ]
+```
+  </Accordion>
+
+  <Accordion title="Get Ref from record ID">
+    Retrieves the external ID associated with a given internal record ID.
+
+    <ParamField path="Name" type="string" required>
+      DataRef entity name. Select from dropdown or enter dynamically using template syntax.
+    </ParamField>
+
+    <ParamField path="Record ID" type="string" required>
+      The internal record ID to look up. Example: `{{contact.internal_id}}` or `user_12345`
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Get Ref from external ID">
+    Retrieves the internal record ID associated with a given external system ID.
+
+    <ParamField path="Name" type="string" required>
+      DataRef entity name. Select from dropdown or enter dynamically using template syntax.
+    </ParamField>
+
+    <ParamField path="External ID" type="string" required>
+      The external system ID to look up. Example: `{{salesforce_contact.Id}}` or `003xx000002ABC`
+    </ParamField>
+  </Accordion>
+
+  <Accordion title="Delete Ref by record ID">
+    Removes the mapping for a specific internal record ID.
+
+    <ParamField path="Name" type="string" required>
+      DataRef entity name. Select from dropdown or enter dynamically using template syntax.
+    </ParamField>
+
+    <ParamField path="Record ID" type="string" required>
+      The internal record ID whose mapping should be deleted. Example: `{{contact.internal_id}}` or `user_12345`
+    </ParamField>
+  </Accordion>
+</AccordionGroup>
+
+## Output
+
+<AccordionGroup>
+  <Accordion title="Create Ref / Create Bulk Refs">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref created successfully",
+        "data": {
+          "user_12345": [
+            {
+              "slug": "salesforce",
+              "value": "003xx000002ABC"
+            }
+          ]
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Get Ref (found)">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref found",
+        "data": {
+          "uuid": [
+            {
+              "slug": "netsuite",
+              "value": "12345"
+            },
+            {
+              "slug": "salesforce",
+              "value": "003xx000002ABC"
+            }
+          ]
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Ref Not Found">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref not found"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Delete Ref">
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref deleted"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Error Response">
+```json
+    {
+      "status": "Errored",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": "Dataref with name vendor_mapping not found"
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Adding to Your Workflow
+
+<Steps>
+  <Step title="Create a DataRef entity">
+    Before using this node, create a DataRef entity via **More > Data Refs**. This defines the storage location for your mappings.
+  </Step>
+
+  <Step title="Add the Data Refs Node">
+    In the workflow editor, click **Add Node** and select **Data Refs** from the Utility Nodes section.
+  </Step>
+  
+  <Step title="Select an action">
+    Choose the action that matches your use case:
+    - **Create Ref** to store a new mapping
+    - **Create Bulk Refs** to store multiple mappings at once
+    - **Get Ref from record ID** to find external IDs
+    - **Get Ref from external ID** to find internal IDs
+    - **Delete Ref by record ID** to remove mappings
+  </Step>
+  
+  <Step title="Configure parameters">
+    Select the DataRef entity and provide the required IDs based on your selected action.
+  </Step>
+  
+  <Step title="Test the node">
+    Click the **Run** tab to execute and verify the mapping operation.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Create SAP Vendor Mapping">
+    Store the mapping when creating a new vendor in SAP.
+
+    **Workflow Context:** After creating a vendor in SAP, store the mapping between your internal vendor ID and the SAP vendor number.
+
+    **Action:** Create Ref
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `sap_vendor_mapping` |
+    | Record ID | `{{internal_vendor.id}}` |
+    | External ID | `{{sap_create_vendor.Supplier}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref created successfully",
+        "data": {
+          "VEND-001": [
+            {
+              "slug": "sap",
+              "value": "1000234"
+            }
+          ]
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Check if NetSuite Customer Exists">
+    Before creating a customer in NetSuite, check if a mapping already exists to avoid duplicates.
+
+    **Workflow Context:** Use a Rule Node after this to branch based on whether the ref was found.
+
+    **Action:** Get Ref from record ID
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `netsuite_customer_mapping` |
+    | Record ID | `{{webhook.customer_id}}` |
+
+    **Output (found):**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref found",
+        "data": {
+          "uuid": [
+            {
+              "slug": "netsuite",
+              "value": "CUST-78901"
+            }
+          ]
+        }
+      }
+    }
+```
+
+    **Output (not found):**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref not found"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Bulk Create Tipalti Payee Mappings">
+    After batch-creating payees in Tipalti, store all mappings in one operation.
+
+    **Workflow Context:** Use with Loop Node output to create mappings for all processed records.
+
+    **Action:** Create Bulk Refs
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `tipalti_payee_mapping` |
+    | Refs | `{{loop_create_payees.results}}` |
+
+    **Refs Input:**
+```json
+    [
+      {"record_id": "VEND-001", "external_id": "PAY-12345"},
+      {"record_id": "VEND-002", "external_id": "PAY-12346"},
+      {"record_id": "VEND-003", "external_id": "PAY-12347"}
+    ]
+```
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref created successfully",
+        "data": {
+          "VEND-001": [{"slug": "tipalti", "value": "PAY-12345"}],
+          "VEND-002": [{"slug": "tipalti", "value": "PAY-12346"}],
+          "VEND-003": [{"slug": "tipalti", "value": "PAY-12347"}]
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Look Up Internal ID from SAP Webhook">
+    When receiving a webhook from SAP, find the corresponding internal record ID.
+
+    **Workflow Context:** SAP sends a webhook with a vendor number. Find your internal vendor ID to process the update.
+
+    **Action:** Get Ref from external ID
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `sap_vendor_mapping` |
+    | External ID | `{{sap_webhook.vendor_number}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref found",
+        "data": {
+          "uuid": [
+            {
+              "slug": "sap",
+              "value": "1000234"
+            }
+          ]
+        }
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Delete Mapping When Record is Removed">
+    Clean up the mapping when a vendor is deleted from your system.
+
+    **Workflow Context:** After deleting a vendor internally, remove the external mapping to keep data clean.
+
+    **Action:** Delete Ref by record ID
+
+    | Field | Value |
+    |-------|-------|
+    | Name | `sap_vendor_mapping` |
+    | Record ID | `{{deleted_vendor.id}}` |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "5",
+      "node_name": "Data Refs",
+      "body": {
+        "message": "Ref deleted"
+      }
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="DataRef Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | "Dataref with name X not found" | Verify the DataRef entity exists under **More > Data Refs**. Check for typos in the name. |
+    | Entity not appearing in dropdown | Create the DataRef entity first via **More > Data Refs** before using it in a workflow. |
+  </Accordion>
+
+  <Accordion title="Ref Not Found">
+    | Problem | Solution |
+    |---------|----------|
+    | "Ref not found" returned | This is expected when no mapping exists. Use a Rule Node to handle this case and create the record. |
+    | Looking up wrong ID type | Ensure you're using the correct action. Use "Get Ref from record ID" for internal IDs and "Get Ref from external ID" for external system IDs. |
+  </Accordion>
+
+  <Accordion title="Bulk Creation Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Bulk refs not creating | Verify the Refs array format. Each object must have `record_id` and `external_id` keys. |
+    | Partial creation | Check for duplicate record IDs in the array. Each record ID should be unique within a batch. |
+  </Accordion>
+
+  <Accordion title="Mapping Conflicts">
+    | Problem | Solution |
+    |---------|----------|
+    | Duplicate mappings | Use "Get Ref from record ID" before creating to check if a mapping already exists. |
+    | Wrong external ID returned | Verify you're querying the correct DataRef entity. Different entities store separate mapping sets. |
+  </Accordion>
+</AccordionGroup>
+
+<Tip>Use a [Rule Node](/developer-guide/workflows/nodes/rule) after "Get Ref" actions to branch your workflow based on whether a mapping was found, enabling create-or-update logic.</Tip>
+
+## What's Next
+
+- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on ref lookup results
+- [Loop Node](/developer-guide/workflows/nodes/loop) to process bulk refs from array data
+- [Tables Node](/developer-guide/workflows/nodes/tables) for more complex data storage needs
+- [HTTP Node](/developer-guide/workflows/nodes/http) to sync data with external systems after ref lookup

@@ -1,0 +1,276 @@
+---
+title: "Delay Node"
+description: "Pause workflow execution for a specific time period or until a target date and time"
+sidebarTitle: "Delay"
+---
+
+# Delay Node
+
+## What does it do?
+
+The Delay Node allows you to pause workflow execution for a specific time period or until a target date and time. This gives you precise control over when subsequent actions occur in your workflow.
+
+**Common use cases:**
+- Wait 24 hours before sending follow-up emails to new Salesforce contacts
+- Delay sync operations until specific business hours
+- Space out API calls to avoid rate limiting
+- Schedule workflows to run at optimal times
+- Create cooling-off periods between automated actions
+
+## Actions
+
+<ResponseField name="Action Name" type="string">
+  <Expandable title="Available Actions">
+    <ResponseField name="`Wait For`" type="action">
+      Pauses workflow execution for a specified duration from the current time.
+      
+      **Behavior:**
+      - Adds delay relative to current execution time
+      - Use for fixed waiting periods
+      - Simple duration-based delays
+      - Best for consistent timing requirements
+    </ResponseField>
+    <ResponseField name="`Wait Till`" type="action">
+      Pauses workflow execution until a specific date and time is reached.
+      
+      **Behavior:**
+      - Calculates delay based on target datetime
+      - Can wait before or after a base date
+      - Use for scheduled execution at specific times
+      - Best for time-sensitive operations
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Input Parameters
+
+<ParamField path="Days" type="number" required="conditional">
+  Number of days to delay (0-30). Can be a static value or variable from previous nodes. Example: `1` or `{{salesforce_contact.follow_up_days}}`
+</ParamField>
+
+<ParamField path="Hours" type="number" required="conditional">
+  Number of hours to delay (0-23). Can be a static value or variable from previous nodes. Example: `2` or `{{event.delay_hours}}`
+</ParamField>
+
+<ParamField path="Minutes" type="number" required="conditional">
+  Number of minutes to delay (0-59). Can be a static value or variable from previous nodes. Example: `30` or `{{config.delay_minutes}}`
+</ParamField>
+
+<ParamField path="Seconds" type="number" required="conditional">
+  Number of seconds to delay (0-59). Can be a static value or variable from previous nodes. Example: `45` or `{{workflow.delay_seconds}}`
+</ParamField>
+
+<ParamField path="Before/After" type="dropdown" required="conditional">
+  Available only for `Wait Till` action. Choose whether to wait before or after the base date. Options: `Before`, `After`. Example: `After`
+</ParamField>
+
+<ParamField path="Base Date" type="string" required="conditional">
+  Available only for `Wait Till` action. Target date in valid ISO format. Can be static or variable from previous nodes. Example: `"2024-12-25T09:00:00Z"` or `{{salesforce_contact.follow_up_date}}`
+</ParamField>
+
+<Callout type="info">
+**Note**: All time calculations use UTC timezone. Maximum delay period is 30 days. At least one time unit (days, hours, minutes, or seconds) must be specified and greater than 0.
+</Callout>
+
+## Output
+
+The Delay Node outputs timing information and delay calculation details.
+
+### Output Structure
+
+```json
+{
+  "delay_started_at": "2024-01-15T10:30:00Z",
+  "delay_duration": {
+    "days": 1,
+    "hours": 2, 
+    "minutes": 30,
+    "seconds": 0
+  },
+  "delay_until": "2024-01-16T13:00:00Z",
+  "action_type": "Wait For",
+  "status": "completed"
+}
+```
+
+### Status Types
+
+- **waiting**: Delay is currently active, workflow paused
+- **completed**: Delay period finished, workflow continuing
+- **skipped**: Delay was bypassed due to conditions
+- **error**: Invalid delay configuration or calculation failure
+
+## Adding to Workflow
+
+<Steps>
+  <Step title="Drag Delay Node to canvas">
+    From the **Utility Nodes** section, drag the Delay Node to your workflow canvas where you need to pause execution.
+    
+    <img height="200" src="/images/workflow/nodes/delay-node-drag-drop.png" alt="Dragging Delay Node from utility nodes"/>
+  </Step>
+
+  <Step title="Select delay action">
+    Click on the Delay Node to open configuration. Choose your delay strategy:
+    - **Wait For**: Pause for a specific duration from now
+    - **Wait Till**: Pause until a target date/time
+    
+    <img height="200" src="/images/workflow/nodes/delay-node-action-selection.png" alt="Selecting delay action type"/>
+  </Step>
+
+  <Step title="Configure delay parameters">
+    Set your delay timing:
+    - **For Wait For**: Specify days, hours, minutes, seconds
+    - **For Wait Till**: Set base date and before/after timing
+    
+    <img height="200" src="/images/workflow/nodes/delay-node-parameter-configuration.png" alt="Configuring delay timing parameters"/>
+  </Step>
+
+  <Step title="Run/Test Node">
+    Test your delay configuration to verify timing calculations work as expected.
+    
+    <img height="200" src="/images/workflow/nodes/delay-node-test-execution.png" alt="Testing delay node configuration"/>
+  </Step>
+</Steps>
+
+<Callout type="info">
+**Note**: During delay periods, the workflow will show as "running" but paused. You can monitor delay status in the workflow execution logs.
+</Callout>
+
+## Examples
+
+### Example 1: Wait For Action (Follow-up Delay)
+
+This example waits 24 hours before sending a follow-up email to a new Salesforce contact:
+
+```javascript
+// Workflow configuration
+{
+  "name": "delay_task",
+  "taskReferenceName": "followup_delay", 
+  "type": "DELAY",
+  "action": "Wait For",
+  "inputParameters": {
+    "days": 1,
+    "hours": 0,
+    "minutes": 0, 
+    "seconds": 0
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "delay_started_at": "2024-01-15T14:30:00Z",
+  "delay_duration": {
+    "days": 1,
+    "hours": 0,
+    "minutes": 0,
+    "seconds": 0
+  },
+  "delay_until": "2024-01-16T14:30:00Z",
+  "action_type": "Wait For",
+  "status": "completed"
+}
+```
+
+### Example 2: Wait Till Action (Business Hours Sync)
+
+This example delays Salesforce sync until 9 AM the next business day:
+
+```javascript
+// Workflow configuration
+{
+  "name": "delay_task",
+  "taskReferenceName": "business_hours_delay",
+  "type": "DELAY", 
+  "action": "Wait Till",
+  "inputParameters": {
+    "days": 0,
+    "hours": 9,
+    "minutes": 0,
+    "seconds": 0,
+    "beforeAfter": "After",
+    "baseDate": "{{event.next_business_day}}"
+  }
+}
+```
+
+**Expected Output:**
+```json
+{
+  "delay_started_at": "2024-01-15T16:45:00Z",
+  "delay_duration": {
+    "calculated_wait": "16 hours 15 minutes"
+  },
+  "delay_until": "2024-01-16T09:00:00Z", 
+  "action_type": "Wait Till",
+  "base_date": "2024-01-16T00:00:00Z",
+  "status": "completed"
+}
+```
+
+## Runtime Behavior
+
+<Callout type="warning">
+**Important**: Workflows with active delays will continue running and consuming resources. Maximum delay period is 30 days. All times are calculated in UTC timezone.
+</Callout>
+
+### Delay Calculation
+
+The Delay Node calculates wait times as follows:
+
+1. **Wait For**: Adds specified duration to current execution time
+2. **Wait Till**: Calculates difference between current time and target datetime
+3. **Validation**: Ensures delay doesn't exceed 30-day maximum
+4. **Execution**: Pauses workflow thread until target time reached
+
+### Variable Resolution
+
+All timing parameters support variables from previous nodes:
+- **Static values**: `"days": 2`
+- **Node variables**: `"hours": "{{salesforce_contact.priority_hours}}"`
+- **Event data**: `"baseDate": "{{event.scheduled_date}}"`
+
+## Troubleshooting
+
+### Delay Never Completes
+
+**Problem**: Workflow stuck in delay state indefinitely
+
+**Solutions**: 
+- Check that delay duration is reasonable (under 30 days)
+- Verify base date is valid ISO format for Wait Till actions
+- Ensure calculated target time is in the future
+- Review workflow execution logs for delay calculation errors
+
+### Invalid Date Format Error
+
+**Problem**: "Invalid base date format" error in Wait Till action
+
+**Solutions**:
+- Use valid ISO 8601 format: `2024-01-15T09:00:00Z`
+- Ensure date variables from previous nodes are properly formatted
+- Test date format with Debug Node before Delay Node
+- Add date transformation if needed
+
+### Delay Duration Too Long
+
+**Problem**: "Maximum delay exceeded" validation error
+
+**Solutions**:
+- Reduce total delay to under 30 days
+- Break long delays into multiple shorter Delay Nodes
+- Use Wait Till action with nearer target dates
+- Check variable values don't create excessive delays
+
+<Callout type="info">
+**Tip**: Use the Debug Node before your Delay Node to inspect timing variables and verify calculations before the delay executes.
+</Callout>
+
+## What's Next?
+
+- Learn about [Schedule Triggers](/triggers/schedule-triggers) for recurring timed workflows
+- Explore [Transform Node](/nodes/transform-node) to format dates for delay calculations
+- Check out [Rule Node](/nodes/rule-node) to add conditional delays
+- Review [Workflow Testing](/testing/workflow-testing) to test delay behavior
