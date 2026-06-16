@@ -8,11 +8,7 @@ description: List the datastore names in an app's config.
   **Deprecated.** Datastores are read-only views of data written by workflow executions. For API-managed tables you can create, write, and query directly, use [Persistent Tables](/v3/api-reference/tables/list-tables) instead.
 </Warning>
 
-List the datastores available in an app's config for a linked account. Datastores are populated by workflow executions (a workflow writes records to a named datastore); this returns the names you can then read or search.
-
-<Note>
-  If no workflow has written to a datastore yet, this returns an empty array `[]`.
-</Note>
+List the datastores available in an app's config for a linked account. Datastores are populated by workflow executions (a workflow writes records to a named datastore); this returns the names you can then read or search. If no workflow has written to a datastore yet, the response is an empty array (`[]`).
 
 ## Authentication
 

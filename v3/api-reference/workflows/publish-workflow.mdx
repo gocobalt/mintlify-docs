@@ -7,22 +7,16 @@ description: Publish or unpublish a private workflow.
 Publish or unpublish a workflow. Publishing registers the workflow's triggers and crons and snapshots the current draft as a new version; unpublishing deregisters them. Publishing with a specific `version` publishes the draft as that version number.
 
 <Note>
-  This requires a session token, so it operates on the linked account's **private** workflow.
-</Note>
-
-<Warning>
   **The draft ID and the published ID are different.**
 
   - To **publish**, pass the **draft workflow ID** — the `_id` returned by [Create Workflow](/v3/api-reference/workflows/create-workflow) (or the workflow whose draft you opened via [Get Workflow Draft](/v3/api-reference/workflows/get-draft)).
   - The publish response returns the **published workflow ID** (a *different* `_id`). Use that ID — also visible in [List Workflows](/v3/api-reference/workflows/list-workflows) — to **unpublish**, execute, or delete.
   - Calling unpublish with the draft ID fails with `400 INVALID_WORKFLOW_ID` ("Only public and published workflows can be unpublished").
-</Warning>
-
-<Note>
-  **Authentication:** this endpoint requires a **session token** (`Authorization: Bearer ...`). Issue one with [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token).
 </Note>
 
 ## Authentication
+
+This endpoint requires a **session token** (issue one with [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token)); it operates on the linked account's private workflow.
 
 <ParamField header="Authorization" type="string" required>
   Session token for the linked account.

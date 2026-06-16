@@ -7,16 +7,12 @@ description: Execute a published workflow for a linked account.
 Execute a workflow for a linked account via a manual trigger. The workflow must be **published** and owned by the linked account. Execution is asynchronous by default; set the `sync_execution` header to run synchronously and return the result inline.
 
 <Note>
-  This authenticates as a linked account, so it runs that account's **private** workflow.
-</Note>
-
-<Note>
   The **`slug` header is required** — it names the application the workflow belongs to. Without it the call fails with `Workflow ID and slug are required`.
 </Note>
 
 ## Authentication
 
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+This endpoint is scoped to a linked account (it runs that account's private workflow), so it accepts **either** authentication method.
 
 **Option 1 — API key**
 

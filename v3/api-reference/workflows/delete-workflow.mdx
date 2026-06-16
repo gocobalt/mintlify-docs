@@ -7,14 +7,12 @@ description: Delete a private workflow and its drafts, versions, and triggers.
 Delete a workflow along with all its drafts and versions, and deregister its triggers. The response indicates whether trigger deregistration fully succeeded.
 
 <Note>
-  This requires a session token, so it deletes the linked account's **private** workflow.
-</Note>
-
-<Note>
-  **Authentication:** this endpoint requires a **session token** (`Authorization: Bearer ...`). A version-snapshot workflow cannot be deleted directly — delete the parent workflow instead.
+  A version-snapshot workflow cannot be deleted directly — delete the parent (published) workflow instead.
 </Note>
 
 ## Authentication
+
+This endpoint requires a **session token**; it deletes the linked account's private workflow.
 
 <ParamField header="Authorization" type="string" required>
   Session token for the linked account.
