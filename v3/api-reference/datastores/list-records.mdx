@@ -1,0 +1,63 @@
+---
+title: Get Datastore Records
+api: get /api/v2/public/datastore/config/:slug/:datastore/records
+description: Get all records from a config datastore.
+---
+
+<Warning>
+  **Deprecated.** Datastores are read-only views of data written by workflow executions. For API-managed tables you can create, write, and query directly, use [Persistent Tables](/v3/api-reference/tables/list-tables) instead.
+</Warning>
+
+Return all records stored in a named datastore for an app's config. The record shape depends on what the workflow wrote — each record is an arbitrary object.
+
+## Authentication
+
+Datastores are scoped to a linked account via the `linked_account_id` header.
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account.</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
+<ParamField path="datastore" type="string" required>The datastore name (from [List Datastores](/v3/api-reference/datastores/list-config-datastores)).</ParamField>
+
+## Query Parameters
+
+<ParamField query="config_id" type="string">Config to read from. Defaults to the linked account ID.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of record objects. Fields vary by datastore.
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="message" type="string">Error message.</ResponseField>
+    <ResponseField name="error" type="string">Error detail, e.g. `Config not found`.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+[
+  { "id": "rec_001", "email": "jane@example.com", "stage": "qualified" },
+  { "id": "rec_002", "email": "john@example.com", "stage": "new" }
+]
+```
+```json 404
+{
+  "message": "Server Error",
+  "error": "Config not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/datastore/config/{slug}/{datastore}/records" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

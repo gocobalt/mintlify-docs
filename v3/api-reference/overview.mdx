@@ -3,33 +3,35 @@ title: API Reference
 description: Programmatically manage linked accounts, trigger workflows, configure integrations, and automate operations in Refold.
 ---
 
-The Refold API provides RESTful endpoints to manage your integration platform programmatically. You can create and manage linked accounts, trigger workflow executions, configure integrations, handle webhooks, and interact with MCP servers.
+The Refold API provides RESTful endpoints to manage your integration platform programmatically. You can create and manage linked accounts, trigger workflow executions, configure integrations, handle webhooks, manage persistent data, and interact with MCP servers.
 
 <Info>
-All API requests use the base URL `https://api.gocobalt.io`
+All API requests use the base URL `https://app.refold.ai`. We've updated our domain to `app.refold.ai` from `api.gocobalt.io` — existing `api.gocobalt.io` requests will continue to work until it is decommissioned at a later date.
 </Info>
 
 ## Authentication
 
-Refold supports two authentication methods depending on your use case.
+Refold supports two authentication methods. Which one applies depends on whether the endpoint is **org-level** or **linked-account-level**:
+
+- **Org-level** endpoints (e.g. managing linked accounts, webhooks, variable definitions) use your **API key** only.
+- **Linked-account-level** endpoints (e.g. configs, workflows, executions, MCP servers) operate in the context of one linked account — authenticate with your **API key + `linked_account_id`**, or with a **session token**.
 
 <AccordionGroup>
   <Accordion title="API Key Authentication" icon="key">
-    Use API Key authentication for server-side operations where your key remains secure.
-
-    Every request requires two headers:
+    Use API-key authentication for server-side operations where your key stays secure.
 
     <ParamField header="x-api-key" type="string" required>
-      Your Refold API key
+      Your Refold API key.
     </ParamField>
 
-    <ParamField header="linked_account_id" type="string" required>
-      The unique identifier for the linked account making the request
+    <ParamField header="linked_account_id" type="string">
+      The linked account to act on. Required for linked-account-level endpoints; omit it for org-level endpoints.
     </ParamField>
+
 ```bash
-    curl -X GET https://api.gocobalt.io/api/v2/public/application \
-      -H "x-api-key: your_api_key" \
-      -H "linked_account_id: user_12345"
+    curl -X GET https://app.refold.ai/api/v2/public/application \
+      -H "x-api-key: YOUR_API_KEY" \
+      -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
 ```
 
     **Finding your API Key:**
@@ -41,23 +43,22 @@ Refold supports two authentication methods depending on your use case.
   </Accordion>
 
   <Accordion title="Session Token Authentication" icon="shield-check">
-    Use Session Token authentication for frontend implementations where you cannot expose your API key.
-
-    Session tokens replace both `x-api-key` and `linked_account_id` headers with a single `Authorization` header.
+    Use session-token authentication for frontend / hosted implementations where you cannot expose your API key. A session token is **scoped to a single linked account**, so it replaces both the `x-api-key` and `linked_account_id` headers.
 
     <ParamField header="Authorization" type="string" required>
-      Bearer token using your session token
-      
+      Bearer token using your session token.
+
       **Format:** `Bearer YOUR_SESSION_TOKEN`
     </ParamField>
+
 ```bash
-    curl -X GET https://api.gocobalt.io/api/v2/public/application \
-      -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
+    curl -X GET https://app.refold.ai/api/v2/public/workflow/enabled \
+      -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
-    **Supported endpoints:** Config APIs, Config Field APIs, and MCP Server APIs support session token authentication.
+    **Where it applies:** linked-account-level endpoints — configs, config fields, workflows, executions, MCP servers, events, datastores, hosted Connect, and more. Because a session token represents one customer, it is **not** accepted for org-admin operations such as managing linked accounts, webhooks, or variable definitions.
 
-    Generate a session token using the [Session Token API](/v3/api-reference/session-token/generate-token-for-linked-account).
+    Generate a session token with the [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token) endpoint.
   </Accordion>
 </AccordionGroup>
 
@@ -75,53 +76,75 @@ When you exceed rate limits, the API returns a `429 Too Many Requests` response.
 ## API Resources
 
 <CardGroup cols={2}>
-  <Card title="Linked Account" icon="user" href="/v3/api-reference/customer/list-linked-accounts">
+  <Card title="Linked Accounts" icon="user" href="/v3/api-reference/linked-accounts/list-linked-accounts">
     Create and manage end-users who connect their third-party accounts through your integration.
   </Card>
-  <Card title="Applications" icon="grid-2" href="/v3/api-reference/integration-meta/list-applications">
-    Retrieve and manage the integrations enabled in your Refold account.
+  <Card title="Applications" icon="grid-2" href="/v3/api-reference/applications/list-applications">
+    Discover the integrations enabled in your account and a linked account's connection status.
   </Card>
-  <Card title="Integration Schema" icon="diagram-project" href="/v3/api-reference/integration-schema/get-actions-for-an-application">
-    Fetch available actions and their parameters for any connected application.
+  <Card title="Auth Structure & OAuth" icon="lock" href="/v3/api-reference/auth-structure/get-auth-structure">
+    Inspect an app's auth fields and build OAuth authorization URLs.
   </Card>
-  <Card title="Config" icon="sliders" href="/v3/api-reference/config/upsert-config">
-    Manage integration configurations that define how workflows behave for each linked account.
+  <Card title="Credentials" icon="key" href="/v3/api-reference/credentials/get-credentials">
+    Read tokens, save key-based credentials, and migrate existing auth onto an integration.
   </Card>
-  <Card title="Event" icon="bolt" href="/v3/api-reference/event/trigger-an-event-from-your-application">
-    Trigger workflows by sending events from your application.
+  <Card title="Session Tokens" icon="ticket" href="/v3/api-reference/session-tokens/generate-session-token">
+    Issue scoped tokens for secure frontend authentication.
+  </Card>
+  <Card title="Hosted Connect" icon="browser" href="/v3/api-reference/connect/create-connect-url">
+    Generate hosted Connect URLs for end-user authentication flows.
   </Card>
   <Card title="Webhooks" icon="webhook" href="/v3/api-reference/webhooks/create-webhook">
     Subscribe to real-time notifications when events occur in Refold.
   </Card>
+  <Card title="Configs & Config Fields" icon="sliders" href="/v3/api-reference/configs/create-config">
+    Install and configure apps per linked account, and set field values.
+  </Card>
+  <Card title="Events" icon="bolt" href="/v3/api-reference/events/trigger-event">
+    Define custom events and fire them to start workflows.
+  </Card>
+  <Card title="Workflows" icon="diagram-project" href="/v3/api-reference/workflows/list-workflows">
+    Manage public (org/slug-level) and private (linked-account) workflows, then publish and execute them.
+  </Card>
   <Card title="Executions" icon="play" href="/v3/api-reference/executions/list-executions">
-    Retrieve details and status of workflow executions.
+    Retrieve details, status, and node output of workflow executions.
   </Card>
-  <Card title="Public Workflows" icon="share-nodes" href="/v3/api-reference/public_workflows/get_public_workflows">
-    Manage workflows that can be triggered via API without linked account context.
+  <Card title="Schedule" icon="clock" href="/v3/api-reference/schedule/register-schedule">
+    Run workflows on cron or interval triggers.
   </Card>
-  <Card title="Schedule" icon="clock" href="/v3/api-reference/schedule/register-cron">
-    Create and manage scheduled workflow executions using cron expressions.
+  <Card title="Datarefs" icon="database" href="/v3/api-reference/datarefs/list-datarefs">
+    Manage named reference-data tables for a linked account.
   </Card>
-  <Card title="Session Token" icon="ticket" href="/v3/api-reference/session-token/generate-token-for-linked-account">
-    Generate tokens for secure frontend authentication.
+  <Card title="Persistent Tables" icon="table" href="/v3/api-reference/tables/list-tables">
+    Create API-managed tables, columns, and records.
   </Card>
-  <Card title="Hosted Portal" icon="browser" href="/v3/api-reference/hosted-portal/get-connect-url">
-    Generate hosted portal URLs for end-user authentication flows.
+  <Card title="Environment Variables" icon="rectangle-code" href="/v3/api-reference/environment-variables/list-definitions">
+    Manage variable definitions and scoped values.
+  </Card>
+  <Card title="MCP Servers" icon="robot" href="/v3/api-reference/mcp-servers/list-mcp-servers">
+    Expose integrations and chains as tools for AI agents.
+  </Card>
+  <Card title="Human Tasks" icon="list-check" href="/v3/api-reference/human-tasks/get-human-task">
+    Retrieve and submit public human-in-the-loop forms.
   </Card>
 </CardGroup>
 
 ## Error Handling
 
-The API returns standard HTTP status codes and a consistent error response format.
+The API returns standard HTTP status codes and a consistent error response shape:
+
 ```json
 {
   "status_code": 401,
   "http_error_type": "UNAUTHORIZED",
-  "error_code": "INVALID_CREDENTIALS",
-  "message": "Invalid Credentials",
-  "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
 }
 ```
+
+<Note>
+  Most services return the internal code in an `error` field; a few endpoints return it as `error_code` instead. Both carry the same meaning.
+</Note>
 
 | Status Code | Description |
 |-------------|-------------|
@@ -132,15 +155,13 @@ The API returns standard HTTP status codes and a consistent error response forma
 | `429` | Rate limit exceeded. Implement backoff and retry. |
 | `500` | Internal server error. Contact support if persistent. |
 
-Every error response includes a `request_id` field. Include this ID when contacting support for faster troubleshooting.
-
 ## What's Next
 
 <CardGroup cols={3}>
-  <Card title="Create a Linked Account" icon="user-plus" href="/v3/api-reference/customer/create-linked-account">
+  <Card title="Create a Linked Account" icon="user-plus" href="/v3/api-reference/linked-accounts/create-linked-account">
     Set up your first end-user to start building integrations.
   </Card>
-  <Card title="Trigger a Workflow" icon="bolt" href="/v3/api-reference/event/trigger-an-event-from-your-application">
+  <Card title="Trigger a Workflow" icon="bolt" href="/v3/api-reference/events/trigger-event">
     Learn how to execute workflows programmatically.
   </Card>
   <Card title="Explore SDKs" icon="code" href="/v3/sdks/overview">

@@ -1,0 +1,107 @@
+---
+title: Publish Workflow
+api: put /api/v2/public/workflow/:workflow_id/publish
+description: Publish or unpublish a private workflow.
+---
+
+Publish or unpublish a workflow. Publishing registers the workflow's triggers and crons and snapshots the current draft as a new version; unpublishing deregisters them. Publishing with a specific `version` publishes the draft as that version number.
+
+<Note>
+  This requires a session token, so it operates on the linked account's **private** workflow.
+</Note>
+
+<Warning>
+  **The draft ID and the published ID are different.**
+
+  - To **publish**, pass the **draft workflow ID** — the `_id` returned by [Create Workflow](/v3/api-reference/workflows/create-workflow) (or the workflow whose draft you opened via [Get Workflow Draft](/v3/api-reference/workflows/get-draft)).
+  - The publish response returns the **published workflow ID** (a *different* `_id`). Use that ID — also visible in [List Workflows](/v3/api-reference/workflows/list-workflows) — to **unpublish**, execute, or delete.
+  - Calling unpublish with the draft ID fails with `400 INVALID_WORKFLOW_ID` ("Only public and published workflows can be unpublished").
+</Warning>
+
+<Note>
+  **Authentication:** this endpoint requires a **session token** (`Authorization: Bearer ...`). Issue one with [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token).
+</Note>
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  Session token for the linked account.
+
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>
+  When **publishing** (`published: true`), the **draft** workflow ID. When **unpublishing** (`published: false`), the **published** workflow ID returned by the publish call. See the note above.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="published" type="boolean" required>`true` to publish (registers triggers), `false` to unpublish.</ParamField>
+<ParamField body="version" type="integer">When publishing, publish the draft as this version number.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the published (or unpublished) workflow. On publish, the `_id` here is the **published workflow ID** — different from the draft ID you passed in.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned, for example, when unpublishing with a draft ID.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code, e.g. `INVALID_WORKFLOW_ID`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a3158ffd396207fd25314e7",
+  "name": "Lead Sync",
+  "published": true,
+  "nodes": [ { "id": "1", "type": "start" } ]
+}
+```
+```json 400 Unpublish with draft ID
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "INVALID_WORKFLOW_ID",
+  "message": "Only public and published workflows can be unpublished"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error_code": "AUTH_SERVICE_ERROR",
+  "message": "Authorization Token Missing"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (publish — use the DRAFT id)
+curl -X PUT "https://app.refold.ai/api/v2/public/workflow/{draft_workflow_id}/publish" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "published": true }'
+```
+```bash cURL (unpublish — use the PUBLISHED id)
+curl -X PUT "https://app.refold.ai/api/v2/public/workflow/{published_workflow_id}/publish" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "published": false }'
+```
+</RequestExample>

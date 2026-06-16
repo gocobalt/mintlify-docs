@@ -1,246 +1,82 @@
 ---
 title: Update Webhook
 api: put /api/v2/public/webhook/:id
-description: Update an existing webhook's URL, events, or status.
+description: Update an existing webhook's configuration.
 ---
 
-Update an existing webhook subscription. You can modify the webhook URL, change subscribed events, enable/disable the webhook, or change the payload format.
+Update a webhook's events, URL, enabled state, or delivery settings. Only the fields you send are changed.
 
 ## Authentication
 
+Webhooks are an org-level resource, so this endpoint uses API-key auth.
+
 <ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Developer → Setup**.
+  Your Refold API key. Find it in **Settings → Credentials**.
 </ParamField>
 
 ## Path Parameters
 
 <ParamField path="id" type="string" required>
-  The unique webhook identifier.
-  
-  **Example:** `66e31564c0287b4136f77ef8`
+  The webhook ID to update.
 </ParamField>
 
 ## Body Parameters
 
-<ParamField body="webhook_url" type="string">
-  The HTTPS URL where webhook events will be sent.
-  
-  **Example:** `https://api.yourapp.com/webhooks/refold`
-</ParamField>
-
-<ParamField body="webhook_events" type="array">
-  Array of event types to subscribe to.
-  
-  **Accepted values:**
-  - `Connection Created`
-  - `Connection Deleted`
-  - `Connection Expired`
-  - `Workflow Completed`
-  - `Workflow Errored`
-</ParamField>
-
-<ParamField body="is_enabled" type="boolean">
-  Whether the webhook is active. Set to `false` to pause webhook delivery.
-</ParamField>
-
-<ParamField body="webhook_type" type="string">
-  The webhook payload format: `default` or `slack`.
-</ParamField>
+<ParamField body="webhook_events" type="array">Replacement list of subscribed events.</ParamField>
+<ParamField body="webhook_url" type="string">New delivery URL (`^https?://`).</ParamField>
+<ParamField body="is_enabled" type="boolean">Enable or disable the webhook.</ParamField>
+<ParamField body="webhook_type" type="string">Payload format: `default`, `slack`, or `custom`.</ParamField>
+<ParamField body="method" type="string">Delivery method: `POST`, `PUT`, or `PATCH`.</ParamField>
+<ParamField body="webhook_headers" type="object">Custom delivery headers.</ParamField>
+<ParamField body="webhook_body" type="any">Custom payload template.</ParamField>
+<ParamField body="workflow_ids" type="array">Restricted workflow IDs.</ParamField>
 
 ## Response
 
 <Tabs>
   <Tab title="200 OK">
     Returns the updated webhook object.
-
-    <ResponseField name="_id" type="string">
-      Unique webhook identifier
-    </ResponseField>
-
-    <ResponseField name="webhook_url" type="string">
-      The registered webhook URL
-    </ResponseField>
-
-    <ResponseField name="webhook_events" type="array">
-      Subscribed event types
-    </ResponseField>
-
-    <ResponseField name="is_enabled" type="boolean">
-      Whether the webhook is active
-    </ResponseField>
-
-    <ResponseField name="webhook_type" type="string">
-      Payload format type
-    </ResponseField>
-
-    <ResponseField name="createdAt" type="string">
-      ISO 8601 timestamp of creation
-    </ResponseField>
   </Tab>
 
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">
-      HTTP status code
-    </ResponseField>
-
-    <ResponseField name="message" type="string">
-      Error description
-    </ResponseField>
-
-    <ResponseField name="request_id" type="string">
-      Unique identifier for debugging
-    </ResponseField>
-  </Tab>
-
-  <Tab title="500 Internal Server Error">
-    <ResponseField name="status_code" type="integer">
-      HTTP status code
-    </ResponseField>
-
-    <ResponseField name="message" type="string">
-      Error description
-    </ResponseField>
-
-    <ResponseField name="request_id" type="string">
-      Unique identifier for debugging
-    </ResponseField>
+  <Tab title="400 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
-```json 200 Updated Webhook
+```json 200
 {
-  "is_enabled": true,
-  "webhook_events": [
-    "Connection Created",
-    "Connection Deleted",
-    "Workflow Completed",
-    "Workflow Errored",
-    "Connection Expired"
-  ],
-  "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
-  "_id": "66e31564c0287b4136f77ef8",
-  "createdAt": "2024-09-12T16:23:00.587Z",
-  "webhook_type": "slack"
+  "_id": "6a313eda6d5528bdcf71ebac",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "is_enabled": false,
+  "webhook_events": ["Workflow Completed"],
+  "workflow_ids": [],
+  "webhook_url": "https://your-app.com/webhooks",
+  "webhook_body": "{{event}}",
+  "method": "POST",
+  "webhook_type": "default",
+  "updatedAt": "2026-06-16T12:17:46.860Z"
 }
 ```
-```json 401
+```json 400
 {
-  "status_code": 401,
-  "http_error_type": "UNAUTHORIZED",
-  "error_code": "SERVER_ERROR",
-  "message": "Invalid Credentials",
-  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
-}
-```
-```json 500
-{
-  "status_code": 500,
-  "http_error_type": "INTERNAL_SERVER_ERROR",
-  "error_code": "SERVER_ERROR",
-  "message": "Request failed with status code 500",
-  "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "RESOURCE_NOT_FOUND",
+  "message": "Webhook not found"
 }
 ```
 </ResponseExample>
 
 <RequestExample>
-```bash cURL - Update URL
-curl -X PUT "https://api.gocobalt.io/api/v2/public/webhook/66e31564c0287b4136f77ef8" \
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/webhook/{id}" \
   -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "webhook_url": "https://api.yourapp.com/webhooks/refold-v2"
-  }'
-```
-```bash cURL - Disable Webhook
-curl -X PUT "https://api.gocobalt.io/api/v2/public/webhook/66e31564c0287b4136f77ef8" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "is_enabled": false
-  }'
-```
-```bash cURL - Update Events
-curl -X PUT "https://api.gocobalt.io/api/v2/public/webhook/66e31564c0287b4136f77ef8" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "webhook_events": ["Workflow Errored", "Connection Expired"]
-  }'
+  -d '{ "is_enabled": false, "webhook_events": ["Workflow Completed"] }'
 ```
 </RequestExample>
-
-## Example: Toggle Webhook Status
-```javascript
-async function toggleWebhook(webhookId, enabled, apiKey) {
-  const response = await fetch(
-    `https://api.gocobalt.io/api/v2/public/webhook/${webhookId}`,
-    {
-      method: 'PUT',
-      headers: {
-        'x-api-key': apiKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        is_enabled: enabled
-      })
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message);
-  }
-
-  return response.json();
-}
-
-// Usage: Disable webhook during maintenance
-await toggleWebhook('66e31564c0287b4136f77ef8', false, 'your_api_key');
-
-// Re-enable after maintenance
-await toggleWebhook('66e31564c0287b4136f77ef8', true, 'your_api_key');
-```
-
-## Example: Update Subscribed Events
-```javascript
-async function updateWebhookEvents(webhookId, events, apiKey) {
-  const response = await fetch(
-    `https://api.gocobalt.io/api/v2/public/webhook/${webhookId}`,
-    {
-      method: 'PUT',
-      headers: {
-        'x-api-key': apiKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        webhook_events: events
-      })
-    }
-  );
-
-  return response.json();
-}
-
-// Usage: Subscribe only to error events
-await updateWebhookEvents(
-  '66e31564c0287b4136f77ef8',
-  ['Workflow Errored', 'Connection Expired'],
-  'your_api_key'
-);
-```
-
-## What's Next
-
-<CardGroup cols={3}>
-  <Card title="Get Webhook" icon="magnifying-glass" href="/v3/api-reference/webhooks/get-webhook-by-id">
-    Retrieve webhook details
-  </Card>
-  <Card title="Delete Webhook" icon="trash" href="/v3/api-reference/webhooks/delete-webhook">
-    Remove a webhook
-  </Card>
-  <Card title="List Webhooks" icon="list" href="/v3/api-reference/webhooks/get-webhook">
-    View all webhooks
-  </Card>
-</CardGroup>
