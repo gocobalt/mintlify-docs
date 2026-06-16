@@ -1,75 +1,116 @@
 ---
-title: Overview
+title: "Overview"
+description: "Find your base URL, authenticate, and call every Refold resource over REST."
 ---
-Welcome to Refold's API Reference! It allows developers to integrate and automate various functionalities within the Refold platform. This guide provides an overview of how to find the API key, descriptions of each available resource, and details about the rate limits of the Refold API.
 
-## Finding the Refold API Key
-To execute API requests, an API key is required. Follow these steps to find your API key:
+The Refold API is a REST API for integrating and automating the Refold platform from your own backend. Use it to create and manage linked accounts, trigger and inspect workflow executions, subscribe to events and webhooks, and work with every resource you configure in the dashboard.
 
-- Log in to your [Refold account](https://app.gocobalt.io).
-- On the dashboard, navigate to `Developer` section under `Settings` in the side menu.
-- Under the **Setup** tab, you will find the `API Key` in **Overview** section.
-- You can copy the API key for either the **Test environment** or the **Production environment**.
-<img height="200" src="/images/getting_api.png" alt="Getting API Key"/>
+This page covers the three things you need before your first call — the base URL, authentication, and rate limits — followed by the resources the API exposes.
 
-## Using Session Token for Authentication
-If you do not want to expose your API Key in the frontend implementation, you can also make the following API Calls by using a Session token in the Header instead of `x-api-key` and `Linked-account-id`:
+## Base URL
 
-- Config APIs 
+Every request goes to a base URL that depends on where your Refold instance runs. Prepend it to the endpoint paths shown throughout this reference.
+
+| Deployment | Base URL |
+|------------|----------|
+| **Refold Cloud** (current) | `https://app.refold.ai` |
+| **Refold Cloud** (legacy) | `https://api.gocobalt.io` |
+| **Self-hosted** | `https://{identifier}.refold.ai` |
+
+For example, to create a linked account on Refold Cloud:
+
+```bash cURL
+curl --request POST \
+  --url https://app.refold.ai/api/v2/public/linked-account \
+  --header 'x-api-key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json'
+```
+
+<Note>
+The legacy base URL (`https://api.gocobalt.io`) is still supported for existing customers who haven't migrated. New integrations should use `https://app.refold.ai`.
+</Note>
+
+<Note>
+On a **self-hosted** deployment, replace `{identifier}` with your deployment identifier — for example, `https://acme.refold.ai`. Your platform administrator provides this value.
+</Note>
+
+## Authentication
+
+Authenticate every request with an API key, or use a session token when you need to call the API from frontend code without exposing the key.
+
+### API key
+
+Pass your API key in the `x-api-key` header. Find it in the dashboard:
+
+<Steps>
+  <Step title="Open Developer settings">
+    Log in to your [Refold account](https://app.refold.ai), then go to
+    **Settings > Developer** in the side menu.
+  </Step>
+  <Step title="Copy the key">
+    Under the **Setup** tab, find the **API Key** in the **Overview** section.
+    Copy the key for either the **Test** or **Production** environment.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of Settings > Developer > Setup > Overview with the API Key field highlighted (existing asset: /images/getting_api.png). */}
+<Frame caption="Finding your API key in Developer settings">
+  <img src="/images/getting_api.png" alt="Getting the API key from Developer settings" />
+</Frame>
+
+<Warning>
+Keep your API key on the server. Anyone with it can act on your account, so never embed it in frontend or client-side code.
+</Warning>
+
+### Session token
+
+To call the API from the frontend without exposing your API key, generate a session token and send it in the header in place of `x-api-key` and `Linked-account-id`. Session tokens authenticate these calls:
+
+- Config APIs
 - Config Field APIs
 
-Refer [here](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) to understand how you can generate a Session Token for a Linked Account.
+See [Generate a session token for a linked account](/v3/api-reference/session-token/generate-token-for-linked-account) for how to create one.
 
-## Rate Limits of Refold API
+## Rate limits
 
-Refold API has specific rate limits to ensure efficient and fair usage.
+Refold applies rate limits to keep usage efficient and fair across customers.
 
-**Standard Rate Limit**: 20 events per second.
+| Limit | Value |
+|-------|-------|
+| **Standard** | 20 events per second |
+| **Burst** | 5 events in an instant (within a second) |
 
-**Burst Rate Limit**: Allows a burst of 5 events in an instant within a second.
+## API resources
 
+Each resource maps to a group of endpoints in this reference.
 
-## API Resources
-The Refold API includes several resources, each serving a specific purpose. Below is a brief description of each resource:
+| Resource | Description |
+|----------|-------------|
+| **Linked Account** | Your users' end customers, who use the integrations built on Refold |
+| **Applications** | The integrations a user has enabled in Refold |
+| **Config** | The configurations created for each integration |
+| **Config Field** | The individual fields within a configuration |
+| **Event** | Events created in Refold that trigger workflows |
+| **Webhooks** | Real-time notifications you subscribe to when events occur |
+| **Executions** | Details of a workflow execution |
+| **Session Token** | Tokens that authenticate a single linked account |
+| **Refold Hosted** | Hosted portal URLs and properties saved against a session token |
+| **Public Workflows** | Public workflows created in Refold |
+| **Datastores** | Datastores created in Refold |
 
-1. **Linked Account**
+## Next steps
 
-Linked Accounts refer to the end-users or customers of our users who utilize the integrations built using the Refold platform.
-
-2. **Applications**
-
-This resource refers to the integrations that the user has enabled in the Refold platform.
-
-3. **Config**
-
-This resource refers to the configs created in Refold for each integration.
-
-4. **Event**
-
-This resource refers to the events that are created in Refold and are used to trigger workflows in any integration.
-
-5. **Webhooks**
-
-Webhooks allow users subscribe to get real-time notifications when events occur in Refold.
-
-6. **Executions**
-
-This resource fetches the details of an execution in Refold.
-
-7. **Session Token**
-
-This resource is used to generate a session token to authenticate a linked account.
-
-8. **Refold Hosted**
-
-This resource is used to create hosted portal URLs or the properties saved against the session token.
-
-9. **Public Workflows**
-
-This resource is used to manage public workflows created in Refold.
-
-10. **Datastores**
-
-This resource is used to manage datastores created in Refold.
-
-This overview provides the foundational knowledge needed to start working with Refold's API. For more detailed information on each API endpoint, refer to the Refold API Reference.
+<CardGroup cols={2}>
+  <Card title="SDKs" icon="cube" href="/v3/api-reference/sdks">
+    Call the API from Node, React, or browser JavaScript.
+  </Card>
+  <Card title="Create a linked account" icon="user-plus" href="/v3/api-reference/customer/create-linked-account">
+    Provision your first customer programmatically.
+  </Card>
+  <Card title="Session tokens" icon="key" href="/v3/api-reference/session-token/generate-token-for-linked-account">
+    Authenticate frontend calls without exposing your API key.
+  </Card>
+  <Card title="Webhooks" icon="webhook" href="/v3/api-reference/webhooks/create-webhook">
+    Receive real-time notifications when events occur.
+  </Card>
+</CardGroup>
