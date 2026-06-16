@@ -62,6 +62,18 @@ The Agent Node enables you to integrate AI capabilities directly into your workf
 }
 ```
 
+<ParamField path="Input Files (URLs)" type="text area">
+  A JSON array of file URLs to provide as additional context to the agent. Use this to pass documents, images, or other files for the model to analyze alongside the prompt. Supports dynamic variables from previous nodes using `{{variable}}` syntax.
+</ParamField>
+
+**Input Files Example:**
+```json
+[
+  "https://example.com/document.pdf",
+  "{{file_upload.url}}"
+]
+```
+
 ### MCP Servers
 
 <ParamField path="MCP Servers" type="code editor">
@@ -140,6 +152,10 @@ The node output structure is determined by the **Structured Output** schema you 
   
   <Step title="Define structured output (optional)">
     If you need the response in a specific JSON format, define a JSON schema in the **Structured Output** field.
+  </Step>
+
+  <Step title="Add input files (optional)">
+    Provide a JSON array of file URLs in the **Input Files (URLs)** field to give the agent documents or images as additional context.
   </Step>
   
   <Step title="Configure MCP servers (optional)">

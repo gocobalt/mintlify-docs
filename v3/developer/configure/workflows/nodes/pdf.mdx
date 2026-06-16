@@ -37,15 +37,15 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
     </ParamField>
 
     <ParamField path="Format" type="dropdown">
-      Standard paper size preset (A4, Letter, Legal, etc.). When set to `None`, custom dimensions are used instead.
+      Standard paper size preset. Options: `A0`, `A1`, `A2`, `A3`, `A4`, `A5`, `A6`. Default: `A4`. Set to `None (Using dimensions instead)` to use custom Height/Width.
     </ParamField>
 
     <ParamField path="Height" type="string">
-      Custom page height when Format is set to None. Accepts values in inches (`11in`) or pixels (`792px`).
+      Custom page height when Format is `None`. Accepts pixel values or metric units, e.g. `8in`, `21cm`, or `792px`. Required together with Width.
     </ParamField>
 
     <ParamField path="Width" type="string">
-      Custom page width when Format is set to None. Accepts values in inches (`8.5in`) or pixels (`612px`).
+      Custom page width when Format is `None`. Accepts pixel values or metric units, e.g. `8.5in`, `21cm`, or `612px`. Required together with Height.
     </ParamField>
 
     <ParamField path="Margin" type="code editor">
@@ -61,6 +61,20 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
       "left": "0.5in"
     }
 ```
+
+    ### Rendering
+
+    <ParamField path="ViewPortWidth" type="number">
+      Width of the rendering viewport in pixels. Must be set together with **ViewPortHeight** — one will not work without the other.
+    </ParamField>
+
+    <ParamField path="ViewPortHeight" type="number">
+      Height of the rendering viewport in pixels. Must be set together with **ViewPortWidth** — one will not work without the other.
+    </ParamField>
+
+    <ParamField path="Wait After Load" type="number">
+      Milliseconds to wait after the page loads before generating the PDF. Gives dynamic content time to render fully.
+    </ParamField>
 
     ### Header and Footer
 
@@ -96,7 +110,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
     </ParamField>
 
     <ParamField path="Metadata" type="code editor">
-      PDF metadata as a JSON object. Common fields include `title`, `author`, `subject`, and `keywords`.
+      PDF metadata as a JSON object. Common fields include `title`, `author`, `subject`, `keywords`, `creator`, and `producer`.
     </ParamField>
 
     **Metadata Example:**
@@ -304,7 +318,7 @@ Both actions return a URL to the generated PDF stored in cloud storage.
     | Field | Value |
     |-------|-------|
     | HTML (or URL) | `{{custom_code.statement_html}}` |
-    | Format | `Letter` |
+    | Format | `A4` |
     | Margin | `{"top": "1in", "right": "0.75in", "bottom": "1in", "left": "0.75in"}` |
     | Infinite Expiry | Enabled |
 

@@ -16,11 +16,11 @@ The Custom Code Node enables you to execute custom JavaScript or Python code wit
 
 ## Input Parameters
 
-<ParamField path="Input Parameters" type="object" required>
-  Key-value pairs of data to pass into your function. Include variables from previous nodes or static values needed for processing. Example: `{"vendor": "{{sap_vendor}}", "threshold": 75}`
+<ParamField path="Input Parameters" type="object">
+  Key-value pairs of data passed into your custom function as the `params` object. Include variables from previous nodes or static values needed for processing. Example: `{"vendor": "{{sap_vendor}}", "threshold": 75}`
 </ParamField>
 
-<ParamField path="Language" type="dropdown" required>
+<ParamField path="Select Language" type="dropdown" required>
   Programming language for your code. Options: `JavaScript`, `Python`.
 </ParamField>
 
@@ -99,7 +99,7 @@ The Custom Code Node outputs the exact return value from your custom function.
   </Step>
 </Steps>
 
-<Warning>Code execution has timeout limits (30 seconds) and memory restrictions. Avoid infinite loops, excessive API calls, or large data processing that may exceed these limits.</Warning>
+<Warning>Code execution has a timeout limit of 60 seconds and memory restrictions. Avoid infinite loops, excessive API calls, or large data processing that may exceed these limits.</Warning>
 
 ## Examples
 

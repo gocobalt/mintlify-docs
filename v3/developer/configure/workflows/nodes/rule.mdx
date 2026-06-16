@@ -14,50 +14,50 @@ The Rule Node enables conditional logic in workflows by evaluating conditions an
 - Create approval workflows with conditional branching
 - Validate data before proceeding with sync operations
 
-## Actions
+## Condition Logic
 
-### Match All Conditions
+The Rule Node evaluates a set of conditions and routes execution down a **true** or **false** path. Set the **Condition Rule** to control how multiple conditions combine:
 
-Evaluates to true only when ALL defined conditions are met (AND logic). Use when you need strict criteria matching where every condition must pass.
+- **Match All Conditions** (AND) — the rule passes only when every condition is true. Use for strict criteria where every condition must pass.
+- **Match Any Condition** (OR) — the rule passes when at least one condition is true. Use for alternative criteria where only one condition needs to pass.
 
-**Parameters:**
+Match All Conditions (AND) is selected by default.
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| Variable | Yes | The field or data point to evaluate |
-| Operator | Yes | Comparison operator for evaluation |
-| Value | Conditional | Value to compare against. Not required for Is Empty or Is Not Empty operators |
+### Conditions
 
-Click **Add Condition** to add multiple conditions. All must be true for the rule to pass.
-
-### Match Any Condition
-
-Evaluates to true when ANY of the defined conditions are met (OR logic). Use when you have alternative criteria where only one condition needs to pass.
-
-**Parameters:**
+Each condition compares a resolved value (the **Variable**, or *data slot*) against a target (the **Value**, or *compare value*) using a comparison operator. Click **Add Condition** to add one or more condition rows. Each condition has:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| Variable | Yes | The field or data point to evaluate |
-| Operator | Yes | Comparison operator for evaluation |
-| Value | Conditional | Value to compare against. Not required for Is Empty or Is Not Empty operators |
-
-Click **Add Condition** to add multiple conditions. Any one being true passes the rule.
+| Variable | Yes | The field or data point to evaluate (the data slot) |
+| Operator | Yes | Comparison operator for evaluation (see below) |
+| Value | Conditional | Value to compare against. Ignored by operators that only inspect the data slot — Is Null, Is Not Null, Does Exist?, and Does Not Exist? |
 
 ### Available Operators
 
-| Operator | Description |
-|----------|-------------|
-| Equals | Exact text or number match |
-| Not Equals | Value does not match |
-| Greater Than | Numeric comparison |
-| Less Than | Numeric comparison |
-| Greater Than or Equal | Inclusive numeric comparison |
-| Less Than or Equal | Inclusive numeric comparison |
-| Contains | Text substring match |
-| Does Not Contain | Text substring not present |
-| Is Empty | Value is null or empty |
-| Is Not Empty | Value exists and is not empty |
+| Operator | Key | Description |
+|----------|-----|-------------|
+| Equal To | `eq` | Equal to. Numeric comparison when the value is a number; for arrays, passes when the array contains the compare value. |
+| Not Equal To | `neq` | Not equal to. Numeric comparison when both sides are numbers, string comparison otherwise. |
+| Greater Than | `gt` | Numeric: the data slot is greater than the value. |
+| Less Than | `lt` | Numeric: the data slot is less than the value. |
+| Greater Than Or Equal To | `gte` | Numeric: the data slot is greater than or equal to the value. |
+| Less Than Or Equal To | `lte` | Numeric: the data slot is less than or equal to the value. |
+| Like | `like` | SQL-style wildcard pattern match against the data slot text. Use `%` to match any sequence of characters and `_` to match a single character (e.g. `Acme%` matches "Acme Corp", `%corp` matches "Acme Corp", `Ac_e` matches "Acme"). |
+| Contains | `contains` | Array: the data slot array contains the compare value. String: the data slot contains the compare value as a substring. |
+| Does Not Contain | `not_contains` | Inverse of Contains. |
+| Included In | `included_in` | The compare value (an array) contains the data slot value. |
+| Not Included In | `not_included_in` | The compare value array does not contain the data slot value. |
+| Is Null | `is_null` | True only when the value is an explicit `null`. An empty string is **not** null. |
+| Is Not Null | `not_null` | True when the value is not `null` (an empty string counts as not null). |
+| Does Exist? | `exist` | True when the value is present and non-empty. Both `null` and `""` are treated as not present. |
+| Does Not Exist? | `not_exist` | True when the value is absent or empty (`null` or `""`). |
+
+<Note>
+**Numeric operators** (`gt`, `gte`, `lt`, `lte`) evaluate to false if either side is not a valid number.
+
+**Is Null vs. Does Exist?** — Is Null checks for an explicit JSON `null`, while Does Exist? treats both `null` and an empty string as "not present".
+</Note>
 
 ## Output
 
@@ -114,8 +114,8 @@ Route only vendors that are both active and have purchase volume above threshold
 
 | Variable | Operator | Value |
 |----------|----------|-------|
-| sap_vendor.STATUS | Equals | Active |
-| sap_vendor.PURCHASE_VOLUME | Greater Than or Equal | 100000 |
+| sap_vendor.STATUS | Equal To | Active |
+| sap_vendor.PURCHASE_VOLUME | Greater Than Or Equal To | 100000 |
 
 **Left Path (True):** Proceed to sync vendor to internal system
 
@@ -143,9 +143,9 @@ Process orders from any of the approved channels.
 
 | Variable | Operator | Value |
 |----------|----------|-------|
-| netsuite_order.source | Equals | Web |
-| netsuite_order.source | Equals | EDI |
-| netsuite_order.source | Equals | API |
+| netsuite_order.source | Equal To | Web |
+| netsuite_order.source | Equal To | EDI |
+| netsuite_order.source | Equal To | API |
 
 **Left Path (True):** Process order through fulfillment workflow
 
@@ -173,8 +173,8 @@ Ensure required fields are populated before syncing to Tipalti.
 
 | Variable | Operator | Value |
 |----------|----------|-------|
-| event.vendor.tax_id | Is Not Empty | - |
-| event.vendor.bank_account | Is Not Empty | - |
+| event.vendor.tax_id | Is Not Null | - |
+| event.vendor.bank_account | Is Not Null | - |
 | event.vendor.email | Contains | @ |
 
 **Left Path (True):** Create vendor in Tipalti
@@ -203,7 +203,7 @@ The Rule Node evaluates conditions in the following order:
 |---------|----------|
 | Rule always goes to false path | Verify variable references are correct. Check data types match (numbers vs strings). |
 | Variable not found error | Confirm referenced node executed successfully. Check variable path syntax. |
-| Unexpected data type comparison | Use text operators (Contains, Equals) for string fields. Add Transform Node to convert types. |
+| Unexpected data type comparison | Use text operators (Contains, Equal To) for string fields. Add Transform Node to convert types. |
 
 <Tip>Add a Custom Code Node after your Rule Node during testing to inspect condition evaluation results and understand path selection.</Tip>
 

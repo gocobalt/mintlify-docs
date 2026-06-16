@@ -71,8 +71,16 @@ The Send Email Node sends emails directly from your workflow using SMTP. It supp
 </ParamField>
 
 <ParamField path="Attachments" type="code editor">
-  File attachments to include with the email.
+  A JSON array of publicly accessible file URLs to attach to the email. Maximum file size: 20MB per attachment.
 </ParamField>
+
+**Attachments Example:**
+```json
+[
+  "https://storage.example.com/invoice.pdf",
+  "{{pdf_node.body.url}}"
+]
+```
 
 ## Output
 
@@ -97,7 +105,7 @@ The node returns email delivery status and metadata.
 
 <Steps>
   <Step title="Add the Send Email Node">
-    In the workflow editor, click **Add Node** and select **Send Email** from the Utility Nodes section.
+    In the workflow editor, click **Add Node** and select **Send Emails** from the Utility Nodes section.
   </Step>
   
   <Step title="Configure SMTP settings">

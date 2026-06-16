@@ -24,7 +24,7 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
 | **Persistent** | All workflows | Until explicitly deleted | Yes |
 | **Non-Persistent** | Single workflow execution | Deleted when execution completes | No |
 
-<Warning>Tables have the following constraints: maximum **10 columns** per table and maximum **50,000 rows** per table.</Warning>
+<Warning>Tables have the following constraints: maximum **30 columns** per table and maximum **50,000 rows** per table.</Warning>
 
 ## Actions
 
@@ -36,7 +36,8 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
     |-----------|------|----------|-------------|
     | Type | Dropdown | Yes | `Persistent` or `Non Persistent`. Persistent tables are available across all workflows. |
     | Name | Text | Yes | Unique name for the table. |
-    | Columns | List | Yes | Column definitions. Click **+ Add Item** to add columns, **× Remove All** to clear. |
+    | Columns | List | Yes | Column definitions. Click **+ Add Item** to add columns, **× Remove All** to clear. Maximum 30 columns. |
+    | Associate with Linked Account | Toggle | No | When on (default), the table is private to the linked account running the workflow. When off, it is shared across your workspace. |
 
     **Output:**
 ```json
@@ -250,6 +251,35 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
     }
 ```
   </Accordion>
+
+  <Accordion title="Add Table Column">
+    Adds one or more columns to an existing table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table ID | Text | Yes | The ID of the table to modify. |
+    | Columns | List | Yes | New columns to add, each with a Column Name. Maximum 30 columns total per table. |
+  </Accordion>
+
+  <Accordion title="Remove Table Column">
+    Removes one or more columns and all their data from an existing table.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table ID | Text | Yes | The ID of the table to modify. |
+    | Column Names | List | Yes | Columns to remove, each with a Column Name. |
+
+    <Warning>All data in the removed columns is permanently deleted.</Warning>
+  </Accordion>
+
+  <Accordion title="Rename Table Column">
+    Renames one or more columns in an existing table. Existing data is preserved under the new column name.
+
+    | Parameter | Type | Required | Description |
+    |-----------|------|----------|-------------|
+    | Table ID | Text | Yes | The ID of the table to modify. |
+    | Column Renames | List | Yes | Each rename maps an Old Column Name to a New Column Name. |
+  </Accordion>
 </AccordionGroup>
 
 ## Adding to Your Workflow
@@ -430,7 +460,7 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
   <Accordion title="Column Issues">
     | Problem | Solution |
     |---------|----------|
-    | Column limit exceeded | Tables support a maximum of 10 columns. Consolidate data or use multiple tables. |
+    | Column limit exceeded | Tables support a maximum of 30 columns. Consolidate data or use multiple tables. |
     | Column not appearing | After selecting a table from the dropdown, column fields appear in the Record Data section. If columns don't appear, verify the table has a defined schema. |
     | Data type mismatch | Table columns store values as strings or numbers. Ensure your data format is compatible. |
   </Accordion>

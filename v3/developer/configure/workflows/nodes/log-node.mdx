@@ -29,15 +29,15 @@ The Log Node records custom messages to workflow execution logs during runtime. 
   | Error | Failures or problems that may affect workflow results |
 </ParamField>
 
-<ParamField path="Message Template" type="textarea" required>
+<ParamField path="Message Title" type="textarea" required>
   The message content to record. Supports dynamic variables using `{{variable}}` syntax to include data from previous nodes.
 </ParamField>
 
-<ParamField path="Custom Fields" type="code editor">
+<ParamField path="Message Body" type="code editor">
   Additional structured data to include with the log entry as JSON key-value pairs. Values support templating.
 </ParamField>
 
-**Custom Fields Example:**
+**Message Body Example:**
 ```json
 {
   "record_id": "{{netsuite_customer.id}}",
@@ -85,12 +85,12 @@ The Log Node returns a minimal response confirming the log was recorded.
     Select the appropriate **Log Level** based on the type of information you're recording.
   </Step>
   
-  <Step title="Configure message template">
-    Enter your message in the **Message Template** field. Use `{{variable}}` syntax to include dynamic values from previous nodes.
+  <Step title="Configure the message title">
+    Enter your message in the **Message Title** field. Use `{{variable}}` syntax to include dynamic values from previous nodes.
   </Step>
   
-  <Step title="Add custom fields (optional)">
-    Expand **Custom Fields** to include additional structured data with your log entry.
+  <Step title="Add a message body (optional)">
+    Expand **Message Body** to include additional structured data with your log entry.
   </Step>
   
   <Step title="Test the node">
@@ -109,9 +109,9 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Field | Value |
     |-------|-------|
     | Log Level | `Debug` |
-    | Message Template | `Processing SAP PO {{sap_purchase_order.PONumber}} for vendor {{sap_purchase_order.VendorName}}` |
+    | Message Title | `Processing SAP PO {{sap_purchase_order.PONumber}} for vendor {{sap_purchase_order.VendorName}}` |
 
-    **Custom Fields:**
+    **Message Body:**
 ```json
     {
       "po_number": "{{sap_purchase_order.PONumber}}",
@@ -132,9 +132,9 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Field | Value |
     |-------|-------|
     | Log Level | `Info` |
-    | Message Template | `Created NetSuite customer {{netsuite_response.entityId}} - {{netsuite_response.companyName}}` |
+    | Message Title | `Created NetSuite customer {{netsuite_response.entityId}} - {{netsuite_response.companyName}}` |
 
-    **Custom Fields:**
+    **Message Body:**
 ```json
     {
       "internal_id": "{{netsuite_response.internalId}}",
@@ -155,9 +155,9 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Field | Value |
     |-------|-------|
     | Log Level | `Warning` |
-    | Message Template | `Payment validation warning: Vendor {{tipalti_vendor.name}} missing {{validation_result.missing_field}}` |
+    | Message Title | `Payment validation warning: Vendor {{tipalti_vendor.name}} missing {{validation_result.missing_field}}` |
 
-    **Custom Fields:**
+    **Message Body:**
 ```json
     {
       "vendor_id": "{{tipalti_vendor.id}}",
@@ -178,9 +178,9 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Field | Value |
     |-------|-------|
     | Log Level | `Error` |
-    | Message Template | `API request failed: {{http_response.status}} - {{http_response.body.error.message}}` |
+    | Message Title | `API request failed: {{http_response.status}} - {{http_response.body.error.message}}` |
 
-    **Custom Fields:**
+    **Message Body:**
 ```json
     {
       "endpoint": "{{http_request.url}}",
@@ -202,8 +202,8 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Problem | Solution |
     |---------|----------|
     | Logs not visible in execution details | Navigate to **Logs > Executions** and select the specific workflow run. Log messages appear in the node execution details. |
-    | Message template shows raw variable syntax | Verify the variable path is correct. Check that the referenced node executed successfully before the Log node. |
-    | Custom fields not appearing | Ensure the JSON syntax is valid. Use the code editor's validation to check for formatting errors. |
+    | Message Title shows raw variable syntax | Verify the variable path is correct. Check that the referenced node executed successfully before the Log node. |
+    | Message Body not appearing | Ensure the JSON syntax is valid. Use the code editor's validation to check for formatting errors. |
   </Accordion>
 
   <Accordion title="Variable Resolution Issues">
@@ -218,7 +218,7 @@ The Log Node returns a minimal response confirming the log was recorded.
     | Problem | Solution |
     |---------|----------|
     | "Instance not found" error | The workflow execution context is no longer available. This can occur if the workflow was terminated or timed out. |
-    | Log node causing workflow delays | Log nodes execute synchronously but should complete instantly. Check if variable resolution is causing delays by simplifying the message template. |
+    | Log node causing workflow delays | Log nodes execute synchronously but should complete instantly. Check if variable resolution is causing delays by simplifying the message title. |
   </Accordion>
 </AccordionGroup>
 

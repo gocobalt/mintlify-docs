@@ -40,23 +40,27 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
 
     <ParamField path="PEM Key" type="string">
-      RSA private key for key-based authentication. Use this if not using password authentication. Supports dynamic variables.
+      SSH private key in PEM format for key-based authentication. Use this if not using password authentication. Supports dynamic variables.
     </ParamField>
 
-    <Tip>Store SFTP credentials as environment variables under **Organization > Settings > Environment Variable** for secure, reusable configuration.</Tip>
+    <ParamField path="PEM Key Passphrase" type="string">
+      Passphrase for the PEM private key, if the key is passphrase-protected. Supports dynamic variables.
+    </ParamField>
+
+    <Tip>Store SFTP credentials as environment variables under [**Organization > Settings > Environment Variable**](/v3/developer/configure/settings/organization/environment-variables) for secure, reusable configuration.</Tip>
   </Accordion>
 
   <Accordion title="Source/Destination File Details">
     Used in transfer actions to specify file locations.
 
     <ParamField path="Protocol" type="dropdown" required>
-      The protocol for accessing the file. Options: `SFTP`, `URL`
+      The protocol for accessing the file. The **source** supports `SFTP` or `URL`. The **destination** supports `SFTP` only.
     </ParamField>
 
     **When Protocol is SFTP:**
-    - Host, Port, Username, Password, File Path, PEM Key (see SFTP Connection Parameters)
+    - Host, Port, Username, Password, File Path, PEM Key, PEM Key Passphrase (see SFTP Connection Parameters)
 
-    **When Protocol is URL:**
+    **When Protocol is URL (source only):**
     <ParamField path="URL" type="string" required>
       Public URL of the file to transfer. Example: `https://example.com/files/export.csv` or `{{previous_node.file_url}}`
     </ParamField>
@@ -79,7 +83,7 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 
   <Accordion title="Transfer file from source to destination">
-    Transfers a file from one location to another. Supports SFTP-to-SFTP, URL-to-SFTP, SFTP-to-URL, or URL-to-URL transfers.
+    Transfers a file from one SFTP server to another. The source can be an SFTP server or a URL, but the destination must be an SFTP server — so the supported transfers are SFTP-to-SFTP and URL-to-SFTP.
 
     <ParamField path="Source File Details" type="object" required>
       Configuration for the source file location. Select protocol (SFTP or URL) and provide corresponding connection details.
@@ -99,9 +103,10 @@ Several actions share common SFTP connection parameters. These are documented on
     | Username | Yes | SFTP username |
     | Password | No | Password (if not using PEM key) |
     | File Path | Yes | Full path to the file |
-    | PEM Key | No | RSA private key (if not using password) |
+    | PEM Key | No | SSH private key in PEM format (if not using password) |
+    | PEM Key Passphrase | No | Passphrase for the PEM key (if passphrase-protected) |
 
-    **URL Protocol Fields:**
+    **URL Protocol Fields (source only):**
 
     | Field | Required | Description |
     |-------|----------|-------------|
@@ -110,10 +115,10 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 
   <Accordion title="Transfer file from source to cobalt bucket">
-    Transfers a file from an SFTP server or URL to the Refold-managed cloud storage bucket and returns a presigned URL for access.
+    Transfers a file from an SFTP server to the Refold-managed cloud storage bucket and returns a presigned URL for access.
 
     <ParamField path="Source File Details" type="object" required>
-      Configuration for the source file. Select protocol (SFTP or URL) and provide corresponding connection details.
+      Configuration for the source file. The source protocol is `SFTP`; provide the SFTP connection details.
     </ParamField>
 
     <ParamField path="Bucket Object Settings" type="object">
@@ -153,7 +158,11 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
 
     <ParamField path="PEM Key" type="string">
-      RSA private key for key-based authentication (if not using password).
+      SSH private key in PEM format for key-based authentication (if not using password).
+    </ParamField>
+
+    <ParamField path="PEM Key Passphrase" type="string">
+      Passphrase for the PEM key (if passphrase-protected).
     </ParamField>
   </Accordion>
 
@@ -181,7 +190,11 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
 
     <ParamField path="PEM Key" type="string">
-      RSA private key for key-based authentication (if not using password).
+      SSH private key in PEM format for key-based authentication (if not using password).
+    </ParamField>
+
+    <ParamField path="PEM Key Passphrase" type="string">
+      Passphrase for the PEM key (if passphrase-protected).
     </ParamField>
   </Accordion>
 
@@ -213,7 +226,11 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
 
     <ParamField path="PEM Key" type="string">
-      RSA private key for key-based authentication (if not using password).
+      SSH private key in PEM format for key-based authentication (if not using password).
+    </ParamField>
+
+    <ParamField path="PEM Key Passphrase" type="string">
+      Passphrase for the PEM key (if passphrase-protected).
     </ParamField>
 
     <Info>Supported archive formats: `zip`, `tar`, `gz`, `tgz`</Info>
@@ -243,7 +260,11 @@ Several actions share common SFTP connection parameters. These are documented on
     </ParamField>
 
     <ParamField path="PEM Key" type="string">
-      RSA private key for key-based authentication (if not using password).
+      SSH private key in PEM format for key-based authentication (if not using password).
+    </ParamField>
+
+    <ParamField path="PEM Key Passphrase" type="string">
+      Passphrase for the PEM key (if passphrase-protected).
     </ParamField>
   </Accordion>
 
@@ -583,7 +604,7 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 </AccordionGroup>
 
-<Tip>Store SFTP credentials securely as environment variables under **Organization > Settings > Environment Variable** rather than hardcoding them in workflows.</Tip>
+<Tip>Store SFTP credentials securely as environment variables under [**Organization > Settings > Environment Variable**](/v3/developer/configure/settings/organization/environment-variables) rather than hardcoding them in workflows.</Tip>
 
 ## What's Next
 

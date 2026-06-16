@@ -123,25 +123,25 @@ The Try & Catch node includes standard node settings available in the Settings t
 
 <AccordionGroup>
   <Accordion title="Conditions">
-    Specify conditions under which the Try & Catch node should execute. Use AND/OR logic to combine multiple conditions.
+    Specify the Node Rule Conditions under which the Try & Catch node should execute. Use AND/OR logic to combine multiple conditions.
+  </Accordion>
+
+  <Accordion title="Allow Partial Success">
+    `Yes` or `No`. When enabled, the node can complete with a partial success status instead of failing outright.
+  </Accordion>
+
+  <Accordion title="Skip Node On Error">
+    `Yes` or `No`. When enabled, the node is skipped if it encounters an error, and the workflow continues without executing the try block.
   </Accordion>
   
-  <Accordion title="Hide Request">
-    Toggle to hide the request object in the instance logs when the node executes successfully. Useful for reducing log verbosity.
-  </Accordion>
-  
-  <Accordion title="Skip on Error">
-    Toggle to skip this node entirely if it encounters errors. When enabled, the workflow continues without executing the try block.
-  </Accordion>
-  
-  <Accordion title="Retry Strategy">
+  <Accordion title="Retry Policy">
     Configure automatic retry behavior for the Try & Catch node itself.
     
     | Setting | Description |
     |---------|-------------|
-    | Policy | `Fixed` (constant delay) or `Exponential` (increasing delay) |
-    | Delay | Time between retry attempts in milliseconds |
-    | Attempts | Maximum number of retry attempts |
+    | Retry Strategy | `Fixed` (constant delay) or `Exponential` (increasing delay) |
+    | Delay (ms) | Time between retry attempts in milliseconds |
+    | Max Attempts | Maximum number of retry attempts |
   </Accordion>
 </AccordionGroup>
 
@@ -286,7 +286,7 @@ When the catch branch executes, error information from the failed node is availa
     |---------|----------|
     | Error not caught | Verify the failing node is inside the Try & Catch container, not connected externally |
     | Catch branch not connected | Ensure the catch branch is connected to the right side of the container (red line) |
-    | Skip on Error enabled | Disable "Skip on Error" in Settings if you want error handling to execute |
+    | Skip Node On Error enabled | Set "Skip Node On Error" to `No` in Settings if you want error handling to execute |
   </Accordion>
 
   <Accordion title="Workflow Still Failing">
