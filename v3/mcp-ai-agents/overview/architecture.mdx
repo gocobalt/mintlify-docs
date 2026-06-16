@@ -7,27 +7,6 @@ A Refold MCP server is a hosted endpoint that exposes your integrations to an AI
 
 This page covers the MCP-specific model: what an MCP server is built from, how your actions, workflows, and skills become tools, and the path a request takes from agent to app. For the decision of *which* tool pattern to expose, see [Choose your pattern](/v3/mcp-ai-agents/overview/choose-your-pattern).
 
-## System overview
-
-Every client connects over Streamable HTTP using MCP protocol version `2025-11-25`. Each request is authenticated, scoped to one identity, and audited.
-
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#0057FF','primaryTextColor':'#ffffff','primaryBorderColor':'#4D8AFF','lineColor':'#4D8AFF','secondaryColor':'#0D001D','tertiaryColor':'#0D001D','tertiaryTextColor':'#ffffff'}}}%%
-flowchart LR
-    Agent["AI agent<br/>(Claude, Cursor, custom)"]
-    Agent -->|Server URL| MCP
-
-    subgraph MCP["Refold MCP server"]
-        direction TB
-        AUTH["1 · Authenticate<br/>validate token, resolve identity"]
-        RESOLVE["2 · Resolve tools<br/>scoped to identity, per request"]
-        EXEC["3 · Execute<br/>audited on every call"]
-        AUTH --> RESOLVE --> EXEC
-    end
-
-    EXEC -->|stored credentials<br/>never exposed to agent| APPS["Connected apps<br/>Salesforce · SAP · 300+ more"]
-```
-
 ## Core MCP objects
 
 A Refold MCP server is built from objects you already configure in Refold. Three are MCP-specific; the rest are [platform objects](/v3/developer/configure/linked-account) you connect to from MCP.
@@ -100,7 +79,7 @@ The agent never sees a linked account's credentials. Refold resolves them server
 The sequence below shows a single `EXECUTE_ACTION` call against Salesforce.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#0057FF','primaryTextColor':'#ffffff','primaryBorderColor':'#4D8AFF','lineColor':'#4D8AFF','secondaryColor':'#0D001D','tertiaryColor':'#0D001D','tertiaryTextColor':'#ffffff'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
 sequenceDiagram
     participant Agent
     participant Refold as Refold MCP server
