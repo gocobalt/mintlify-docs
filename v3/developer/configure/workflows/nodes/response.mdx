@@ -17,12 +17,12 @@ The Response Node serves as the final output handler for workflow executions. It
 
 ## Input Parameters
 
-<ParamField path="Status Code" type="number" required>
-  HTTP status code to return with the response. Common values: `200` (success), `201` (created), `400` (bad request), `500` (error).
-</ParamField>
-
 <ParamField path="Data" type="textarea" required>
   Response data to return from the workflow. Supports JSON objects and variables from previous nodes. Use templating syntax to include dynamic values like `{{node_name.body.field}}`.
+</ParamField>
+
+<ParamField path="Status Code" type="number">
+  HTTP status code to return with the response. Common values: `200` (success), `201` (created), `400` (bad request), `500` (error).
 </ParamField>
 
 <Info>Status codes and response data are not visible during node-level testing in the workflow builder. They become available when testing the workflow using **Try API** in the dashboard or when executing the workflow through the Workflow API.</Info>
