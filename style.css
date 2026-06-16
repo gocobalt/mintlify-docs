@@ -118,6 +118,21 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--rf-font-mono);
   letter-spacing: 0.04em;
 }
+/* Active in-content tab — Mintlify's default indicator is a thin gray underline
+   the same color as the label, so the selected tab is hard to spot. Give it an
+   electric-blue label + underline (lighter blue in dark mode) so the active tab
+   is unmistakable. Matches the top-nav tab treatment. */
+#content-area [role="tab"][aria-selected="true"],
+#content-area [class*="tab"] button[aria-selected="true"] {
+  color: var(--rf-electric-blue) !important;
+  border-bottom: 2px solid var(--rf-electric-blue) !important;
+  font-weight: 600 !important;
+}
+.dark #content-area [role="tab"][aria-selected="true"],
+.dark #content-area [class*="tab"] button[aria-selected="true"] {
+  color: var(--primary-light) !important;
+  border-bottom-color: var(--primary-light) !important;
+}
 
 /* Sidebar — square corners, mono group headers, sans link font.
    Explicitly highlight the active page so it's clearly visible in both light
