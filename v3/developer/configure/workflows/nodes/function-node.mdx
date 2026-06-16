@@ -44,37 +44,37 @@ Refold provides several pre-defined library functions that are available by defa
 
 <AccordionGroup>
   <Accordion title="Array Operations">
-    | Function | Description |
-    |----------|-------------|
-    | **Find element in array** | Searches through an array to locate a specific element. Returns the index of the element, or -1 if not found. |
-    | **Group objects by a key** | Groups an array of objects by a specified key field. Returns an object with grouped arrays. |
+    | Function | Parameters | Description |
+    |----------|------------|-------------|
+    | **Find element in array** | `array`, `element` | Searches through an array to locate a specific element. Returns the index of the element, or -1 if not found. |
+    | **Group objects by a key** | `array`, `key` | Groups an array of objects by a specified key field. Returns an object with grouped arrays. |
   </Accordion>
 
   <Accordion title="Encryption">
-    | Function | Description |
-    |----------|-------------|
-    | **Encrypt a string** | Encrypts sensitive text data using standard encryption algorithms. Returns the encrypted string. |
+    | Function | Parameters | Description |
+    |----------|------------|-------------|
+    | **Encrypt a string** | `string`, `password` | Encrypts sensitive text data and returns the encrypted string. Provide an optional `password` to key the encryption. |
   </Accordion>
 
   <Accordion title="Date Helper">
-    | Function | Description |
-    |----------|-------------|
-    | **Get current date** | Retrieves the current date and time. Useful for timestamping records or calculating relative dates. |
-    | **Convert date from one format to another** | Transforms dates between different format patterns (e.g., ISO to MM/DD/YYYY). Essential for integrating systems with different date formats. |
-    | **Extract date units** | Parses dates to extract specific components like year, month, day, hour. Useful for date-based filtering and conditional logic. |
-    | **Add/Subtract time** | Performs time arithmetic by adding or subtracting days, hours, minutes from dates. Critical for SLA calculations and deadline management. |
+    | Function | Parameters | Description |
+    |----------|------------|-------------|
+    | **Get current date** | `format` | Retrieves the current date and time in the requested `format`. Useful for timestamping records or calculating relative dates. |
+    | **Convert date from one format to another** | `date`, `from_format`, `to_format` | Transforms a date between format patterns. Supports patterns such as `yyyy-MM-dd`, `MM/dd/yyyy`, `dd-MM-yyyy`, `dd MMM yyyy`, and date-time patterns like `yyyy-MM-dd'T'HH:mm:ssXXX` and `hh:mm a`. |
+    | **Extract date units** | `date` | Parses a date to extract components like year, month, day, and hour. Accepts ISO, time-zone, JS, timestamp, and date-only formats. |
+    | **Add/Subtract time** | `date`, `amount`, `unit` | Adds or subtracts time from an ISO date. Supported units: `seconds`, `minutes`, `hours`, `days`, `weeks`, `months`, `years`. |
   </Accordion>
 
   <Accordion title="Miscellaneous">
-    | Function | Description |
-    |----------|-------------|
-    | **Generate UUID** | Creates unique identifiers (UUIDs) for tracking, record linking, or external system integration. |
+    | Function | Parameters | Description |
+    |----------|------------|-------------|
+    | **Generate UUID** | _none_ | Creates unique identifiers (UUIDs) for tracking, record linking, or external system integration. |
   </Accordion>
 
   <Accordion title="Math Helper">
-    | Function | Description |
-    |----------|-------------|
-    | **Math Operations** | Performs mathematical calculations on numeric values. Supports common operations like sum, average, min, max, and more. |
+    | Function | Parameters | Description |
+    |----------|------------|-------------|
+    | **Math Operations** | `numbers`, `operation` | Performs sequential arithmetic on a list of numbers. Supported operations: `add`, `subtract`, `multiply`, `divide`, `modulus`. |
   </Accordion>
 </AccordionGroup>
 
