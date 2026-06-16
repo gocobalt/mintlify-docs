@@ -1,0 +1,169 @@
+---
+title: "Air-gapped"
+description: "Install Refold into an air-gapped environment on Kubernetes infrastructure you own and manage, using a self-contained offline Terraform package."
+---
+
+This model installs Refold into an **air-gapped environment** where you own and
+manage the underlying infrastructure. You provision and operate the Kubernetes
+cluster and its networking; Refold installs the application and the cloud
+resources it depends on (currently S3 buckets and IAM in AWS).
+
+Because the cluster and network already exist, Refold delivers an **application
+installation package** — not full infrastructure provisioning. The cluster and
+network definitions are pass-through: they consume your existing infrastructure
+details and create no infrastructure of their own.
+
+<Info>
+  **Which Kubernetes option?**
+  - [**Helm**](/v3/developer/deploy/kubernetes/helm) — self-host and operate everything yourself in a connected cluster.
+  - **Air-gapped** *(this page)* — you own the cluster and network; Refold installs the app in a disconnected environment.
+  - [**Refold Managed (BYOC)**](/v3/developer/deploy/kubernetes/refold-cp) — Refold provisions and manages everything in your AWS account.
+</Info>
+
+## Overview
+
+"Air-gapped" here means:
+
+- No external installer runs inside your environment, and no externally-hosted
+  runners touch your infrastructure.
+- The installation runs on a host **within your environment** using a
+  self-contained Terraform pipeline: **export → plan → apply**.
+- The export bundles all required Terraform provider binaries, so `plan` and
+  `apply` run fully offline against your own Terraform state and your AWS /
+  Kubernetes APIs.
+
+<Info>
+  **Scope:** this model covers application installation and its dependent cloud
+  resources only. Provisioning and managing the Kubernetes cluster and network
+  remain owned by you.
+</Info>
+
+## Responsibilities
+
+### Client responsibilities
+
+You provision and manage:
+
+- The Kubernetes cluster.
+- The networking / infrastructure (VPC, subnets, routing, security groups).
+
+You also:
+
+- Supply the cluster connection details and VPC details the installation needs
+  (see [Prerequisites](#prerequisites)).
+- Store the CA certificate and access token securely, and provide the
+  certificate as the complete PEM (not truncated).
+- Provide a long-lived access token with RBAC sufficient to create application
+  objects (Deployments, Services, ServiceAccounts) in the target namespace.
+- Provide AWS credentials / permissions for the dependent cloud resources (S3
+  buckets, and IAM for IRSA where enabled).
+- Ensure the installation host can reach the cluster API and the required AWS
+  endpoints.
+- Manage the cluster lifecycle (version upgrades, scaling, patching) and
+  review / approve each plan before apply.
+
+### Refold's responsibilities
+
+Refold is responsible only for:
+
+- Deploying the application.
+- Creating the required dependent cloud resources (currently S3 buckets in AWS).
+- Installing the application onto your cluster.
+
+To support this, Refold provides the self-contained Terraform export (with all
+provider binaries bundled for offline use) and the pass-through cluster /
+network definitions, and supports the export → plan → apply run until the
+application is confirmed healthy.
+
+## Prerequisites
+
+Provided / ensured by you:
+
+- A pre-provisioned **EKS cluster and VPC** that you own and operate.
+- **Cluster connection details:**
+  - `cluster_endpoint` — HTTPS URL of the Kubernetes API server
+  - `cluster_ca_certificate` — the cluster CA certificate, as the full PEM
+  - `cluster_token` — a long-lived admin service-account bearer token
+  - `oidc_provider_arn`, `node_group_iam_role_arn` — required for IRSA / addons
+  - `aws_region`, `cluster_name`
+- **VPC details:** `vpc_id`, `vpc_cidr` (plus subnets / route tables as
+  applicable).
+- **Network reachability from the installation host:**
+  - Host → Kubernetes API endpoint (`cluster_endpoint`) — within the VPC or
+    peered if the endpoint is private; egress + security-group allowance if
+    public.
+  - Host → AWS APIs (`s3.amazonaws.com`, `iam.amazonaws.com`) — via VPC
+    endpoints, or a proxy in a truly disconnected network.
+- **AWS credentials** on the host with permissions for the dependent resources
+  (for example `s3:*`, and `iam:*` for IRSA roles where enabled).
+- A **Linux host** (x86_64 / arm64) with **Terraform ≥ 1.5** in your
+  environment.
+
+## Deployment flow
+
+<Steps>
+  <Step title="Collect details">
+    You provide the cluster spec (endpoint, CA cert, token, OIDC provider ARN,
+    node-group role, region, name) and network spec (`vpc_id`, `vpc_cidr`). The
+    certificate and token are stored as encrypted secrets and injected at
+    deploy time.
+  </Step>
+  <Step title="Build the installation package">
+    Refold produces the self-contained Terraform export, with all provider
+    binaries included.
+  </Step>
+  <Step title="Transfer the package">
+    Move the package to the installation host inside your environment.
+  </Step>
+  <Step title="Plan">
+    Preview all changes and review. Expect zero unexpected destroys on a first
+    run.
+  </Step>
+  <Step title="Apply">
+    Execute. The cluster / network definitions resolve to zero resources, then
+    the installation:
+
+    - creates the dependent cloud resources (S3 bucket + access policies, and
+      the IRSA IAM role bound to your `oidc_provider_arn` where enabled), and
+    - installs the application onto your cluster (Deployments, Services,
+      ServiceAccounts).
+  </Step>
+  <Step title="Verify">
+    Confirm the application is running on your cluster.
+  </Step>
+</Steps>
+
+## Key considerations
+
+The most common first-installation blockers in an air-gapped, client-managed
+environment:
+
+- **Provider binaries must be bundled.** The package ships all required
+  Terraform providers so `plan` / `apply` work on a disconnected host with no
+  registry access.
+- **IAM / S3 reachability.** Creating the dependent S3 and IAM resources
+  requires reachability to the AWS APIs — VPC endpoints (an S3 gateway endpoint
+  at minimum) or an egress path in a truly disconnected network.
+
+<Warning>
+  **Use a long-lived token.** A short-lived token (such as a ~15-minute
+  `aws eks get-token` value) will expire mid-installation. Use a Kubernetes
+  ServiceAccount token Secret instead.
+</Warning>
+
+<Warning>
+  **Provide the complete CA certificate.** The CA certificate must be the full
+  multi-line PEM — a truncated certificate causes a TLS / x509 failure when the
+  installation connects to the cluster.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/developer/deploy/kubernetes/refold-cp">
+    Have Refold provision and manage the infrastructure in your cloud instead.
+  </Card>
+  <Card title="Helm" icon="ship" href="/v3/developer/deploy/kubernetes/helm">
+    The standard self-operated Helm install.
+  </Card>
+</CardGroup>

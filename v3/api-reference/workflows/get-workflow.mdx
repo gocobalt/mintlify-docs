@@ -1,0 +1,83 @@
+---
+title: Get Workflow
+api: get /api/v2/public/workflow/:workflow_id
+description: Get a workflow by ID, including its nodes and edges.
+---
+
+Return a workflow by ID with an allowlisted set of fields, including its `nodes` (with the start node's trigger config) and `edges`. For safety this is org-scoped: it returns `403` if the workflow is private to a different linked account.
+
+<Note>
+  This read is org-scoped, so it works for **public** (org, slug-level) workflows. To read a **private** workflow (one that belongs to a linked account), pass that account's `linked_account_id`.
+</Note>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">Required to access a workflow that is private to a linked account.</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>The workflow ID.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="_id" type="string">Workflow ID.</ResponseField>
+    <ResponseField name="name" type="string">Workflow name.</ResponseField>
+    <ResponseField name="published" type="boolean">Whether it's published.</ResponseField>
+    <ResponseField name="slug" type="string">Associated application slug.</ResponseField>
+    <ResponseField name="associated_application" type="string">Associated application ID.</ResponseField>
+    <ResponseField name="nodes" type="array">Workflow nodes (the start node carries trigger config).</ResponseField>
+    <ResponseField name="edges" type="array">Connections between nodes.</ResponseField>
+  </Tab>
+
+  <Tab title="403 Forbidden">
+    Returned when the workflow is private to a different linked account.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="message" type="string">`Workflow not found`.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "69fdfe21957a1b5597aa04bd",
+  "name": "Daily Sync",
+  "description": "",
+  "published": true,
+  "slug": "hubspot",
+  "associated_application": "6992cc7dc124a392c80e9e9c",
+  "is_v2": true,
+  "nodes": [
+    { "id": "1", "type": "start" },
+    { "id": "2", "type": "action" }
+  ],
+  "edges": [ { "source": "1", "target": "2" } ],
+  "environment": "test"
+}
+```
+```json 403
+{
+  "status_code": 403,
+  "http_error_type": "FORBIDDEN",
+  "error_code": "SERVER_ERROR",
+  "message": "Workflow is private to another linked account"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/workflow/{workflow_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

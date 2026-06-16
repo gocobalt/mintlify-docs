@@ -1,0 +1,103 @@
+---
+title: Get Linked Account
+api: get /api/v2/public/linked-account/:linked_account_id
+description: Retrieve details of a specific linked account by its ID.
+---
+
+Retrieve a single linked account by its `account_id`. Sensitive fields (`integrations[*].credentials`, `authTokens`, and `connections`) are stripped from the response.
+
+## Authentication
+
+Reading linked-account records is an org-level operation, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="linked_account_id" type="string" required>
+  Your unique identifier for the account.
+
+  **Example:** `user_12345`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="_id" type="string">Internal record ID.</ResponseField>
+    <ResponseField name="associated_org" type="string">The org that owns this account.</ResponseField>
+    <ResponseField name="account_id" type="string">Your unique identifier for the account.</ResponseField>
+    <ResponseField name="environment" type="string">Environment: `test` or `live`.</ResponseField>
+    <ResponseField name="name" type="string">Display name.</ResponseField>
+    <ResponseField name="udf" type="array">
+      User-defined fields.
+      <Expandable title="properties">
+        <ResponseField name="key_name" type="string">Field key.</ResponseField>
+        <ResponseField name="key_value" type="string">Field value.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="integrations" type="array">
+      Connected integrations (credentials/tokens stripped).
+      <Expandable title="properties">
+        <ResponseField name="type" type="string">App type, e.g. `hubspot`, `custom`.</ResponseField>
+        <ResponseField name="name" type="string">App display name.</ResponseField>
+        <ResponseField name="app_id" type="string | null">Custom-app ID, or `null` for native apps.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp.</ResponseField>
+    <ResponseField name="updatedAt" type="string">ISO 8601 last-update timestamp.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category, e.g. `NOT_FOUND`.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6992cc7e9d38bc6a2ae28d12",
+  "associated_org": "6500a1b2c3d4e5f6a7b8c9d0",
+  "account_id": "user_12345",
+  "environment": "test",
+  "name": "Acme Inc.",
+  "udf": [
+    {
+      "key_name": "plan",
+      "key_value": "enterprise",
+      "_id": "6a0adc293670c4d294dd15cd",
+      "createdAt": "2026-05-18T09:30:17.525Z",
+      "updatedAt": "2026-05-18T09:30:17.525Z"
+    }
+  ],
+  "integrations": [
+    { "type": "hubspot", "name": "Hubspot", "app_id": null },
+    { "type": "slack", "name": "Slack", "app_id": null },
+    { "type": "custom", "name": "Acme CRM", "app_id": "6a05d19680458c9a09e79c2e" }
+  ],
+  "createdAt": "2026-05-22T11:24:06.840Z",
+  "updatedAt": "2026-05-25T04:37:50.064Z",
+  "__v": 2
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error": "SERVER_ERROR",
+  "message": "Linked Account with account id user_99999 for org 6500a1b2c3d4e5f6a7b8c9d0 in environment test not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/linked-account/{linked_account_id}" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

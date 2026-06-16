@@ -1,9 +1,54 @@
 ---
-title: "Applications & Connectors"
-description: "Understanding applications and connectors in Refold"
+title: Applications & Connectors
+description: "Applications are the third-party platforms your customers connect to through Refold. Connectors handle authentication and provide pre-built actions."
+sidebarTitle: "Applications & Connectors"
 ---
 
-# Applications & Connectors
+Applications in Refold represent the third-party platforms your customers integrate with, such as Salesforce, NetSuite, SAP, HubSpot, and Slack. Refold provides over 300 pre-built application connectors that handle authentication, manage API credentials, and expose ready-to-use actions for your workflows.
 
-Content coming soon.
+<Frame>
+  <img src="/images/v3/developer/core-concepts/applications-catalogue.png" alt="The Refold Apps page showing a grid of application icons across categories like CRM, ERP, Accounting, HRIS, and Marketing, with toggle switches to enable each app" />
+</Frame>
 
+## How Applications Work
+
+You enable applications from the Refold dashboard. Once an application is enabled, your customers can authenticate with it through your integration UI. Refold handles the full authentication flow, whether the app uses OAuth 2.0, API keys, or other credential types.
+
+After a customer connects, Refold securely stores their credentials and makes them available to your workflows. You can then use the connected app's APIs directly in your workflow nodes without managing tokens, refresh flows, or credential storage yourself.
+
+## Authentication Types
+
+| Type | How It Works | Examples |
+|------|-------------|----------|
+| **OAuth 2.0** | Customer logs in and grants access through a consent screen. You provide your Client ID and Client Secret. | Salesforce, HubSpot, Slack |
+| **API Key** | Customer provides their API key or token directly. No dashboard configuration needed on your side. | NetSuite, Tipalti, SendGrid |
+
+<Tip>
+For OAuth apps, Refold offers default credentials so you can test integrations immediately. Replace these with your own credentials before going to production so customers see your brand during the auth flow.
+</Tip>
+
+## Pre-Built Actions
+
+Each application connector comes with pre-built actions that you can use directly in your workflow nodes. These actions abstract the underlying API calls, handling pagination, error responses, and data formatting for you.
+
+For example, the Salesforce connector provides actions like Create Contact, Update Opportunity, and Query Records. You select these actions in your workflow nodes instead of manually constructing HTTP requests.
+
+## Custom Applications
+
+If the app you need is not in the pre-built catalogue, you can create a **Custom Application**. Custom apps function identically to pre-built ones, with full support for OAuth and API key authentication, custom actions, and workflow integration.
+
+You can build custom apps in three ways: from scratch by defining endpoints manually, by importing an OpenAPI specification, or using AI-assisted building where you provide the API documentation URL and Refold generates the app for you.
+
+<Frame>
+  <img src="/images/v3/developer/core-concepts/custom-app-creation.png" alt="Three cards showing custom app creation methods: From Scratch, Using OpenAPI Spec, and AI-Assisted Building" />
+</Frame>
+
+<Info>
+Custom apps support the same features as pre-built apps: workflow builder integration, managed authentication, and pre-configured actions.
+</Info>
+
+## What's Next
+
+- [Terminology](/v3/developer/getting-started/terminology) — Review the full glossary of Refold terms.
+- [Custom Apps Guide](/v3/developer/custom-apps/overview) — Build your own application connector.
+- [Quickstart](/v3/developer/getting-started/quickstart) — Set up your first integration end to end.

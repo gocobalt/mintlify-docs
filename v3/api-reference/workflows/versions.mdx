@@ -1,0 +1,87 @@
+---
+title: List Workflow Versions
+api: get /api/v2/public/workflow/versions/:workflow_id
+description: List the published version snapshots of a workflow.
+---
+
+List the published versions (snapshots) of a workflow, paginated, newest first. Each publish creates a new version.
+
+<Note>
+  This authenticates as a linked account, so it lists versions of that account's **private** workflow.
+</Note>
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account that owns the workflow.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>The workflow ID.</ParamField>
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a paginated envelope of version snapshots, newest first.
+    <ResponseField name="docs" type="array">Versions, each with `version`, `_id`, and `createdAt`.</ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total versions.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    { "version": 2, "_id": "6a049fb6803e7107e7895eed", "createdAt": "2026-05-13T15:58:46.103Z" },
+    { "version": 1, "_id": "69fdfe21957a1b5597aa04bd", "createdAt": "2026-05-08T15:15:45.616Z" }
+  ],
+  "totalDocs": 2,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 1,
+  "hasNextPage": false
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Workflow not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow/versions/{workflow_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow/versions/{workflow_id}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

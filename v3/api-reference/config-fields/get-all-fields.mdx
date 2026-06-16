@@ -1,232 +1,109 @@
 ---
-title: 'Get All Config Fields'
+title: Get All Config Fields
 api: post /api/v2/public/config/field
+description: Get all configurable fields and workflows for an app's config.
 ---
 
-This API retrieves all the fields in a config for an application using its unique identifier.
+Return the configured fields and workflows for an app's config on a linked account. This is a `POST` because field datasources may accept a payload when resolving options. Use it to render a configuration UI for the connected app.
 
-## Request description
-#### Headers 
-<ParamField header="linked_account_id" type="string" required>
-  Unique customer identification id. For Eg: markwood@some_email.com
-</ParamField>
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account whose config to read.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Headers
+
 <ParamField header="slug" type="string" required>
-  Application Slug. Eg: `docusign`
+  The app slug whose config to read.
+
+  **Example:** `hubspot`
 </ParamField>
 
-## Response description
+## Response
 
 <Tabs>
-  <Tab title="200">
-    <ResponseField name="slug" type="string">
-        Application slug
-    </ResponseField>
-    <ResponseField name="config_id" type="string">
-        Unique ID of the created config
-    </ResponseField>
+  <Tab title="200 OK">
+    <ResponseField name="slug" type="string">The app slug.</ResponseField>
     <ResponseField name="fields" type="array">
-        Global input fields of an application
-        <Expandable title="properties">
-            <ResponseField name="id" type="string">
-            Unique field id
-            </ResponseField>
-            <ResponseField name="name" type="string">
-            Field display name
-            </ResponseField>
-            <ResponseField name="field_type" type="string">
-            Field input type. Expected values: `text`, `number`, `select`, `map`
-            </ResponseField>
-            <ResponseField name="options" type="array">
-            Options array for the `select` field, or `map` field. 
-            <Expandable title="properties">
-                <ResponseField name="name" type="string">
-                Display name
-                </ResponseField>
-                <ResponseField name="value" type="string">
-                Value
-                </ResponseField>
-            </Expandable>
-            </ResponseField>
-            <ResponseField name="required" type="boolean">
-            If the field is a required field.
-            </ResponseField>
-            <ResponseField name="labels" type="array">
-            Dynamic fields for user to map data to the map options.
-            <Expandable title="properties">
-                <ResponseField name="name" type="string">
-                Display name
-                </ResponseField>
-                <ResponseField name="value" type="string">
-                Value
-                </ResponseField>
-            </Expandable>
-            </ResponseField>
-        </Expandable>
+      Configurable fields.
+      <Expandable title="properties">
+        <ResponseField name="id" type="string">Field ID.</ResponseField>
+        <ResponseField name="name" type="string">Field label.</ResponseField>
+        <ResponseField name="field_type" type="string">Type: `text`, `number`, `select`, `date`, `email`, `json`, `map`, `map_v2`, …</ResponseField>
+        <ResponseField name="required" type="boolean">Whether the field is required.</ResponseField>
+        <ResponseField name="multiple" type="boolean">Whether multiple values are allowed.</ResponseField>
+        <ResponseField name="options" type="array">Available options for `select` fields.</ResponseField>
+        <ResponseField name="defaultValue" type="any">Default value.</ResponseField>
+      </Expandable>
     </ResponseField>
-    <ResponseField name="workflows" type="array">
-        Published workflows of the application
-        <Expandable title="properties">
-            <ResponseField name="id" type="string">
-                Workflow ID
-            </ResponseField>
-            <ResponseField name="name" type="string">
-                Workflow name
-            </ResponseField>
-            <ResponseField name="description" type="string">
-                Workflow description
-            </ResponseField>
-            <ResponseField name="enabled" type="boolean">
-            If the workflow is enabled for the linked account
-            </ResponseField>
-            <ResponseField name="fields" type="array">
-                Workflow specific input fields
-                <Expandable title="properties">
-                    <ResponseField name="id" type="string">
-                    Unique field id
-                    </ResponseField>
-                    <ResponseField name="name" type="string">
-                    Field display name
-                    </ResponseField>
-                    <ResponseField name="field_type" type="string">
-                    Field input type. Expected values: `text`, `number`, `select`, `map`
-                    </ResponseField>
-                    <ResponseField name="options" type="array">
-                    Options array for the `select` field, or `map` field. 
-                    <Expandable title="properties">
-                        <ResponseField name="name" type="string">
-                        Display name
-                        </ResponseField>
-                        <ResponseField name="value" type="string">
-                        Value
-                        </ResponseField>
-                    </Expandable>
-                    </ResponseField>
-                    <ResponseField name="required" type="boolean">
-                    If the field is a required field.
-                    </ResponseField>
-                    <ResponseField name="labels" type="array">
-                    Dynamic fields for user to map data to the map options.
-                    <Expandable title="properties">
-                        <ResponseField name="name" type="string">
-                        Display name
-                        </ResponseField>
-                        <ResponseField name="value" type="string">
-                        Value
-                        </ResponseField>
-                    </Expandable>
-                    </ResponseField>
-                </Expandable>
-            </ResponseField>
-        </Expandable>
-    </ResponseField>
+    <ResponseField name="workflows" type="array">Workflows available in this config.</ResponseField>
+    <ResponseField name="field_errors" type="array">Any errors resolving field datasources.</ResponseField>
   </Tab>
-  <Tab title="Error response">
-    <ResponseField name="status_code" type="integer">
-    System generated status Code
-    </ResponseField>
-    <ResponseField name="http_error_type" type="string">
-    System generated error type
-    </ResponseField>
-    <ResponseField name="error_code" type="string">
-    Specific error code to identify the error
-    </ResponseField>
-    <ResponseField name="message" type="string">
-    Error message
-    </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
-```JSON 200
+```json 200
 {
-    "slug": "pipedrive",
-    "config_id": "173135978",
-    "fields": [],
-    "workflows": [
-        {
-            "id": "649d9cbf71ad565d0ce8c5b6",
-            "name": "Create Deal",
-            "description": "",
-            "enabled": false,
-            "fields": [
-                {
-                    "required": false,
-                    "id": "649d9d2571ad565d0ce8c64f",
-                    "name": "Pipeline",
-                    "field_type": "select",
-                    "options": [
-                        {
-                            "name": "Pipeline",
-                            "value": 1
-                        },
-                        {
-                            "name": "New pipeline",
-                            "value": 3
-                        }
-                    ],
-                    "labels": [],
-                    "value": 1
-                },
-                {
-                    "required": false,
-                    "id": "649d9d4371ad565d0ce8c68a",
-                    "name": "Stage",
-                    "field_type": "select",
-                    "options": [
-                        {
-                            "name": "Qualified",
-                            "value": 1
-                        },
-                        {
-                            "name": "Contact Made",
-                            "value": 2
-                        },
-                        {
-                            "name": "Prospect Qualified",
-                            "value": 3
-                        },
-                        {
-                            "name": "Needs Defined",
-                            "value": 4
-                        }
-                    ],
-                    "parent": "649d9d2571ad565d0ce8c64f",
-                    "labels": [],
-                    "value": 3
-                }
-            ]
-        }
-    ]
+  "slug": "hubspot",
+  "field_errors": [],
+  "fields": [
+    {
+      "id": "699fec7a5bd27ed2af7243ad",
+      "name": "Select",
+      "field_type": "select",
+      "required": false,
+      "multiple": true,
+      "hidden": false,
+      "options": [
+        { "name": "A", "value": "A" },
+        { "name": "B", "value": "B" },
+        { "name": "C", "value": "C" }
+      ],
+      "defaultValue": ""
+    }
+  ],
+  "workflows": []
 }
 ```
-```JSON 400
+```json 401
 {
-    "status_code": 400,
-    "http_error_type": "BAD_REQUEST",
-    "error_code": "INVALID_LINKED_ACCOUNT_ID",
-    "message": "linked_account_id is required",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
 }
 ```
-```JSON 401
-{
-    "status_code": 401,
-    "http_error_type": "UNAUTHORIZED",
-    "error_code": "SERVER_ERROR",
-    "message": "Invalid Credentials"
-    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
-}
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
-```JSON 500
-{
-    "status_code": 500,
-    "http_error_type": "INTERNAL_SERVER_ERROR",
-    "error_code": "SERVER_ERROR",
-    "message": "Application with id 3asdasdasd768768asd does not exist for org Refold or is not enabled",
-    "request_id": "fd718913-bc5a-40ec-9a90-0cebe0b26371"
-}
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
-</ ResponseExample>
+</RequestExample>

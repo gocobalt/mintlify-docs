@@ -406,7 +406,7 @@ It will return information about config of the application for the Linked Accoun
   </Step>
 
   <Step title="Enable Workflow">
-    Now you need to enable the workflow for your Linked account. You can either ask the user to enable them or you can do so for them by using the [Update Config API](https://docs.gocobalt.io/api-reference/config/update-config) or **.updateconfig()** method.
+    Now you need to enable the workflow for your Linked account. You can either ask the user to enable them or you can do so for them by using the [Update Config API](https://docs.gocobalt.io/api-reference/configs/update-config) or **.updateconfig()** method.
 
 Make the following request:
 <CodeGroup>
@@ -458,7 +458,7 @@ In response, you get the updated config information for the application.
   </Step>
 
   <Step title="Third Step">
-    Once the required workflows are enabled, you need to fire event to start execution. You can use the [Trigger Event for app](https://docs.gocobalt.io/api-reference/event/trigger-event) API with the following request:
+    Once the required workflows are enabled, you need to fire event to start execution. You can use the [Trigger Event for app](https://docs.gocobalt.io/api-reference/events/trigger-event) API with the following request:
     ```JavaScript cURL
   curl --request POST \
     --url https://api.gocobalt.io/api/v2/public/event/:slug \

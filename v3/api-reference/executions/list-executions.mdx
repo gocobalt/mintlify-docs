@@ -1,253 +1,114 @@
 ---
-title: 'Get all executions'
+title: List Executions
 api: get /api/v2/public/execution
+description: List workflow executions for a linked account.
 ---
 
-This API retrieves a paginated list of all executions for a linked account. Supports filtering by execution status, source, and date range.
+List workflow executions (instances) for a linked account, paginated and filterable by workflow, app, status, date range, and more. Use it to build a run-history view or monitor recent activity.
 
-## Request description
+## Authentication
 
-<Note>
-This API supports two authentication methods. You can use either a Session Token OR the combination of an Org API key and linked account ID.
-</Note>
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
 
-#### Authentication Option 1: Session Token
-<ParamField header="Authorization" type="string" required>
-  Bearer token using the [session token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account) of the linked account.
+**Option 1 — API key**
 
-  **Format**: `Bearer <session_token>`
-</ParamField>
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
 
-#### Authentication Option 2: Org API Key + Linked Account ID
-<ParamField header="x-api-key" type="string" required>
-  Your org-level Refold API key.
-</ParamField>
+**Option 2 — Session token**
 
-<ParamField header="linked_account_id" type="string" required>
-  Unique identifier of the linked account. For example: `markwood@some_email.com`
-</ParamField>
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
 
-#### Query Parameters
+## Query Parameters
 
-<ParamField query="page" type="integer">
-  Page number for pagination. Defaults to `1`.
-</ParamField>
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+<ParamField query="status" type="string">Filter by status, e.g. `COMPLETED`, `RUNNING`, `FAILED`.</ParamField>
+<ParamField query="slug" type="string">Filter by app slug.</ParamField>
+<ParamField query="workflow_id" type="string">Filter by workflow ID.</ParamField>
+<ParamField query="workflow_name" type="string">Filter by workflow name.</ParamField>
+<ParamField query="execution_id" type="string">Filter to a single execution.</ParamField>
+<ParamField query="start_date" type="string">ISO start of the date range.</ParamField>
+<ParamField query="end_date" type="string">ISO end of the date range.</ParamField>
+<ParamField query="execution_type" type="string">Filter by type, e.g. `ASYNC`.</ParamField>
+<ParamField query="execution_source" type="string">Filter by source.</ParamField>
+<ParamField query="sortAsc" type="boolean">Sort ascending by creation time.</ParamField>
 
-<ParamField query="limit" type="integer">
-  Number of records to return per page. Defaults to `10`.
-</ParamField>
-
-<ParamField query="status" type="string">
-  Filter executions by status. Accepted values:
-
-  - `All` — returns all executions regardless of status *(default)*
-  - `COMPLETED` — only successfully completed executions
-  - `ERRORED` — only executions that failed with an error
-  - `RUNNING` — only executions currently in progress
-  - `STOPPED` — only executions that were stopped
-  - `STOPPING` — only executions in the process of stopping
-  - `TIMED_OUT` — only executions that exceeded the allowed time limit
-</ParamField>
-
-<ParamField query="execution_source" type="string">
-  Filter executions by their trigger source. Accepted values:
-
-  - `All` — returns executions from all sources *(default)*
-  - `Event` — only executions triggered by an event
-  - `Schedule` — only executions triggered by a scheduled job
-  - `API Call` — only executions triggered via an API call
-</ParamField>
-
-<ParamField query="execution_type" type="string">
-  Filter executions by their execution mode. Accepted values:
-
-  - `All` — returns executions of all types *(default)*
-  - `SYNC` — only synchronous executions
-  - `ASYNC` — only asynchronous executions
-</ParamField>
-
-<ParamField query="start_date" type="string">
-  Filter executions created on or after this date. Format: `YYYY-MM-DD`.
-</ParamField>
-
-<ParamField query="end_date" type="string">
-  Filter executions created on or before this date. Format: `YYYY-MM-DD`.
-</ParamField>
-
-<RequestExample>
-```bash All Executions
-curl --location 'https://api.gocobalt.io/api/v2/public/execution?page=1&limit=10&status=All&execution_source=All' \
-  --header 'x-api-key: <YOUR_API_KEY>' \
-  --header 'linked_account_id: <YOUR_LINKED_ACCOUNT_ID>'
-```
-```bash Filter by Status (ERRORED)
-curl --location 'https://api.gocobalt.io/api/v2/public/execution?page=1&limit=10&status=ERRORED' \
-  --header 'x-api-key: <YOUR_API_KEY>' \
-  --header 'linked_account_id: <YOUR_LINKED_ACCOUNT_ID>'
-```
-```bash Filter by Date Range
-curl --location 'https://api.gocobalt.io/api/v2/public/execution?page=1&limit=10&status=All&start_date=2026-03-10&end_date=2026-03-14' \
-  --header 'x-api-key: <YOUR_API_KEY>' \
-  --header 'linked_account_id: <YOUR_LINKED_ACCOUNT_ID>'
-```
-</RequestExample>
-
-## Response description
+## Response
 
 <Tabs>
-  <Tab title="200">
+  <Tab title="200 OK">
+    Returns a paginated envelope of execution objects.
     <ResponseField name="docs" type="array">
-      <Expandable title="properties" defaultOpen="true">
-        <ResponseField name="_id" type="string">
-          Execution Id
-        </ResponseField>
-        <ResponseField name="createdAt" type="string">
-          Creation time
-        </ResponseField>
-        <ResponseField name="name" type="string">
-          Execution name
-        </ResponseField>
-        <ResponseField name="associated_application" type="object">
-          Associated application object
-          <Expandable title="properties" defaultOpen="true">
-            <ResponseField name="icon" type="string">
-              Application icon
-            </ResponseField>
-            <ResponseField name="name" type="string">
-              Application name
-            </ResponseField>
-            <ResponseField name="_id" type="string">
-              Application Id
-            </ResponseField>
-          </Expandable>
-        </ResponseField>
-        <ResponseField name="status" type="string">
-          Execution status. Possible values: `COMPLETED`, `ERRORED`, `RUNNING`, `STOPPED`, `STOPPING`, `TIMED_OUT`, `ALL`
-        </ResponseField>
-        <ResponseField name="associated_workflow" type="object">
-          Associated workflow object
-          <Expandable title="properties" defaultOpen="true">
-            <ResponseField name="icon" type="string">
-              Workflow icon
-            </ResponseField>
-            <ResponseField name="name" type="string">
-              Workflow name
-            </ResponseField>
-            <ResponseField name="_id" type="string">
-              Workflow Id
-            </ResponseField>
-          </Expandable>
-        </ResponseField>
-        <ResponseField name="environment" type="string">
-          Expected values: `test` or `production`
-        </ResponseField>
-        <ResponseField name="config_id" type="string">
-          Config ID associated with the execution.
-        </ResponseField>
-        <ResponseField name="associated_event_id" type="string">
-          Associated event Id
-        </ResponseField>
+      Executions.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">Execution ID.</ResponseField>
+        <ResponseField name="name" type="string">Execution name.</ResponseField>
+        <ResponseField name="status" type="string">`COMPLETED`, `RUNNING`, `FAILED`, etc.</ResponseField>
+        <ResponseField name="associated_workflow" type="object">The workflow `{_id, name, icon}`.</ResponseField>
+        <ResponseField name="associated_application" type="object">The app `{_id, name, icon}`.</ResponseField>
+        <ResponseField name="trigger_application_event" type="string">What triggered the run.</ResponseField>
+        <ResponseField name="type_of_execution" type="string">e.g. `ASYNC`.</ResponseField>
+        <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
       </Expandable>
     </ResponseField>
-    <ResponseField name="totalDocs" type="integer">
-      Total number of executions matching the applied filters
-    </ResponseField>
-    <ResponseField name="limit" type="integer">
-      Records per page
-    </ResponseField>
-    <ResponseField name="page" type="integer">
-      Current page number
-    </ResponseField>
-    <ResponseField name="totalPages" type="integer">
-      Total number of pages
-    </ResponseField>
-    <ResponseField name="pagingCounter" type="integer">
-      Paging counter
-    </ResponseField>
-    <ResponseField name="hasPrevPage" type="boolean">
-      Whether the current page has a previous page
-    </ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">
-      Whether the current page has a next page
-    </ResponseField>
-    <ResponseField name="prevPage" type="integer">
-      Previous page number
-    </ResponseField>
-    <ResponseField name="nextPage" type="integer">
-      Next page number
-    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total executions.</ResponseField>
+    <ResponseField name="page" type="integer">Current page.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
   </Tab>
-  <Tab title="Error response">
-    <ResponseField name="status_code" type="integer">
-    System generated status code
-    </ResponseField>
-    <ResponseField name="http_error_type" type="string">
-    System generated error type
-    </ResponseField>
-    <ResponseField name="error_code" type="string">
-    Specific error code to identify the error
-    </ResponseField>
-    <ResponseField name="message" type="string">
-    Error message
-    </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
   </Tab>
 </Tabs>
 
-
 <ResponseExample>
-```JSON 200
+```json 200
 {
   "docs": [
     {
-      "_id": "65410cf6cdf931a12d7ab009",
-      "createdAt": "2023-10-31T14:19:34.788Z",
-      "name": "Retry for workflow 65200cfd01af0388e905ad92",
-      "associated_application": {
-        "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/slack/logo.png",
-        "name": "Slack",
-        "_id": "64f6d9f33234d3d6419cfdbc"
-      },
-      "status": "ERRORED",
-      "associated_workflow": {
-        "_id": "64f7258e35b72267edc02589",
-        "name": "Post message to a channel",
-        "icon": ""
-      },
+      "_id": "6a314c54d4616e99e7fa5a02",
+      "name": "Execution for workflow 6a106ba44480b80424a65289",
+      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
       "environment": "test",
-      "config_id": "12345",
-      "associated_event_id": "6523dfdeffed0fb7e2c3b90e"
+      "status": "COMPLETED",
+      "associated_application": { "_id": "6992cc7dc124a392c80e9e9c", "name": "Hubspot", "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png" },
+      "associated_workflow": { "_id": "6a106ba44480b80424a65289", "name": "Daily Sync", "icon": "" },
+      "trigger_application_event": "Schedule",
+      "linked_account_id": "user_12345",
+      "config_id": "user_12345",
+      "type_of_execution": "ASYNC",
+      "createdAt": "2026-06-16T13:15:00.887Z"
     }
   ],
-  "totalDocs": 1,
+  "totalDocs": 24742,
   "limit": 10,
-  "totalPages": 1,
   "page": 1,
-  "pagingCounter": 1,
-  "hasPrevPage": false,
-  "hasNextPage": false,
-  "prevPage": null,
-  "nextPage": null
+  "totalPages": 2475,
+  "hasNextPage": true
 }
 ```
-```JSON 400
-{
-  "status_code": 400,
-  "error_code": "BAD_REQUEST",
-  "http_error_type": "INVALID_LINKED_ACCOUNT_ID",
-  "message": "linked_account_id or org_id is required",
-  "request_id": "fb5f19cb-ba68-4111-828f-77cc1ee2673d"
-}
-```
-```JSON 401
+```json 401
 {
   "status_code": 401,
   "http_error_type": "UNAUTHORIZED",
-  "error_code": "SERVER_ERROR",
-  "message": "Invalid Credentials",
-  "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
 }
 ```
 </ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/execution?status=COMPLETED&limit=10" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/execution?limit=10" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>
