@@ -18,6 +18,8 @@ The Switch Case Node enables conditional routing in workflows by evaluating inpu
 
 ## Actions
 
+Set the **Evaluator Type** to choose how the value for case matching is produced — either **Value Params** or **Code Evaluator**.
+
 <AccordionGroup>
   <Accordion title="Value Params">
     Directly evaluates a specified input parameter value against case statements.
@@ -33,11 +35,11 @@ The Switch Case Node enables conditional routing in workflows by evaluating inpu
 
     | Field | Required | Description |
     |-------|----------|-------------|
-    | Input Parameters | Yes | Key-value pairs of data to evaluate |
+    | Input Parameters | No | Key-value pairs of data to evaluate |
     | Value Param | Yes | The key name from input parameters to use for case evaluation |
   </Accordion>
 
-  <Accordion title="Code Evaluation">
+  <Accordion title="Code Evaluator">
     Uses custom JavaScript or Python code to evaluate conditions and return values for case comparison.
 
     **How it works:**
@@ -51,16 +53,16 @@ The Switch Case Node enables conditional routing in workflows by evaluating inpu
 
     | Field | Required | Description |
     |-------|----------|-------------|
-    | Input Parameters | Yes | Key-value pairs available in your custom code |
+    | Input Parameters | No | Key-value pairs available in your custom code |
     | Code Language | Yes | `JavaScript` or `Python` |
-    | Code String | Yes | Custom code that returns a string value |
+    | Code | Yes | Custom `yourFunction(params)` that returns a value to match against case statements |
   </Accordion>
 </AccordionGroup>
 
 ## Input Parameters
 
-<ParamField path="Input Parameters" type="array" required>
-  Key-value pairs of data to evaluate. Can include variables from previous nodes. Example: `[{"key": "status", "value": "{{netsuite_order.status}}"}]`
+<ParamField path="Input Parameters" type="array">
+  Key-value pairs of data to evaluate, passed into the evaluator for condition checking. Can include variables from previous nodes. Example: `[{"key": "status", "value": "{{netsuite_order.status}}"}]`
 </ParamField>
 
 <ParamField path="Value Param" type="string">
@@ -68,11 +70,11 @@ The Switch Case Node enables conditional routing in workflows by evaluating inpu
 </ParamField>
 
 <ParamField path="Code Language" type="dropdown">
-  Programming language for custom evaluation logic. Required for Code Evaluation action. Options: `JavaScript`, `Python`.
+  Programming language for custom evaluation logic. Required for Code Evaluator action. Options: `JavaScript`, `Python`.
 </ParamField>
 
-<ParamField path="Code String" type="string">
-  Custom code that processes input parameters and returns a string value for case comparison. Required for Code Evaluation action. Access parameters via `params` object.
+<ParamField path="Code" type="string">
+  Custom `yourFunction(params)` that processes input parameters and returns a value for case comparison. Required for the Code Evaluator. Accepts a JavaScript or Python function; access parameters via the `params` object.
 </ParamField>
 
 <ParamField path="Case Statements" type="array" required>
@@ -139,10 +141,10 @@ The Switch Case Node outputs evaluation results and routing information.
     Click **Add Node** in the workflow canvas, select **Switch Case** from the list of available nodes, then position it in your workflow.
   </Step>
   <Step title="Select evaluation method">
-    Choose **Value Params** for direct value comparison or **Code Evaluation** for custom logic.
+    Choose **Value Params** for direct value comparison or **Code Evaluator** for custom logic.
   </Step>
   <Step title="Configure input parameters">
-    Add key-value pairs from previous nodes or static values. For Value Params, specify which parameter key to evaluate. For Code Evaluation, write your custom logic.
+    Add key-value pairs from previous nodes or static values. For Value Params, specify which parameter key to evaluate. For Code Evaluator, write your custom logic.
   </Step>
   <Step title="Define case statements">
     Add case values that match possible evaluation results. Connect nodes to execute for each case. Configure the default case for unmatched conditions.
@@ -193,7 +195,7 @@ The Switch Case Node outputs evaluation results and routing information.
   <Accordion title="SAP Vendor Classification with Code">
     Use custom code to classify SAP vendors based on multiple criteria and route accordingly.
 
-    **Action:** Code Evaluation
+    **Action:** Code Evaluator
 
     **Configuration:**
 
@@ -246,7 +248,7 @@ The Switch Case Node outputs evaluation results and routing information.
   <Accordion title="Tipalti Payment Routing by Amount">
     Route Tipalti payments to different approval workflows based on amount thresholds using Python.
 
-    **Action:** Code Evaluation
+    **Action:** Code Evaluator
 
     **Configuration:**
 
@@ -324,7 +326,7 @@ The Switch Case Node outputs evaluation results and routing information.
   </Accordion>
 
   <Accordion title="Code Execution Environment">
-    For Code Evaluation mode:
+    For Code Evaluator mode:
 
     | Aspect | Behavior |
     |--------|----------|
@@ -359,7 +361,7 @@ The Switch Case Node outputs evaluation results and routing information.
     | Type mismatch | Ensure code returns string, not number or boolean |
   </Accordion>
 
-  <Accordion title="Code Evaluation Errors">
+  <Accordion title="Code Evaluator Errors">
     **Problem:** Custom code throws runtime errors
 
     | Cause | Solution |
@@ -391,7 +393,7 @@ The Switch Case Node outputs evaluation results and routing information.
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use `console.log()` statements in JavaScript or `print()` in Python during Code Evaluation to debug your logic. Logs appear in workflow execution details.</Tip>
+<Tip>Use `console.log()` statements in JavaScript or `print()` in Python during Code Evaluator to debug your logic. Logs appear in workflow execution details.</Tip>
 
 ## What's Next
 
