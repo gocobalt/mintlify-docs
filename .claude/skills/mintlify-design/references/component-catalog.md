@@ -269,12 +269,17 @@ flow go in a themed `mermaid` block:
 
 ```mdx
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
 flowchart TD
     A["Your Customer's AI Agent"] -->|Server URL| B["Refold MCP Server"]
     B --> C{"Direct or Agent mode?"}
 ```
 ```
 
-Copy the `%%{init…}%%` palette from an existing real Refold page so diagrams stay
-on-brand instead of using mermaid's default theme.
+**Always use this exact `%%{init…}%%` block** — a neutral dual-mode palette:
+light-gray nodes (`#E2E8F0`), dark text (`#1E293B`), mid-gray lines and borders
+(`#64748B`). Because each node carries its own light surface with dark text, the
+diagram stays legible in **both light and dark mode**. Do NOT use a
+brand-colored dark-background palette (charcoal/navy fills, white text): it looks
+fine in dark mode but the dark nodes and light lines vanish against the white
+light-mode page. Keep the block identical across every diagram for consistency.

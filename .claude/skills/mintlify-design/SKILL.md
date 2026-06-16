@@ -131,9 +131,20 @@ Don't:
 
 A product with an architecture should show it. A single `mermaid` flowchart on
 the "How it works" / overview page beats three paragraphs of data-flow prose.
-Refold pages theme mermaid with the brand palette — copy the `%%{init…}%%` block
-from an existing real page (e.g. the MCP "what is MCP" page) rather than using
-the default theme.
+
+**Theme every diagram with the neutral dual-mode palette** below — never a
+brand-colored dark-background palette. The docs render in both light and dark
+mode, and a diagram that hardcodes a dark fill (charcoal nodes, blue accents)
+disappears against the white light-mode page. The fix is to give nodes their own
+light surface with dark text so they read on *any* background:
+
+```
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+```
+
+Light-gray nodes (`#E2E8F0`) + dark text (`#1E293B`) + mid-gray lines/borders
+(`#64748B`) stay legible on both white and dark canvases. Use the same block on
+every diagram so they look consistent. See `references/component-catalog.md`.
 
 ---
 
