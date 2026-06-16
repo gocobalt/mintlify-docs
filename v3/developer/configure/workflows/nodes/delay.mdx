@@ -27,15 +27,15 @@ The Delay Node pauses workflow execution for a specified duration before proceed
     </ParamField>
 
     <ParamField path="Hours" type="integer" required>
-      Number of hours to wait. Supports dynamic variables. Example: `2` or `{{config.wait_hours}}`
+      Number of hours to wait. Range: 0-23. Supports dynamic variables. Example: `2` or `{{config.wait_hours}}`
     </ParamField>
 
     <ParamField path="Minutes" type="integer" required>
-      Number of minutes to wait. Supports dynamic variables. Example: `30` or `{{trigger.minutes}}`
+      Number of minutes to wait. Range: 0-59. Supports dynamic variables. Example: `30` or `{{trigger.minutes}}`
     </ParamField>
 
     <ParamField path="Seconds" type="integer" required>
-      Number of seconds to wait. Supports dynamic variables. Example: `0` or `{{delay_seconds}}`
+      Number of seconds to wait. Range: 0-59. Supports dynamic variables. Example: `0` or `{{delay_seconds}}`
     </ParamField>
   </Accordion>
 
@@ -55,15 +55,15 @@ The Delay Node pauses workflow execution for a specified duration before proceed
     </ParamField>
 
     <ParamField path="Hours" type="integer" required>
-      Number of hours offset from the calculated date. Supports dynamic variables.
+      Number of hours offset from the calculated date. Range: 0-23. Supports dynamic variables.
     </ParamField>
 
     <ParamField path="Minutes" type="integer" required>
-      Number of minutes offset from the calculated date. Supports dynamic variables.
+      Number of minutes offset from the calculated date. Range: 0-59. Supports dynamic variables.
     </ParamField>
 
     <ParamField path="Seconds" type="integer" required>
-      Number of seconds offset from the calculated date. Supports dynamic variables.
+      Number of seconds offset from the calculated date. Range: 0-59. Supports dynamic variables.
     </ParamField>
 
     <Warning>`DD/MM/YYYY` is **not** a valid JavaScript date format. Use `YYYY/MM/DD` or `MM/DD/YYYY` instead.</Warning>
