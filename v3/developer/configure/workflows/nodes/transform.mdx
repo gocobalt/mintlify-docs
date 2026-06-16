@@ -20,40 +20,42 @@ The Transform by JSONata Node enables advanced JSON data transformation and quer
 ## Input Parameters
 
 <ParamField path="Input" type="object" required>
-  JSON object containing the data to transform. Can reference variables from previous nodes or DataSlots. The input must be wrapped in an object with a key name of your choice.
+  The JSON object or array to transform. Can reference variables from previous nodes or DataSlots, or contain static JSON. Reference its top-level keys directly in the Query.
 </ParamField>
 
-<ParamField path="Query" type="object" required>
-  JSONata expression wrapped in an object with the key `output`. The expression transforms or queries the input data.
+<ParamField path="Query" type="object">
+  A JSONata expression that transforms or queries the input data. Reference the input's top-level fields directly (for example, `Account.Order`). The result of the expression becomes the node's output.
 </ParamField>
 
-<Warning>Both Input and Query fields are required. The Query must use `output` as the key name, otherwise the node returns an empty response that cannot be used in subsequent nodes.</Warning>
+<ParamField path="Type" type="dropdown">
+  Optional output field type used to format the result. Options: `Date/Time` (requires a **Format** for the output date) and `Phone`.
+</ParamField>
 
-**Input Format:**
-```javascript
+**Input Example:**
+```json
 {
-  "input": "{Array_name}"           // When providing an array directly
-  "input": "{{Node_name.data}}"     // When referencing a previous node
+  "Account": {
+    "Account Name": "Firefly",
+    "Order": [
+      { "OrderID": "order103", "Product": [ { "Product Name": "Bowler Hat", "Price": 34.45, "Quantity": 2 } ] }
+    ]
+  }
 }
 ```
 
-**Query Format:**
-```javascript
-{
-  "output": "JSONata expression"    // Key must be "output"
-}
+**Query Example:**
+```
+$sum(Account.Order.Product.(Price * Quantity))
 ```
 
 ## Output
 
-The Transform Node outputs the result of the JSONata expression applied to the input data.
+The Transform Node outputs the result of the JSONata expression applied to the input data. The result is returned directly — there is no wrapper key.
 ```json
 {
-  "output": {
-    "vendor_name": "Acme Corporation",
-    "vendor_id": "V001234",
-    "formatted_date": "2024-01-15"
-  }
+  "vendor_name": "Acme Corporation",
+  "vendor_id": "V001234",
+  "formatted_date": "2024-01-15"
 }
 ```
 
@@ -67,7 +69,7 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     Provide the JSON object or array to transform. Reference data from previous nodes using variable syntax or provide static JSON.
   </Step>
   <Step title="Write JSONata query">
-    Create your transformation expression using JSONata syntax. Wrap the expression in an object with `output` as the key.
+    Create your transformation expression using JSONata syntax, referencing the input's top-level fields directly. The result of the expression becomes the node output.
   </Step>
   <Step title="Test the node">
     Run the node to verify the JSONata expression produces the expected output structure.
@@ -160,24 +162,20 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     **Query:**
 ```json
     {
-      "output": {
-        "vendor_id": input.vendor.LIFNR,
-        "name": input.vendor.NAME1,
-        "location": input.vendor.ORT01 & ", " & input.vendor.LAND1,
-        "created_date": $fromMillis($toMillis(input.metadata.ERDAT), "[Y0001]-[M01]-[D01]")
-      }
+      "vendor_id": input.vendor.LIFNR,
+      "name": input.vendor.NAME1,
+      "location": input.vendor.ORT01 & ", " & input.vendor.LAND1,
+      "created_date": $fromMillis($toMillis(input.metadata.ERDAT), "[Y0001]-[M01]-[D01]")
     }
 ```
 
     **Output:**
 ```json
     {
-      "output": {
-        "vendor_id": "V001234",
-        "name": "Acme Corporation",
-        "location": "Chicago, US",
-        "created_date": "2024-01-15"
-      }
+      "vendor_id": "V001234",
+      "name": "Acme Corporation",
+      "location": "Chicago, US",
+      "created_date": "2024-01-15"
     }
 ```
   </Accordion>
@@ -194,25 +192,21 @@ The Transform Node outputs the result of the JSONata expression applied to the i
 
     **Query:**
 ```json
-    {
-      "output": $map(records, function($v){
-        {
-          "name": $v.companyName,
-          "value": $v.internalId
-        }
-      })
-    }
+    $map(records, function($v){
+      {
+        "name": $v.companyName,
+        "value": $v.internalId
+      }
+    })
 ```
 
     **Output:**
 ```json
-    {
-      "output": [
-        { "name": "Acme Corporation", "value": "12345" },
-        { "name": "TechSupply Inc", "value": "12346" },
-        { "name": "Global Parts Ltd", "value": "12347" }
-      ]
-    }
+    [
+      { "name": "Acme Corporation", "value": "12345" },
+      { "name": "TechSupply Inc", "value": "12346" },
+      { "name": "Global Parts Ltd", "value": "12347" }
+    ]
 ```
   </Accordion>
 
@@ -237,26 +231,22 @@ The Transform Node outputs the result of the JSONata expression applied to the i
 
     **Query:**
 ```json
-    {
-      "output": $map($filter(orders, function($o){ $o.status = "active" }), function($order){
-        {
-          "order_id": $order.id,
-          "customer": $order.customer,
-          "amount": $order.total,
-          "order_date": $fromMillis($toMillis($order.date), "[Y0001]-[M01]-[D01]")
-        }
-      })
-    }
+    $map($filter(orders, function($o){ $o.status = "active" }), function($order){
+      {
+        "order_id": $order.id,
+        "customer": $order.customer,
+        "amount": $order.total,
+        "order_date": $fromMillis($toMillis($order.date), "[Y0001]-[M01]-[D01]")
+      }
+    })
 ```
 
     **Output:**
 ```json
-    {
-      "output": [
-        { "order_id": "SO-001", "customer": "Acme Corp", "amount": 5000, "order_date": "2024-01-15" },
-        { "order_id": "SO-003", "customer": "Global Ltd", "amount": 7500, "order_date": "2024-01-20" }
-      ]
-    }
+    [
+      { "order_id": "SO-001", "customer": "Acme Corp", "amount": 5000, "order_date": "2024-01-15" },
+      { "order_id": "SO-003", "customer": "Global Ltd", "amount": 7500, "order_date": "2024-01-20" }
+    ]
 ```
   </Accordion>
 
@@ -287,21 +277,19 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     **Query:**
 ```json
     {
-      "output": {
-        "payee": {
-          "id": payment.payee_id,
-          "name": payment.payee_name,
-          "email": payment.payee_email
-        },
-        "transaction": {
-          "amount": payment.amount,
-          "currency": payment.currency,
-          "status": payment.status
-        },
-        "dates": {
-          "submitted": $fromMillis($toMillis(payment.submitted_date), "[Y0001]-[M01]-[D01]"),
-          "completed": $fromMillis($toMillis(payment.completed_date), "[Y0001]-[M01]-[D01]")
-        }
+      "payee": {
+        "id": payment.payee_id,
+        "name": payment.payee_name,
+        "email": payment.payee_email
+      },
+      "transaction": {
+        "amount": payment.amount,
+        "currency": payment.currency,
+        "status": payment.status
+      },
+      "dates": {
+        "submitted": $fromMillis($toMillis(payment.submitted_date), "[Y0001]-[M01]-[D01]"),
+        "completed": $fromMillis($toMillis(payment.completed_date), "[Y0001]-[M01]-[D01]")
       }
     }
 ```
@@ -309,21 +297,19 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     **Output:**
 ```json
     {
-      "output": {
-        "payee": {
-          "id": "P001",
-          "name": "Vendor ABC",
-          "email": "ap@vendorabc.com"
-        },
-        "transaction": {
-          "amount": 15000,
-          "currency": "USD",
-          "status": "completed"
-        },
-        "dates": {
-          "submitted": "2024-01-15",
-          "completed": "2024-01-17"
-        }
+      "payee": {
+        "id": "P001",
+        "name": "Vendor ABC",
+        "email": "ap@vendorabc.com"
+      },
+      "transaction": {
+        "amount": 15000,
+        "currency": "USD",
+        "status": "completed"
+      },
+      "dates": {
+        "submitted": "2024-01-15",
+        "completed": "2024-01-17"
       }
     }
 ```
@@ -342,26 +328,22 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     **Query:**
 ```json
     {
-      "output": {
-        "total_count": $count(transactions),
-        "total_amount": $sum(transactions.amount),
-        "average_amount": $round($average(transactions.amount), 2),
-        "max_amount": $max(transactions.amount),
-        "min_amount": $min(transactions.amount)
-      }
+      "total_count": $count(transactions),
+      "total_amount": $sum(transactions.amount),
+      "average_amount": $round($average(transactions.amount), 2),
+      "max_amount": $max(transactions.amount),
+      "min_amount": $min(transactions.amount)
     }
 ```
 
     **Output:**
 ```json
     {
-      "output": {
-        "total_count": 25,
-        "total_amount": 125000,
-        "average_amount": 5000,
-        "max_amount": 15000,
-        "min_amount": 500
-      }
+      "total_count": 25,
+      "total_amount": 125000,
+      "average_amount": 5000,
+      "max_amount": 15000,
+      "min_amount": 500
     }
 ```
   </Accordion>
@@ -375,9 +357,9 @@ The Transform Node outputs the result of the JSONata expression applied to the i
 
     | Cause | Solution |
     |-------|----------|
-    | Query not wrapped in object | Ensure Query uses `{"output": "expression"}` format |
-    | Wrong key name in Query | Use `output` as the key name, not other names |
-    | Input field missing | Verify Input field contains valid JSON data |
+    | Empty Query | Provide a JSONata expression in the Query field. |
+    | Field not found | Reference the input's top-level keys exactly as they appear in the Input JSON (e.g. `Account.Order`). |
+    | Input field missing | Verify the Input field contains valid JSON data. |
   </Accordion>
 
   <Accordion title="JSONata Syntax Errors">
@@ -397,7 +379,7 @@ The Transform Node outputs the result of the JSONata expression applied to the i
     | Cause | Solution |
     |-------|----------|
     | Field name mismatch | Field names are case-sensitive, verify exact names |
-    | Missing parent object | Use full path: `input.vendor.name` not just `vendor.name` |
+    | Wrong path | Use the full path from the input's top-level key (e.g. `vendor.name` if the input has a `vendor` object) |
     | Field does not exist | Add conditional: `field ? field : "default"` |
     | Use Debug Node | Inspect actual input structure before Transform |
   </Accordion>
