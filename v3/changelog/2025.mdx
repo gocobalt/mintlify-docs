@@ -1,0 +1,286 @@
+---
+title: "2025"
+description: "Platform updates, connector additions, and improvements shipped across 2025."
+rss: true
+---
+
+<Note>
+Through 2025, Refold shipped on a monthly release cadence under an earlier versioning scheme, so these entries are grouped by month and labelled `2025.MM` for the period they cover. Unified (BOM) versioning with per-release entries began in February 2026.
+</Note>
+
+<Update label="December 2025" description="2025.12 · Public workflow APIs">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Public workflow APIs, QuickBooks/NetSuite/Zoho CRM/Freshdesk connectors, an AI execution service integration, a retry node, and hosted-portal (Streamlit) work — closing out the year before unified BOM versioning began in February.**
+
+**New Features**
+
+- **Public Workflow APIs**: Public API endpoints for managing and executing workflows.
+- **Retry node**: Configurable retry handling in the execution engine.
+- **AI execution service integration**: Connected the execution engine to a dedicated AI execution service.
+- **Hosted portal (Streamlit)**: Incorta connection page, custom setup UI, and private node listing.
+
+**Improvements**
+
+- Org basics/features APIs and Incorta token handling in auth.
+- Child-workflow orchestration for group/pagination nodes, batched concurrent execution, and execution-data archival.
+- **ServiceNow** delta-cron fix; email-node migration.
+
+**Integration Updates**
+
+- Added **QuickBooks** (+ estimate object), **NetSuite**, **Zoho CRM**, **Freshdesk** (actions), and **Incorta** connectors.
+- **Facebook Ads** ad-account support.
+
+</Update>
+
+<Update label="November 2025" description="2025.11 · A large connector wave (Fivetran">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**A large connector wave (Fivetran, Zuora, Contentful, HaloITSM, Hexnode, Postman, Bitbucket, Jack Henry SymXchange, Facebook Ads) and new control-flow nodes — rule, switch, try-catch, terminate — in the execution engine.**
+
+**New Features**
+
+- **Control-flow nodes**: Rule, switch, try-catch, and terminate nodes added to the execution engine.
+- **Pagination & subflows**: Native pagination and subflow execution support.
+
+**Improvements**
+
+- Integration-service proxy and templating improvements in the execution engine.
+- **Ironclad** key-based auth; **HubSpot** webhook handling.
+- Serverless CSV node actions.
+
+**Integration Updates**
+
+- Added **Fivetran**, **Zuora** (+ actions), **Contentful**, **HaloITSM**, **Google Apps/Sheets**, **Hexnode**, **Postman**, **Bitbucket**, **Jack Henry SymXchange**, **Facebook Ads**, and **DocuSign** connectors.
+
+</Update>
+
+<Update label="October 2025" description="2025.10 · Adopted automated semantic-release versioning per service">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Adopted automated semantic-release versioning per service, added the Iconik connector, expanded RBAC, and grew the execution engine with new node types (HTTP, PDF, email, delay, tables) and a high-availability store.**
+
+**New Features**
+
+- **Per-service versioning**: Adopted automated semantic-release and date-based release workflows across services — the first step toward unified versioning.
+- **New workflow nodes**: HTTP, PDF, email, file-handler, delay, and tables nodes added to the execution engine, plus DAG iteration support.
+- **High-availability execution store**: Hybrid Raft + async key-value store for resilient execution, with Prometheus metrics.
+
+**Improvements**
+
+- RBAC expansion, custom-app delete, send-email, and Mongoose validation in auth.
+- Serverless presigned URLs and custom content-type support.
+- Dashboard: removed legacy signup and cleaned up unused routes.
+
+**Integration Updates**
+
+- Added **Iconik** connector.
+
+</Update>
+
+<Update label="September 2025" description="2025.09 · RBAC groundwork">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**RBAC groundwork, an LLM workflow node, many connectors (Coupa, Snowflake, Workday, Miro, Gong), and major buildout of the durable execution engine (DAG execution, node registry, code/CSV nodes).**
+
+**New Features**
+
+- **Role-Based Access Control (groundwork)**: Began the RBAC permission model later shipped in v3.4.0.
+- **LLM node**: Workflow node with PDF/DOCX support for AI processing.
+- **Execution engine buildout**: DAG-based workflow execution, node config registry, code-executor and CSV/Excel nodes, a logger node, schema gRPC service, and MongoDB-backed node persistence.
+
+**Improvements**
+
+- **Zoom** transcript events, CSV file-format handling, and conditional group nodes.
+- **Snowflake** identity-provider auth and **Miro** auth.
+
+**Integration Updates**
+
+- Added **Coupa**, **Workday Financial**, **Snowflake**, **Miro**, **Gong**, and **Gmail/Calendar** connectors.
+- **Slack** action coverage and **Google Drive** triggers expanded.
+
+</Update>
+
+<Update label="August 2025" description="2025.08 · Foundation work on a new durable workflow execution engine">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Foundation work on a new durable workflow execution engine, plus Ashby, Twilio and SharePoint connectors and OAuth/IAM auth improvements.**
+
+**New Features**
+
+- **Durable execution engine (foundation)**: Began building a new Temporal-based, persistent workflow execution engine with a key-value execution store for reliable long-running workflows.
+- **SharePoint file upload**: Upload files to SharePoint from workflows.
+- **Multi-auth**: Support for multiple authentication methods per connector.
+
+**Improvements**
+
+- S3 IAM-based auth, Google granted-scope handling, and Sage Intacct token expiry.
+- Serverless: write-data-to-file action and CSV handling.
+- **Salesforce** case triggers; **Dropbox** and zip-extract handling.
+
+**Integration Updates**
+
+- Added **Ashby**, **Twilio**, and **SharePoint** connectors; **Aircall** OAuth.
+
+</Update>
+
+<Update label="July 2025" description="2025.07 · Public MCP support">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Public MCP support, the AI code executor, Chargebee and Salesforce Media Cloud connectors, mTLS support, and auth hardening.**
+
+**New Features**
+
+- **Public MCP**: Public Model Context Protocol support for workflows.
+- **AI Code Executor**: Dedicated serverless AI code-execution service.
+- **mTLS support**: Mutual-TLS for secure connector communication.
+
+**Improvements**
+
+- Auth: token-expiry handling, forgot-password, and OTP flows.
+- **Box** webhook support; **Workable** and **NetSuite** pagination/base-URL fixes.
+
+**Integration Updates**
+
+- Added **Chargebee** (actions) and **Salesforce Media Cloud** connectors.
+- **Zoho Recruit** offer triggers and Google Sheets data handling.
+
+</Update>
+
+<Update label="June 2025" description="2025.06 · AI and data-platform connectors — OpenAI">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**AI and data-platform connectors — OpenAI, Databricks, Snowflake-adjacent data sources, NetSuite, Tableau, Sumo Logic, Ironclad — plus AWS EKS infrastructure work.**
+
+**New Features**
+
+- **OpenAI connector**: Native OpenAI support for AI-powered workflow steps.
+- **NetSuite triggers**: Event-based triggers for NetSuite.
+
+**Improvements**
+
+- AWS EKS infrastructure and internal workflow-config improvements.
+- **Airtable** schema scoping and **Oracle SQL** handling.
+
+**Integration Updates**
+
+- Added **OpenAI**, **Databricks**, **Tableau**, **Sumo Logic**, **Ironclad**, **NetSuite**, and **Zoho Recruit** (triggers) connectors.
+
+</Update>
+
+<Update label="May 2025" description="2025.05 · Adobe Sign and DocuSign e-signature connectors">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Adobe Sign and DocuSign e-signature connectors, Figma, OneDrive triggers, Google Analytics, AI routes, and hosted-portal updates.**
+
+**New Features**
+
+- **AI routes**: New AI-backed routes in the platform.
+- **OneDrive triggers**: Event-based triggers for OneDrive.
+- **Hosted portal updates**: Public workflow/app retrieval and portal UI changes.
+
+**Improvements**
+
+- Serverless PDF improvements: page numbers, margins, Puppeteer timeout and memory tuning.
+
+**Integration Updates**
+
+- Added **Adobe Sign** (auth + refresh + Workfront triggers), **DocuSign**, and **Figma** connectors.
+- Added **Google Analytics** support; **Sage Intacct** refresh-token handling.
+
+</Update>
+
+<Update label="April 2025" description="2025.04 · Jira (including an AI-assisted Jira app)">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Jira (including an AI-assisted Jira app), Adobe Workfront, G2 and Postgres connectors, plus dashboard workflow-config improvements.**
+
+**New Features**
+
+- **AI Jira app**: AI-assisted Jira automation.
+- **Adobe Workfront**: Actions and file handling for Workfront.
+- **AI code**: Early AI-assisted code execution in workflows.
+
+**Improvements**
+
+- Dashboard: cron field, action API-call, and secure-key handling in workflow config.
+- Serverless PDF node scripting and payload-size handling improved.
+
+**Integration Updates**
+
+- Added **Jira**, **G2**, **Monday**, **FedEx**, and **Postgres** connectors.
+- Restored **Box** triggers.
+
+</Update>
+
+<Update label="March 2025" description="2025.03 · Dialpad connector">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Dialpad connector, a new Connected Accounts page in the dashboard, and serverless image/runtime optimizations.**
+
+**New Features**
+
+- **Connected Accounts page**: New dashboard view for managing connected accounts.
+
+**Improvements**
+
+- Optimized serverless function image size and adopted PM2 for the function runtime.
+- **Box** authentication URL handling improved.
+
+**Integration Updates**
+
+- Added **Dialpad** connector; **Aircall** improvements.
+
+</Update>
+
+<Update label="February 2025" description="2025.02 · Several new connectors (New Relic">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Several new connectors (New Relic, Azure Security Center, Deel, Aircall, Dropbox), HubSpot triggers, and the first serverless function pack (PDF, CSV, code executor).**
+
+**New Features**
+
+- **HubSpot triggers**: Event-based triggers for HubSpot.
+- **Cron scheduler**: Scheduling improvements for time-based workflow runs.
+- **Serverless function pack**: Initial PDF, CSV, and code-executor serverless functions for in-workflow file processing.
+
+**Integration Updates**
+
+- Added **New Relic**, **Azure Security Center**, **Deel**, **Aircall**, and **Dropbox** (folder support) connectors.
+- **Box** and **Oracle** enhancements; **Salesforce** data-ID handling fixes.
+
+</Update>
+
+<Update label="January 2025" description="2025.01 · Salesforce triggers">
+
+<Badge color="blue">Platform</Badge> <Badge color="purple">Integrations</Badge>
+
+**Salesforce triggers, new Tenable, Zoho, BigQuery and Iris connectors, and workflow admin improvements.**
+
+**New Features**
+
+- **Salesforce triggers**: Event-based triggers for Salesforce workflows.
+- **Workflow admin migration**: Migrated workflow administration to a more scalable model.
+
+**Improvements**
+
+- Custom action schema handling and default-app behavior refined.
+- Resolved custom-app pagination edge cases in the integration service.
+
+**Integration Updates**
+
+- Added **Tenable**, **Zoho**, **BigQuery**, **Iris**, and **GSCC** connectors.
+- Improved **Salesforce** trigger support across the workflow and integration services.
+
+</Update>
