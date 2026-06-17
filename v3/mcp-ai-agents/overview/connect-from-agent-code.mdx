@@ -1,17 +1,21 @@
 ---
 title: "Connect from agent code"
-description: "Wire a Refold MCP Server URL into the major agent SDKs"
+description: "Wire a Refold MCP Server URL into your agent SDK in minutes — no extra headers or OAuth flow required."
 ---
 
-A Refold Server URL is everything an agent SDK needs. The URL embeds the auth token in its path, so most SDKs require no extra headers, OAuth flow, or bearer config. Paste the URL, the SDK handles the rest.
+A Refold Server URL is everything an agent SDK needs. The URL embeds an auth token in its path, so most SDKs require no extra headers, OAuth flow, or bearer config. Paste the URL; the SDK handles the rest.
 
-Each snippet links to the SDK's MCP documentation so you can confirm the API surface against the version you're running.
+<Note>
+You need a Server URL before you can run these snippets. See the [Quickstart](/v3/mcp-ai-agents/overview/getting-started) to create your first MCP server and copy its URL, or [Server configuration](/v3/mcp-ai-agents/overview/server-configuration) if your server already exists.
+</Note>
+
+## Wire the URL into your SDK
 
 <Tabs>
   <Tab title="Anthropic Messages API">
     Use the `mcp_servers` parameter on `messages.create` with the `mcp-client-2025-11-20` beta header. Every server in `mcp_servers` must be referenced by an `mcp_toolset` entry in `tools`.
 
-    ```python
+    ```python Python
     import anthropic
 
     client = anthropic.Anthropic()
@@ -31,7 +35,7 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
     ```
 
     | Detail | Value |
-    |---|---|
+    |--------|-------|
     | Package | `anthropic` (Python SDK) |
     | Endpoint | `client.beta.messages.create` |
     | Beta header | `anthropic-beta: mcp-client-2025-11-20` |
@@ -43,7 +47,7 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
   <Tab title="OpenAI Agents SDK">
     Use `MCPServerStreamableHttp` from `agents.mcp`. Pass the server instance via the `mcp_servers` list on `Agent(...)`.
 
-    ```python
+    ```python Python
     import asyncio
     from agents import Agent, Runner
     from agents.mcp import MCPServerStreamableHttp
@@ -65,7 +69,7 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
     ```
 
     | Detail | Value |
-    |---|---|
+    |--------|-------|
     | Package | `openai-agents` (Python) |
     | Class | `MCPServerStreamableHttp` from `agents.mcp` |
     | Transport | Streamable HTTP, auto-selected from `params.url` |
@@ -77,7 +81,7 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
   <Tab title="Vercel AI SDK">
     Use `createMCPClient` from `@ai-sdk/mcp` with `transport: { type: 'http' }`. Pass the resulting tools into `streamText` or `generateText`.
 
-    ```ts
+    ```ts TypeScript
     import { createMCPClient } from '@ai-sdk/mcp';
     import { streamText } from 'ai';
     import { anthropic } from '@ai-sdk/anthropic';
@@ -100,21 +104,23 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
     ```
 
     | Detail | Value |
-    |---|---|
+    |--------|-------|
     | Package | `@ai-sdk/mcp` (with `ai`) |
     | Function | `createMCPClient` (stable, not `experimental_`) |
     | Transport | `'http'` (Streamable HTTP) — also supports `'sse'` and `'stdio'` |
     | Auth | URL path token. For header-based servers, pass `headers` inside the transport config. |
 
+    <Tip>
     Always `await mcpClient.close()` when the stream finishes to release the connection.
+    </Tip>
 
     Source: [Vercel AI SDK MCP tools docs](https://ai-sdk.dev/docs/ai-sdk-core/mcp-tools).
   </Tab>
 
   <Tab title="LangChain">
-    Use `MultiServerMCPClient` from `langchain-mcp-adapters`. Transport string for streamable HTTP is `"http"` (not `"streamable_http"`).
+    Use `MultiServerMCPClient` from `langchain-mcp-adapters`. The transport string for Streamable HTTP is `"http"` (not `"streamable_http"`).
 
-    ```python
+    ```python Python
     import asyncio
     from langchain_mcp_adapters.client import MultiServerMCPClient
     from langchain.agents import create_agent
@@ -137,21 +143,23 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
     ```
 
     | Detail | Value |
-    |---|---|
+    |--------|-------|
     | Package | `langchain-mcp-adapters` (Python) |
     | Class | `MultiServerMCPClient` |
     | Transport key | `"http"` |
     | Auth | URL path token. For header-based servers, add a `"headers"` entry alongside `transport` and `url`. |
 
-    The snippet is async — run it inside an event loop. You'll also need `langchain`, `langgraph`, and a model provider package (e.g., `langchain-openai`) installed.
+    <Note>
+    This snippet is async — run it inside an event loop. You also need `langchain`, `langgraph`, and a model provider package (for example, `langchain-openai`) installed.
+    </Note>
 
     Source: [langchain-mcp-adapters README](https://github.com/langchain-ai/langchain-mcp-adapters).
   </Tab>
 
   <Tab title="Mastra">
-    Use `MCPClient` from `@mastra/mcp`. Mastra auto-detects Streamable HTTP from the presence of a `url` (vs. a `command` for stdio).
+    Use `MCPClient` from `@mastra/mcp`. Mastra auto-detects Streamable HTTP from the presence of a `url` (versus a `command` for stdio).
 
-    ```ts
+    ```ts TypeScript
     import { Agent } from "@mastra/core/agent";
     import { MCPClient } from "@mastra/mcp";
     import { openai } from "@ai-sdk/openai";
@@ -173,7 +181,7 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
     ```
 
     | Detail | Value |
-    |---|---|
+    |--------|-------|
     | Package | `@mastra/mcp` (with `@mastra/core`) |
     | Class | `MCPClient` |
     | Transport | Streamable HTTP first, falls back to SSE if it fails |
@@ -187,23 +195,31 @@ Each snippet links to the SDK's MCP documentation so you can confirm the API sur
 
 ### One URL per end user
 
-Refold issues a unique Server URL per linked account. The pattern in production is to provision a Refold MCP server per end customer (or per linked account), store the URL alongside the customer record, and inject it into the agent SDK at request time:
+Refold issues a unique Server URL per linked account. In production, issue one URL per customer, store it alongside the customer record, and inject it into the agent SDK at request time.
 
-```python
+```python Python
 # Pseudocode — same shape across all SDKs
 url = db.fetch_refold_url(customer_id)
 agent = build_agent_with_mcp(url)
 ```
 
+For the full token model — including what happens when a token is invalid and how to scope which apps an agent can reach — see [Authentication](/v3/mcp-ai-agents/authentication).
+
 ### Rotating tokens
 
-If you regenerate a linked account's token in the Refold dashboard, the old URL stops working immediately. Fetch the latest URL from the dashboard before reconstructing the agent, or store the URL with an expiry and refresh on rotation.
+If you regenerate a linked account's token in the Refold dashboard, the old URL stops working immediately. Fetch the latest URL before reconstructing the agent, or store the URL with an expiry and refresh on rotation. See [Authentication](/v3/mcp-ai-agents/authentication) for the revocation model.
 
 ## Next steps
 
 <CardGroup cols={2}>
+  <Card title="Authentication" icon="lock" href="/v3/mcp-ai-agents/authentication">
+    Understand the token model, per-user URLs, and token revocation
+  </Card>
   <Card title="Tools" icon="wrench" href="/v3/mcp-ai-agents/tools-reference/tools">
     What each MCP tool returns once your agent is connected
+  </Card>
+  <Card title="Debugging" icon="bug" href="/v3/mcp-ai-agents/security/debugging">
+    Inspect MCP calls with the MCP Inspector and logs
   </Card>
   <Card title="MCP Logs" icon="clipboard-list" href="/v3/mcp-ai-agents/security/mcp-logs">
     Trace every call your agent makes

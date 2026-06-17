@@ -1,0 +1,75 @@
+---
+title: Create Dataref
+api: post /api/v2/public/dataref
+description: Create a new dataref for a linked account.
+---
+
+Create a new, empty dataref (named reference-data store) for a linked account. Records are added later by workflows; the dataref starts with an empty `data` map.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account to create the dataref for.</ParamField>
+
+## Body Parameters
+
+<ParamField body="refName" type="string" required>
+  The dataref name. Used to reference it in workflows and other endpoints.
+
+  **Example:** `contacts`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the created dataref.
+    <ResponseField name="_id" type="string">Record ID.</ResponseField>
+    <ResponseField name="name" type="string">Dataref name.</ResponseField>
+    <ResponseField name="linked_account_id" type="string">Owning linked account.</ResponseField>
+    <ResponseField name="environment" type="string">`test` or `live`.</ResponseField>
+    <ResponseField name="data" type="object">Record map — empty on creation.</ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "linked_account_id": "user_12345",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "name": "contacts",
+  "data": {},
+  "_id": "6a3149efd396207fd24f7aad",
+  "createdAt": "2026-06-16T13:04:47.926Z",
+  "updatedAt": "2026-06-16T13:04:47.926Z",
+  "__v": 0
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "refName is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/dataref" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "refName": "contacts" }'
+```
+</RequestExample>

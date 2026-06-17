@@ -2,6 +2,18 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Refold",
   "theme": "mint",
+  "redirects": [
+    { "source": "/v3/mcp-ai-agents/overview/concepts", "destination": "/v3/mcp-ai-agents/overview/architecture" },
+    { "source": "/v3/mcp-ai-agents/skills/creating-skills", "destination": "/v3/mcp-ai-agents/skills/overview" },
+    { "source": "/v3/mcp-ai-agents/skills/examples", "destination": "/v3/mcp-ai-agents/skills/overview" },
+    { "source": "/v3/mcp-ai-agents/workflow-as-mcp/reliability", "destination": "/v3/mcp-ai-agents/workflow-as-mcp/overview" },
+    { "source": "/v3/mcp-ai-agents/workflow-as-mcp/configuration", "destination": "/v3/mcp-ai-agents/workflow-as-mcp/overview" },
+    { "source": "/v3/mcp-ai-agents/workflow-as-mcp/examples", "destination": "/v3/mcp-ai-agents/workflow-as-mcp/overview" },
+    { "source": "/v3/mcp-ai-agents/overview/use-cases", "destination": "/v3/mcp-ai-agents/overview/what-is-mcp" },
+    { "source": "/v3/mcp-ai-agents/enterprise/advanced-security", "destination": "/v3/mcp-ai-agents/implementation/security-compliance" },
+    { "source": "/v3/mcp-ai-agents/implementation/account-hierarchy", "destination": "/v3/mcp-ai-agents/implementation/security-compliance" },
+    { "source": "/v3/mcp-ai-agents/implementation/multi-tenant-workflows", "destination": "/v3/mcp-ai-agents/implementation/security-compliance" }
+  ],
   "versions": ["v2", "v1"],
   "logo": {
     "dark": "/logo/white-icon.svg",
@@ -97,13 +109,13 @@
                       {
                         "group": "Triggers",
                         "pages": [
-                          "v3/developer/configure/workflows/triggers/overview",
+                          "v3/developer/workflows/triggers/overview",
                           "v3/developer/configure/workflows/triggers/schedule",
-                          "v3/developer/configure/workflows/triggers/polling",
+                          "v3/developer/workflows/triggers/polling",
                           "v3/developer/configure/workflows/triggers/webhook",
-                          "v3/developer/configure/workflows/triggers/events",
-                          "v3/developer/configure/workflows/triggers/app-events",
-                          "v3/developer/configure/workflows/triggers/api-trigger"
+                          "v3/developer/workflows/triggers/events",
+                          "v3/developer/workflows/triggers/app-events",
+                          "v3/developer/workflows/triggers/api-trigger"
                         ]
                       },
                       {
@@ -194,17 +206,16 @@
                 "group": "Deployment",
                 "pages": [
                   "v3/developer/deploy/overview",
+                  "v3/developer/deploy/control-plane",
                   "v3/developer/deploy/docker-compose",
                   {
                     "group": "Kubernetes",
                     "pages": [
                       "v3/developer/deploy/kubernetes/helm",
-                      "v3/developer/deploy/kubernetes/refold-cp"
+                      "v3/developer/deploy/kubernetes/refold-cp",
+                      "v3/developer/deploy/kubernetes/air-gapped"
                     ]
                   },
-                  "v3/developer/deploy/deployment-variables",
-                  "v3/developer/deploy/hardware-requirements",
-                  "v3/developer/deploy/network-requirements",
                   {
                     "group": "How-tos",
                     "pages": [
@@ -213,7 +224,6 @@
                       "v3/developer/deploy/how-tos/storage-minio"
                     ]
                   },
-                  "v3/developer/deploy/upgrades",
                   "v3/developer/deploy/backup-restore",
                   "v3/developer/deploy/troubleshooting",
                   {
@@ -1204,44 +1214,32 @@
             "tab": "MCP",
             "groups": [
               {
-                "group": "Getting Started",
+                "group": "Get started",
                 "pages": [
                   "v3/mcp-ai-agents/overview/what-is-mcp",
-                  "v3/mcp-ai-agents/overview/architecture",
-                  "v3/mcp-ai-agents/overview/choose-your-pattern",
                   "v3/mcp-ai-agents/overview/getting-started",
-                  "v3/mcp-ai-agents/overview/connect-from-agent-code"
+                  "v3/mcp-ai-agents/overview/architecture",
+                  "v3/mcp-ai-agents/overview/choose-your-pattern"
                 ]
               },
               {
                 "group": "Build",
                 "pages": [
                   "v3/mcp-ai-agents/overview/server-configuration",
-                  {
-                    "group": "Skills",
-                    "expanded": true,
-                    "pages": [
-                      "v3/mcp-ai-agents/skills/overview",
-                      "v3/mcp-ai-agents/skills/creating-skills",
-                      "v3/mcp-ai-agents/skills/examples"
-                    ]
-                  },
-                  {
-                    "group": "Workflows",
-                    "expanded": true,
-                    "pages": [
-                      "v3/mcp-ai-agents/workflow-as-mcp/overview",
-                      "v3/mcp-ai-agents/workflow-as-mcp/reliability",
-                      "v3/mcp-ai-agents/workflow-as-mcp/configuration",
-                      "v3/mcp-ai-agents/workflow-as-mcp/examples"
-                    ]
-                  }
+                  "v3/mcp-ai-agents/skills/overview",
+                  "v3/mcp-ai-agents/workflow-as-mcp/overview"
+                ]
+              },
+              {
+                "group": "Connect",
+                "pages": [
+                  "v3/mcp-ai-agents/overview/connect-from-agent-code",
+                  "v3/mcp-ai-agents/authentication"
                 ]
               },
               {
                 "group": "Reference",
                 "pages": [
-                  "v3/mcp-ai-agents/overview/concepts",
                   "v3/mcp-ai-agents/tools-reference/tools"
                 ]
               },
@@ -1268,67 +1266,60 @@
               {
                 "group": "Linked Accounts",
                 "pages": [
-                  "v3/api-reference/customer/create-linked-account",
-                  "v3/api-reference/customer/get-linked-account",
-                  "v3/api-reference/customer/list-linked-accounts",
-                  "v3/api-reference/customer/upsert-a-linked-account",
-                  "v3/api-reference/customer/delete-linked-account"
+                  "v3/api-reference/linked-accounts/create-linked-account",
+                  "v3/api-reference/linked-accounts/get-linked-account",
+                  "v3/api-reference/linked-accounts/list-linked-accounts",
+                  "v3/api-reference/linked-accounts/upsert-linked-account",
+                  "v3/api-reference/linked-accounts/delete-integration",
+                  "v3/api-reference/linked-accounts/delete-linked-account",
+                  "v3/api-reference/linked-accounts/get-active-linked-account"
                 ]
               },
               {
                 "group": "Applications",
                 "pages": [
-                  "v3/api-reference/integration-meta/list-applications",
-                  "v3/api-reference/integration-meta/get-application",
-                  "v3/api-reference/integration-meta/update-application-auth"
+                  "v3/api-reference/applications/list-applications",
+                  "v3/api-reference/applications/get-application",
+                  "v3/api-reference/applications/get-actions",
+                  "v3/api-reference/applications/get-action-parameters",
+                  "v3/api-reference/applications/execute-action"
                 ]
               },
               {
-                "group": "Integration Schema",
+                "group": "Auth Structure",
                 "pages": [
-                  "v3/api-reference/integration-meta/get-actions-for-slug",
-                  "v3/api-reference/integration-meta/get-action-parameters",
-                  "v3/api-reference/integration-meta/execute-action"
+                  "v3/api-reference/auth-structure/get-auth-structure",
+                  "v3/api-reference/auth-structure/get-oauth-url"
                 ]
               },
               {
-                "group": "Config",
+                "group": "Credentials",
                 "pages": [
-                  "v3/api-reference/config/find-or-create-config",
-                  "v3/api-reference/config/update-config",
-                  "v3/api-reference/config/get-all-config",
-                  "v3/api-reference/config/get-config",
-                  "v3/api-reference/config/delete-config"
+                  "v3/api-reference/credentials/get-credentials",
+                  "v3/api-reference/credentials/get-token",
+                  "v3/api-reference/credentials/save-key-credentials",
+                  "v3/api-reference/credentials/migrate-token",
+                  "v3/api-reference/credentials/upsert-default-app-credential",
+                  "v3/api-reference/credentials/delete-default-app-credential"
                 ]
               },
               {
-                "group": "Config Fields",
+                "group": "Session Tokens",
                 "pages": [
-                  "v3/api-reference/config-fields/get-all-fields",
-                  "v3/api-reference/config-fields/get-field-by-id",
-                  "v3/api-reference/config-fields/update-field-value",
-                  "v3/api-reference/config-fields/delete-field-value",
-                  "v3/api-reference/config-fields/get-options-rule-engine"
+                  "v3/api-reference/session-tokens/generate-session-token",
+                  "v3/api-reference/session-tokens/revoke-session-token"
                 ]
               },
               {
-                "group": "Datastores",
+                "group": "Connect",
                 "pages": [
-                  "v3/api-reference/datastore/list-config-datastores",
-                  "v3/api-reference/datastore/config-datastore-records",
-                  "v3/api-reference/datastore/search-config-records"
+                  "v3/api-reference/connect/create-connect-url"
                 ]
               },
               {
-                "group": "Events",
+                "group": "Hosted Properties",
                 "pages": [
-                  "v3/api-reference/event/create-event",
-                  "v3/api-reference/event/get-event",
-                  "v3/api-reference/event/update-event",
-                  "v3/api-reference/event/delete-event",
-                  "v3/api-reference/event/list-events",
-                  "v3/api-reference/event/trigger-an-event-from-your-application",
-                  "v3/api-reference/event/trigger-event"
+                  "v3/api-reference/hosted-properties/get-hosted-properties"
                 ]
               },
               {
@@ -1339,59 +1330,140 @@
                   "v3/api-reference/webhooks/get-webhook",
                   "v3/api-reference/webhooks/get-webhook-by-id",
                   "v3/api-reference/webhooks/delete-webhook",
-                  "v3/api-reference/webhooks/subscribe-webhook-event",
-                  "v3/api-reference/webhooks/unsubscribe-webhook-event"
+                  "v3/api-reference/webhooks/edit-webhook-group"
                 ]
               },
               {
-                "group": "Executions",
+                "group": "Configs",
                 "pages": [
-                  "v3/api-reference/executions/get-execution",
-                  "v3/api-reference/executions/list-executions"
+                  "v3/api-reference/configs/create-config",
+                  "v3/api-reference/configs/update-config",
+                  "v3/api-reference/configs/get-config-default",
+                  "v3/api-reference/configs/get-config",
+                  "v3/api-reference/configs/list-configs",
+                  "v3/api-reference/configs/toggle-workflow",
+                  "v3/api-reference/configs/delete-config-default",
+                  "v3/api-reference/configs/delete-config"
                 ]
               },
               {
-                "group": "Workflows",
+                "group": "Config Fields",
                 "pages": [
-                  "v3/api-reference/private_workflows/create_private_workflow",
-                  "v3/api-reference/private_workflows/get_private_workflows",
-                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
-                  "v3/api-reference/private_workflows/get_draft",
-                  "v3/api-reference/private_workflows/publish_workflow"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-for-rule-engine"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "v3/api-reference/events/create-event",
+                  "v3/api-reference/events/get-event",
+                  "v3/api-reference/events/update-event",
+                  "v3/api-reference/events/delete-event",
+                  "v3/api-reference/events/list-events",
+                  "v3/api-reference/events/trigger-event-by-slug",
+                  "v3/api-reference/events/trigger-event"
                 ]
               },
               {
                 "group": "Schedule",
                 "pages": [
-                  "v3/api-reference/schedule/register-cron",
-                  "v3/api-reference/schedule/get-all-schedules",
+                  "v3/api-reference/schedule/register-schedule",
+                  "v3/api-reference/schedule/list-schedules",
+                  "v3/api-reference/schedule/update-schedule",
                   "v3/api-reference/schedule/pause-schedule",
                   "v3/api-reference/schedule/resume-schedule",
-                  "v3/api-reference/schedule/update-schedule-job",
                   "v3/api-reference/schedule/delete-schedule"
                 ]
               },
               {
-                "group": "Session Token",
+                "group": "Executions",
                 "pages": [
-                  "v3/api-reference/session-token/generate-token-for-linked-account"
+                  "v3/api-reference/executions/list-executions",
+                  "v3/api-reference/executions/get-execution",
+                  "v3/api-reference/executions/list-batches",
+                  "v3/api-reference/executions/stop-execution"
+                ]
+              },
+              {
+                "group": "Human Tasks",
+                "pages": [
+                  "v3/api-reference/human-tasks/get-human-task",
+                  "v3/api-reference/human-tasks/submit-human-task"
+                ]
+              },
+              {
+                "group": "Datarefs",
+                "pages": [
+                  "v3/api-reference/datarefs/list-datarefs",
+                  "v3/api-reference/datarefs/create-dataref",
+                  "v3/api-reference/datarefs/get-dataref",
+                  "v3/api-reference/datarefs/clear-records",
+                  "v3/api-reference/datarefs/edit-group",
+                  "v3/api-reference/datarefs/delete-dataref"
+                ]
+              },
+              {
+                "group": "Environment Variables",
+                "pages": [
+                  "v3/api-reference/environment-variables/list-definitions",
+                  "v3/api-reference/environment-variables/get-definition",
+                  "v3/api-reference/environment-variables/get-value",
+                  "v3/api-reference/environment-variables/set-value",
+                  "v3/api-reference/environment-variables/list-values",
+                  "v3/api-reference/environment-variables/delete-value"
+                ]
+              },
+              {
+                "group": "Persistent Tables",
+                "pages": [
+                  "v3/api-reference/tables/list-tables",
+                  "v3/api-reference/tables/create-table",
+                  "v3/api-reference/tables/get-records",
+                  "v3/api-reference/tables/add-records",
+                  "v3/api-reference/tables/search-records",
+                  "v3/api-reference/tables/add-columns",
+                  "v3/api-reference/tables/rename-columns",
+                  "v3/api-reference/tables/remove-columns",
+                  "v3/api-reference/tables/delete-record",
+                  "v3/api-reference/tables/edit-group",
+                  "v3/api-reference/tables/delete-table"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "v3/api-reference/workflows/list-workflows",
+                  "v3/api-reference/workflows/create-workflow",
+                  "v3/api-reference/workflows/get-workflow",
+                  "v3/api-reference/workflows/list-enabled-workflows",
+                  "v3/api-reference/workflows/request-structure",
+                  "v3/api-reference/workflows/get-draft",
+                  "v3/api-reference/workflows/publish-workflow",
+                  "v3/api-reference/workflows/versions",
+                  "v3/api-reference/workflows/execute-workflow",
+                  "v3/api-reference/workflows/delete-workflow"
                 ]
               },
               {
                 "group": "MCP Servers",
                 "pages": [
-                  "v3/api-reference/mcp/list-mcp-servers",
-                  "v3/api-reference/mcp/get-mcp-server",
-                  "v3/api-reference/mcp/create-mcp-server",
-                  "v3/api-reference/mcp/update-mcp-server",
-                  "v3/api-reference/mcp/delete-mcp-server"
+                  "v3/api-reference/mcp-servers/list-mcp-servers",
+                  "v3/api-reference/mcp-servers/get-mcp-server",
+                  "v3/api-reference/mcp-servers/create-mcp-server",
+                  "v3/api-reference/mcp-servers/update-mcp-server",
+                  "v3/api-reference/mcp-servers/delete-mcp-server"
                 ]
               },
               {
-                "group": "Refold Hosted",
+                "group": "Deprecated",
                 "pages": [
-                  "v3/api-reference/cobalt-connect/get-connect-url",
-                  "v3/api-reference/cobalt-connect/get-hosted-properties"
+                  "v3/api-reference/datastores/list-config-datastores",
+                  "v3/api-reference/datastores/list-records",
+                  "v3/api-reference/datastores/search-records"
                 ]
               }
             ]
@@ -1664,67 +1736,60 @@
               {
                 "group": "Linked Accounts",
                 "pages": [
-                  "v3/api-reference/customer/create-linked-account",
-                  "v3/api-reference/customer/get-linked-account",
-                  "v3/api-reference/customer/list-linked-accounts",
-                  "v3/api-reference/customer/upsert-a-linked-account",
-                  "v3/api-reference/customer/delete-linked-account"
+                  "v3/api-reference/linked-accounts/create-linked-account",
+                  "v3/api-reference/linked-accounts/get-linked-account",
+                  "v3/api-reference/linked-accounts/list-linked-accounts",
+                  "v3/api-reference/linked-accounts/upsert-linked-account",
+                  "v3/api-reference/linked-accounts/delete-integration",
+                  "v3/api-reference/linked-accounts/delete-linked-account",
+                  "v3/api-reference/linked-accounts/get-active-linked-account"
                 ]
               },
               {
                 "group": "Applications",
                 "pages": [
-                  "v3/api-reference/integration-meta/list-applications",
-                  "v3/api-reference/integration-meta/get-application",
-                  "v3/api-reference/integration-meta/update-application-auth"
+                  "v3/api-reference/applications/list-applications",
+                  "v3/api-reference/applications/get-application",
+                  "v3/api-reference/applications/get-actions",
+                  "v3/api-reference/applications/get-action-parameters",
+                  "v3/api-reference/applications/execute-action"
                 ]
               },
               {
-                "group": "Integration Schema",
+                "group": "Auth Structure",
                 "pages": [
-                  "v3/api-reference/integration-meta/get-actions-for-slug",
-                  "v3/api-reference/integration-meta/get-action-parameters",
-                  "v3/api-reference/integration-meta/execute-action"
+                  "v3/api-reference/auth-structure/get-auth-structure",
+                  "v3/api-reference/auth-structure/get-oauth-url"
                 ]
               },
               {
-                "group": "Config",
+                "group": "Credentials",
                 "pages": [
-                  "v3/api-reference/config/find-or-create-config",
-                  "v3/api-reference/config/update-config",
-                  "v3/api-reference/config/get-all-config",
-                  "v3/api-reference/config/get-config",
-                  "v3/api-reference/config/delete-config"
+                  "v3/api-reference/credentials/get-credentials",
+                  "v3/api-reference/credentials/get-token",
+                  "v3/api-reference/credentials/save-key-credentials",
+                  "v3/api-reference/credentials/migrate-token",
+                  "v3/api-reference/credentials/upsert-default-app-credential",
+                  "v3/api-reference/credentials/delete-default-app-credential"
                 ]
               },
               {
-                "group": "Config Fields",
+                "group": "Session Tokens",
                 "pages": [
-                  "v3/api-reference/config-fields/get-all-fields",
-                  "v3/api-reference/config-fields/get-field-by-id",
-                  "v3/api-reference/config-fields/update-field-value",
-                  "v3/api-reference/config-fields/delete-field-value",
-                  "v3/api-reference/config-fields/get-options-rule-engine"
+                  "v3/api-reference/session-tokens/generate-session-token",
+                  "v3/api-reference/session-tokens/revoke-session-token"
                 ]
               },
               {
-                "group": "Datastores",
+                "group": "Connect",
                 "pages": [
-                  "v3/api-reference/datastore/list-config-datastores",
-                  "v3/api-reference/datastore/config-datastore-records",
-                  "v3/api-reference/datastore/search-config-records"
+                  "v3/api-reference/connect/create-connect-url"
                 ]
               },
               {
-                "group": "Events",
+                "group": "Hosted Properties",
                 "pages": [
-                  "v3/api-reference/event/create-event",
-                  "v3/api-reference/event/get-event",
-                  "v3/api-reference/event/update-event",
-                  "v3/api-reference/event/delete-event",
-                  "v3/api-reference/event/list-events",
-                  "v3/api-reference/event/trigger-an-event-from-your-application",
-                  "v3/api-reference/event/trigger-event"
+                  "v3/api-reference/hosted-properties/get-hosted-properties"
                 ]
               },
               {
@@ -1735,59 +1800,140 @@
                   "v3/api-reference/webhooks/get-webhook",
                   "v3/api-reference/webhooks/get-webhook-by-id",
                   "v3/api-reference/webhooks/delete-webhook",
-                  "v3/api-reference/webhooks/subscribe-webhook-event",
-                  "v3/api-reference/webhooks/unsubscribe-webhook-event"
+                  "v3/api-reference/webhooks/edit-webhook-group"
                 ]
               },
               {
-                "group": "Executions",
+                "group": "Configs",
                 "pages": [
-                  "v3/api-reference/executions/get-execution",
-                  "v3/api-reference/executions/list-executions"
+                  "v3/api-reference/configs/create-config",
+                  "v3/api-reference/configs/update-config",
+                  "v3/api-reference/configs/get-config-default",
+                  "v3/api-reference/configs/get-config",
+                  "v3/api-reference/configs/list-configs",
+                  "v3/api-reference/configs/toggle-workflow",
+                  "v3/api-reference/configs/delete-config-default",
+                  "v3/api-reference/configs/delete-config"
                 ]
               },
               {
-                "group": "Workflows",
+                "group": "Config Fields",
                 "pages": [
-                  "v3/api-reference/private_workflows/create_private_workflow",
-                  "v3/api-reference/private_workflows/get_private_workflows",
-                  "v3/api-reference/private_workflows/get_enabled_org_workflows",
-                  "v3/api-reference/private_workflows/get_draft",
-                  "v3/api-reference/private_workflows/publish_workflow"
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-for-rule-engine"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "v3/api-reference/events/create-event",
+                  "v3/api-reference/events/get-event",
+                  "v3/api-reference/events/update-event",
+                  "v3/api-reference/events/delete-event",
+                  "v3/api-reference/events/list-events",
+                  "v3/api-reference/events/trigger-event-by-slug",
+                  "v3/api-reference/events/trigger-event"
                 ]
               },
               {
                 "group": "Schedule",
                 "pages": [
-                  "v3/api-reference/schedule/register-cron",
-                  "v3/api-reference/schedule/get-all-schedules",
+                  "v3/api-reference/schedule/register-schedule",
+                  "v3/api-reference/schedule/list-schedules",
+                  "v3/api-reference/schedule/update-schedule",
                   "v3/api-reference/schedule/pause-schedule",
                   "v3/api-reference/schedule/resume-schedule",
-                  "v3/api-reference/schedule/update-schedule-job",
                   "v3/api-reference/schedule/delete-schedule"
                 ]
               },
               {
-                "group": "Session Token",
+                "group": "Executions",
                 "pages": [
-                  "v3/api-reference/session-token/generate-token-for-linked-account"
+                  "v3/api-reference/executions/list-executions",
+                  "v3/api-reference/executions/get-execution",
+                  "v3/api-reference/executions/list-batches",
+                  "v3/api-reference/executions/stop-execution"
+                ]
+              },
+              {
+                "group": "Human Tasks",
+                "pages": [
+                  "v3/api-reference/human-tasks/get-human-task",
+                  "v3/api-reference/human-tasks/submit-human-task"
+                ]
+              },
+              {
+                "group": "Datarefs",
+                "pages": [
+                  "v3/api-reference/datarefs/list-datarefs",
+                  "v3/api-reference/datarefs/create-dataref",
+                  "v3/api-reference/datarefs/get-dataref",
+                  "v3/api-reference/datarefs/clear-records",
+                  "v3/api-reference/datarefs/edit-group",
+                  "v3/api-reference/datarefs/delete-dataref"
+                ]
+              },
+              {
+                "group": "Environment Variables",
+                "pages": [
+                  "v3/api-reference/environment-variables/list-definitions",
+                  "v3/api-reference/environment-variables/get-definition",
+                  "v3/api-reference/environment-variables/get-value",
+                  "v3/api-reference/environment-variables/set-value",
+                  "v3/api-reference/environment-variables/list-values",
+                  "v3/api-reference/environment-variables/delete-value"
+                ]
+              },
+              {
+                "group": "Persistent Tables",
+                "pages": [
+                  "v3/api-reference/tables/list-tables",
+                  "v3/api-reference/tables/create-table",
+                  "v3/api-reference/tables/get-records",
+                  "v3/api-reference/tables/add-records",
+                  "v3/api-reference/tables/search-records",
+                  "v3/api-reference/tables/add-columns",
+                  "v3/api-reference/tables/rename-columns",
+                  "v3/api-reference/tables/remove-columns",
+                  "v3/api-reference/tables/delete-record",
+                  "v3/api-reference/tables/edit-group",
+                  "v3/api-reference/tables/delete-table"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "v3/api-reference/workflows/list-workflows",
+                  "v3/api-reference/workflows/create-workflow",
+                  "v3/api-reference/workflows/get-workflow",
+                  "v3/api-reference/workflows/list-enabled-workflows",
+                  "v3/api-reference/workflows/request-structure",
+                  "v3/api-reference/workflows/get-draft",
+                  "v3/api-reference/workflows/publish-workflow",
+                  "v3/api-reference/workflows/versions",
+                  "v3/api-reference/workflows/execute-workflow",
+                  "v3/api-reference/workflows/delete-workflow"
                 ]
               },
               {
                 "group": "MCP Servers",
                 "pages": [
-                  "v3/api-reference/mcp/list-mcp-servers",
-                  "v3/api-reference/mcp/get-mcp-server",
-                  "v3/api-reference/mcp/create-mcp-server",
-                  "v3/api-reference/mcp/update-mcp-server",
-                  "v3/api-reference/mcp/delete-mcp-server"
+                  "v3/api-reference/mcp-servers/list-mcp-servers",
+                  "v3/api-reference/mcp-servers/get-mcp-server",
+                  "v3/api-reference/mcp-servers/create-mcp-server",
+                  "v3/api-reference/mcp-servers/update-mcp-server",
+                  "v3/api-reference/mcp-servers/delete-mcp-server"
                 ]
               },
               {
-                "group": "Refold Hosted",
+                "group": "Deprecated",
                 "pages": [
-                  "v3/api-reference/cobalt-connect/get-connect-url",
-                  "v3/api-reference/cobalt-connect/get-hosted-properties"
+                  "v3/api-reference/datastores/list-config-datastores",
+                  "v3/api-reference/datastores/list-records",
+                  "v3/api-reference/datastores/search-records"
                 ]
               }
             ]
@@ -1968,7 +2114,7 @@
   },
   "openapi": "v3/api-reference/openapi.yaml",
   "api": {
-    "baseUrl": "https://api.gocobalt.io",
+    "baseUrl": "https://app.refold.ai",
     "auth": {
       "method": "key",
       "name": "x-api-key",

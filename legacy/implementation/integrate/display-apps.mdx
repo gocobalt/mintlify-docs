@@ -13,14 +13,14 @@ Cobalt connect lets your users connect their integration accounts. It stores the
 <img height="200" src="/images/implementation/display_apps_sequence.png" alt="Sequence Diagram for Displaying Apps on Frontend"/>
 
 ## Building Custom UI
-To build a custom UI for your integrations, you can do so by using the [Cobalt SDKs](/sdks/client-side-sdks/js-sdk#getapp) or the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications).
+To build a custom UI for your integrations, you can do so by using the [Cobalt SDKs](/sdks/client-side-sdks/js-sdk#getapp) or the [List Applications API](https://docs.gocobalt.io/api-reference/applications/list-applications).
 
 If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the 
 
 <Steps>
 
 <Step title="Request">
-Call the **.getapp()** method provided in the SDK or the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications) to get a list of enabled apps.
+Call the **.getapp()** method provided in the SDK or the [List Applications API](https://docs.gocobalt.io/api-reference/applications/list-applications) to get a list of enabled apps.
 <CodeGroup>
 ``` JavaScript JS SDK
 cobalt.getApp()  // to get a list of all apps
@@ -34,7 +34,7 @@ curl --request GET \
 ```
 </CodeGroup>
 <Tip>
-You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/integration-meta/get-application).
+You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/applications/get-application).
 </Tip>
 </Step>
 

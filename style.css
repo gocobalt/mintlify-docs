@@ -118,6 +118,21 @@ h1, h2, h3, h4, h5, h6,
   font-family: var(--rf-font-mono);
   letter-spacing: 0.04em;
 }
+/* Active in-content tab — Mintlify's default indicator is a thin gray underline
+   the same color as the label, so the selected tab is hard to spot. Give it an
+   electric-blue label + underline (lighter blue in dark mode) so the active tab
+   is unmistakable. Matches the top-nav tab treatment. */
+#content-area [role="tab"][aria-selected="true"],
+#content-area [class*="tab"] button[aria-selected="true"] {
+  color: var(--rf-electric-blue) !important;
+  border-bottom: 2px solid var(--rf-electric-blue) !important;
+  font-weight: 600 !important;
+}
+.dark #content-area [role="tab"][aria-selected="true"],
+.dark #content-area [class*="tab"] button[aria-selected="true"] {
+  color: var(--primary-light) !important;
+  border-bottom-color: var(--primary-light) !important;
+}
 
 /* Sidebar — square corners, mono group headers, sans link font.
    Explicitly highlight the active page so it's clearly visible in both light
@@ -204,6 +219,25 @@ button[aria-label*="copy" i],
 button[class*="primary"],
 a[class*="primary"][class*="button"] {
   border-radius: 0 !important;
+}
+
+/* Header "Dashboard" CTA — Mintlify renders navbar.primary as a transparent
+   ghost button (light border + muted gray text), which disappears on the white
+   light-mode header. Force a solid electric-blue fill with white text so it is
+   clearly visible in both light and dark modes. */
+nav a[href="https://app.refold.ai"],
+nav a[href="https://app.refold.ai"] span {
+  color: #ffffff !important;
+}
+nav a[href="https://app.refold.ai"] {
+  background: var(--rf-electric-blue) !important;
+  border: 1px solid var(--rf-electric-blue) !important;
+  border-radius: 0 !important;
+  padding: 6px 16px !important;
+}
+nav a[href="https://app.refold.ai"]:hover {
+  background: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
 }
 
 /* ============================================================

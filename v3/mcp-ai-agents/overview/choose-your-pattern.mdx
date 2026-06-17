@@ -1,67 +1,77 @@
 ---
 title: "Choose your pattern"
-description: "Pick how much agent guidance you want — direct, skill-guided, or workflow-driven"
+description: "Decide whether agents call actions directly, follow guided skills, or run workflows as one tool"
 ---
 
-Refold MCP gives you three patterns for exposing integration capability to an agent. Pick based on how much control you want over the agent's behavior and how strict the process needs to be.
+Refold MCP exposes your integrations to an agent in three patterns: **direct**, **agent mode with skills**, and **workflows as tools**. They differ in one thing — how much of the work the agent decides versus how much you define ahead of time. Pick based on how complex the operation is and how much control you need over how it runs.
+
+The patterns are not exclusive. A single MCP server can use all three at once, because each is controlled by an independent toggle. Most production servers do.
+
+## How to choose
+
+Start from the operation the agent needs to perform.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1e3a5f','primaryTextColor':'#fff','primaryBorderColor':'#60a5fa','lineColor':'#94a3b8'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
 flowchart TD
-    Q["How complex is the operation?"] --> S1
-    Q --> S2
-    Q --> S3
-
-    S1["Single call"]
-    S2["Multi-step, flexible"]
-    S3["Multi-step, strict"]
-
-    S1 --> P1["<b>Direct Mode</b><br/>One tool per action<br/>Agent calls it directly"]
-    S2 --> P2["<b>Agent Mode + Skills</b><br/>Agent discovers the right skill,<br/>follows its steps, resolves and executes"]
-    S3 --> P3["<b>Workflows as MCP Tools</b><br/>Entire process runs as one tool call<br/>with built-in retries and validation"]
-
-    style P1 fill:#1a3a2a,stroke:#4ade80,color:#fff
-    style P2 fill:#1a2a3a,stroke:#60a5fa,color:#fff
-    style P3 fill:#2a1a3a,stroke:#a78bfa,color:#fff
+    Q{"What does the agent<br/>need to do?"}
+    Q -->|One action at a time| D["<b>Direct</b><br/>Each action is its own tool"]
+    Q -->|Multi-step, agent adapts| S["<b>Agent mode + Skills</b><br/>Agent follows a guided procedure"]
+    Q -->|Multi-step, runs the same way every time| W["<b>Workflows as tools</b><br/>One tool runs the whole process"]
 ```
 
-## The three patterns
+## Compare the patterns
 
-| Pattern | Agent decides | You define | Best for |
-|---------|--------------|-----------|----------|
-| **Direct mode** | Which tool to call and with what input | The exact set of available actions | Simple CRUD. Under 20 actions. |
-| **Agent mode + Skills** | How to decompose the task, which skills to load | The procedures (skills) the agent can follow | Complex tasks where you want guidance but flexibility |
-| **Workflows as MCP tools** | When to trigger the workflow | The full process: steps, error handling, retries, rollback | Business-critical processes where consistency matters more than flexibility |
+| | Direct | Agent mode + Skills | Workflows as tools |
+|--|--------|---------------------|--------------------|
+| **Agent decides** | Which tool to call, with what input | How to break down the task and which skill to load | When to call the workflow |
+| **You define** | The exact set of exposed actions | The procedures (skills) the agent can follow | The full process: steps, sequencing, retries, rollback |
+| **Sequencing & error handling** | Agent handles it | Defined in the skill, agent executes | Runs server-side, agent never sees the steps |
+| **Best for** | Simple, single-call operations | Multi-step tasks that need guidance but room to adapt | Business-critical processes that must run the same way every time |
+| **Server toggle** | Default (all toggles off) | **Agent Mode** + **Retrieve Skill** on | Attach a workflow to the server |
 
-## Direct mode
+## Direct
 
-Each action and workflow you select on the server becomes its own MCP tool with a fixed schema. The agent sees the full list and calls them directly.
+Each action and workflow you select becomes its own MCP tool with a fixed input schema. The agent sees the full list and calls a tool directly with the parameters it chooses.
 
-Direct mode is the default — leave the **Agent Mode** toggle off. See [Server Configuration](/v3/mcp-ai-agents/overview/server-configuration) for the toggle reference.
+Direct is the default and the tightest scope: the agent can only call the specific actions you exposed. Use it for simple CRUD — create a record, query data, update a field — and when the action set is small enough that the agent can reason over the full list.
+
+Direct mode is on whenever the **Agent Mode** toggle is off. See [Server configuration](/v3/mcp-ai-agents/overview/server-configuration) for the toggle reference and how to select actions.
 
 ## Agent mode + Skills
 
-Two meta-tools (`RESOLVE_ACTIONS`, `EXECUTE_ACTION`) let the agent resolve user intent first, then execute. Pair with skills to give the agent step-by-step procedures for multi-step operations.
+Agent mode replaces per-action tools with two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. The agent resolves a user's natural-language intent into the right actions first, then executes them. This scales past the point where a long flat list of direct tools becomes unwieldy.
 
-Turn on the **Agent Mode** and **Retrieve Skill** toggles. See [Skills](/v3/mcp-ai-agents/skills/overview) for how to write procedures the agent can follow.
+Pair it with skills to hand the agent tested, step-by-step procedures for multi-step operations — the agent follows your steps but still adapts to the specific request. Turn on the **Agent Mode** and **Retrieve Skill** toggles.
 
-## Workflows as MCP tools
+Use this when a task spans several calls and you want to guide the agent without locking the process down. See [Skills](/v3/mcp-ai-agents/skills/overview) for how to write the procedures an agent loads and follows.
 
-A workflow built in the Refold workflow builder is attached to the server and appears as a single tool the agent calls. The workflow handles sequencing, retries, and rollback internally. The agent receives one result.
+## Workflows as tools
 
-See [Workflows](/v3/mcp-ai-agents/workflow-as-mcp/overview) for the full pattern.
+A [workflow](/v3/developer/configure/workflows/overview) you build in Refold attaches to the server and appears as a single tool. The agent calls it once with input; the workflow handles sequencing, retries, and rollback server-side, then returns one result. The agent never touches the intermediate steps.
 
-## You can combine them
+Use this for business-critical processes where consistency matters more than flexibility — anything with approvals, compliance checks, or a strict order of operations. See [Workflows as tools](/v3/mcp-ai-agents/workflow-as-mcp/overview) for how to attach a workflow and what it guarantees.
 
-These patterns are not mutually exclusive. A single server can expose direct actions for simple lookups, skills for multi-step procedures, and workflows for mission-critical processes. The toggles are independent.
+## Combine them
+
+The three toggles are independent, so one server can expose all three patterns at once:
+
+- **Direct actions** for simple lookups the agent calls ad hoc
+- **Skills** for multi-step procedures where the agent needs guidance
+- **Workflows** for the few processes that must run identically every time
+
+A common setup is direct actions plus one or two workflows for the high-stakes operations, with skills added later when you notice the agent struggling with multi-step tasks. Each pattern is governed by its own toggle in [Server configuration](/v3/mcp-ai-agents/overview/server-configuration).
 
 ## Next steps
 
-<CardGroup cols={2}>
-  <Card title="Quickstart" icon="play" href="/v3/mcp-ai-agents/overview/getting-started">
-    Set up your first MCP server
+<CardGroup cols={3}>
+  <Card title="Skills" icon="pen" href="/v3/mcp-ai-agents/skills/overview">
+    Write procedures the agent loads and follows
   </Card>
-  <Card title="Server Configuration" icon="gear" href="/v3/mcp-ai-agents/overview/server-configuration">
-    The toggles and tabs reference
+  <Card title="Workflows as tools" icon="diagram-project" href="/v3/mcp-ai-agents/workflow-as-mcp/overview">
+    Run a whole process as one tool call
+  </Card>
+  <Card title="Server configuration" icon="gear" href="/v3/mcp-ai-agents/overview/server-configuration">
+    The toggles that turn each pattern on
   </Card>
 </CardGroup>

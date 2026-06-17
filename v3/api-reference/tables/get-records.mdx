@@ -1,0 +1,75 @@
+---
+title: Get Table Records
+api: get /api/v2/public/tables/:table_id
+description: Get records from a persistent table.
+---
+
+Return the records in a persistent table, paginated, along with the table's column list.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
+
+## Path Parameters
+
+<ParamField path="table_id" type="string" required>The table ID.</ParamField>
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Rows per page.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="name" type="string">Table name.</ResponseField>
+    <ResponseField name="columns" type="array">Column names.</ResponseField>
+    <ResponseField name="docs" type="array">Records, each keyed by column plus a `record_id`.</ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total records.</ResponseField>
+    <ResponseField name="page" type="integer">Current page.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "name": "leads",
+  "columns": ["email", "stage"],
+  "docs": [
+    { "record_id": "02cd01ca-c09f-4f91-893d-222ab529f585", "email": "jane@example.com", "stage": "new" },
+    { "record_id": "166047e8-f290-416b-ab4c-0fd03119d9f6", "email": "john@example.com", "stage": "qualified" }
+  ],
+  "page": 1,
+  "limit": 10,
+  "totalDocs": 2,
+  "totalPages": 1,
+  "hasNextPage": false
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Table not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/tables/{table_id}?limit=10" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

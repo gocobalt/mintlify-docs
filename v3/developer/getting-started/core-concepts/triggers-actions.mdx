@@ -1,9 +1,61 @@
 ---
-title: "Triggers & Actions"
-description: "Understanding triggers and actions in Refold workflows"
+title: Triggers & Actions
+description: "Triggers determine when a workflow runs. Actions determine what it does."
+sidebarTitle: "Triggers & Actions"
 ---
 
-# Triggers & Actions
+Every workflow in Refold has two fundamental components: a **trigger** that starts it and **actions** that define what it does. The trigger fires based on a specific condition, and the workflow then executes its sequence of action nodes to process data, call APIs, and produce results.
 
-Content coming soon.
+<Frame>
+  <img src="/images/concepts/triggers-actions-overview.png" alt="Diagram showing four trigger types (Event, Webhook, Schedule, Manual) on the left, each pointing to a workflow containing a chain of action nodes on the right" />
+</Frame>
 
+## Triggers
+
+A trigger defines **when** and **how** a workflow starts. Every workflow has exactly one trigger, configured in its Start node. Refold supports four trigger types.
+
+| Trigger Type | Starts When | Example |
+|-------------|-------------|---------|
+| **Event** | Your application sends a named event via the API or SDK | A `Contact Created` event fires when a user signs up in your app |
+| **Webhook** | A third-party app sends an HTTP callback to Refold | Salesforce sends a webhook when an opportunity is updated |
+| **Schedule** | A time interval or cron schedule is reached | Sync invoices from NetSuite every 30 minutes |
+| **Manual (API)** | You call the Workflow API endpoint directly | Trigger a report generation workflow on demand from your backend |
+
+<Info>
+A single event can trigger multiple workflows across different integrations. For example, a `Contact Created` event can trigger a Salesforce sync workflow, a HubSpot sync workflow, and a Slack notification workflow simultaneously.
+</Info>
+
+## Actions
+
+Actions are the **nodes** that make up the body of a workflow. Each node performs a specific operation and passes its output to the next node in the sequence.
+
+Actions fall into two broad categories.
+
+**Integration actions** interact with external systems. These include HTTP nodes that call third-party APIs, nodes that send emails, and nodes that handle files.
+
+**Utility actions** process data within the workflow. These include custom code execution, data transformation, conditional branching, looping, and error handling.
+
+<Frame>
+  <img src="/images/concepts/actions-node-types.png" alt="Grid showing node categories: Integration nodes (HTTP, Send Email, File Handler) and Utility nodes (Custom Code, Data Mapper, Rule, Loop, Switch Case, Transform)" />
+</Frame>
+
+You connect these nodes on the Workflow Builder canvas to create the complete logic of your integration. The output of each node is accessible to all downstream nodes, allowing you to build complex data processing pipelines step by step.
+
+## Putting It Together
+
+A typical workflow combines a trigger with several actions to accomplish a specific integration task.
+
+**Example:** Sync new deals from your app to a customer's SAP system.
+
+1. **Event Trigger** receives a `Deal Created` event with deal data from your application.
+2. **Data Mapper** action maps your deal fields to SAP-compatible fields using the customer's field mapping.
+3. **HTTP** action sends the mapped data to the SAP Sales Order API.
+4. **Response** action returns the SAP response back to your application.
+
+Each of these steps is a node on the workflow canvas, connected in sequence.
+
+## What's Next
+
+- [Applications & Connectors](/v3/developer/getting-started/core-concepts/applications-connectors) — Learn about the third-party apps you can integrate with.
+- [Event Triggers](/v3/developer/workflows/triggers/event-triggers) — Deep dive into event-based triggers.
+- [Nodes Reference](/v3/developer/workflows/nodes/http) — Explore all available action nodes.

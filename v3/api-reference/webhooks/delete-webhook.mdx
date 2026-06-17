@@ -1,106 +1,68 @@
 ---
-title: 'Delete webhook'
+title: Delete Webhook
 api: delete /api/v2/public/webhook/:id
+description: Delete a webhook subscription.
 ---
 
-This API deletes a registered Refold [webhook](https://app.gocobalt.io/developer/webhooks). 
+Delete a webhook subscription. The response is the updated list of the remaining webhooks for your organization.
 
-## Request description
-#### Path Parameters
-<ParamField path="id" type="string" required>
-  Unique ID of the webhook to be deleted.
+## Authentication
+
+Webhooks are an org-level resource, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
 </ParamField>
 
-## Response description
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The webhook ID to delete.
+</ParamField>
+
+## Response
 
 <Tabs>
-  <Tab title="200">
-    <ResponseField name="is_enabled" type="boolean">
-     Whether the webhook is active or not.
-    </ResponseField>
-    <ResponseField name="webhook_events" type="array">
-  Webhook events subscribed.
-  </ResponseField>
-      <ResponseField name="created_At" type="string">
-     Timestamp of webhook creation.
-    </ResponseField>
-      <ResponseField name="webhook_url" type="string">
-     Webhook URL to listen to the events.
-    </ResponseField>
-        <ResponseField name="_id" type="string">
-     Unique ID of the webhook.
-    </ResponseField>
-    <ResponseField name="webhook_type" type="string">
-      The type of webhook. Accepted values are `default` and `slack`.
-    </ResponseField>
+  <Tab title="200 OK">
+    Returns the array of remaining webhooks after deletion.
   </Tab>
 
-
-  <Tab title="Error">
-    <ResponseField name="status_code" type="integer">
-    System generated status Code
-    </ResponseField>
-    <ResponseField name="http_error_type" type="string">
-    System generated error type
-    </ResponseField>
-    <ResponseField name="error_code" type="string">
-    Specific error code to identify the error
-    </ResponseField>
-    <ResponseField name="message" type="string">
-    Error message
-    </ResponseField>
-    <ResponseField name="request_id" type="string">
-    System generated request id
-    </ResponseField>
+  <Tab title="400 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
   </Tab>
 </Tabs>
 
 <ResponseExample>
-```JSON 200
+```json 200
 [
-    {
-        "is_enabled": true,
-        "webhook_events": [
-            "Connection Created",
-            "Connection Deleted",
-            "Workflow Completed",
-            "Workflow Errored",
-            "Connection Expired"
-        ],
-        "webhook_url": "https://webhook-test.com/558cf4700d31e6ded9b097ca09686439",
-        "_id": "66e58b8d19becbeeea0bd11a",
-        "createdAt": "2024-09-14T13:11:41.043Z",
-        "webhook_type": "default"
-    },
-    {
-        "is_enabled": false,
-        "webhook_events": [
-            "Connection Created",
-            "Connection Deleted"
-        ],
-        "webhook_url": "https://webhookurl.com/newwebhook",
-        "_id": "66e5963a51b0a208fecbca31",
-        "createdAt": "2024-09-14T13:57:14.398Z",
-        "webhook_type": "slack"
-    }
+  {
+    "_id": "69c4c8ece6c48f40c1d3ff42",
+    "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+    "environment": "test",
+    "is_enabled": false,
+    "webhook_events": ["Connection Created", "Workflow Completed"],
+    "webhook_url": "https://your-app.com/webhooks",
+    "webhook_type": "default",
+    "method": "POST"
+  }
 ]
 ```
-```JSON 401
+```json 400
 {
-    "status_code": 401,
-    "http_error_type": "UNAUTHORIZED",
-    "error_code": "SERVER_ERROR",
-    "message": "Invalid Credentials"
-    "request_id": "89bd1675-a826-46cb-9210-6cb2ae169f67"
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "RESOURCE_NOT_FOUND",
+  "message": "Webhook not found"
 }
 ```
-```JSON 500
-{
-    "status_code": 500,
-    "http_error_type": "INTERNAL_SERVER_ERROR",
-    "error_code": "SERVER_ERROR",
-    "message": "Request failed with status code 500",
-    "request_id": "1340603a-8797-43ed-ab76-dd8db37fd2e6"
-}
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/webhook/{id}" \
+  -H "x-api-key: YOUR_API_KEY"
 ```
-</ ResponseExample>
+</RequestExample>

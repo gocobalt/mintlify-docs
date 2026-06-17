@@ -1,0 +1,80 @@
+---
+title: "Session Tokens"
+description: "Secure, temporary access for end users in embedded flows"
+---
+
+# Session Tokens
+
+Session tokens provide secure, temporary access for end users in embedded flows.
+
+<CodeGroup>
+```javascript Generate Session Token
+// Generate session token for linked account
+const sessionToken = await cobalt.sessionTokens.create({
+  linked_account_id: 'user_123',
+  expires_in: 3600 // 1 hour
+});
+
+console.log('Session token:', sessionToken.token);
+```
+
+```python Generate Session Token
+# Generate session token for linked account
+session_token = cobalt.session_tokens.create(
+    linked_account_id='user_123',
+    expires_in=3600  # 1 hour
+)
+
+print(f'Session token: {session_token.token}')
+```
+</CodeGroup>
+
+## Embedded Authentication
+
+Use session tokens in embedded integration flows:
+
+<CodeGroup>
+```javascript React Component
+import { CobaltConnect } from '@cobalt-io/react';
+
+function IntegrationFlow({ sessionToken }) {
+  return (
+    <CobaltConnect
+      sessionToken={sessionToken}
+      onSuccess={(integration) => {
+        console.log('Integration connected:', integration);
+      }}
+      onError={(error) => {
+        console.error('Integration failed:', error);
+      }}
+    />
+  );
+}
+```
+
+```html HTML/JavaScript
+<script src="https://js.gocobalt.io/cobalt-connect.js"></script>
+
+<div id="cobalt-connect"></div>
+
+<script>
+  CobaltConnect.init({
+    element: '#cobalt-connect',
+    sessionToken: 'your_session_token',
+    onSuccess: function(integration) {
+      console.log('Integration connected:', integration);
+    },
+    onError: function(error) {
+      console.error('Integration failed:', error);
+    }
+  });
+</script>
+```
+</CodeGroup>
+
+## Session Token Security
+
+- **Short Expiration**: Keep session tokens short-lived (1-24 hours)
+- **Secure Transmission**: Always use HTTPS for token transmission
+- **Single Use**: Consider implementing single-use tokens for sensitive operations
+- **IP Validation**: Optionally validate IP addresses for additional security

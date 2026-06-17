@@ -1,0 +1,134 @@
+---
+title: "Users"
+description: "Invite teammates to your workspace and manage who has access."
+---
+
+The **Users** page lists everyone on your workspace and the role each
+person holds. Workspace admins use it to invite new teammates, change a
+teammate's role, and remove access when someone leaves.
+
+Open it from **Settings > Organization > Users**.
+
+<Info>
+  You need the **Admin** role to invite, manage, or remove users. Editors can
+  view the page but can't change membership.
+</Info>
+
+## Invite a teammate
+
+<Steps>
+  <Step title="Open Users">
+    Go to **Settings > Organization > Users**.
+  </Step>
+  <Step title="Click Invite">
+    Click **Invite** in the top-right corner. A panel slides in for the
+    invitee's details.
+  </Step>
+  <Step title="Enter their email and name">
+    **Email** is required and is where Refold sends the invitation. **Name**
+    is optional and seeds the invitee's profile.
+  </Step>
+  <Step title="Send the invite">
+    Click **Invite**. Refold emails the invitee a sign-in link and adds them
+    to the user list with the **Editor** role.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the Invite panel with Email and Name fields,
+    showing the Invite button. */}
+<Frame caption="Inviting a teammate">
+  <img src="/images/PLACEHOLDER.png" alt="Invite user panel with email and name fields" />
+</Frame>
+
+Every user has a role that, through role-based access control (RBAC),
+determines what they can do across the organization. To see each role and
+the permissions it grants, see [Roles](/v3/developer/configure/settings/organization/roles).
+
+## Reset a password
+
+If a teammate is locked out, an admin can start a password reset from the
+user's row. The teammate then completes it from their own inbox.
+
+<Steps>
+  <Step title="Start the reset">
+    Select **Reset password** from the user's row, or have the teammate click
+    **Forgot password** on the sign-in screen and enter their email.
+  </Step>
+  <Step title="Enter the code and a new password">
+    Refold emails a 6-digit code that's valid for 10 minutes. The teammate
+    enters the code and a new password, which must differ from their current
+    one.
+  </Step>
+  <Step title="Done">
+    On success, the teammate is signed in on this device and signed out of all
+    other devices, and Refold sends a confirmation email.
+  </Step>
+</Steps>
+
+<Note>
+  Up to 3 reset requests are allowed per email each hour.
+</Note>
+
+## Change email
+
+Changing a user's email uses dual verification: the change is confirmed from
+both the old and the new address before it takes effect.
+
+<Steps>
+  <Step title="Enter the new email">
+    Open the user's settings and enter the new email address.
+  </Step>
+  <Step title="Confirm from the old address">
+    Refold sends a code to the **old** email. Enter it to confirm.
+  </Step>
+  <Step title="Confirm from the new address">
+    Refold then sends a code to the **new** email. Enter it to confirm.
+  </Step>
+  <Step title="Done">
+    With both codes confirmed, the email is updated, all sessions are signed
+    out, and the old address is notified of the change.
+  </Step>
+</Steps>
+
+<Warning>
+  If a code expires or is entered incorrectly 3 times, the change is cancelled
+  and you'll need to start over.
+</Warning>
+
+## Delete a user
+
+Only workspace admins can delete a user — there's no self-serve
+deactivation. Deletion is reversible for 30 days, so it's safe to undo if
+done by mistake.
+
+<Steps>
+  <Step title="Mark the user for deletion">
+    From the admin console, find the user in the list and mark them for
+    deletion. Their sessions are signed out immediately and they can no longer
+    log in.
+  </Step>
+  <Step title="The user is tagged as deleted">
+    The user stays in the workspace list with a **Deleted** tag, and appears as
+    "Name (deleted)" in audit logs and anywhere else their name is shown.
+  </Step>
+  <Step title="Restore within 30 days (optional)">
+    Within 30 days, an admin can restore the user. Access is regained
+    immediately on restore.
+  </Step>
+</Steps>
+
+<Note>
+  After 30 days the user is permanently deleted. Audit log entries are
+  retained and continue to point to the deleted user's name.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Roles" href="/v3/developer/configure/settings/organization/roles">
+    Read the full role and permission matrix.
+  </Card>
+  <Card title="Policy" href="/v3/developer/configure/settings/organization/policy">
+    Set password, session, and access policies for the workspace.
+  </Card>
+</CardGroup>
