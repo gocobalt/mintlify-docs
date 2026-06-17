@@ -23,7 +23,7 @@ Select Hubspot from `Apps` and copy the Callback URL provided in the app setting
 <img height="200" src="/images/Hubspot/hubspot-dev-app-setting.png" alt="Setting up hubspot developer app"/>
 
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -32,16 +32,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Hubspot/Hubspot_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Hubspot Developer account](https://developers.hubspot.com/) dashboard and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Hubspot Developer account](https://developers.hubspot.com/) dashboard and update the scopes as added on Refold.
 
-Go to  `Manage Apps` > `Basic info` > `Auth` > `Auth settings` > `Scopes`, and add the scopes as added in Cobalt.
+Go to  `Manage Apps` > `Basic info` > `Auth` > `Auth settings` > `Scopes`, and add the scopes as added in Refold.
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -49,12 +49,12 @@ identical to the ones selected in the platform.
 </Warning>
 
 #### Hubspot Single Webhook URL
-If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Hubspot, you'd need to subscribe to Hubspot's Webhook. Cobalt provides
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Hubspot, you'd need to subscribe to Hubspot's Webhook. Refold provides
 a single webhook URL to manage such event triggers for all your customers.
 
 **To setup Hubspot webhook subscription:**
 
-1. Select **Hubspot** from the application list in **Cobalt**, and select `Settings`.
+1. Select **Hubspot** from the application list in **Refold**, and select `Settings`.
 2. Copy the `Single Webhook Url`.
 3. Go to `Manage Apps` > `Features` > `Webhooks` in your [Hubspot Developer Account dashboard](https://developers.hubspot.com/).
 4. Paste the `Single Webhook Url` inside the "Target URL" section.
