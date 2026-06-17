@@ -1,0 +1,39 @@
+---
+title: "January 2026"
+description: "Platform updates, connector additions, and improvements shipped in January 2026."
+rss: true
+---
+
+<Note>
+January 2026 predates Refold's unified (BOM) versioning, which began in February 2026. This entry covers the month's releases under the earlier monthly scheme and is labelled `2026.01` for the period it covers.
+</Note>
+
+<Update label="January 2026" description="2026.01 · Incremental sync, workflow webhooks & Temenos">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Incremental sync for connector data, workflow event webhooks, a new file-transfer action, the Temenos connector, and a round of execution-engine reliability improvements.**
+
+**New Features**
+
+- **Incremental Sync**: Connectors can now retrieve only new or changed records through polling-based incremental sync, reducing load and keeping large datasets fresh.
+- **Workflow Event Webhooks**: Workflows emit execution lifecycle events to webhooks, so external systems can react to runs as they happen.
+- **File Transfer Action**: A new file-handler action moves files directly from a source to a destination within a workflow.
+
+**Improvements**
+
+- More resilient workflow execution: distributed locks and caching, leader-consistent reads, and improved restart and recovery behavior in the execution engine.
+- Environment variable support extended within the execution engine.
+- Better retry handling, including skip-on-error and error handling across multiple branches.
+- Ledger entries now filter correctly by config ID for workflows executed within a configuration.
+- Fixed linked accounts occasionally not being found during workflow execution.
+
+**Integration Updates**
+
+- Added the **Temenos** connector, including actions and base-URL retrieval.
+- Fixed **NetSuite** authentication issues.
+- Fixed **HaloITSM** authentication issues.
+- Improved **Amazon S3** reliability.
+- Hosted portal: payload and state fixes for Streamlit-based configuration pages.
+
+</Update>
