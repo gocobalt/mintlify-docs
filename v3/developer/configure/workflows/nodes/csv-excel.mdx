@@ -1,12 +1,12 @@
 ---
-title: "Data Converter Node"
+title: "Data Converter node"
 description: "Convert, merge, and process files between CSV, JSON, Excel, EDI, and cXML formats with data transformation capabilities"
 sidebarTitle: "Data Converter"
 ---
 
-The Data Converter Node provides comprehensive file processing capabilities, allowing you to convert between different data formats (CSV, JSON, Excel, X12 EDI, cXML), merge multiple files, and generate new files from workflow data. All processed files are hosted on publicly accessible URLs for easy integration with external systems.
+The Data Converter node provides comprehensive file processing capabilities, allowing you to convert between different data formats (CSV, JSON, Excel, X12 EDI, cXML), merge multiple files, and generate new files from workflow data. All processed files are hosted on publicly accessible URLs for easy integration with external systems.
 
-## When to Use
+## When to use
 
 - Convert SAP or NetSuite exports from CSV to JSON for API processing
 - Generate Excel reports from JSON data with formula support
@@ -216,7 +216,7 @@ The Data Converter Node provides comprehensive file processing capabilities, all
   </Accordion>
 </AccordionGroup>
 
-## Common Parameters
+## Common parameters
 
 The following parameters appear across multiple actions and control file storage settings.
 
@@ -289,7 +289,7 @@ The following parameters appear across multiple actions and control file storage
   </Accordion>
 </AccordionGroup>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Add the node">
@@ -481,11 +481,21 @@ The following parameters appear across multiple actions and control file storage
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use a Custom Code Node after Data Converter to inspect parsed data structure before using it in subsequent workflow steps.</Tip>
+<Tip>Use a Custom Code node after Data Converter to inspect parsed data structure before using it in subsequent workflow steps.</Tip>
 
-## What's Next
+## Next steps
 
-- [HTTP Node](/developer-guide/workflows/nodes/http) to send generated file URLs to external systems
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for advanced file data processing
-- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over parsed CSV data
-- [Response Node](/developer-guide/workflows/nodes/response) to return file URLs in workflow responses
+<CardGroup cols={2}>
+  <Card title="HTTP node" icon="globe" href="/v3/developer/configure/workflows/nodes/http">
+    Send generated file URLs to external systems.
+  </Card>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Process file data with advanced logic.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Iterate over parsed CSV data.
+  </Card>
+  <Card title="Response node" icon="reply" href="/v3/developer/configure/workflows/nodes/response">
+    Return file URLs in workflow responses.
+  </Card>
+</CardGroup>

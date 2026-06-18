@@ -2,7 +2,7 @@
 title: Setup
 description: Access to your users' Salesforce Marketing Cloud records through OAuth.
 ---
-To setup your Salesforce Marketing Cloud app in Cobalt for OAuth, you will need the following credentials from your Salesforce Marketing Cloud account:
+To setup your Salesforce Marketing Cloud app in Refold for OAuth, you will need the following credentials from your Salesforce Marketing Cloud account:
 - Client ID
 - Client Secret
 - Scopes
@@ -27,12 +27,12 @@ To create a Salesforce Marketing Cloud app and acquire the above mentioned crede
 <img height="200" src="/images/Salesforce_mc/sfmc_navigation.png" alt="Navigation for App setup"/>
 3. Navigate to `Installed packages` under **Apps** in the left side menu and click on `New` button.
 4. Enter a unique Name for your application and click on `Save`.
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Salesforce Marketing Cloud` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Salesforce Marketing Cloud` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. In your app on Salesforce, click on `Add Component` button > Choose `API integration`> Click on `Next` > Select **Web App** as `Integration Type` and click on `Next`
-7. Paste the Callback Url that you copied from Cobalt under `Redirect URIs` and select the **mandatory scope** i.e offline_access in the **Scope** section, and click on the `Save` button.
+7. Paste the Callback Url that you copied from Refold under `Redirect URIs` and select the **mandatory scope** i.e offline_access in the **Scope** section, and click on the `Save` button.
 <img height="200" src="/images/Salesforce_mc/sfmc_config.png" alt="Setting up Developer app"/>
 <Tip>
-You can extend the lifetime of your Refresh token as required so that expired access token can be refreshed by Cobalt automatically for a longer period of time for the user.
+You can extend the lifetime of your Refresh token as required so that expired access token can be refreshed by Refold automatically for a longer period of time for the user.
 </Tip>
 
 8. Copy the **Client Secret** displayed on the screen and click on `Finish`.
@@ -43,7 +43,7 @@ Save the Client Secret with you as it will be displayed only once.
 9. Copy the `Client ID` displayed under the **API Integration** section.
 <img height="200" src="/images/Salesforce_mc/sfmc_credentials_2.png" alt="Getting Client ID"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -52,16 +52,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Salesforce_mc/sfmc_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your Salesforce Marketing Cloud account and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your Salesforce Marketing Cloud account and update the scopes as added on Refold.
 
-Select the OAuth App created for Cobalt > Click on `Edit` under **API Integration** section > Select the scopes as added in Cobalt > Click on `Save`. 
+Select the OAuth App created for Refold > Click on `Edit` under **API Integration** section > Select the scopes as added in Refold > Click on `Save`. 
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -70,7 +70,7 @@ identical to the ones selected in the platform.
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Salesforce Marketing Cloud actions and triggers. Following are the set of Salesforce Marketing Cloud actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

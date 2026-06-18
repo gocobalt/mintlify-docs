@@ -1,12 +1,12 @@
 ---
-title: "Transform by JSONata Node"
+title: "Transform by JSONata node"
 description: "Transform and query JSON objects using JSONata expressions for advanced data manipulation and restructuring"
 sidebarTitle: "Transform by JSONata"
 ---
 
-The Transform by JSONata Node enables advanced JSON data transformation and querying using JSONata expressions. It allows you to restructure, extract, filter, and format data from complex JSON objects or arrays, making it ideal for preparing data for external APIs or internal processing.
+The Transform by JSONata node enables advanced JSON data transformation and querying using JSONata expressions. It allows you to restructure, extract, filter, and format data from complex JSON objects or arrays, making it ideal for preparing data for external APIs or internal processing.
 
-## When to Use
+## When to use
 
 - Simplify complex objects from SAP or NetSuite into flat structures
 - Extract specific fields from nested API responses
@@ -17,7 +17,7 @@ The Transform by JSONata Node enables advanced JSON data transformation and quer
 
 <Tip>To learn about JSONata expressions, refer to [jsonata.org](https://jsonata.org/).</Tip>
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Input" type="object" required>
   The JSON object or array to transform. Can reference variables from previous nodes or DataSlots, or contain static JSON. Reference its top-level keys directly in the Query.
@@ -50,7 +50,7 @@ $sum(Account.Order.Product.(Price * Quantity))
 
 ## Output
 
-The Transform Node outputs the result of the JSONata expression applied to the input data. The result is returned directly — there is no wrapper key.
+The Transform node outputs the result of the JSONata expression applied to the input data. The result is returned directly — there is no wrapper key.
 ```json
 {
   "vendor_name": "Acme Corporation",
@@ -59,7 +59,7 @@ The Transform Node outputs the result of the JSONata expression applied to the i
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Add the node">
@@ -76,7 +76,7 @@ The Transform Node outputs the result of the JSONata expression applied to the i
   </Step>
 </Steps>
 
-## JSONata Reference
+## JSONata reference
 
 <AccordionGroup>
   <Accordion title="Data Access">
@@ -353,7 +353,7 @@ The Transform Node outputs the result of the JSONata expression applied to the i
 
 <AccordionGroup>
   <Accordion title="Empty or Null Output">
-    **Problem:** Transform Node returns empty response
+    **Problem:** Transform node returns empty response
 
     | Cause | Solution |
     |-------|----------|
@@ -405,11 +405,21 @@ The Transform Node outputs the result of the JSONata expression applied to the i
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use the [JSONata online playground](https://try.jsonata.org/) to test and debug your expressions before adding them to the Transform Node.</Tip>
+<Tip>Use the [JSONata online playground](https://try.jsonata.org/) to test and debug your expressions before adding them to the Transform node.</Tip>
 
-## What's Next
+## Next steps
 
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing with JavaScript or Python
-- [Data Mapper Node](/developer-guide/workflows/nodes/data-mapper) for simple field name transformations
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional transformation logic
-- [Loop Node](/developer-guide/workflows/nodes/loop) to apply transformations across arrays
+<CardGroup cols={2}>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Process complex data with JavaScript or Python.
+  </Card>
+  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/developer/configure/workflows/nodes/data-mapper">
+    Apply simple field name transformations.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional transformation logic.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Apply transformations across arrays.
+  </Card>
+</CardGroup>

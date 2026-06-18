@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Azure Security Centre app for OAuth.
 ---
-To setup your Azure Security Centre in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+To setup your Azure Security Centre in Refold for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
 - Client ID
 - Client Secret
 - Scopes
@@ -29,7 +29,7 @@ To create a Azure Security Centre app and acquire the above mentioned credential
 <img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
 3. Navigate to `Overview` in the side menu > Click on `+Add` > Select `App Registration`.
 4. Enter the App **Name** for your application and select `Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)` under **Supported Account Types**.
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Azure Security Centre` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Azure Security Centre` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. Under the **Redirect URI** section, select **Platform** as `Web`, paste the **Callback Url** as the URL and click `Register`. 
 <img height="200" src="/images/AzureSecurityCenter/entraWaala.png" alt="App Registration"/>
 <Info>
@@ -49,7 +49,7 @@ Select your Application > Select **Authentication** in side menu > Under **Platf
 11. Navigate to `Overview` in the side menu > `Essentials` tab > Copy the **Client ID** under `Application (client) ID` and **Tenant ID** under `Directory (tenant) ID`.
 <img height="200" src="/images/Ms365/ms365_id.png" alt="Getting Client ID"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -58,16 +58,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/AzureSecurityCenter/scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Refold.
 
-Select the OAuth App created for Cobalt and follow **Step 7** and **8** [above](https://docs.gocobalt.io/resources/integration-providers/azure_security_center#creating-an-app-in-microsoft-azure).
+Select the OAuth App created for Refold and follow **Step 7** and **8** [above](https://docs.gocobalt.io/resources/integration-providers/azure_security_center#creating-an-app-in-microsoft-azure).
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -76,7 +76,7 @@ identical to the ones selected in the platform.
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Azure Security Center actions and triggers. Following are the set of Azure Security Center actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

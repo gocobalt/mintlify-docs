@@ -1,12 +1,12 @@
 ---
-title: "HTTP Node"
+title: "HTTP node"
 description: "Make HTTP requests to external APIs with configurable methods, headers, authentication, and pagination support"
 sidebarTitle: "HTTP"
 ---
 
-The HTTP Node enables you to make HTTP requests to external REST APIs and webhook endpoints during workflow execution. It supports all standard HTTP methods, custom headers, query parameters, request bodies, and built-in pagination handling for APIs that return paginated responses.
+The HTTP node enables you to make HTTP requests to external REST APIs and webhook endpoints during workflow execution. It supports all standard HTTP methods, custom headers, query parameters, request bodies, and built-in pagination handling for APIs that return paginated responses.
 
-## When to Use
+## When to use
 
 - Call external APIs to fetch or send data during workflow execution
 - Integrate with third-party services that expose REST endpoints
@@ -14,11 +14,11 @@ The HTTP Node enables you to make HTTP requests to external REST APIs and webhoo
 - Retrieve additional data from microservices based on workflow context
 - Interact with enterprise systems (SAP, NetSuite, Tipalti) via their REST APIs
 
-<Info>For file transfers over SFTP or large file operations, use the [File Handler Node](/developer-guide/workflows/nodes/file-handler) instead.</Info>
+<Info>For file transfers over SFTP or large file operations, use the [File Handler node](/v3/developer/configure/workflows/nodes/file-handler) instead.</Info>
 
-## Input Parameters
+## Input parameters
 
-### Request Configuration
+### Request configuration
 
 <ParamField path="Select HTTP Method" type="dropdown" required>
   HTTP method for the request. Options: `GET`, `POST`, `PUT`, `DELETE`, `PATCH`.
@@ -32,7 +32,7 @@ The HTTP Node enables you to make HTTP requests to external REST APIs and webhoo
   The API path appended to the base URL. Supports dynamic variables. Example: `/v1/users` or `/vendors/{{vendor_id}}`
 </ParamField>
 
-### Query Params
+### Query params
 
 Add query parameters as key-value pairs. Click the **+** button to add additional parameters.
 
@@ -153,11 +153,11 @@ The node returns the complete API response. The output structure depends on the 
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the HTTP Node">
-    In the workflow editor, click **Add Node** and select **HTTP Node** from the Utility Nodes section.
+  <Step title="Add the HTTP node">
+    In the workflow editor, click **Add Node** and select **HTTP Node** from the utility nodes section.
   </Step>
   
   <Step title="Select HTTP method">
@@ -389,11 +389,21 @@ The node returns the complete API response. The output structure depends on the 
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) after the HTTP Node to inspect and transform response data before passing it to subsequent nodes.</Tip>
+<Tip>Use a [Custom Code node](/v3/developer/configure/workflows/nodes/custom-code) after the HTTP node to inspect and transform response data before passing it to subsequent nodes.</Tip>
 
-## What's Next
+## Next steps
 
-- [Transform Node](/developer-guide/workflows/nodes/transform) to restructure API response data using JSONata
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on HTTP response status
-- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over paginated results
-- [Data Mapper Node](/developer-guide/workflows/nodes/data-mapper) to map API response fields to your internal schema
+<CardGroup cols={2}>
+  <Card title="Transform node" icon="shuffle" href="/v3/developer/configure/workflows/nodes/transform">
+    Restructure API response data using JSONata.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic based on HTTP response status.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Iterate over paginated results.
+  </Card>
+  <Card title="Data Mapper node" icon="diagram-project" href="/v3/developer/configure/workflows/nodes/data-mapper">
+    Map API response fields to your internal schema.
+  </Card>
+</CardGroup>

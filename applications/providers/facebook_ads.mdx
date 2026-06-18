@@ -3,7 +3,7 @@ title: Setup
 description: Connect to your Facebook Ads app for OAuth.
 ---
 
-To setup your Facebook Ads app in Cobalt for OAuth, you will need the following credentials from your [Facebook Developer App Settings](https://developers.facebook.com/apps/):
+To setup your Facebook Ads app in Refold for OAuth, you will need the following credentials from your [Facebook Developer App Settings](https://developers.facebook.com/apps/):
 - Client ID
 - Client Secret 
 - Scopes
@@ -34,14 +34,14 @@ To create a Facebook Ads app and acquire the above mentioned credentials, please
 3. Select `Other` for **use-case** > Click `Next` > Select `Business` as **App-type** and click on `Next`.
 <Warning> App Type cannot be changed after the app has been created.</Warning>
 4. Enter the **App Name** for your application and click on `Create App`.
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Facebook Ads` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Facebook Ads` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. Click on `Add Product` in the left menu > Click on `Set Up` under **Facebook Login for Business** > Paste the Callback Url under **Valid OAuth Redirect URIs** and click on `Save changes`.
 <img height="200" src="/images/fb_ads/fb_config.png" alt="Setting up Facebook Ads Developer app"/>
 
 7. Go to `Basic` under the **App Settings** section in the left menu and copy the **App ID**(Client ID) and **App Secret**(Client Secret).
 <img height="200" src="/images/fb_ads/fb_credentials.png" alt="Getting Credentials"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -50,12 +50,12 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Facebook Ads Single Webhook URL
-If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Facebook Ads, you'd need to subscribe to Facebook Ads' Webhook. Cobalt provides
+If you wish to create an orchestration where a workflow is being triggered when some operation occurs in Facebook Ads, you'd need to subscribe to Facebook Ads' Webhook. Refold provides
 a single webhook URL to manage such event triggers for all your customers.
 
 **To setup Facebook Ads webhook subscription:**
 
-1. Select **Facebook Ads** from the application list in **Cobalt**, and select `Settings`.
+1. Select **Facebook Ads** from the application list in **Refold**, and select `Settings`.
 2. Copy the `Single Webhook Url`.
 3. Go to OAuth app of Facebook Ads > Click on `Add Product` in the left menu > Click on `Set Up` under **Webhooks**. 
 4. Select **Page** object from drop-down and click `Subscribe to this object`. Paste the **Single Webhook URL** under `Callback URL` and the **Verify token** as `cobalt_verify_token`. Click on `Verify and save`.
@@ -87,7 +87,7 @@ Once approved, you can change the **Mode** of the app to `Live` by using the Tog
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Facebook Ads actions and triggers. Following are the set of Facebook Ads actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

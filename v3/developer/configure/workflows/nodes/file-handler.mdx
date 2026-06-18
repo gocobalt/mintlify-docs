@@ -1,12 +1,12 @@
 ---
-title: "File Handler Node"
+title: "File Handler node"
 description: "Transfer, read, delete, and manage files across SFTP servers and cloud storage buckets"
 sidebarTitle: "File Handler"
 ---
 
-The File Handler Node performs file operations across SFTP servers and cloud storage buckets (AWS S3, GCP, MinIO). Use it to transfer files between systems, read file contents, manage files on remote servers, and extract compressed archives within your workflows.
+The File Handler node performs file operations across SFTP servers and cloud storage buckets (AWS S3, GCP, MinIO). Use it to transfer files between systems, read file contents, manage files on remote servers, and extract compressed archives within your workflows.
 
-## When to Use
+## When to use
 
 - Transfer files from SFTP servers to cloud storage buckets
 - Move files between different SFTP servers
@@ -15,9 +15,9 @@ The File Handler Node performs file operations across SFTP servers and cloud sto
 - Extract compressed archives (zip, tar, gz, tgz) on remote servers
 - List files in SFTP directories for batch processing
 
-<Info>This node is recommended for files **greater than 5MB**. For smaller files, use the [CSV/Excel Node](/developer-guide/workflows/nodes/csv-excel) instead.</Info>
+<Info>This node is recommended for files **greater than 5MB**. For smaller files, use the [CSV/Excel node](/v3/developer/configure/workflows/nodes/csv-excel) instead.</Info>
 
-## Common Parameters
+## Common parameters
 
 Several actions share common SFTP connection parameters. These are documented once here for reference.
 
@@ -413,11 +413,11 @@ Several actions share common SFTP connection parameters. These are documented on
   </Accordion>
 </AccordionGroup>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the File Handler Node">
-    In the workflow editor, click **Add Node** and select **File Handler** from the Utility Nodes section.
+  <Step title="Add the File Handler node">
+    In the workflow editor, click **Add Node** and select **File Handler** from the utility nodes section.
   </Step>
   
   <Step title="Select an action">
@@ -495,11 +495,11 @@ Several actions share common SFTP connection parameters. These are documented on
     | Password | `{{env.TIPALTI_SFTP_PASSWORD}}` |
     | Folder Path | `/outbound/payments/` |
 
-    **Use Case:** Use with a Loop Node to iterate through all payment files, read each one, process the payments, then delete the processed files.
+    **Use Case:** Use with a Loop node to iterate through all payment files, read each one, process the payments, then delete the processed files.
 
     **Follow-up Workflow:**
     1. List files in SFTP folder → Get file list
-    2. Loop Node → Iterate through files
+    2. Loop node → Iterate through files
     3. Read file from SFTP → Get file content
     4. Process payments → Your business logic
     5. Delete file from SFTP → Clean up processed files
@@ -606,9 +606,19 @@ Several actions share common SFTP connection parameters. These are documented on
 
 <Tip>Store SFTP credentials securely as environment variables under [**Organization > Settings > Environment Variable**](/v3/developer/configure/settings/organization/environment-variables) rather than hardcoding them in workflows.</Tip>
 
-## What's Next
+## Next steps
 
-- [Loop Node](/developer-guide/workflows/nodes/loop) to process multiple files from a directory listing
-- [Data Converter Node](/developer-guide/workflows/nodes/data-converter) to parse CSV/Excel files after reading
-- [CSV/Excel Node](/developer-guide/workflows/nodes/csv-excel) for files smaller than 5MB
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on file operations
+<CardGroup cols={2}>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Process multiple files from a directory listing.
+  </Card>
+  <Card title="Data Converter node" icon="file-import" href="/v3/developer/configure/workflows/nodes/csv-excel">
+    Parse CSV/Excel files after reading.
+  </Card>
+  <Card title="CSV/Excel node" icon="file-csv" href="/v3/developer/configure/workflows/nodes/csv-excel">
+    Handle files smaller than 5MB.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic based on file operations.
+  </Card>
+</CardGroup>

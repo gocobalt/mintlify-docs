@@ -1,12 +1,12 @@
 ---
-title: "Sub Flows Node"
+title: "Sub Flows node"
 description: "Execute another workflow within your current workflow to create modular, reusable automation components"
 sidebarTitle: "Sub Flows"
 ---
 
-The Sub Flows Node executes another workflow from within your current workflow using the Workflow API. This enables you to build modular, reusable workflow components that can be shared across multiple integrations, reducing duplication and simplifying maintenance of complex automation logic.
+The Sub Flows node executes another workflow from within your current workflow using the Workflow API. This enables you to build modular, reusable workflow components that can be shared across multiple integrations, reducing duplication and simplifying maintenance of complex automation logic.
 
-## When to Use
+## When to use
 
 - Create reusable utility workflows for common operations like data transformation or validation
 - Build standardized error handling or notification workflows used across integrations
@@ -16,7 +16,7 @@ The Sub Flows Node executes another workflow from within your current workflow u
 
 <Warning>When using recursive sub flows (a workflow calling itself), ensure you include a break condition to prevent infinite loops. Refold enforces a limit of 1000 recursions as a safeguard.</Warning>
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Select Workflow" type="dropdown" required>
   Choose the workflow to execute as a sub flow. Available options include workflows from the current application and Internal Conductor workflows.
@@ -30,7 +30,7 @@ The Sub Flows Node executes another workflow from within your current workflow u
   When Sync Execution is disabled, enabling this option makes the parent workflow wait for the sub flow to complete before continuing. The response is returned once the sub flow finishes. Default: `false`
 </ParamField>
 
-### Execution Modes
+### Execution modes
 
 | Mode | Sync Execution | Wait for Completion | Behavior |
 |------|----------------|---------------------|----------|
@@ -38,7 +38,7 @@ The Sub Flows Node executes another workflow from within your current workflow u
 | Async with Wait | Off | On | Waits for completion, returns execution ID and response. |
 | Synchronous | On | N/A | Waits for completion, returns execution ID and full response. |
 
-<Info>Sub flows are triggered via Workflow API. The sub flow must have **API Call** configured as its trigger in the Start Node, and return data through a Response Node.</Info>
+<Info>Sub flows are triggered via Workflow API. The sub flow must have **API Call** configured as its trigger in the Start node, and return data through a Response node.</Info>
 
 ## Output
 
@@ -85,7 +85,7 @@ The output structure depends on the execution mode configured.
 
 ## Creating a Sub Flow
 
-Before using the Sub Flows Node, you need to create a workflow designed to be called as a sub flow.
+Before using the Sub Flows node, you need to create a workflow designed to be called as a sub flow.
 
 <Steps>
   <Step title="Create the workflow">
@@ -93,7 +93,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
   </Step>
   
   <Step title="Configure API Call trigger">
-    In the **Start Node**, select **API Call** as the trigger. Define the payload structure that the sub flow expects to receive.
+    In the **Start node**, select **API Call** as the trigger. Define the payload structure that the sub flow expects to receive.
   </Step>
   
   <Step title="Build your logic">
@@ -101,7 +101,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
   </Step>
   
   <Step title="Return the response">
-    Add a **Response Node** at the end of the workflow to return data to the parent workflow. This is required for the parent workflow to access the sub flow's results.
+    Add a **Response node** at the end of the workflow to return data to the parent workflow. This is required for the parent workflow to access the sub flow's results.
   </Step>
   
   <Step title="Publish the workflow">
@@ -109,13 +109,13 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
   </Step>
 </Steps>
 
-<Note>Sub flows work via Workflow API calls. The data you want to use in the parent workflow must be returned through a Response Node in the sub flow.</Note>
+<Note>Sub flows work via Workflow API calls. The data you want to use in the parent workflow must be returned through a Response node in the sub flow.</Note>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Sub Flows Node">
-    In the workflow editor, click **Add Node** and select **Sub Flows** from the Utility Nodes section.
+  <Step title="Add the Sub Flows node">
+    In the workflow editor, click **Add Node** and select **Sub Flows** from the utility nodes section.
   </Step>
   
   <Step title="Select the workflow">
@@ -139,14 +139,14 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 
     **Sub Flow Configuration (Internal Conductor):**
 
-    Start Node Payload:
+    Start node Payload:
 ```json
     {
       "full_name": ""
     }
 ```
 
-    Custom Code Node:
+    Custom Code node:
 ```javascript
     const fullName = input.full_name || "";
     const parts = fullName.trim().split(" ");
@@ -178,7 +178,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 
     **Sub Flow Configuration (Internal Conductor):**
 
-    Start Node Payload:
+    Start node Payload:
 ```json
     {
       "workflow_name": "",
@@ -189,10 +189,10 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 ```
 
     The sub flow contains:
-    1. **Custom Code Node** - Format error details
-    2. **Send Email Node** - Notify operations team
-    3. **HTTP Node** - Post to Slack webhook
-    4. **Response Node** - Confirm notification sent
+    1. **Custom Code node** - Format error details
+    2. **Send Email node** - Notify operations team
+    3. **HTTP node** - Post to Slack webhook
+    4. **Response node** - Confirm notification sent
 
     **Parent Workflow Usage:**
 
@@ -223,7 +223,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     | Select Workflow | `Tax ID Validator` |
     | Sync Execution | Enabled |
 
-    **Step 2 - Rule Node (Check Tax Validation):**
+    **Step 2 - Rule node (Check Tax Validation):**
     Condition: `{{tax_validator.body.return_value.is_valid}}` equals `true`
 
     **Step 3 - Bank Verification (on success branch):**
@@ -240,7 +240,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 
     **Sub Flow Configuration:**
 
-    Start Node Payload:
+    Start node Payload:
 ```json
     {
       "parent_id": "",
@@ -251,14 +251,14 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 
     **Workflow Logic:**
 
-    1. **HTTP Node** - Fetch children of current parent
-    2. **Rule Node** - Check if depth < max_depth AND has children
-    3. **Loop Node** (on true branch) - For each child:
-       - **Sub Flows Node** - Call self with child ID and depth + 1
-    4. **Custom Code Node** - Aggregate results
-    5. **Response Node** - Return processed hierarchy
+    1. **HTTP node** - Fetch children of current parent
+    2. **Rule node** - Check if depth < max_depth AND has children
+    3. **Loop node** (on true branch) - For each child:
+       - **Sub Flows node** - Call self with child ID and depth + 1
+    4. **Custom Code node** - Aggregate results
+    5. **Response node** - Return processed hierarchy
 
-    **Sub Flows Node Configuration (inside Loop):**
+    **Sub Flows node Configuration (inside Loop):**
 
     | Field | Value |
     |-------|-------|
@@ -276,7 +276,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     | Problem | Solution |
     |---------|----------|
     | Workflow not found | Verify the selected workflow exists and is published. Check if it was deleted or renamed. |
-    | Sub flow not triggered | Ensure the sub flow has **API Call** configured as its trigger in the Start Node. |
+    | Sub flow not triggered | Ensure the sub flow has **API Call** configured as its trigger in the Start node. |
     | Permission denied | Verify the workflow is accessible from the current application or is an Internal Conductor workflow. |
   </Accordion>
 
@@ -284,7 +284,7 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
     | Problem | Solution |
     |---------|----------|
     | No return_value in response | Enable **Sync Execution** or **Wait for completion** to receive the sub flow's response. |
-    | Empty return_value | Ensure the sub flow includes a **Response Node** that returns the expected data. |
+    | Empty return_value | Ensure the sub flow includes a **Response node** that returns the expected data. |
     | Only execution_id returned | With async execution (Sync Execution: Off), only the execution ID is returned. Enable sync mode or use the Response API to fetch results later. |
   </Accordion>
 
@@ -299,9 +299,19 @@ Before using the Sub Flows Node, you need to create a workflow designed to be ca
 
 <Tip>Use Internal Conductor workflows for sub flows that need to be shared across multiple applications. Application-specific workflows can only be used as sub flows within that application.</Tip>
 
-## What's Next
+## Next steps
 
-- [Workflow API](/developer-guide/workflows/workflow-api) to understand how sub flows are triggered programmatically
-- [Response Node](/developer-guide/workflows/nodes/response) to configure what data sub flows return
-- [Internal Functions](/developer-guide/advanced/internal-functions) for simpler reusable code without full workflows
-- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over results from sub flows
+<CardGroup cols={2}>
+  <Card title="Workflow API" icon="code" href="/v3/api-reference/workflows/execute-workflow">
+    Understand how sub flows are triggered programmatically.
+  </Card>
+  <Card title="Response node" icon="reply" href="/v3/developer/configure/workflows/nodes/response">
+    Configure what data sub flows return.
+  </Card>
+  <Card title="Internal Functions" icon="function" href="/v3/developer/advanced/internal-functions">
+    Reuse simpler code without full workflows.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Iterate over results from sub flows.
+  </Card>
+</CardGroup>

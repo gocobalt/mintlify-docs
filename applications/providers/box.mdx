@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Box app for OAuth
 ---
-To setup your Box app in Cobalt for OAuth, you will need the following credentials from your [Box Developer account](https://developer.box.com/):
+To setup your Box app in Refold for OAuth, you will need the following credentials from your [Box Developer account](https://developer.box.com/):
 - Client ID
 - Client Secret
 - Scopes
@@ -21,16 +21,16 @@ To create a Box app and acquire the above mentioned credentials, please follow t
 2. Click on the `My Apps` in the top nav bar.
 <img height="200" src="/images/Box/box_navigation.png" alt="Navigation for App setup"/>
 3. Click on `Create New App` button in the right and choose `Custom App`.
-4. Enter the App Name for your application, select **Integration** in `Purpose`, select **Workflow** as `Categories`, `Enter system name` as **Cobalt** and click on `Next`.
+4. Enter the App Name for your application, select **Integration** in `Purpose`, select **Workflow** as `Categories`, `Enter system name` as **Refold** and click on `Next`.
 5. Select `Authentication Method` as **User Authentication(OAuth 2.0)** and click on `Create App`.
-6. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Box` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+6. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Box` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 7. Navigate to `Configuration` tab in the OAuth app > Scroll down to `OAuth 2.0 Redirect URI` section > Paste the Callback Url > Click on `Save Changes`.
 <img height="200" src="/images/Box/box_config.png" alt="Setting up Box Developer app"/>
 
 8. Scroll to the **OAuth 2.0 Credentials** section and copy the **Client ID** and **Client Secret**.
 <img height="200" src="/images/Box/box_credentials.png" alt="Getting Credentials"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -39,16 +39,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Box/box_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Box Developer account](https://developer.box.com/) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Box Developer account](https://developer.box.com/) and update the scopes as added on Refold.
 
-Select the OAuth App created for Cobalt > Scroll down to `Application Scopes` under `Configuration` tab > Add the scopes as added in Cobalt > Click on `Save Changes`. 
+Select the OAuth App created for Refold > Scroll down to `Application Scopes` under `Configuration` tab > Add the scopes as added in Refold > Click on `Save Changes`. 
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -57,7 +57,7 @@ identical to the ones selected in the platform.
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Box actions and triggers. Following are the set of Box actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">
