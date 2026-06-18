@@ -1,6 +1,203 @@
 ---
 title: "Config Fields"
-description: "Documentation for config fields"
+description: "The per-customer settings your integration collects, so one connector adapts to every customer's account without bespoke code."
 ---
 
-Content coming soon.
+A **config field** is a setting your customer provides so your integration behaves the way *their* account needs — which HubSpot pipeline to add deals to, which stage counts as "won," who to notify. You build config fields by adding **[Dataslots](/v3/embedded/dataslots)** to your connector; each customer then supplies their own values when they connect or enable a workflow.
+
+Config fields are how a single connector serves every customer without custom code. The values a customer enters are saved against their [linked account](/v3/developer/configure/linked-account) as a **config**, which your [workflows](/v3/developer/configure/workflows/overview) read at run time.
+
+<Note>
+In the platform, the fields you add come from a palette called **Dataslots**. This page explains what config fields are *for*, how customers fill them, and how to manage their values from code; for the full catalog of field types and their settings, see [Dataslots](/v3/embedded/dataslots).
+</Note>
+
+## How config fields work
+
+A config field moves through three stages: you **define** it on the connector, your customer **fills** it in, and your workflow **reads** it.
+
+<Steps>
+  <Step title="Add fields to the connector">
+    In the connector's **Connect Portal → Fields**, add a [Dataslot](/v3/embedded/dataslots) — a Select, Text, Map v2, and so on — for each value you need from the customer.
+  </Step>
+  <Step title="Group them into Pages">
+    Organize related fields into [Pages](#pages) so the customer configures one focused set at a time.
+  </Step>
+  <Step title="The customer fills them in">
+    When a customer connects the app or enables a workflow in the hosted portal, they see your fields and enter their values.
+  </Step>
+  <Step title="Workflows read the values">
+    Each saved value becomes a **DataSlot** your workflow nodes reference with `{{ }}` templating. See [Data Variables](/v3/developer/configure/workflows/data-variables).
+  </Step>
+</Steps>
+
+<Frame>
+  <img src="/images/embedded/config-fields/config-portal.png" alt="The Fields section of a connector: Pages and their fields on the left, a live customer preview on the right" />
+</Frame>
+
+## Two levels of config
+
+Config fields live at one of two levels, depending on how broadly they apply:
+
+- **Application-level** — built under **Connect Portal → Fields**. These apply to the customer's whole connection (for example, a default pipeline or a notification address); the customer sets them once.
+- **Workflow-level** — built under **Connect Portal → Workflows**. These belong to a specific workflow; the customer configures them when they enable that workflow in the hosted portal.
+
+## Pages
+
+Within **Fields**, config fields are grouped into **Pages** — buckets that split a long list of settings into focused sections, so the customer isn't shown everything at once. Create a page per logical group, such as "Deal settings" or "Notifications." Pages are organizational only; they don't change how a field behaves.
+
+## How customers fill config fields
+
+Customers enter config values in the hosted portal (or your embedded flow): when they connect the app they complete the **application-level** fields, and when they enable a workflow they complete that **workflow's** fields — each grouped by the pages you defined.
+
+<Frame>
+  <img src="/images/embedded/config-fields/config-view.png" alt="The Config view a customer sees after connecting HubSpot, with their config fields filled in" />
+</Frame>
+
+## Manage configs from your code
+
+After a customer connects, use the SDK (or the [config APIs](/v3/api-reference/configs/create-config)) to install their config and store the values they choose. The same methods work from the [client-side JS SDK](/v3/sdks/client-side/javascript-sdk) and the [server-side Node.js SDK](/v3/sdks/server-side/nodejs-sdk).
+
+### Install or fetch a config
+
+`config()` returns the config for a linked account, creating it from the connector's skeleton if it doesn't exist yet. Only `slug` is required.
+
+<CodeGroup>
+```javascript SDK
+const config = await cobalt.config({
+  slug: "hubspot",
+  config_id: "config_123", // optional — defaults to the linked account ID
+  labels: {},              // optional — dynamic labels for Map v2 fields
+});
+```
+
+```bash cURL
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{ "slug": "hubspot", "config_id": "config_123", "labels": {} }'
+```
+</CodeGroup>
+
+The response lists every field (with its type, options, and current value) and every workflow available to the customer — exactly what you need to render the settings UI.
+
+<Accordion title="Example config response">
+```json
+{
+  "slug": "hubspot",
+  "config_id": "config_123",
+  "fields": [
+    {
+      "required": false,
+      "id": "64da0b57c9ae95561bb0a24d",
+      "name": "Pipeline Stage",
+      "field_type": "select",
+      "options": [
+        { "name": "Appointment Scheduled", "value": "appointmentscheduled" },
+        { "name": "Qualified To Buy", "value": "qualifiedtobuy" }
+      ],
+      "labels": []
+    }
+  ],
+  "workflows": [
+    {
+      "id": "64d1fac58716dc5065127ffe",
+      "name": "Add deal to pipeline",
+      "enabled": false,
+      "fields": []
+    }
+  ],
+  "field_errors": []
+}
+```
+</Accordion>
+
+### Save field values
+
+`updateConfig()` writes the values your customer chose and enables the workflows they want. Reference each field by its `id` from the config response.
+
+<CodeGroup>
+```javascript SDK
+await cobalt.updateConfig({
+  slug: "hubspot",
+  config_id: "config_123",
+  fields: {
+    "64da0b57c9ae95561bb0a24d": "qualifiedtobuy" // field id -> chosen value
+  },
+  workflows: [
+    { id: "64d1fac58716dc5065127ffe", enabled: true, fields: {} }
+  ]
+});
+```
+
+```bash cURL
+curl --request PUT \
+  --url https://api.gocobalt.io/api/v2/public/config \
+  --header 'Content-Type: application/json' \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+    "slug": "hubspot",
+    "config_id": "config_123",
+    "fields": { "64da0b57c9ae95561bb0a24d": "qualifiedtobuy" },
+    "workflows": [ { "id": "64d1fac58716dc5065127ffe", "enabled": true, "fields": {} } ]
+  }'
+```
+</CodeGroup>
+
+<Note>
+You can also set a single field's value with the [Update Config Field Value](/v3/api-reference/config-fields/update-field-value) API — the most reliable way to populate one field without resending the whole config. For a **Map v2** field the value is an object keyed by **label value → option value**; see [Map v2](/v3/embedded/dataslots#map-v2).
+</Note>
+
+### Multiple configs per linked account
+
+By default a linked account has one config, and its `config_id` is the linked account ID. To run the same workflow against more than one target for the same customer — say a customer syncing to both a **sales** and a **partnerships** HubSpot pipeline — create **additional named configs** by passing your own `config_id`.
+
+```javascript
+await cobalt.config({ slug: "hubspot", config_id: "pipeline-sales" });
+await cobalt.config({ slug: "hubspot", config_id: "pipeline-partnerships" });
+
+// fire an event against a specific config
+await client.event({
+  linked_account_id: "example@someemail.com",
+  event: "New Deal Created",
+  config_id: "pipeline-sales",
+  payload: { name: "Acme renewal", amount: 12000 }
+});
+```
+
+<Tip>
+List every config on a linked account with [List Config IDs](/v3/api-reference/configs/list-configs), and fetch one by ID with [Get Config by ID](/v3/api-reference/configs/get-config).
+</Tip>
+
+## Use config values in a workflow
+
+Saved values surface inside workflows as **DataSlots**, which you reference with `{{ }}` templating just like event payloads and node outputs — see [Data Variables](/v3/developer/configure/workflows/data-variables). For example, a HubSpot node's stage field can read the customer's selected **Pipeline Stage** from the config rather than a hardcoded value.
+
+## Best practices
+
+<Tip>
+- **Collect only what the workflow needs** — every required field is a step before the integration works.
+- **Use Pages to group** related fields and keep the customer's screen light.
+- **Name fields for the customer**, not for you — the name is what they see.
+- **Pull account-specific lists live** (pipelines, stages, owners) with a [Dynamic Dataslot or Datasource](/v3/embedded/dataslots#dynamic-dataslots) instead of hardcoding.
+- **Reuse `config_id`s you control** and store them on your side so you can target the right config when triggering workflows.
+</Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Dataslots" icon="layer-group" href="/v3/embedded/dataslots">
+    The full catalog of field types and their settings.
+  </Card>
+  <Card title="Custom Actions" icon="bolt" href="/v3/developer/configure/connector/custom-actions">
+    Define connector actions your workflows can call.
+  </Card>
+  <Card title="Testing" icon="vial" href="/v3/embedded/testing">
+    Validate a config and its workflows before go-live.
+  </Card>
+  <Card title="Config API reference" icon="code" href="/v3/api-reference/configs/create-config">
+    The full Get/Create, Update, and List config endpoints.
+  </Card>
+</CardGroup>
