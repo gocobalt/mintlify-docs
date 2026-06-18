@@ -181,7 +181,7 @@ Configure appropriate OAuth scopes for each integration:
 
 ## End-User Authentication
 
-### Session Tokens
+### Session tokens
 
 Session tokens provide secure, temporary access for end users in embedded flows.
 
@@ -207,7 +207,7 @@ print(f'Session token: {session_token.token}')
 ```
 </CodeGroup>
 
-### Embedded Authentication
+### Embedded authentication
 
 Use session tokens in embedded integration flows:
 
@@ -250,7 +250,7 @@ function IntegrationFlow({ sessionToken }) {
 ```
 </CodeGroup>
 
-## Security Best Practices
+## Security best practices
 
 ### API Key Security
 
@@ -277,7 +277,7 @@ Always validate OAuth state parameters and use PKCE (Proof Key for Code Exchange
 - **Redirect URI Validation**: Strictly validate redirect URIs
 - **Token Storage**: Store tokens securely and never expose them in URLs
 
-### Session Token Security
+### Session token security
 
 - **Short Expiration**: Keep session tokens short-lived (1-24 hours)
 - **Secure Transmission**: Always use HTTPS for token transmission
@@ -317,9 +317,9 @@ MFA is available for Enterprise customers and adds an extra layer of security to
   </Step>
 </Steps>
 
-## Token Management
+## Token management
 
-### Access Token Lifecycle
+### Access token lifecycle
 
 <Tabs>
   <Tab title="Token Generation">
@@ -356,7 +356,7 @@ MFA is available for Enterprise customers and adds an extra layer of security to
   </Tab>
 </Tabs>
 
-### Token Storage
+### Token storage
 
 <Warning>
 Store tokens securely and never log them in plain text. Use encryption for token storage and implement proper access controls.
@@ -374,7 +374,7 @@ const decryptedToken = await decrypt(encryptedToken, encryptionKey);
 
 ## Compliance and Auditing
 
-### Audit Logging
+### Audit logging
 
 All authentication events are logged for security and compliance purposes:
 
@@ -390,7 +390,7 @@ All authentication events are logged for security and compliance purposes:
 }
 ```
 
-### Compliance Standards
+### Compliance standards
 
 Refold authentication meets various compliance requirements:
 
@@ -401,7 +401,7 @@ Refold authentication meets various compliance requirements:
 
 ## Troubleshooting
 
-### Common Authentication Issues
+### Common authentication issues
 
 <Accordion title="Invalid API Key">
 **Symptoms**: 401 Unauthorized responses
@@ -433,7 +433,7 @@ Refold authentication meets various compliance requirements:
 - Regenerate session token if needed
 </Accordion>
 
-### Debug Mode
+### Debug mode
 
 Enable debug logging for authentication troubleshooting:
 
@@ -445,13 +445,13 @@ const cobalt = new RefoldSDK({
 });
 ```
 
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Events Configuration" icon="bell" href="/v3/developer-guide/platform/events">
-    Set up event handling and notifications
+  <Card title="Auth flows" icon="key" href="/v3/developer/guide/ship/auth_flows/hosted">
+    Let your customers connect their own accounts.
   </Card>
-  <Card title="API Proxies" icon="network-wired" href="/v3/developer-guide/platform/api-proxies">
-    Configure API proxy settings
+  <Card title="Linked accounts" icon="user-gear" href="/v3/developer/configure/linked-account">
+    Manage each customer's connected accounts and credentials.
   </Card>
 </CardGroup> 
