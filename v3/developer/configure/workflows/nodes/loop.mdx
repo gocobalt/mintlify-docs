@@ -1,12 +1,12 @@
 ---
-title: "Loop Node"
+title: "Loop node"
 description: "Execute workflow sections repeatedly with fixed iterations, array processing, or conditional loops"
 sidebarTitle: "Loop"
 ---
 
-The Loop Node enables repetitive execution of workflow sections. It acts as a container for nodes that need to run multiple times with different data or conditions.
+The Loop node enables repetitive execution of workflow sections. It acts as a container for nodes that need to run multiple times with different data or conditions.
 
-## When to Use
+## When to use
 
 - Process arrays of records from NetSuite or SAP
 - Fetch paginated API results until all data is retrieved
@@ -62,7 +62,7 @@ Continues looping while conditions are met and stops when break conditions are s
 <Warning>Do While loops have no built-in iteration limits. Ensure break conditions are properly configured to prevent infinite loops.</Warning>
 </Accordion>
 
-### Custom Output
+### Custom output
 
 All action types support **Custom Output** to define additional output fields. Click **+ Add Field** to capture specific data from loop execution.
 
@@ -85,11 +85,11 @@ Returns an array of results collected from each iteration.
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add Loop Node">
-    Drag the Loop Node from **Utility Nodes** onto your workflow canvas.
+  <Step title="Add Loop node">
+    Drag the Loop node from **Utility Nodes** onto your workflow canvas.
   </Step>
   <Step title="Select action type">
     Choose **Fixed Iteration**, **Array Iteration**, or **Do While**.
@@ -152,7 +152,7 @@ Continue fetching vendor records until all pages are retrieved.
 |----------|----------|-------|
 | `{{fetch_vendors.nextPageToken}}` | Is Null | - |
 
-**Inside Loop:** HTTP Node calling SAP API with pagination token
+**Inside Loop:** HTTP node calling SAP API with pagination token
 
 **Result:**
 ```json
@@ -174,7 +174,7 @@ Create 5 test invoice records in Tipalti for sandbox testing.
 **Configuration:**
 - Number of iteration counts: `5`
 - Concurrent Batches: `2`
-- Inside Loop: Tipalti Node with `Create Invoice` using `Test Invoice {{loop.iteration_number}}`
+- Inside Loop: Tipalti node with `Create Invoice` using `Test Invoice {{loop.iteration_number}}`
 - Output Data: `{{create_invoice.id}}`
 
 **Result:**
@@ -195,7 +195,7 @@ Create 5 test invoice records in Tipalti for sandbox testing.
 
 **Solutions:**
 - Verify break condition variables are updated inside the loop
-- Add a Custom Code Node to inspect condition values during execution
+- Add a Custom Code node to inspect condition values during execution
 - Implement fallback break condition based on iteration count
 </Accordion>
 
@@ -204,7 +204,7 @@ Create 5 test invoice records in Tipalti for sandbox testing.
 
 **Solutions:**
 - Reduce concurrent batch size to avoid API rate limiting
-- Add Delay Node inside loop between API calls
+- Add Delay node inside loop between API calls
 - Check external system capacity for concurrent requests
 </Accordion>
 
@@ -214,7 +214,7 @@ Create 5 test invoice records in Tipalti for sandbox testing.
 **Solutions:**
 - Use correct syntax: `{{array_item.property_name}}`
 - Verify array elements contain expected properties
-- Use Custom Code Node to inspect `{{array_item}}` structure
+- Use Custom Code node to inspect `{{array_item}}` structure
 </Accordion>
 
 <Accordion title="Output data empty or missing">
@@ -226,8 +226,16 @@ Create 5 test invoice records in Tipalti for sandbox testing.
 - Test output expression with single iteration first
 </Accordion>
 
-## What's Next
+## Next steps
 
-- [Tables Node](/developer-guide/workflows/nodes/tables) to store loop results for use outside the loop
-- [Rule Node](/developer-guide/workflows/nodes/rule) for conditional logic within loops
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing per iteration
+<CardGroup cols={2}>
+  <Card title="Tables node" icon="table" href="/v3/developer/configure/workflows/nodes/tables">
+    Store loop results for use outside the loop.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic within loops.
+  </Card>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Process complex data per iteration.
+  </Card>
+</CardGroup>

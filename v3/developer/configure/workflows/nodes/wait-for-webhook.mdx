@@ -1,12 +1,12 @@
 ---
-title: "Wait for Webhook Node"
+title: "Wait for Webhook node"
 description: "Pause workflow execution until an external webhook is triggered, enabling asynchronous workflow coordination"
 sidebarTitle: "Wait for Webhook"
 ---
 
-The Wait for Webhook Node pauses workflow execution until an external system triggers a webhook by sending a POST request to the generated webhook URL. This enables asynchronous workflow coordination where the workflow waits for external processes to complete before continuing with subsequent steps.
+The Wait for Webhook node pauses workflow execution until an external system triggers a webhook by sending a POST request to the generated webhook URL. This enables asynchronous workflow coordination where the workflow waits for external processes to complete before continuing with subsequent steps.
 
-## When to Use
+## When to use
 
 - Wait for third-party data enrichment services to return processed data
 - Pause workflow for manual approval processes via external systems
@@ -14,7 +14,7 @@ The Wait for Webhook Node pauses workflow execution until an external system tri
 - Wait for external document processing or validation to complete
 - Synchronize workflows with external business process completion
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Webhook URL" type="string">
   Automatically generated, read-only webhook URL that external systems must call to resume workflow execution. You don't enter this — it is generated when the node is added and remains constant. Example: `https://api.gocobalt.io/api/v1/workflows/webhooks/6887`
@@ -28,7 +28,7 @@ The Wait for Webhook Node pauses workflow execution until an external system tri
 
 ## Output
 
-The Wait for Webhook Node does not produce output data for subsequent nodes. It serves purely as a workflow control mechanism that gates execution.
+The Wait for Webhook node does not produce output data for subsequent nodes. It serves purely as a workflow control mechanism that gates execution.
 
 **Execution States:**
 
@@ -40,7 +40,7 @@ The Wait for Webhook Node does not produce output data for subsequent nodes. It 
 
 <Warning>Workflows remain paused indefinitely at this node until the webhook is triggered. Only the first valid webhook request resumes execution. Subsequent requests are ignored.</Warning>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Add the node">
@@ -162,11 +162,11 @@ The Wait for Webhook Node does not produce output data for subsequent nodes. It 
   </Accordion>
 </AccordionGroup>
 
-## Runtime Behavior
+## Runtime behavior
 
 <AccordionGroup>
   <Accordion title="Webhook Processing Flow">
-    The Wait for Webhook Node processes incoming requests in the following order:
+    The Wait for Webhook node processes incoming requests in the following order:
 
     1. **Request Validation:** Validates POST method and URL match
     2. **Security Header Check:** Verifies required headers if configured
@@ -237,16 +237,26 @@ The Wait for Webhook Node does not produce output data for subsequent nodes. It 
     |-------|----------|
     | URL truncated | Copy complete webhook URL without truncation |
     | Workflow not deployed | Ensure workflow is deployed and active |
-    | Execution not started | Confirm workflow has reached the Wait for Webhook Node |
+    | Execution not started | Confirm workflow has reached the Wait for Webhook node |
     | URL regenerated | Node modifications may regenerate the URL |
   </Accordion>
 </AccordionGroup>
 
 <Tip>Use webhook testing tools like curl, Postman, or online webhook testers to verify your webhook URL and security headers work correctly before integrating with external systems.</Tip>
 
-## What's Next
+## Next steps
 
-- [HTTP Node](/developer-guide/workflows/nodes/http) to trigger external systems that will call your webhook
-- [Delay Node](/developer-guide/workflows/nodes/delay) for time-based workflow pausing
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic after webhook triggers
-- [Response Node](/developer-guide/workflows/nodes/response) to return results after webhook processing
+<CardGroup cols={2}>
+  <Card title="HTTP node" icon="globe" href="/v3/developer/configure/workflows/nodes/http">
+    Trigger external systems that will call your webhook.
+  </Card>
+  <Card title="Delay node" icon="clock" href="/v3/developer/configure/workflows/nodes/delay">
+    Pause workflows for a set amount of time.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic after webhook triggers.
+  </Card>
+  <Card title="Response node" icon="reply" href="/v3/developer/configure/workflows/nodes/response">
+    Return results after webhook processing.
+  </Card>
+</CardGroup>

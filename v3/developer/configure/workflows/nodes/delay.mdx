@@ -1,12 +1,12 @@
 ---
-title: "Delay Node"
+title: "Delay node"
 description: "Pause workflow execution for a specified duration or until a calculated target time"
 sidebarTitle: "Delay"
 ---
 
-The Delay Node pauses workflow execution for a specified duration before proceeding to subsequent steps. Use it to introduce waiting periods between actions, schedule follow-ups relative to dates, or add time buffers for external processes to complete.
+The Delay node pauses workflow execution for a specified duration before proceeding to subsequent steps. Use it to introduce waiting periods between actions, schedule follow-ups relative to dates, or add time buffers for external processes to complete.
 
-## When to Use
+## When to use
 
 - Add a waiting period before sending follow-up notifications
 - Schedule actions relative to a base date (e.g., 2 days before a due date)
@@ -121,11 +121,11 @@ The Delay Node pauses workflow execution for a specified duration before proceed
   </Accordion>
 </AccordionGroup>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Delay Node">
-    In the workflow editor, click **Add Node** and select **Delay** from the Utility Nodes section.
+  <Step title="Add the Delay node">
+    In the workflow editor, click **Add Node** and select **Delay** from the utility nodes section.
   </Step>
   
   <Step title="Select an action">
@@ -158,7 +158,7 @@ The Delay Node pauses workflow execution for a specified duration before proceed
     | Minutes | `0` |
     | Seconds | `5` |
 
-    **Use Case:** Place this node between consecutive SAP API calls in a Loop Node to prevent 429 errors.
+    **Use Case:** Place this node between consecutive SAP API calls in a Loop node to prevent 429 errors.
   </Accordion>
 
   <Accordion title="Send Payment Reminder Before Due Date">
@@ -252,11 +252,21 @@ The Delay Node pauses workflow execution for a specified duration before proceed
   </Accordion>
 </AccordionGroup>
 
-<Tip>For delays longer than 30 days, consider using a [Schedule Trigger](/developer-guide/workflows/triggers/schedule) to re-trigger the workflow at specific intervals.</Tip>
+<Tip>For delays longer than 30 days, consider using a [Schedule Trigger](/v3/developer/configure/workflows/triggers/schedule) to re-trigger the workflow at specific intervals.</Tip>
 
-## What's Next
+## Next steps
 
-- [Wait for Webhook Node](/developer-guide/workflows/nodes/wait-for-webhook) to pause until an external event occurs
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic before or after delays
-- [Loop Node](/developer-guide/workflows/nodes/loop) to add delays between batch iterations
-- [Send Email Node](/developer-guide/workflows/nodes/send-email) to send notifications after delays
+<CardGroup cols={2}>
+  <Card title="Wait for Webhook node" icon="clock" href="/v3/developer/configure/workflows/nodes/wait-for-webhook">
+    Pause until an external event occurs.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic before or after delays.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Add delays between batch iterations.
+  </Card>
+  <Card title="Send Email node" icon="envelope" href="/v3/developer/configure/workflows/nodes/send-email">
+    Send notifications after delays.
+  </Card>
+</CardGroup>

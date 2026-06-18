@@ -1,12 +1,12 @@
 ---
-title: "Human Intervention Node"
+title: "Human Intervention node"
 description: "Pause workflow execution and collect input from users via customizable forms delivered by email"
 sidebarTitle: "Human Intervention"
 ---
 
-The Human Intervention Node pauses workflow execution and sends an email containing a link to a customizable form. The workflow remains paused until a recipient submits the form or the timeout period expires. This enables approval workflows, manual data entry, and human decision points within automated processes.
+The Human Intervention node pauses workflow execution and sends an email containing a link to a customizable form. The workflow remains paused until a recipient submits the form or the timeout period expires. This enables approval workflows, manual data entry, and human decision points within automated processes.
 
-## When to Use
+## When to use
 
 - Require manager approval before processing large transactions
 - Collect missing data from users during workflow execution
@@ -16,9 +16,9 @@ The Human Intervention Node pauses workflow execution and sends an email contain
 
 <Info>Forms must be created in **More > User Forms** before they can be used in this node. Each form can include Text, Number, Date, Dropdown, and Radio input fields.</Info>
 
-## Input Parameters
+## Input parameters
 
-### SMTP Configuration
+### SMTP configuration
 
 You can either use organization-level SMTP settings or configure custom SMTP credentials for sending the form email.
 
@@ -52,7 +52,7 @@ You can either use organization-level SMTP settings or configure custom SMTP cre
   </Accordion>
 </AccordionGroup>
 
-### Form and Email Configuration
+### Form and email configuration
 
 <ParamField path="Forms" type="dropdown" required>
   Select the form to send to recipients. Forms are created and managed in **More > User Forms**.
@@ -120,15 +120,15 @@ The node returns the form submission data when completed successfully.
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Create a form">
     Navigate to **More > User Forms** and create a new form. Add input fields (Text, Number, Date, Dropdown, Radio) that capture the information you need from reviewers.
   </Step>
   
-  <Step title="Add the Human Intervention Node">
-    In the workflow editor, click **Add Node** and select **Human Intervention** from the Utility Nodes section.
+  <Step title="Add the Human Intervention node">
+    In the workflow editor, click **Add Node** and select **Human Intervention** from the utility nodes section.
   </Step>
   
   <Step title="Configure SMTP settings">
@@ -148,7 +148,7 @@ The node returns the form submission data when completed successfully.
   </Step>
   
   <Step title="Handle the response">
-    Add subsequent nodes to process the form submission data. Use a [Rule Node](/developer-guide/workflows/nodes/rule) to branch based on approval decisions or timeout status.
+    Add subsequent nodes to process the form submission data. Use a [Rule node](/v3/developer/configure/workflows/nodes/rule) to branch based on approval decisions or timeout status.
   </Step>
 </Steps>
 
@@ -188,7 +188,7 @@ The node returns the form submission data when completed successfully.
 ```
 
     **Post-Processing:**
-    Use a Rule Node to check `{{human_intervention.body.approval_decision}}` and route to either the SAP sync node or a rejection notification.
+    Use a Rule node to check `{{human_intervention.body.approval_decision}}` and route to either the SAP sync node or a rejection notification.
   </Accordion>
 
   <Accordion title="NetSuite Journal Entry Review">
@@ -323,9 +323,19 @@ The node returns the form submission data when completed successfully.
 
 <Tip>Create dedicated forms for different approval types rather than reusing generic forms. This keeps form fields relevant and improves completion rates.</Tip>
 
-## What's Next
+## Next steps
 
-- [User Forms](/developer-guide/advanced/user-forms) to learn how to create and manage forms
-- [Rule Node](/developer-guide/workflows/nodes/rule) to branch workflows based on form responses
-- [Send Email Node](/developer-guide/workflows/nodes/send-email) for follow-up notifications after form submission
-- [Delay Node](/developer-guide/workflows/nodes/delay) to add waiting periods before escalation
+<CardGroup cols={2}>
+  <Card title="User Forms" icon="table-list" href="/v3/developer/advanced/user-forms">
+    Learn how to create and manage forms.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Branch workflows based on form responses.
+  </Card>
+  <Card title="Send Email node" icon="envelope" href="/v3/developer/configure/workflows/nodes/send-email">
+    Send follow-up notifications after form submission.
+  </Card>
+  <Card title="Delay node" icon="clock" href="/v3/developer/configure/workflows/nodes/delay">
+    Add waiting periods before escalation.
+  </Card>
+</CardGroup>

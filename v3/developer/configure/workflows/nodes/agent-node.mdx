@@ -1,12 +1,12 @@
 ---
-title: "Agent Node"
+title: "Agent node"
 description: "Execute AI-powered tasks using large language models with structured outputs, memory, and MCP server integrations"
 sidebarTitle: "Agent"
 ---
 
-The Agent Node enables you to integrate AI capabilities directly into your workflows using large language models (LLMs). It processes prompts with dynamic data from previous nodes, supports structured JSON outputs, maintains conversation memory across executions, and can connect to MCP servers for extended capabilities.
+The Agent node brings AI into your workflows using large language models (LLMs). It processes prompts with dynamic data from previous nodes, supports structured JSON outputs, maintains conversation memory across executions, and can connect to MCP servers for extended capabilities.
 
-## When to Use
+## When to use
 
 - Analyze and extract insights from enterprise data (invoices, contracts, support tickets)
 - Generate summaries, recommendations, or classifications based on workflow data
@@ -14,11 +14,11 @@ The Agent Node enables you to integrate AI capabilities directly into your workf
 - Build conversational workflows that maintain context across multiple interactions
 - Extend agent capabilities with MCP servers for external tool access
 
-<Info>Configure your LLM API keys under **Organization > Settings** before using the Agent Node.</Info>
+<Info>Configure your LLM API keys under **Organization > Settings** before using the Agent node.</Info>
 
-## Input Parameters
+## Input parameters
 
-### Core Configuration
+### Core configuration
 
 <ParamField path="Model" type="dropdown" required>
   Select the AI model to process prompts. Supports models from OpenAI (GPT-4o, GPT-4.1, GPT-5), Google (Gemini 2.0, Gemini 2.5), and Anthropic (Claude 3.5, Claude 3.7, Claude Opus 4).
@@ -74,7 +74,7 @@ The Agent Node enables you to integrate AI capabilities directly into your workf
 ]
 ```
 
-### MCP Servers
+### MCP servers
 
 <ParamField path="MCP Servers" type="code editor">
   Configure Model Context Protocol servers to extend the agent's capabilities with external tools and data sources.
@@ -135,11 +135,11 @@ The node output structure is determined by the **Structured Output** schema you 
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Agent Node">
-    In the workflow editor, click **Add Node** and select **Agent** from the Utility Nodes section.
+  <Step title="Add the Agent node">
+    In the workflow editor, click **Add Node** and select **Agent** from the utility nodes section.
   </Step>
   
   <Step title="Select a model">
@@ -404,11 +404,21 @@ The node output structure is determined by the **Structured Output** schema you 
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) before the Agent Node to prepare and format complex input data for better prompt quality.</Tip>
+<Tip>Use a [Custom Code node](/v3/developer/configure/workflows/nodes/custom-code) before the Agent node to prepare and format complex input data for better prompt quality.</Tip>
 
-## What's Next
+## Next steps
 
-- [MCP Overview](/developer-guide/mcp/overview) to understand how agents interact with enterprise systems
-- [Transform Node](/developer-guide/workflows/nodes/transform) to process agent outputs with JSONata
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on agent responses
-- [Loop Node](/developer-guide/workflows/nodes/loop) to process multiple items with the agent
+<CardGroup cols={2}>
+  <Card title="Transform node" icon="shuffle" href="/v3/developer/configure/workflows/nodes/transform">
+    Process agent outputs with JSONata.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic based on agent responses.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Process multiple items with the agent.
+  </Card>
+  <Card title="What is MCP?" icon="robot" href="/v3/mcp-ai-agents/overview/what-is-mcp">
+    Understand how agents interact with enterprise systems.
+  </Card>
+</CardGroup>

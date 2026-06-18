@@ -1,12 +1,12 @@
 ---
-title: "Custom Code Node"
+title: "Custom Code node"
 description: "Execute custom JavaScript or Python code within workflows to process, transform, and manipulate data"
 sidebarTitle: "Custom Code"
 ---
 
-The Custom Code Node enables you to execute custom JavaScript or Python code within workflows. It acts as a code executor that allows you to create custom logic, manipulate data structures, and perform complex operations that are not available in standard workflow nodes.
+The Custom Code node enables you to execute custom JavaScript or Python code within workflows. It acts as a code executor that allows you to create custom logic, manipulate data structures, and perform complex operations that are not available in standard workflow nodes.
 
-## When to Use
+## When to use
 
 - Transform data into custom formats for external APIs
 - Filter and process large datasets from API responses
@@ -14,7 +14,7 @@ The Custom Code Node enables you to execute custom JavaScript or Python code wit
 - Validate and clean data before sending to external systems
 - Integrate with external libraries for specialized processing
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Input Parameters" type="object">
   Key-value pairs of data passed into your custom function as the `params` object. Include variables from previous nodes or static values needed for processing. Example: `{"vendor": "{{sap_vendor}}", "threshold": 75}`
@@ -30,9 +30,9 @@ The Custom Code Node enables you to execute custom JavaScript or Python code wit
 
 <Info>Your code must be written inside the `yourFunction` wrapper. The function receives input parameters as arguments and should return an object with your processed data.</Info>
 
-## Supported Libraries
+## Supported libraries
 
-### JavaScript Libraries
+### JavaScript libraries
 
 | Library | Description | Import |
 |---------|-------------|--------|
@@ -48,7 +48,7 @@ The Custom Code Node enables you to execute custom JavaScript or Python code wit
 | url | URL parsing utilities | `const url = require('url');` |
 | danfo | Data analysis library (pandas-like) | `const dfd = require('danfojs-node');` |
 
-### Python Libraries
+### Python libraries
 
 | Library | Description | Import |
 |---------|-------------|--------|
@@ -60,7 +60,7 @@ The Custom Code Node enables you to execute custom JavaScript or Python code wit
 
 ## Output
 
-The Custom Code Node outputs the exact return value from your custom function.
+The Custom Code node outputs the exact return value from your custom function.
 ```json
 {
   "processed_vendor": {
@@ -79,7 +79,7 @@ The Custom Code Node outputs the exact return value from your custom function.
 - **JSON Serializable**: Return values must be JSON serializable (objects, arrays, strings, numbers, booleans)
 - **Error Handling**: Runtime errors will be captured and displayed in workflow logs
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Add the node">
@@ -342,7 +342,7 @@ async def yourFunction(params):
 }
 ```
 
-## Best Practices
+## Best practices
 
 - **Keep functions focused**: Break complex logic into smaller operations
 - **Handle errors gracefully**: Use try-catch blocks for external API calls
@@ -361,9 +361,19 @@ async def yourFunction(params):
 
 <Tip>Use console.log statements in your custom code to debug issues. Logs will appear in the workflow execution details for troubleshooting.</Tip>
 
-## What's Next
+## Next steps
 
-- [Transform Node](/developer-guide/workflows/nodes/transform) for simpler JSONata-based transformations
-- [HTTP Node](/developer-guide/workflows/nodes/http) to call external APIs without custom code
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic around custom code
-- [Loop Node](/developer-guide/workflows/nodes/loop) to process arrays with custom code
+<CardGroup cols={2}>
+  <Card title="Transform node" icon="shuffle" href="/v3/developer/configure/workflows/nodes/transform">
+    Run simpler JSONata-based transformations.
+  </Card>
+  <Card title="HTTP node" icon="globe" href="/v3/developer/configure/workflows/nodes/http">
+    Call external APIs without custom code.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic around custom code.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Process arrays with custom code.
+  </Card>
+</CardGroup>
