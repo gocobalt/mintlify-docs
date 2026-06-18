@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Epic app for OAuth.
 ---
-To setup your Epic app in Cobalt for OAuth, you will need the following credentials from your [Epic Developer account](https://fhir.epic.com/):
+To setup your Epic app in Refold for OAuth, you will need the following credentials from your [Epic Developer account](https://fhir.epic.com/):
 - Client ID
 - Client Secret
 - Scopes
@@ -21,7 +21,7 @@ To create a Epic app and acquire the above mentioned credentials, please follow 
 2. Select the `Build Apps` tab in the top nav bar and click on `Create` button.
 <img height="200" src="/images/Epic/epic_navigation.png" alt="Navigation for App setup"/>
 3. Enter the unique **Application Name** and select `Clinicians or Administrative Users` as **Application Audience**.
-4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Epic` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Paste the Callback URL under `Redirect URI` in the app.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Epic` > `Settings` > `Use your credentials` > `Callback Url` > Copy it. Paste the Callback URL under `Redirect URI` in the app.
 5. Checkmark the `Is Confidential Client` and `Requires Persistent Access` boxes.
 6. Select the required scopes in the **Available** section.
 <img height="200" src="/images/Epic/Epic_config.png" alt="Setting up Developer app"/>
@@ -32,7 +32,7 @@ Save the Client Secret displayed as it will be shown only once.
 </Info>
 <img height="200" src="/images/Epic/Epic_credentials.png" alt="Getting Credentials"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -40,21 +40,21 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Epic/Epic_scopes.png" alt="OAuth Scopes"/>
 <Tip>
-All the scopes listed are R4 version Scopes in Cobalt.
+All the scopes listed are R4 version Scopes in Refold.
 </Tip>
-Once the scopes has been added to the application in Cobalt, go to your [Epic Developer Account](https://fhir.epic.com/) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Epic Developer Account](https://fhir.epic.com/) and update the scopes as added on Refold.
 <Warning>
 Epic usually takes around 30 mins for any changes in the OAuth app to work.
 </Warning>
 
-Select the OAuth App created for Cobalt > Add the scopes under `Available` as added in Cobalt > Click on `Save and Ready for Sandbox`.
+Select the OAuth App created for Refold > Add the scopes under `Available` as added in Refold > Click on `Save and Ready for Sandbox`.
 
 <Note>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
@@ -62,7 +62,7 @@ If you are facing scopes missing or invalid scope error. Make sure you are not p
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Epic actions and triggers. Following are the set of Epic actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

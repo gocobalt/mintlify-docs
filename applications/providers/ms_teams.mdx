@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your Microsoft Teams app for OAuth.
 ---
-To setup your Microsoft Teams app in Cobalt for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
+To setup your Microsoft Teams app in Refold for OAuth, you will need the following credentials from your [Microsoft Azure account](https://azure.microsoft.com/en-gb/):
 - Bot Client ID
 - Bot Client Secret
 - App ID
@@ -95,7 +95,7 @@ To create a Microsoft Teams app and acquire the above mentioned credentials, ple
 2. Search for **Microsoft Entra ID** and select it from **Services** in the top search bar.
 <img height="200" src="/images/Ms365/ms365_navigation.png" alt="Navigation for App setup"/>
 3. Navigate to  `App Registrations` under `Manage` in the side menu and select the app representing your bot, not your Microsoft Teams app.
-4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `Microsoft Teams` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+4. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `Microsoft Teams` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 5. Select **Authentication** in side menu under `Manage` > Under **Platform configurations**, press the  **Add a platform** button > Select **Web** > Paste the Callback Url > Click on **Configure** > Click **Save** button at the bottom.
 <img height="200" src="/images/Msteams/teams_redirect.png" alt="App Registration"/>
 
@@ -116,7 +116,7 @@ Ensure that the Client Secret Value is saved as it will be shown only once.
 11. For your **App ID** or Bot External ID, go to `Apps` in Teams Developer Portal, select your App which was created earlier and copy the `App ID` present under **Basic Information** of the app.
 <img height="200" src="/images/Msteams/teams_app_id.png" alt="Getting Client ID"/>
 
-## Configuring credentials in Cobalt
+## Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -125,16 +125,16 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 ## Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Msteams/teams_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Microsoft Azure account](https://azure.microsoft.com/en-gb/) and update the scopes as added on Refold.
 
-Select the OAuth App created for Cobalt and follow **Step 6** and **7** [above](https://docs.gocobalt.io/resources/integration-providers/ms_teams#creating-an-app-in-microsoft-azure).
+Select the OAuth App created for Refold and follow **Step 6** and **7** [above](https://docs.gocobalt.io/resources/integration-providers/ms_teams#creating-an-app-in-microsoft-azure).
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -143,7 +143,7 @@ identical to the ones selected in the platform.
 
 ## Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using Teams actions and triggers. Following are the set of Teams actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

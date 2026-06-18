@@ -1,12 +1,12 @@
 ---
-title: "Try & Catch Node"
+title: "Try & Catch node"
 description: "Handle errors gracefully by wrapping nodes in a try block with an optional catch branch for error recovery"
 sidebarTitle: "Try & Catch"
 ---
 
-The Try & Catch Node provides error handling within workflows by wrapping nodes in a protected block. When a node inside the try block fails, execution branches to the catch path for error recovery instead of failing the entire workflow. This enables graceful degradation, fallback logic, and controlled error responses.
+The Try & Catch node provides error handling within workflows by wrapping nodes in a protected block. When a node inside the try block fails, execution branches to the catch path for error recovery instead of failing the entire workflow. This enables graceful degradation, fallback logic, and controlled error responses.
 
-## When to Use
+## When to use
 
 - Wrap API calls that may fail due to external system issues
 - Handle record-not-found scenarios without workflow failure
@@ -16,7 +16,7 @@ The Try & Catch Node provides error handling within workflows by wrapping nodes 
 
 <Info>The Try & Catch node is a container node similar to the Loop node. Place the nodes you want to protect inside the container. The catch branch extends from the right side of the container.</Info>
 
-## Node Structure
+## Node structure
 
 The Try & Catch node has three connection points:
 
@@ -29,7 +29,7 @@ The Try & Catch node has three connection points:
   <img src="/images/v3/workflow-nodes/try-catch-representation.png" alt="Try & Catch node structure showing try block inside container, catch branch on right, and success path at bottom" />
 </Frame>
 
-## Execution Behavior
+## Execution behavior
 
 | Scenario | Behavior |
 |----------|----------|
@@ -89,11 +89,11 @@ The Try & Catch node outputs execution status and error details when applicable.
 | `failed_node_id` | string | ID of the node that failed in the try block (only present when catch executes) |
 | `error_message` | object | Error details from the failed node including message and error array |
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add Try & Catch Node">
-    In the workflow editor, click **Add Node** and select **Try & Catch** from the Utility Nodes section. The node appears as a container with a dashed border.
+  <Step title="Add Try & Catch node">
+    In the workflow editor, click **Add Node** and select **Try & Catch** from the utility nodes section. The node appears as a container with a dashed border.
   </Step>
   
   <Step title="Add nodes to try block">
@@ -264,7 +264,7 @@ The Try & Catch node includes standard node settings available in the Settings t
   </Accordion>
 </AccordionGroup>
 
-## Accessing Error Details
+## Accessing error details
 
 When the catch branch executes, error information from the failed node is available via templating:
 
@@ -314,7 +314,7 @@ When the catch branch executes, error information from the failed node is availa
   </Accordion>
 </AccordionGroup>
 
-## Best Practices
+## Best practices
 
 - **Keep catch branches simple**: Use reliable operations (logging, tables) that are unlikely to fail
 - **Always log errors**: Even if you handle them gracefully, log error details for debugging
@@ -322,9 +322,19 @@ When the catch branch executes, error information from the failed node is availa
 - **Don't nest Try & Catch excessively**: One level of error handling is usually sufficient
 - **Test both paths**: Verify workflow behavior when try succeeds and when it fails
 
-## What's Next
+## Next steps
 
-- [Terminate Node](/developer-guide/workflows/nodes/terminate) to end workflows with specific error status
-- [Log Node](/developer-guide/workflows/nodes/log) to record error details for debugging
-- [Tables Node](/developer-guide/workflows/nodes/tables) to queue failed items for retry
-- [Loop Node](/developer-guide/workflows/nodes/loop) to process items with individual error handling
+<CardGroup cols={2}>
+  <Card title="Terminate node" icon="circle-stop" href="/v3/developer/configure/workflows/nodes/terminate-node">
+    End workflows with a specific error status.
+  </Card>
+  <Card title="Log node" icon="file-lines" href="/v3/developer/configure/workflows/nodes/log-node">
+    Record error details for debugging.
+  </Card>
+  <Card title="Tables node" icon="table" href="/v3/developer/configure/workflows/nodes/tables">
+    Queue failed items for retry.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Process items with individual error handling.
+  </Card>
+</CardGroup>

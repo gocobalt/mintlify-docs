@@ -1,12 +1,12 @@
 ---
-title: "PDF Node"
+title: "PDF node"
 description: "Generate PDFs from HTML content or merge multiple PDF files into a single document"
 sidebarTitle: "PDF"
 ---
 
-The PDF Node creates PDF documents from HTML content or URLs and merges multiple PDF files into a single document. Generated PDFs are stored in cloud storage with configurable expiration, and the node returns a URL to access the file.
+The PDF node creates PDF documents from HTML content or URLs and merges multiple PDF files into a single document. Generated PDFs are stored in cloud storage with configurable expiration, and the node returns a URL to access the file.
 
-## When to Use
+## When to use
 
 - Generate invoices, reports, or statements from dynamic HTML templates
 - Convert web pages to PDF for archival or distribution
@@ -20,7 +20,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
   <Accordion title="Create PDF from HTML">
     Converts HTML content or a web page URL into a PDF document with customizable layout, styling, and security options.
 
-    ### Primary Input
+    ### Primary input
 
     <ParamField path="HTML (or URL)" type="code editor" required>
       HTML content to convert, or a URL to a web page. When providing a URL, the page is rendered and converted to PDF.
@@ -30,7 +30,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
       JavaScript code that executes on the HTML DOM before PDF generation. Use this to manipulate content, hide elements, or modify styles dynamically.
     </ParamField>
 
-    ### Page Configuration
+    ### Page configuration
 
     <ParamField path="Page Layout" type="dropdown">
       Page orientation for the PDF. Options include portrait and landscape layouts. Default: `None (Default)`
@@ -76,7 +76,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
       Milliseconds to wait after the page loads before generating the PDF. Gives dynamic content time to render fully.
     </ParamField>
 
-    ### Header and Footer
+    ### Header and footer
 
     <ParamField path="Header Template" type="code editor">
       HTML template for the page header. Supports special CSS classes for dynamic content.
@@ -103,7 +103,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
     | `title` | Document title |
     | `url` | Source URL (if applicable) |
 
-    ### Security and Metadata
+    ### Security and metadata
 
     <ParamField path="Set Password" type="string">
       Password to protect the PDF. Recipients must enter this password to open the document.
@@ -123,7 +123,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
     }
 ```
 
-    ### Storage Settings
+    ### Storage settings
 
     <ParamField path="Infinite Expiry" type="toggle">
       Enable to keep the PDF URL accessible indefinitely. When disabled, the URL expires based on the TTL value.
@@ -171,7 +171,7 @@ The PDF Node creates PDF documents from HTML content or URLs and merges multiple
     Page {{page}} of {{total_pages}}
 ```
 
-    ### Storage Settings
+    ### Storage settings
 
     <ParamField path="Infinite Expiry" type="toggle">
       Enable to keep the merged PDF URL accessible indefinitely.
@@ -214,11 +214,11 @@ Both actions return a URL to the generated PDF stored in cloud storage.
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the PDF Node">
-    In the workflow editor, click **Add Node** and select **PDF** from the Utility Nodes section.
+  <Step title="Add the PDF node">
+    In the workflow editor, click **Add Node** and select **PDF** from the utility nodes section.
   </Step>
   
   <Step title="Select an action">
@@ -447,11 +447,21 @@ Both actions return a URL to the generated PDF stored in cloud storage.
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use a [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to build complex HTML templates with loops and conditionals before passing to the PDF Node.</Tip>
+<Tip>Use a [Custom Code node](/v3/developer/configure/workflows/nodes/custom-code) to build complex HTML templates with loops and conditionals before passing to the PDF node.</Tip>
 
-## What's Next
+## Next steps
 
-- [Send Email Node](/developer-guide/workflows/nodes/send-email) to email generated PDFs as attachments
-- [HTTP Node](/developer-guide/workflows/nodes/http) to upload PDFs to external systems
-- [File Handler Node](/developer-guide/workflows/nodes/file-handler) for additional file operations
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to build dynamic HTML templates
+<CardGroup cols={2}>
+  <Card title="Send Email node" icon="envelope" href="/v3/developer/configure/workflows/nodes/send-email">
+    Email generated PDFs as attachments.
+  </Card>
+  <Card title="HTTP node" icon="globe" href="/v3/developer/configure/workflows/nodes/http">
+    Upload PDFs to external systems.
+  </Card>
+  <Card title="File Handler node" icon="file" href="/v3/developer/configure/workflows/nodes/file-handler">
+    Perform additional file operations.
+  </Card>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Build dynamic HTML templates.
+  </Card>
+</CardGroup>

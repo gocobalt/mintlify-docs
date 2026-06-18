@@ -1,12 +1,12 @@
 ---
-title: "Log Node"
+title: "Log node"
 description: "Record custom messages to workflow execution logs for debugging and monitoring"
 sidebarTitle: "Log"
 ---
 
-The Log Node records custom messages to workflow execution logs during runtime. It enables you to track workflow progress, capture variable values at specific points, and add contextual information that helps with debugging and monitoring integration workflows.
+The Log node records custom messages to workflow execution logs during runtime. It enables you to track workflow progress, capture variable values at specific points, and add contextual information that helps with debugging and monitoring integration workflows.
 
-## When to Use
+## When to use
 
 - Debug complex workflows by logging intermediate values
 - Track workflow progress through multi-step processes
@@ -16,7 +16,7 @@ The Log Node records custom messages to workflow execution logs during runtime. 
 
 <Info>Log messages appear in **Logs > Executions** and are visible in the workflow execution details for each run.</Info>
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Log Level" type="dropdown" required>
   Severity level for the log entry. Select based on the type of information being logged.
@@ -48,7 +48,7 @@ The Log Node records custom messages to workflow execution logs during runtime. 
 
 ## Output
 
-The Log Node returns a minimal response confirming the log was recorded.
+The Log node returns a minimal response confirming the log was recorded.
 
 **Success Response:**
 ```json
@@ -70,11 +70,11 @@ The Log Node returns a minimal response confirming the log was recorded.
 }
 ```
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Log Node">
-    In the workflow editor, click **Add Node** and select **Log** from the Utility Nodes section.
+  <Step title="Add the Log node">
+    In the workflow editor, click **Add Node** and select **Log** from the utility nodes section.
   </Step>
   
   <Step title="Select action">
@@ -224,8 +224,16 @@ The Log Node returns a minimal response confirming the log was recorded.
 
 <Tip>Place Log nodes at key decision points in your workflow to create a clear execution trail. This makes debugging complex multi-branch workflows significantly easier.</Tip>
 
-## What's Next
+## Next steps
 
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing and conditional logging
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic that determines when to log
-- [Workflow Testing](/developer-guide/workflows/testing) to verify log output during development
+<CardGroup cols={2}>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Process data and add conditional logging.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic that determines when to log.
+  </Card>
+  <Card title="Workflow testing" icon="vial" href="/v3/developer/configure/workflows/testing">
+    Verify log output during development.
+  </Card>
+</CardGroup>

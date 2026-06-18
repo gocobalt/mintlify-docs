@@ -2,7 +2,7 @@
 title: Setup
 description: Connect to your QuickBooks app for OAuth.
 ---
-To setup your QuickBooks app in Cobalt for OAuth, you will need the following credentials from your [Intuit Developer Account](https://developer.intuit.com/app/developer/homepage):
+To setup your QuickBooks app in Refold for OAuth, you will need the following credentials from your [Intuit Developer Account](https://developer.intuit.com/app/developer/homepage):
 - Client ID
 - Client Secret
 - Scopes
@@ -28,15 +28,15 @@ To create a QuickBooks app and acquire the above mentioned credentials, please f
 <img height="200" src="/images/Quickbooks/quickbooks_navigation.png" alt="Navigation for App setup"/>
 3. Click on `+ Create an App` button in the right and choose `QuickBooks Online and Payments`.
 4. Enter the unique App Name for your application, select the **mandatory scope** and click on `Create app` button.
-5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Cobalt** > Search for `QuickBooks` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Go to your [`Apps catalog`](https://app.gocobalt.io/apps) in **Refold** > Search for `QuickBooks` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
 6. In the OAuth app created for **QuickBooks**, depending on whether the application is in `Development` or `Production`, navigate to `Keys & credentials` in the left menu and got to `Redirect URIs` section.
-7. Remove the default URI given > Paste the Callback Url copied from **Cobalt** > Click on the `Save` button.
+7. Remove the default URI given > Paste the Callback Url copied from **Refold** > Click on the `Save` button.
 <img height="200" src="/images/Quickbooks/quickbooks_config.png" alt="Setting up QuickBooks Developer app"/>
 
 8. Go to `Keys` section in `Keys & credentials` and copy the **Client ID** and **Client Secret** from here.
 <img height="200" src="/images/Quickbooks/quickbooks_credentials.png" alt="Getting Credentials"/>
 
-#### Configuring credentials in Cobalt
+#### Configuring credentials in Refold
 App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
@@ -45,19 +45,19 @@ they would first need to install your application. This page lets you set up you
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
 #### Configuring Scopes
-Cobalt lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
 section. 
 
-For some applications Cobalt sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Cobalt also has the provision to add any 
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
 custom scopes supported by the respective platform.
 <img height="200" src="/images/Quickbooks/quickbooks_scopes.png" alt="OAuth Scopes"/>
 
-Once the scopes has been added to the application in Cobalt, go to your [Intuit Developer Account](https://developer.intuit.com/app/developer/homepage) and update the scopes as added on Cobalt.
+Once the scopes has been added to the application in Refold, go to your [Intuit Developer Account](https://developer.intuit.com/app/developer/homepage) and update the scopes as added on Refold.
 <Info>
 Scopes cannot be removed once they are assigned to an App.
 </Info>
 
-Select the OAuth App created for Cobalt > Click on `Production Settings` in the left menu > Scroll down to `Scope for the API` section > Select the Scope > Click on the `Save` button. 
+Select the OAuth App created for Refold > Click on `Production Settings` in the left menu > Scroll down to `Scope for the API` section > Select the Scope > Click on the `Save` button. 
 
 <Warning>
 If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
@@ -66,7 +66,7 @@ identical to the ones selected in the platform.
 
 #### Actions and triggers
 Once the above setup is completed, you can create orchestrations of your use-cases using QuickBooks actions and triggers. Following are the set of QuickBooks actions and triggers
-supported by Cobalt.
+supported by Refold.
 
 <Tabs>
   <Tab title="Actions">

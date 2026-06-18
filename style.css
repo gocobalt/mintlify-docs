@@ -12,6 +12,7 @@
   --rf-charcoal:        #191B20;
   --rf-charcoal-2:      #2D3036;
   --rf-electric-blue:   #0057FF;
+  --rf-electric-blue-light: #4D8AFF;
   --rf-sky-cyan:        #04CFFF;
   --rf-lime-mist:       #D8FF70;
   --rf-warn:            #F23E11;
@@ -37,10 +38,14 @@
   --rf-font-sans:  "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --rf-font-mono:  "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  /* Mintlify primary color overrides */
-  --primary: var(--rf-electric-blue);
-  --primary-light: #4D8AFF;
-  --primary-dark: #003FB5;
+  /* Mintlify primary color overrides.
+     Mintlify utilities use rgb(var(--primary) / <alpha>), so --primary and
+     --primary-light MUST be space-separated RGB channels, not hex. A hex value
+     here makes rgb(#0057FF / 1) invalid and silently breaks every masked card
+     icon (they render transparent). Keep these as channels. */
+  --primary: 0 87 255;          /* #0057FF */
+  --primary-light: 77 138 255;  /* #4D8AFF */
+  --primary-dark: #003FB5;      /* custom-only; used as a full color below */
 }
 
 /* ============================================================
@@ -130,8 +135,8 @@ h1, h2, h3, h4, h5, h6,
 }
 .dark #content-area [role="tab"][aria-selected="true"],
 .dark #content-area [class*="tab"] button[aria-selected="true"] {
-  color: var(--primary-light) !important;
-  border-bottom-color: var(--primary-light) !important;
+  color: var(--rf-electric-blue-light) !important;
+  border-bottom-color: var(--rf-electric-blue-light) !important;
 }
 
 /* Sidebar — square corners, mono group headers, sans link font.

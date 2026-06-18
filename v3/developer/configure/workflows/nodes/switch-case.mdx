@@ -1,12 +1,12 @@
 ---
-title: "Switch Case Node"
+title: "Switch Case node"
 description: "Route workflow execution to different paths based on condition evaluation with value comparison or custom code logic"
 sidebarTitle: "Switch Case"
 ---
 
-The Switch Case Node enables conditional routing in workflows by evaluating input parameters against multiple cases and directing execution to different node paths based on the results. It acts like a traditional switch-case statement, allowing you to create branching logic with multiple possible outcomes.
+The Switch Case node enables conditional routing in workflows by evaluating input parameters against multiple cases and directing execution to different node paths based on the results. It acts like a traditional switch-case statement, allowing you to create branching logic with multiple possible outcomes.
 
-## When to Use
+## When to use
 
 - Route records based on status values (New, Approved, Rejected, Pending)
 - Direct processing to different workflows based on record type or category
@@ -14,7 +14,7 @@ The Switch Case Node enables conditional routing in workflows by evaluating inpu
 - Create multi-path approval workflows based on amount thresholds
 - Implement complex business logic with multiple conditional branches
 
-<Info>For simple true/false conditional logic, use the [Rule Node](/developer-guide/workflows/nodes/rule) instead. Switch Case is designed for scenarios with more than two possible outcomes.</Info>
+<Info>For simple true/false conditional logic, use the [Rule node](/v3/developer/configure/workflows/nodes/rule) instead. Switch Case is designed for scenarios with more than two possible outcomes.</Info>
 
 ## Actions
 
@@ -59,7 +59,7 @@ Set the **Evaluator Type** to choose how the value for case matching is produced
   </Accordion>
 </AccordionGroup>
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Input Parameters" type="array">
   Key-value pairs of data to evaluate, passed into the evaluator for condition checking. Can include variables from previous nodes. Example: `[{"key": "status", "value": "{{netsuite_order.status}}"}]`
@@ -87,7 +87,7 @@ Set the **Evaluator Type** to choose how the value for case matching is produced
 
 <Warning>Case matching is case-sensitive and uses exact string comparison. Ensure your evaluation logic returns string values that exactly match your case statements.</Warning>
 
-## Supported Libraries
+## Supported libraries
 
 <AccordionGroup>
   <Accordion title="JavaScript Libraries">
@@ -116,7 +116,7 @@ Set the **Evaluator Type** to choose how the value for case matching is produced
 
 ## Output
 
-The Switch Case Node outputs evaluation results and routing information.
+The Switch Case node outputs evaluation results and routing information.
 ```json
 {
   "evaluated_value": "approved",
@@ -134,7 +134,7 @@ The Switch Case Node outputs evaluation results and routing information.
 | matched_case | The case statement that matched the evaluated value |
 | final_satisfied_nodes | Array of node IDs that will be executed next |
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
   <Step title="Add the node">
@@ -311,11 +311,11 @@ The Switch Case Node outputs evaluation results and routing information.
   </Accordion>
 </AccordionGroup>
 
-## Runtime Behavior
+## Runtime behavior
 
 <AccordionGroup>
   <Accordion title="Evaluation Process">
-    The Switch Case Node processes conditions in the following order:
+    The Switch Case node processes conditions in the following order:
 
     1. **Parameter Resolution:** Resolves variables from previous nodes into input parameters
     2. **Evaluation Execution:** Runs value extraction or custom code evaluation
@@ -357,7 +357,7 @@ The Switch Case Node outputs evaluation results and routing information.
     |-------|----------|
     | Case sensitivity mismatch | Normalize case in code: `toLowerCase()` or `upper()` |
     | Extra whitespace | Trim values: `trim()` or `strip()` |
-    | Spelling differences | Use Debug Node to inspect actual evaluated value |
+    | Spelling differences | Use Debug node to inspect actual evaluated value |
     | Type mismatch | Ensure code returns string, not number or boolean |
   </Accordion>
 
@@ -395,9 +395,19 @@ The Switch Case Node outputs evaluation results and routing information.
 
 <Tip>Use `console.log()` statements in JavaScript or `print()` in Python during Code Evaluator to debug your logic. Logs appear in workflow execution details.</Tip>
 
-## What's Next
+## Next steps
 
-- [Rule Node](/developer-guide/workflows/nodes/rule) for simple true/false conditional logic
-- [Merge Node](/developer-guide/workflows/nodes/merge) to combine multiple switch case paths
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for complex data processing
-- [Loop Node](/developer-guide/workflows/nodes/loop) to apply switch logic across arrays
+<CardGroup cols={2}>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Use simple true/false conditional logic.
+  </Card>
+  <Card title="Rule node" icon="code-merge" href="/v3/developer/configure/workflows/nodes/rule">
+    Combine multiple switch case paths.
+  </Card>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Run complex data processing.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Apply switch logic across arrays.
+  </Card>
+</CardGroup>

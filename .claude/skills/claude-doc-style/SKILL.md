@@ -92,7 +92,7 @@ landing pages. Use them rather than inventing a new order per page.
 
 ## Sentence style in four rules
 
-The full rule set with examples is in `references/sentence-style.md`. The four
+The full rule set with examples is in `references/sentence-style.md`. The five
 that matter most:
 
 1. **Talk to the reader as "you," in the present tense, doing the action now.**
@@ -110,6 +110,12 @@ that matter most:
 
 4. **Show the concrete token, ID, or path inline.** "(for example,
    `wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ`)". Readers trust docs that show real values.
+
+5. **Never use em dashes (`—`) in content.** They read as AI-generated. Rewrite
+   the sentence with a period, comma, colon, or parentheses instead. "Build in
+   the browser. No deploy needed." not "Build in the browser — no deploy." This
+   applies to page prose, card and step text, table cells, and callouts. (Hyphens
+   in compound words like `AI-native` are fine; the ban is the em dash only.)
 
 ---
 
@@ -143,7 +149,8 @@ directly onto components — see `mintlify-design` for the syntax, but the
 - Is every multi-step procedure in `<Steps>`?
 - Has every constraint/warning/shortcut been pulled into a callout?
 - Does the page route the reader somewhere at the end?
-- Read it aloud: any sentence you stumble on is too long — split it.
+- Are there zero em dashes (`—`) anywhere in the content?
+- Read it aloud: any sentence you stumble on is too long, so split it.
 
 If you're writing for Refold specifically, also run the `refold-voice` checklist
 (terminology, product names) and the `mintlify-design` checklist (component and

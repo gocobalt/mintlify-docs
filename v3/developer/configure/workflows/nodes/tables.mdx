@@ -1,12 +1,12 @@
 ---
-title: "Tables Node"
+title: "Tables node"
 description: "Store, retrieve, and manage structured data within your workflows using persistent or temporary tables"
 sidebarTitle: "Tables"
 ---
 
-The Tables Node provides in-workflow data storage with a structured row-and-column format. You can create temporary tables for processing data within a single execution, or persistent tables that store data across all workflows in your account. This enables use cases like collecting loop results, maintaining lookup data, tracking processing state, and building cross-workflow data pipelines.
+The Tables node provides in-workflow data storage with a structured row-and-column format. You can create temporary tables for processing data within a single execution, or persistent tables that store data across all workflows in your account. This enables use cases like collecting loop results, maintaining lookup data, tracking processing state, and building cross-workflow data pipelines.
 
-## When to Use
+## When to use
 
 - Collect and aggregate data from loop iterations for batch processing
 - Store intermediate results when processing data in multiple stages
@@ -17,7 +17,7 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
 
 <Info>Persistent tables can be created and managed from the dashboard at **More > Tables**. Non-persistent tables are created within workflows and exist only for the duration of the execution.</Info>
 
-## Table Types
+## Table types
 
 | Type | Scope | Lifespan | Dashboard Visible |
 |------|-------|----------|-------------------|
@@ -282,11 +282,11 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
   </Accordion>
 </AccordionGroup>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Tables Node">
-    In the workflow editor, click **Add Node** and select **Tables** from the Utility Nodes section.
+  <Step title="Add the Tables node">
+    In the workflow editor, click **Add Node** and select **Tables** from the utility nodes section.
   </Step>
   
   <Step title="Select an action">
@@ -317,11 +317,11 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
     When fetching multiple contacts from NetSuite in a loop, store each result in a non-persistent table for batch processing afterward.
 
     **Workflow Structure:**
-    1. **Create Table Node** - Create a non-persistent table before the loop
-    2. **Loop Node** - Iterate over NetSuite contact IDs
-    3. **NetSuite Node** (inside loop) - Fetch contact details
-    4. **Tables Node** (inside loop) - Add each contact to the table
-    5. **Tables Node** (after loop) - Get all records for batch processing
+    1. **Create Table node** - Create a non-persistent table before the loop
+    2. **Loop node** - Iterate over NetSuite contact IDs
+    3. **NetSuite node** (inside loop) - Fetch contact details
+    4. **Tables node** (inside loop) - Add each contact to the table
+    5. **Tables node** (after loop) - Get all records for batch processing
 
     **Step 1 - Create Table:**
     | Field | Value |
@@ -367,7 +367,7 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
     | vendor_code | `{{sap_invoice.vendorCode}}` |
     | Table ID | `696d3c65b46e93331ac68dae` |
 
-    **Conditional Processing with Rule Node:**
+    **Conditional Processing with Rule node:**
     
     Condition: `{{search_records.body.records.length}}` greater than `0`
     - **True branch:** Use `{{search_records.body.records[0].payment_terms_days}}`
@@ -392,7 +392,7 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
     | payment_id | `{{tipalti_payment.paymentId}}` |
     | Table ID | `696d3c65b46e93331ac68dae` |
 
-    **Step 2 - Rule Node (Check if exists):**
+    **Step 2 - Rule node (Check if exists):**
     
     Condition: `{{search_records.body.records.length}}` equals `0`
     - **True branch:** Continue to process payment
@@ -473,8 +473,16 @@ The Tables Node provides in-workflow data storage with a structured row-and-colu
   </Accordion>
 </AccordionGroup>
 
-## What's Next
+## Next steps
 
-- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over table records or collect data into tables
-- [Rule Node](/developer-guide/workflows/nodes/rule) to implement conditional logic based on table search results
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) to transform table data before processing
+<CardGroup cols={2}>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Iterate over table records or collect data into tables.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Implement conditional logic based on table search results.
+  </Card>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Transform table data before processing.
+  </Card>
+</CardGroup>

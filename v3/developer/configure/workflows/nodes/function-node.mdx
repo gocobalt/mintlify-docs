@@ -1,12 +1,12 @@
 ---
-title: "Functions Node"
+title: "Functions node"
 description: "Execute reusable JavaScript functions for data transformation, array operations, encryption, and custom logic"
 sidebarTitle: "Functions"
 ---
 
-The Functions Node executes reusable JavaScript functions within your workflows. Instead of writing the same code in multiple Custom Code nodes, create functions once and call them across any workflow. Functions can be organization-specific custom functions you create, or pre-defined library functions provided by Refold.
+The Functions node executes reusable JavaScript functions within your workflows. Instead of writing the same code in multiple Custom Code nodes, create functions once and call them across any workflow. Functions can be organization-specific custom functions you create, or pre-defined library functions provided by Refold.
 
-## When to Use
+## When to use
 
 - Execute reusable logic across multiple workflows without duplicating code
 - Find specific elements in arrays from API responses
@@ -17,7 +17,7 @@ The Functions Node executes reusable JavaScript functions within your workflows.
 
 <Info>Functions are organization-specific. Create and manage functions under **More > Functions** in your dashboard.</Info>
 
-## Input Parameters
+## Input parameters
 
 <ParamField path="Select internal function" type="dropdown" required>
   Choose the function to execute from your organization's Functions Library. Functions are created and managed in **More > Functions**. After selecting a function, input fields are dynamically generated based on the function's parameter requirements.
@@ -27,7 +27,7 @@ The Functions Node executes reusable JavaScript functions within your workflows.
   Map function output to custom field names. Click **+ Add Field** to define additional output fields that will be included in the node's response alongside the function result.
 </ParamField>
 
-### Dynamic Input Fields
+### Dynamic input fields
 
 When you select a function, input fields are automatically generated based on that function's parameters. For example, selecting "Find element in array" displays:
 
@@ -38,7 +38,7 @@ When you select a function, input fields are automatically generated based on th
 
 <Tip>Refer to the function's code in **More > Functions** to understand which parameters are required and which are optional.</Tip>
 
-## Pre-defined Library Functions
+## Pre-defined library functions
 
 Refold provides several pre-defined library functions that are available by default. These functions cannot be edited but can be used immediately in any workflow.
 
@@ -80,7 +80,7 @@ Refold provides several pre-defined library functions that are available by defa
 
 <Info>Your organization may have additional custom functions created for specific use cases. Check **More > Functions** to see all available functions.</Info>
 
-## Creating Custom Functions
+## Creating custom functions
 
 Create reusable functions for your organization that can be called from any workflow.
 
@@ -98,11 +98,11 @@ Create reusable functions for your organization that can be called from any work
   </Step>
 
   <Step title="Save the function">
-    Click **Create** to save. The function is now available in the Functions Node dropdown across all workflows.
+    Click **Create** to save. The function is now available in the Functions node dropdown across all workflows.
   </Step>
 </Steps>
 
-### Supported JavaScript Libraries
+### Supported JavaScript libraries
 
 The following npm modules can be used in your custom function code:
 
@@ -122,7 +122,7 @@ The following npm modules can be used in your custom function code:
 
 <Tip>Need a library that's not listed? [Contact support](mailto:integrations@gocobalt.io) to request additional libraries.</Tip>
 
-### Library Usage Examples
+### Library usage examples
 
 <AccordionGroup>
   <Accordion title="Using axios for HTTP requests">
@@ -221,11 +221,11 @@ The output structure depends on the function being executed. Each function retur
   </Accordion>
 </AccordionGroup>
 
-## Adding to Your Workflow
+## Adding to your workflow
 
 <Steps>
-  <Step title="Add the Functions Node">
-    In the workflow editor, click **Add Node** and select **Functions** from the Utility Nodes section.
+  <Step title="Add the Functions node">
+    In the workflow editor, click **Add Node** and select **Functions** from the utility nodes section.
   </Step>
   
   <Step title="Select a function">
@@ -270,7 +270,7 @@ The output structure depends on the function being executed. Each function retur
     }
 ```
 
-    **Use Case:** Use the returned index with a Rule Node to check if the vendor exists (index >= 0) before proceeding with updates.
+    **Use Case:** Use the returned index with a Rule node to check if the vendor exists (index >= 0) before proceeding with updates.
   </Accordion>
 
   <Accordion title="Group Invoices by Status">
@@ -385,11 +385,21 @@ The output structure depends on the function being executed. Each function retur
   </Accordion>
 </AccordionGroup>
 
-<Tip>Use the [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off logic that doesn't need to be reused. Reserve functions for code that will be used across multiple workflows.</Tip>
+<Tip>Use the [Custom Code node](/v3/developer/configure/workflows/nodes/custom-code) for one-off logic that doesn't need to be reused. Reserve functions for code that will be used across multiple workflows.</Tip>
 
-## What's Next
+## Next steps
 
-- [Custom Code Node](/developer-guide/workflows/nodes/custom-code) for one-off custom logic
-- [Rule Node](/developer-guide/workflows/nodes/rule) to add conditional logic based on function output
-- [Loop Node](/developer-guide/workflows/nodes/loop) to iterate over grouped data from functions
-- [Transform Node](/developer-guide/workflows/nodes/transform) for JSONata-based data transformation
+<CardGroup cols={2}>
+  <Card title="Custom Code node" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+    Write one-off custom logic.
+  </Card>
+  <Card title="Rule node" icon="bolt" href="/v3/developer/configure/workflows/nodes/rule">
+    Add conditional logic based on function output.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/developer/configure/workflows/nodes/loop">
+    Iterate over grouped data from functions.
+  </Card>
+  <Card title="Transform node" icon="shuffle" href="/v3/developer/configure/workflows/nodes/transform">
+    Run JSONata-based data transformation.
+  </Card>
+</CardGroup>
