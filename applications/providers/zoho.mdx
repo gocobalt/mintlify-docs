@@ -19,6 +19,39 @@ To setup your Zoho CRM app in Refold for OAuth, you will need the following cred
 
 <Info>If you haven't already created an app in Zoho CRM, you'd need to create one.</Info>
 
+### Data centers and regions
+
+Zoho hosts customer accounts across several regional data centers (US, EU, India, Australia, Japan, Canada, and Saudi Arabia), each with its own API domain. **You don't need to know or select which data center a customer belongs to** — Refold detects it automatically during the OAuth flow.
+
+Here's how it works:
+
+1. Refold always starts authorization at the global Zoho accounts endpoint, `accounts.zoho.com`.
+2. When your customer signs in, Zoho returns their region (the `location` and `accounts-server` values) along with the authorization code.
+3. Refold exchanges the code at that customer's regional accounts server and reads the `api_domain` from the token response.
+4. Every subsequent API call is routed to that `api_domain`, so requests always land in the customer's correct data center.
+
+Because this resolution happens per linked account, a single Zoho connector in Refold works for customers across **all** Zoho data centers — there is no per-region setup on your side.
+
+Once a customer connects successfully through OAuth 2.0, Refold surfaces the resolved **base URL / server domain** on that linked account's Zoho connected page, so you can confirm which data center the account is routed to.
+
+| Data center | Accounts server | API domain |
+|-------------|-----------------|------------|
+| United States | `accounts.zoho.com` | `www.zohoapis.com` |
+| Europe | `accounts.zoho.eu` | `www.zohoapis.eu` |
+| India | `accounts.zoho.in` | `www.zohoapis.in` |
+| Australia | `accounts.zoho.com.au` | `www.zohoapis.com.au` |
+| Japan | `accounts.zoho.jp` | `www.zohoapis.jp` |
+| Canada | `accounts.zohocloud.ca` | `www.zohoapis.ca` |
+| Saudi Arabia | `accounts.zoho.sa` | `www.zohoapis.sa` |
+
+<Warning>
+The **China** data center (`accounts.zoho.com.cn`) is **not supported**. Zoho operates China as a separate region that the global `accounts.zoho.com` authorization flow cannot reach, so customers hosted there cannot connect through this connector.
+</Warning>
+
+<Note>
+Use a single set of OAuth credentials (Client ID and Client Secret) created in your [Zoho Developer Console](https://api-console.zoho.com/). Refold handles routing to the right regional API domain for you — you do not need separate credentials or connectors per region.
+</Note>
+
 ### Creating an app in Zoho CRM
 
 To create a Zoho CRM app and acquire the above mentioned credentials, please follow the steps mentioned below:

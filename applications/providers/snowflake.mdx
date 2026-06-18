@@ -1,74 +1,221 @@
 ---
 title: Connect
-description: Connect with the Linked Account's Snowflake account.
+description: Connect a linked account's Snowflake account using key-pair, OAuth, or username/password authentication.
 ---
+
 <Note>
-Snowflake is an **API Key** based integration and does not require the setup of an app.
+Snowflake is a credential-based integration and does not require you to set up an app. A linked account connects by providing credentials for one of the supported authentication methods below.
 </Note>
 
-### Required Credentials of a Linked Account
+Snowflake supports three **mutually exclusive** authentication methods. You pick one method and provide the complete set of fields it requires — you don't combine fields across methods.
 
-To successfully connect with the **Snowflake** integration, a Linked Account or an end-user will need to provide the following to connect:
+## Choose an authentication method
 
-1. Private Key
-2. Passphrase
-3. Username
-4. Account Identifier
+| Method | Best for | REST actions | SQL actions |
+|--------|----------|:------------:|:-----------:|
+| **JWT Key-Pair** | Most setups — recommended default | ✅ | ✅ |
+| **M2M OAuth (client credentials)** | Access managed through an identity provider (e.g. Okta) | ✅ | ✅ |
+| **Username / Password** | Quick SQL-only setup | ❌ | ✅ |
+
+<Warning>
+**Why every field on the connect form shows as "optional."** All three methods share a single set of fields on the connect form. Because the methods are mutually exclusive, the form can't know which one you intend, so it can't mark any individual field as required — and labels them all optional. This does **not** mean the fields are truly optional.
+
+You must provide the **complete set of fields required for exactly one method** (see the tables below). Leaving out a field that's required for your chosen method, or mixing fields from two methods, will cause the connection to fail.
+</Warning>
+
+## Required fields by method
+
+<Tabs>
+  <Tab title="JWT Key-Pair">
+  Works for both REST and SQL actions. This is the recommended method for most linked accounts.
+
+  | Field | Required? | Notes |
+  |-------|-----------|-------|
+  | `account_id` | **Yes** | Account identifier, e.g. `UNXXJRRCZ12539`. Dots are converted to dashes and the value is uppercased internally when building JWT claims. |
+  | `username` | **Yes** | The Snowflake username. |
+  | `private_key` | **Yes** | Full PEM contents of your private key, or the base64 PEM body without the header/footer lines. |
+  | `passphrase` | Conditional | Required **only** if the private key was encrypted with a passphrase. |
+  | `database`, `warehouse`, `role`, `schema` | Optional | Used by SQL actions only; ignored by REST actions. `schema` defaults to `PUBLIC`. |
+  | `jdbc_url` | Optional | Alternative to the individual fields above. URL-encode the `private_key` value (`+` → `%2B`, `/` → `%2F`). |
+  </Tab>
+
+  <Tab title="M2M OAuth">
+  Client-credentials flow. Works for both REST and SQL actions. Credentials come from Snowflake or a third-party identity provider.
+
+  | Field | Required? | Notes |
+  |-------|-----------|-------|
+  | `account_id` | **Yes** | Account identifier, e.g. `UNXXJRRCZ12539`. |
+  | `client_id` | **Yes** | From Snowflake or your IdP. Stored encrypted. |
+  | `client_secret` | **Yes** | From Snowflake or your IdP. Stored encrypted. |
+  | `token_url` | **Yes** | The OAuth token endpoint URL. |
+  | `scope` | Optional | Can embed a role as `session:role:<ROLE_NAME>` — the role is extracted automatically. |
+  | `database`, `warehouse`, `role`, `schema` | Optional | Used by SQL actions only. |
+  | `jdbc_url` | Optional | Alternative to the individual fields above. |
+
+  <Note>
+  Legacy field names (`oauthclientid`, `oauthclientsecret`, `oauthtokenrequesturl`, `oauthscope`) are still accepted, but new setups should use `client_id`, `client_secret`, `token_url`, and `scope`.
+  </Note>
+  </Tab>
+
+  <Tab title="Username / Password">
+  <Warning>
+  Username/Password works for **SQL actions only**. It does **not** work for V3 REST actions — those calls fail with a 401/403 because no authorization header is set.
+  </Warning>
+
+  | Field | Required? | Notes |
+  |-------|-----------|-------|
+  | `account_id` | **Yes** | Account identifier, e.g. `UNXXJRRCZ12539`. |
+  | `username` | **Yes** | The Snowflake username. |
+  | `password` | **Yes** | The Snowflake user password. |
+  | `database`, `warehouse`, `role`, `schema` | Optional | Used by SQL actions only. `schema` defaults to `PUBLIC`. |
+  | `jdbc_url` | Optional | Alternative to the individual fields above. |
+  </Tab>
+</Tabs>
 
 <Info>
-To understand how a Linked Account can get the above mentioned credentials, refer below.
+`database`, `warehouse`, `role`, and `schema` only apply to SQL actions and are ignored by REST actions. For REST actions, these values are passed per-action as parameters rather than in the connection.
 </Info>
 
+### Alternative: JDBC connection string
 
-### Getting Credentials of Snowflake
+The connector also accepts a full **JDBC connection string** in place of the individual fields. Provide it in the `jdbc_url` field as a single string citing your Snowflake account identifier, your credentials, and the warehouse, database, and schema. The credentials you include depend on the auth method:
 
-To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
-<img height="200" src="/images/Snowflake/snowflake_config.png" alt="Connect a Linked Account"/>
-
-1. Log in to your [Snowflake account](https://app.snowflake.com/), click on your profile in the bottom left and under `Account` click on `Copy Account Identifier`. This is your Account Identifier which you need for authentication.
-<img height="200" src="/images/Snowflake/snowflake_id.png" alt="Get Account Identifier"/>
-2. Click on the `My Profile` option in the bottom left and copy the `Username` given.
-<img height="200" src="/images/Snowflake/snowflake_username.png" alt="Snowflake Username"/>
-
-3. Open **Terminal/Bash** in your laptop(Linux/Mac/Windows) and type the following command:
-```bash Command
-openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out private_key.p8 -scrypt
+**Username / Password** — include `user` and `password`:
 ```
-4. You will be prompted to provide `Encryption Password`. Provide a password, verify it and save it with you. This is your `Passphrase` for authentication.
-<img height="200" src="/images/Snowflake/snowflake_pass.png" alt="Snowflake Passphrase"/>
-This Generates a file called `private_key.p8` in the current directory.
+jdbc:snowflake://<ACCOUNT_IDENTIFIER>.snowflakecomputing.com/?user=<USERNAME>&password=<PASSWORD>&warehouse=<WAREHOUSE>&db=<DATABASE>&schema=<SCHEMA>
+```
 
-5. Open your `private_key.p8` file in the terminal by using the following command and save it. This is your `Private Key`.
-```base Command
-cat private_key.p8
+**Key-Pair** — include `user` and `private_key` (plus `private_key_passphrase` if the key is encrypted):
 ```
-<img height="200" src="/images/Snowflake/snowflake_private.png" alt="Getting Private Key"/>
-6. Generate `Public Key` using your passphrase from the 4th step by using the following command:
-```bash Command
- openssl rsa -in private_key.p8 -pubout -out public_key.pem -passin pass:<your_passphrase>
+jdbc:snowflake://<ACCOUNT_IDENTIFIER>.snowflakecomputing.com/?user=<USERNAME>&private_key=<URL_ENCODED_KEY>&private_key_passphrase=<PASSPHRASE>&warehouse=<WAREHOUSE>&db=<DATABASE>&schema=<SCHEMA>
 ```
-7. Open your `public_key.pem` file that was generated in last step using the command:
-```base Command
-cat public_key.pem 
-```
-Copy the **Public Key** displayed in your terminal.
-<img height="200" src="/images/Snowflake/snowflake_public.png" alt="Getting Public Key"/>
-8. Go to Snowflake and click on your profile in the bottom left. Check if your current role is `ACCOUNTADMIN` or not under **Switch Role**. If not, switch role to ACCOUNTADMIN.
-<Info>
-ACCOUNTADMIN Role is necessary, otherwise you won't be able to assign public key to user in the next step.
-</Info>
-9. In Snowflake click on `Worksheets` under **Projects** in the side menu. Click on `+` icon to create a new worksheet.
-10. Run the following statement in your worksheet by replacing the **Username** and **Public_key** with your own credentials.
-```base Statement
-ALTER USER <Username> SET RSA_PUBLIC_KEY="<Public_key>"
-```
-<img height="200" src="/images/Snowflake/snowflake_assign.png" alt="Assigning Public Key to user"/>
 
-The Linked Account or end-user now have all the credentials required to connect with Snowflake.
+For example: `jdbc:snowflake://XRUXYDR-HY58445.snowflakecomputing.com/?user=JSMITH&password=••••&warehouse=COMPUTE_WH&db=MY_DB&schema=PUBLIC`
 
-#### Actions and triggers
-In Refold, you can create orchestrations of your use-cases using Snowflake actions and triggers. Following are the set of Snowflake actions and triggers
-supported by Refold.
+<Warning>
+If you include a `private_key` in the connection string, URL-encode it — raw base64 contains `+` and `/`, which corrupt the URL during parsing (`+` → `%2B`, `/` → `%2F`). The string must start with `jdbc:snowflake://`.
+</Warning>
+
+## Set up JWT Key-Pair authentication
+
+To generate a key pair and register the public key with Snowflake:
+
+<Steps>
+  <Step title="Get your account identifier">
+  Log in to your [Snowflake account](https://app.snowflake.com/), click your profile in the bottom left, and under **Account** click **Copy Account Identifier**. This is your `account_id`.
+  <img height="200" src="/images/Snowflake/snowflake_id.png" alt="Get Account Identifier"/>
+  </Step>
+  <Step title="Get your username">
+  Click **My Profile** in the bottom left and copy the **Username**.
+  <img height="200" src="/images/Snowflake/snowflake_username.png" alt="Snowflake Username"/>
+  </Step>
+  <Step title="Generate a private key">
+  Open a terminal and run the command below. You'll be prompted for an encryption password — this is your `passphrase`. Save it. This generates `private_key.p8` in the current directory.
+  ```bash
+  openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out private_key.p8 -scrypt
+  ```
+  <img height="200" src="/images/Snowflake/snowflake_pass.png" alt="Snowflake Passphrase"/>
+
+  To generate an **unencrypted** key (no passphrase), use `-nocrypt` instead of `-scrypt`.
+  </Step>
+  <Step title="Copy your private key">
+  Print the private key and copy its contents. This is your `private_key`.
+  ```bash
+  cat private_key.p8
+  ```
+  <img height="200" src="/images/Snowflake/snowflake_private.png" alt="Getting Private Key"/>
+  </Step>
+  <Step title="Generate the public key">
+  Generate the public key using the passphrase from step 3, then print and copy it.
+  ```bash
+  openssl rsa -in private_key.p8 -pubout -out public_key.pem -passin pass:<your_passphrase>
+  cat public_key.pem
+  ```
+  <img height="200" src="/images/Snowflake/snowflake_public.png" alt="Getting Public Key"/>
+  </Step>
+  <Step title="Register the public key in Snowflake">
+  In Snowflake, confirm your current role is `ACCOUNTADMIN` (switch role if needed), open a new **Worksheet** under **Projects**, and run the statement below, replacing the username and public key with your own.
+  ```sql
+  ALTER USER <Username> SET RSA_PUBLIC_KEY="<Public_key>"
+  ```
+  <img height="200" src="/images/Snowflake/snowflake_assign.png" alt="Assigning Public Key to user"/>
+  <Info>
+  The `ACCOUNTADMIN` role is required to assign a public key to a user.
+  </Info>
+  </Step>
+</Steps>
+
+The linked account now has all the credentials needed to connect with the **JWT Key-Pair** method.
+
+## Set up M2M OAuth authentication
+
+You can use any OAuth provider. The steps below use Okta as the identity provider.
+
+<Note>
+Prerequisites: Okta admin access, the Snowflake `ACCOUNTADMIN` role, and your Snowflake account URL (e.g. `https://ORGNAME-ACCOUNT.snowflakecomputing.com`).
+</Note>
+
+<Steps>
+  <Step title="Create an Okta API Services application">
+  In the Okta Admin Console, go to **Applications → Applications → Create App Integration**, select **API Services**, name it (e.g. `snowflake-client-app`), and save. Note the **Client ID** and **Client Secret**.
+  </Step>
+  <Step title="Create an authorization server">
+  Go to **Security → API → Authorization Servers → Add Authorization Server**. Set the **Audience** to your exact Snowflake account URL (e.g. `https://ORGNAME-ACCOUNT.snowflakecomputing.com`).
+  </Step>
+  <Step title="Create a scope">
+  Inside the authorization server, go to **Scopes → Add Scope** and create `session:role:SYSADMIN` (replace `SYSADMIN` with the role you want to grant). This scope tells Snowflake which role the OAuth client will use.
+  </Step>
+  <Step title="Create an access policy and rule">
+  Go to **Access Policies → Add Policy** and assign it to your OAuth application. Add a rule that enables **only** the Client Credentials grant type and sets the allowed scope to `session:role:SYSADMIN`.
+  </Step>
+  <Step title="Get the metadata URLs">
+  Open the **Metadata URI** on your authorization server and note the **Issuer**, **token_endpoint** (`.../v1/token`), and **jwks_uri** (`.../v1/keys`).
+  </Step>
+  <Step title="Configure the Snowflake security integration">
+  Run the following in Snowflake, substituting the values from the previous step:
+  ```sql
+  CREATE OR REPLACE SECURITY INTEGRATION okta_oauth
+    TYPE = EXTERNAL_OAUTH
+    ENABLED = TRUE
+    EXTERNAL_OAUTH_TYPE = OKTA
+    EXTERNAL_OAUTH_ISSUER = '<issuer>'
+    EXTERNAL_OAUTH_JWS_KEYS_URL = '<jwks_uri>'
+    EXTERNAL_OAUTH_AUDIENCE_LIST = ('<your Snowflake account URL>')
+    EXTERNAL_OAUTH_TOKEN_USER_MAPPING_CLAIM = 'sub'
+    EXTERNAL_OAUTH_SNOWFLAKE_USER_MAPPING_ATTRIBUTE = 'LOGIN_NAME';
+  ```
+  </Step>
+  <Step title="Create a Snowflake user mapped to the OAuth client">
+  In the client-credentials flow, the JWT `sub` claim is the Okta **Client ID**, and Snowflake maps `sub` → `LOGIN_NAME`. Create a Snowflake user whose `LOGIN_NAME` equals your Okta Client ID, otherwise Snowflake returns `390100: Incorrect username or password` even with a valid token.
+  ```sql
+  CREATE USER IF NOT EXISTS okta_oauth_user
+    LOGIN_NAME = '<your Okta Client ID>'
+    DISPLAY_NAME = 'Okta OAuth Client'
+    DEFAULT_ROLE = SYSADMIN
+    DEFAULT_WAREHOUSE = COMPUTE_WH;
+  GRANT ROLE SYSADMIN TO USER okta_oauth_user;
+  ```
+  </Step>
+  <Step title="Provide the credentials when connecting">
+  Enter `account_id`, `client_id`, `client_secret`, `token_url` (the token endpoint), and optionally `scope` on the connect form.
+  </Step>
+</Steps>
+
+<Warning>
+DPoP-enabled OAuth apps will not work — Snowflake expects standard Bearer tokens. If your IdP app has DPoP enabled, you'll get `invalid_dpop_proof` errors. Disable DPoP or recreate the app without it.
+</Warning>
+
+## Set up Username / Password authentication
+
+Provide `account_id`, `username`, and `password` on the connect form. Remember this method works for **SQL actions only** — it does not support V3 REST actions.
+
+## Verify the connection
+
+Once connected, the connector shows a green **Connected** badge on the Settings page, and the app appears as connected under **Linked Account → Integrations**.
+
+## Actions and triggers
+
+In Refold, you can build orchestrations of your use cases using Snowflake actions and triggers. The following are supported:
 
 <Tabs>
   <Tab title="Actions">

@@ -1,290 +1,130 @@
 ---
 title: "Quick Start"
-description: "Get your first integration running in 5 minutes"
+description: "Connect a real app and trigger your first integration through the Refold API in about 10 minutes."
 ---
 
+Refold connects your product to third-party apps through linked accounts, connectors, and workflows. This quickstart runs that loop end to end: get an API key, configure an app, connect it to a linked account, and run your first integration through the API. Plan about 10 minutes.
 
-Get up and running with Refold in under 10 minutes. You'll test a complete integration workflow and see real data flowing between applications.
+## Prerequisites
 
-## What You'll Accomplish
+- **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai). Don't have one? [Contact us](https://www.refold.ai/contact-us) to get set up.
+- **No third-party credentials needed.** This quickstart uses the **Playground app** (`playground_app`), a built-in test connector for running the full loop.
 
-By the end of this guide, you'll have:
-- ✅ Tested a live integration workflow
-- ✅ Seen data sync between your app and a third-party platform
-- ✅ Understanding of how Refold's core components work together
+<Note>
+  Every API call uses the base URL `https://app.refold.ai` and sends your API key in the `x-api-key` header. Account-scoped calls also send the customer's `linked_account_id` as a header.
+</Note>
 
-<Info>
-**Before you start**: You'll need a Refold account. [Sign up here](https://app.gocobalt.io/) if you haven't already.
-</Info>
-
----
-
-## Step 1: Choose Your Test Integration
-
-Navigate to your Refold dashboard and pick an integration to test.
+## Get your API key
 
 <Steps>
-<Step title="Go to Apps">
-In your Refold dashboard, click **Apps** in the sidebar. You'll see all available integrations.
+  <Step title="Open Settings > Credentials">
+    In the [Refold Console](https://uat.refold.ai/settings/credentials), go to **Settings > Credentials**.
+  </Step>
+  <Step title="Copy your key">
+    Copy your API key and export it as an environment variable so the commands below can read it.
 
-<img height="200" src="/images/quickstart/apps-sidebar.png" alt="Apps section in Refold sidebar navigation" />
-</Step>
-
-<Step title="Pick an Integration">
-Choose any integration you have credentials for (HubSpot, Salesforce, Slack, etc.). For this guide, we'll use **HubSpot** as an example.
-
-<img height="300" src="/images/quickstart/apps-catalog.png" alt="Apps catalog showing available integrations" />
-</Step>
-
-<Step title="Check Demo Workflows">
-Click on your chosen integration → **Workflows** tab. You'll see pre-built demo workflows ready to test.
-
-<img height="250" src="/images/quickstart/demo-workflows.png" alt="Demo workflows available in HubSpot integration" />
-</Step>
+    ```bash
+    export REFOLD_API_KEY="your-api-key-here"
+    ```
+  </Step>
 </Steps>
 
----
+## Configure the Playground app
 
-## Step 2: Configure Integration Credentials
-
-You need to authenticate with the third-party app to test data flow.
+Before a customer can connect an app, configure how Refold authenticates with it. The Playground app uses key-based auth.
 
 <Steps>
-<Step title="Check Authentication Type">
-Go to **Apps** → [Your Integration] → **Settings**. You'll see either:
-- **OAuth 2.0**: Requires app credentials (Client ID, Secret)
-- **Key-based**: Requires API keys
+  <Step title="Open the Playground app">
+    Go to **Apps > Playground app > Settings**.
+  </Step>
+  <Step title="Choose the auth method">
+    Select **Key-based**, add the **API key**, and click **Save**.
+  </Step>
+</Steps>
 
-<img height="200" src="/images/quickstart/auth-type-settings.png" alt="Integration settings showing authentication type" />
-</Step>
+<Note>
+  Real connectors may use OAuth 2.0 instead of key-based auth. See [Authentication](/v3/developer/configure/app-configuration/authentication) to set up an OAuth app for production.
+</Note>
 
-<Step title="Set Up Credentials">
+## Create a linked account
 
-<Tabs>
-<Tab title="OAuth 2.0 (Recommended)">
-```text
-1. Click "Use Our Credentials" for quick testing
-   OR
-2. Click "Read Documentation" to set up your own app
-3. Add Client ID and Client Secret in Settings
-4. Click Save
+A linked account represents one of your customers. Create one through the API. You choose the `linked_account_id`, then reuse it in every account-scoped call.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/linked-account \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "linked_account_id": "demo-user-1",
+    "name": "Demo User"
+  }'
 ```
-</Tab>
 
-<Tab title="Key-based">
-```text
-1. Click "Read Documentation" to get API keys
-2. Follow the setup guide for your integration
-3. Add API Key and other credentials in Settings
-4. Click Save
+```json Output
+{ "success": true }
 ```
-</Tab>
-</Tabs>
 
-<img height="250" src="/images/quickstart/oauth-credentials-setup.png" alt="OAuth credentials configuration in app settings" />
-</Step>
-</Steps>
+## Connect the app
 
-<Tip>
-**Quick tip**: Use "Our Credentials" for testing. You can switch to your own credentials later for production.
-</Tip>
+Generate a [Connect portal](/v3/embedded/frontend/overview) URL for the linked account, then open it to connect the app.
 
----
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
 
-## Step 3: Set Up Response Testing
-
-Configure where you'll receive the workflow response to see the integration working.
-
-<Steps>
-<Step title="Get Your Test URL">
-1. Go to [webhook.site](https://webhook.site)
-2. Copy **Your unique URL** (looks like: `https://webhook.site/abc123...`)
-
-<img height="200" src="/images/quickstart/webhook-site-url.png" alt="Webhook.site showing unique URL for testing" />
-</Step>
-
-<Step title="Find the API Proxy">
-1. In your chosen workflow, look for the **Native node** at the end
-2. Note the **Action name** (e.g., "Create Contact", "Send Message")
-
-<img height="250" src="/images/quickstart/workflow-native-node.png" alt="Workflow showing native node with API proxy action" />
-</Step>
-
-<Step title="Configure the Proxy">
-1. Go to **Developers** → **API Proxies**
-2. Search for your Action name
-3. Click on it and select **API Call** tab
-4. Paste your webhook.site URL in **Request URL**
-5. Click **Save API Call**
-
-<img height="300" src="/images/quickstart/api-proxy-configuration.png" alt="API Proxy configuration with webhook URL setup" />
-</Step>
-</Steps>
-
----
-
-## Step 4: Connect a Test User
-
-Create a linked account to represent your end user and authenticate them.
+```json Output
+{ "hosted_url": "https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
 
 <Steps>
-<Step title="Create Linked Account">
-1. Go to **Linked Accounts** → **+ Add Account**
-2. Enter a test name (e.g., "Test User")
-3. Click **Create**
-
-<img height="200" src="/images/quickstart/create-linked-account.png" alt="Creating a new linked account" />
-</Step>
-
-<Step title="Generate Hosted URL">
-1. Open your test linked account
-2. Click **Get Hosted URL** → **Generate Hosted URL**
-3. Copy the URL and open it in a new tab
-
-<img height="250" src="/images/quickstart/generate-hosted-url.png" alt="Generating hosted URL for linked account" />
-</Step>
-
-<Step title="Connect Integration">
-1. In the hosted portal, find your integration
-2. Click **Connect** and complete authentication
-3. Enable the workflow you want to test
-4. Click **Save**
-
-<img height="300" src="/images/quickstart/hosted-portal-connect.png" alt="Hosted portal showing integration connection interface" />
-</Step>
+  <Step title="Open the Connect portal">
+    Open the `hosted_url` from the response in your browser.
+  </Step>
+  <Step title="Connect the Playground app">
+    Find the **Playground app**, click **Connect**, and complete authentication.
+  </Step>
 </Steps>
 
-<Info>
-The **Hosted Portal** is Refold's no-code authentication UI. Later, you can build your own UI using our SDKs.
-</Info>
+<Note>
+  The Connect portal is Refold's hosted connection UI. You can build your own with the [frontend SDKs](/v3/embedded/frontend/overview).
+</Note>
 
----
+## Trigger your first integration
 
-## Step 5: Test Your Integration
+With the app connected, run a published workflow for the linked account through the workflow API. Pass the workflow's ID in the path and the Playground app's slug, `playground_app`, in the `slug` header.
 
-Now trigger the workflow and watch data flow.
+<Note>
+  The workflow must be **published** before you can run it. Get its ID from [List Workflows](/v3/api-reference/workflows/list-workflows) or the Console.
+</Note>
 
-<Steps>
-<Step title="Trigger the Workflow">
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/workflow/YOUR_WORKFLOW_ID/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "slug: playground_app" \
+  -H "Content-Type: application/json" \
+  -d '{ "payload": { "email": "jane@example.com" } }'
+```
 
-**For Event-Based Workflows:**
-1. Go to **Try API** in Refold
-2. Select your event (e.g., "Contact Created")
-3. Add test data:
-
-```json
+```json Output
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "company": "Test Company"
+  "message": "Workflow execution started",
+  "execution_id": "6a314c54d4616e99e7fa5a02"
 }
 ```
 
-4. Click **Fire Event**
+Refold acknowledges with an `execution_id` and starts the run. Open **Logs** in the Console to follow it. To get the workflow output inline instead, add the `sync_execution: true` header. For every option, see [Execute Workflow](/v3/api-reference/workflows/execute-workflow).
 
-<img height="300" src="/images/quickstart/try-api-fire-event.png" alt="Try API section with event firing interface" />
+## Choose your product
 
-**For App-Based Triggers:**
-Create a test record directly in your connected app (e.g., add a contact in HubSpot)
-</Step>
+You've run the core loop. Now pick the product that fits how you ship integrations.
 
-<Step title="Check Execution">
-1. Go to **Logs** in Refold
-2. Find your workflow execution
-3. Check the status and any error messages
-
-<img height="250" src="/images/quickstart/execution-logs.png" alt="Workflow execution logs showing successful run" />
-</Step>
-
-<Step title="Verify Results">
-1. Check your webhook.site for the API response
-2. Verify data was created/updated in the target app
-3. 🎉 **Success!** You've completed your first integration test
-
-<img height="200" src="/images/quickstart/webhook-response.png" alt="Webhook.site showing successful API response" />
-</Step>
-</Steps>
-
----
-
-## See It in Action
-
-Here's what just happened behind the scenes:
-
-<CodeGroup>
-```javascript JavaScript
-// This is what Refold did when you fired the event
-const response = await fetch('https://api.gocobalt.io/api/v2/public/event/contact-created', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    linked_account_id: 'your-linked-account-id',
-    data: {
-      name: 'John Doe',
-      email: 'john@example.com',
-      company: 'Test Company'
-    }
-  })
-});
-
-console.log('Workflow triggered:', response.status);
-```
-
-```bash cURL
-curl -X POST https://api.gocobalt.io/api/v2/public/event/contact-created \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "linked_account_id": "your-linked-account-id",
-    "data": {
-      "name": "John Doe",
-      "email": "john@example.com", 
-      "company": "Test Company"
-    }
-  }'
-```
-</CodeGroup>
-
----
-
-## Troubleshooting
-
-<Warning>
-**Common Issues:**
-
-- **Authentication failed**: Double-check your credentials in App Settings
-- **Workflow not triggering**: Ensure the workflow is enabled in the hosted portal
-- **No response at webhook.site**: Verify the API Proxy URL is configured correctly
-- **Missing scopes**: Add required permissions in App Settings → Permissions & Scopes
-</Warning>
-
----
-
-## What's Next?
-
-You've successfully tested a Refold integration! Here's what to explore next:
-
-<CardGroup cols={2}>
-<Card title="Build Your First Integration" href="/v3/embedded/getting-started/first-integration">
-Create a custom integration from scratch for your specific use case
-</Card>
-
-<Card title="Understanding Workflows" href="/v3/developer/configure/workflows/overview">
-Learn how to build complex workflows with triggers, actions, and data transformation
-</Card>
-
-<Card title="Authentication Guide" href="/v3/developer/configure/app-configuration/authentication">
-Set up OAuth apps and API keys for production use
-</Card>
-
-<Card title="Frontend SDK" href="/v3/embedded/frontend/overview">
-Integrate Refold's auth flow directly into your application
-</Card>
-</CardGroup>
-
----
-
-**Ready to build something real?** Continue to [First Integration](/getting-started/first-integration) where you'll create a production-ready integration from scratch.
+| Product | Who it's for |
+|---------|--------------|
+| [**Native**](/v3/embedded/overview) | SaaS teams embedding third-party integrations inside their own product |
+| [**Integration Delivery**](/v3/project/overview) | Teams delivering bespoke enterprise integrations to their customers |
+| [**MCP**](/v3/mcp-ai-agents/overview/what-is-mcp) | AI teams giving agents secure, governed access to enterprise systems |

@@ -1,76 +1,49 @@
 ---
 title: "Overview"
-description: "What Refold is and where to go next."
+description: "The AI-native enterprise integration platform. Cut integration timelines from years to weeks and costs by more than half."
 ---
 
-Refold lets SaaS companies offer third-party native integrations to their customers without building and maintaining each one in-house. A single installation connects your product to hundreds of popular apps, and Refold handles authentication, execution, and per-customer data isolation. Teams avoid the cost, time, and risk of building an integrations layer from scratch.
+Refold is the AI-native enterprise integration platform that cuts your integration timelines from years to weeks and costs by more than half. It is built on deep expertise in SAP, Salesforce, Workday, Oracle, and 300+ other applications, so every integration ships governed, tested, and ready for production.
 
-{/* MEDIA-TODO: Hero diagram showing your product connecting through Refold to multiple third-party apps (Salesforce, NetSuite, SAP, Workday). Static image acceptable; short looping video preferred. */}
+## Recommended path for new developers
 
-## Get started
+<Steps>
+  <Step title="Log in to Refold">
+    Log in at [app.refold.ai](https://app.refold.ai).
 
-<Card title="Quickstart" icon="play" href="/v3/developer/getting-started/quickstart">
-  Run your first integration workflow in under 10 minutes and see data sync between apps.
-</Card>
+    <Info>
+      Don't have an account yet? [Contact us](https://www.refold.ai/contact-us) to set one up.
+    </Info>
+  </Step>
+  <Step title="Make your first API call">
+    Grab your API key from **Settings > Credentials** in the [Refold Console](https://uat.refold.ai/settings/credentials), then make your first request. See the [quickstart](/v3/developer/getting-started/quickstart) for a complete walkthrough.
+  </Step>
+  <Step title="Explore platform features">
+    Dig into platform features like [workflows](/v3/developer/configure/workflows/overview), [linked accounts](/v3/developer/configure/linked-account), and [connectors](/v3/developer/configure/connector/supported-apps-actions).
+  </Step>
+</Steps>
 
-## Choose your product
-
-Refold offers three products for different integration needs. Most teams start with Native.
-
-<CardGroup cols={3}>
-  <Card title="Native" icon="puzzle-piece" href="/v3/developer/products/native">
-    Embed self-serve integrations directly in your product's UI. Customers connect their own apps without leaving your app.
-  </Card>
-  <Card title="Integration Delivery" icon="diagram-project" href="/v3/developer/products/integration-delivery">
-    Run bespoke, enterprise integration projects end-to-end: scope, build, ship, and operate on Refold.
-  </Card>
-  <Card title="MCP" icon="robot" href="/v3/developer/products/mcp">
-    Expose integration actions to AI agents through hosted Model Context Protocol servers.
-  </Card>
-</CardGroup>
-
-## Core concepts
-
-The building blocks shared across every product.
+## Develop with Refold
 
 <CardGroup cols={3}>
-  <Card title="Linked accounts" icon="user-gear" href="/v3/developer/configure/linked-account">
-    How Refold scopes each customer's credentials, configuration, and data.
+  <Card title="Refold Console" icon="laptop" href="https://app.refold.ai">
+    Build, test, and ship integrations in the browser. No deploy needed.
   </Card>
-  <Card title="Connector" icon="plug" href="/v3/developer/configure/connector/supported-apps-actions">
-    The supported apps and actions you can read from and write to.
+  <Card title="API Reference" icon="code" href="/v3/api-reference/overview">
+    Full reference for the v3 REST API, webhooks, and event payloads.
   </Card>
-  <Card title="Workflows" icon="diagram-next" href="/v3/developer/configure/workflows/overview">
-    Automations that move and transform data between your app and third-party systems.
+  <Card title="SDKs" icon="code-branch" href="/v3/api-reference/sdks">
+    Node, React, and browser-JS SDKs for server- and client-side flows.
   </Card>
 </CardGroup>
 
-## Build with the API and SDKs
-
-Drive Refold from your own backend and frontend.
+## Support
 
 <CardGroup cols={2}>
-  <Card title="API reference" icon="code" href="/v3/api-reference/overview">
-    REST endpoints for linked accounts, configs, events, and integration actions.
+  <Card title="Status" icon="cloud" href="https://status.refold.ai">
+    Check the live status of Refold services.
   </Card>
-  <Card title="SDKs" icon="cubes" href="/v3/api-reference/sdks">
-    Node server SDK and React/JS client SDKs to mount the portal and trigger workflows.
-  </Card>
-</CardGroup>
-
-## Deploy and operate
-
-<CardGroup cols={2}>
-  <Card title="Deployment" icon="server" href="/v3/developer/deploy/overview">
-    Self-host Refold with Docker Compose or Kubernetes, including hardware and network requirements.
-  </Card>
-  <Card title="Auth flows" icon="key" href="/v3/developer/guide/ship/auth_flows/hosted">
-    Let customers connect their accounts with a hosted or fully custom auth experience.
+  <Card title="Changelog" icon="newspaper" href="/v3/changelog/overview">
+    Release notes for the platform and every product.
   </Card>
 </CardGroup>
-
-## Explore the app catalogue
-
-<Card title="App catalogue" icon="grid-2" href="/v3/developer/catalogue/applications/providers/overview">
-  Browse the third-party providers Refold supports and their available actions.
-</Card>
