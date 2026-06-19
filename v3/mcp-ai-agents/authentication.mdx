@@ -21,7 +21,7 @@ flowchart LR
     D -->|"Stored credentials<br/>(never exposed)"| E["Third-party App"]
 ```
 
-The agent never handles third-party credentials. Refold resolves the linked account's stored OAuth tokens and API keys internally when a tool executes, so credentials stay encrypted at rest and are never returned in tool inputs or outputs. For where those credentials come from, see [Connectors](/v3/developer/guide/build/connectors/overview); for how end users authorize them, see the [hosted auth flow](/v3/developer/guide/ship/auth_flows/hosted).
+The agent never handles third-party credentials. Refold resolves the linked account's stored OAuth tokens and API keys internally when a tool executes, so credentials stay encrypted at rest and are never returned in tool inputs or outputs. For where those credentials come from, see [Connectors](/v3/developer/guide/build/connectors/overview); for how end users authorize them, see the [hosted auth flow](/v3/embedded/frontend/hosted-flow).
 
 ## The Server-URL token
 
@@ -81,7 +81,7 @@ Because token state is checked on every request, revocation takes effect on the 
 
 - [Linked accounts](/v3/developer/configure/linked-account) — the account and credential model MCP authentication builds on
 - [Connectors](/v3/developer/guide/build/connectors/overview) — where the underlying OAuth and API-key credentials are configured
-- [Hosted auth flow](/v3/developer/guide/ship/auth_flows/hosted) — how end users connect their accounts in the first place
+- [Hosted auth flow](/v3/embedded/frontend/hosted-flow) — how end users connect their accounts in the first place
 - [Server configuration](/v3/mcp-ai-agents/overview/server-configuration) — where to set the app, action, and mode toggles
 - [Security & compliance](/v3/mcp-ai-agents/implementation/security-compliance) — tenant isolation, transport security, and data handling
 - [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) — the audit trail for every authenticated tool call
