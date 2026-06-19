@@ -1,0 +1,44 @@
+---
+title: "Importing existing auth"
+description: "Bring credentials you already hold into Refold, so a customer is connected without running the connect flow."
+---
+
+If you already hold a customer's credentials — an API key they gave you, or OAuth tokens from a system you're migrating off — you can **import** them into Refold. The customer's [linked account](/v3/developer/configure/linked-account) becomes connected without sending them through a [connect flow](/v3/embedded/frontend/overview), and Refold manages and refreshes the credentials from then on.
+
+## When to use it
+
+- **Migrating** from another integration platform (or your own integration) where you already store customers' credentials.
+- **Pre-connecting** an account on a customer's behalf when you hold valid credentials for them.
+- Apps where the customer hands you a key directly, outside any UI flow.
+
+## Import the credentials
+
+How you import depends on the credential type. In both cases you import against the customer's existing [linked account](/v3/developer/configure/linked-account).
+
+<Tabs>
+  <Tab title="Key-based credentials">
+    Store the customer's API key (or other key-based credentials) for the connector with [Save key credentials](/v3/api-reference/credentials/save-key-credentials). The account is connected immediately — no auth flow.
+  </Tab>
+  <Tab title="OAuth tokens">
+    Bring existing OAuth access and refresh tokens in with [Migrate token](/v3/api-reference/credentials/migrate-token), so Refold stores them encrypted and refreshes them going forward.
+  </Tab>
+</Tabs>
+
+## After importing
+
+The account behaves like any other connection:
+
+- Check it with [Connection status](/v3/embedded/frontend/management/connection-status).
+- Refold keeps the access token current automatically — see [Token refresh](/v3/embedded/frontend/management/token-refresh).
+- If an imported token is invalid or can't be refreshed, the connection will need [re-authentication](/v3/embedded/frontend/management/re-authentication).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Connection status" icon="signal" href="/v3/embedded/frontend/management/connection-status">
+    Confirm the imported account is connected.
+  </Card>
+  <Card title="Token refresh" icon="key" href="/v3/embedded/frontend/management/token-refresh">
+    How Refold keeps imported tokens current.
+  </Card>
+</CardGroup>

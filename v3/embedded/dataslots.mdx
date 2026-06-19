@@ -46,7 +46,7 @@ Every Dataslot shares the same set of settings in the editor. Only the **Options
 | **Page** | The [Page](/v3/embedded/config-fields#pages) this field appears on. |
 
 <Note>
-**Dependency** powers cascading fields: a child field's options load only after its parent has a value — for example, pick a **pipeline**, then choose a **stage** within it. Pair it with a [Datasource](#use-a-datasource) so the child list is fetched using the parent's selection.
+**Dependency** powers cascading fields — a child field's options load only after its parent has a value. See [Dependent fields](#dependent-fields).
 </Note>
 
 ## Dataslot types
@@ -93,10 +93,37 @@ The saved value is an object keyed by **LHS value → RHS value**, stored under 
 
 ### Rule Engine
 
-A **Rule Engine** Dataslot collects conditional logic as **LHS / operator / RHS** rows — for example, "only sync deals where `amount` > `1000`." It exposes two extra areas:
+A **Rule Engine** Dataslot lets a customer define conditional rules — for example, "provision a user only if their **type** is *Agent* **and** their **role** is *Admin*." It saves the complexity of fetching options and chaining API calls into a single field. Each rule is a row with three columns:
 
-- **Options** — the choices for the **LHS** column (a static list, or **Use Data Source**).
-- **Conditional Code** — JavaScript that sets the **operator** and **RHS** columns dynamically based on the LHS selection, using `cobaltRuleEngine.setColumnProperties("operator", …)` and `cobaltRuleEngine.setColumnProperties("rhs", …)`, and pulling live values with `cobaltDataSource.getDataSourceResponse("<workflow>", {})`.
+- **LHS** — the field the customer picks to evaluate.
+- **Operator** — how to compare it (equals, not equals, and so on).
+- **RHS** — the value to compare the LHS against.
+
+After adding the field, set the **Options** for the **LHS** column — a static list you type in, or toggle **Use Data Source** to load them from a [published workflow](#use-a-datasource).
+
+#### Dynamic operators and RHS
+
+When the available operators or right-hand values should change with the LHS choice, use the **Conditional Code** block — JavaScript that sets those columns at run time. A sample snippet ships in the block to get you started; remove it if you don't need dynamic columns.
+
+```javascript Conditional Code
+async function main() {
+  // check whether the `lhs` column's value is set to "Region"
+  if (lhs === "Region") {
+    // define the operators for this LHS
+    const operatorOptions = [
+      { name: "Equals To", value: "eq" },
+      { name: "Not Equals To", value: "neq" },
+    ];
+    cobaltRuleEngine.setColumnProperties("operator", operatorOptions);
+
+    // run the `get_regions` datasource workflow and use its result as the RHS options
+    const rhsOptions = await cobaltDataSource.getDataSourceResponse("get_regions", {}).return_value;
+    cobaltRuleEngine.setColumnProperties("rhs", rhsOptions);
+  }
+}
+```
+
+Use `cobaltRuleEngine.setColumnProperties("operator" | "rhs", options)` to populate a column, and `cobaltDataSource.getDataSourceResponse("<workflow>", {})` to pull live values from a [datasource workflow](#use-a-datasource).
 
 <Tip>
 Reach for Rule Engine only when you need conditional rules whose operators or right-hand values change with the left-hand choice. For a simple fixed choice, a **Select** is clearer.
@@ -145,6 +172,20 @@ When the Dynamic Dataslot you need isn't available, supply the live data yoursel
     **Publish** the workflow, then select it under **Use Data Source** on your Dataslot. An unpublished workflow won't appear in the list and won't run for customers.
   </Step>
 </Steps>
+
+## Dependent fields
+
+A Dataslot can **depend on another field** — its options load only once the parent field has a value. Use this for cascading choices, where each selection narrows the next.
+
+Set it with the **Dependency** [field setting](#field-settings): pick the parent field, and Refold won't resolve this field's options until the parent is chosen. Dependent fields are almost always backed by a [Datasource](#use-a-datasource), so the child list can be fetched using the parent's value.
+
+For example, picking a Google Sheet's headers takes three chained fields:
+
+1. **Select a sheet** — the parent; lists the customer's spreadsheets.
+2. **Select a worksheet** — depends on the sheet; its options load only after a sheet is chosen.
+3. **Select headers** — depends on the worksheet; loads once the worksheet is set.
+
+Until a field's parent has a value, the dependent field returns no options — so the customer fills them top-down.
 
 ## Troubleshooting
 

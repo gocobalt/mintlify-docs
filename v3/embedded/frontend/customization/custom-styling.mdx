@@ -1,6 +1,74 @@
 ---
-title: "Custom Styling"
-description: "Documentation for custom styling"
+title: "Custom styling"
+description: "Match the connect experience to your brand — colors, naming, and layout."
 ---
 
-Content coming soon.
+**Custom styling** lets you brand the connect experience so it feels like part of your product. How you style it depends on the flow: the [hosted portal](/v3/embedded/frontend/hosted-flow) takes branding options when you generate its connect URL, while the [React `<Config>` component](/v3/embedded/frontend/react-sdk-flow) takes a `style` prop.
+
+The two flows expose different controls, so pick the tab that matches the flow you're using.
+
+<Tabs>
+  <Tab title="Hosted portal">
+    Brand the hosted portal by passing options to [Create connect URL](/v3/api-reference/connect/create-connect-url) when you generate the URL on your backend:
+
+    | Property | Description |
+    | --- | --- |
+    | `color` | Theme color of the Refold connect portal |
+    | `bgColor` | Background color of the portal |
+    | `name` | Display name shown to your customer |
+
+```bash
+curl --request POST \
+  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: <api-key>' \
+  --data '{
+    "color": "#4f46e5",
+    "bgColor": "#ffffff",
+    "name": "Acme"
+  }'
+```
+
+    <Tip>
+    These options are set per connect URL, so you can theme the portal differently for different customers if you need to.
+    </Tip>
+  </Tab>
+  <Tab title="React component">
+    Brand the embedded `<Config>` component with its `style` prop, which overrides the component's container styling:
+
+```jsx
+<Config
+  slug="hubspot"
+  style={{
+    borderRadius: 8,
+    maxWidth: 450,
+    padding: 16,
+    backgroundColor: "#ffffff",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  }}
+/>
+```
+
+    Common properties are `borderRadius` and `maxWidth`. For styling beyond the container, wrap the component and apply CSS to your wrapper — see the [React SDK](/v3/sdks/client-side/react-sdk) reference.
+  </Tab>
+</Tabs>
+
+<Frame>{/* SCREENSHOT: side-by-side of a branded hosted portal and a styled React Config modal → /images/embedded/frontend/custom-styling.png */}</Frame>
+
+<Note>
+To remove Refold branding entirely from the connect experience, see [White-label flows](/v3/embedded/frontend/customization/white-label-flows).
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Hosted flow" icon="window" href="/v3/embedded/frontend/hosted-flow">
+    Generate and redirect to the hosted portal.
+  </Card>
+  <Card title="React SDK flow" icon="react" href="/v3/embedded/frontend/react-sdk-flow">
+    Embed the `<Config>` component in your React app.
+  </Card>
+  <Card title="Overview" icon="compass" href="/v3/embedded/frontend/overview">
+    Compare all three connect flows.
+  </Card>
+</CardGroup>

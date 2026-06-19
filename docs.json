@@ -3,6 +3,12 @@
   "name": "Refold",
   "theme": "mint",
   "redirects": [
+    { "source": "/v3/developer/guide/ship/auth_flows/hosted", "destination": "/v3/embedded/frontend/hosted-flow" },
+    { "source": "/v3/developer/guide/ship/auth_flows/build_your_own", "destination": "/v3/embedded/frontend/customization/build-your-own" },
+    { "source": "/v3/developer/guide/ship/auth_flows/re-auth-flow", "destination": "/v3/embedded/frontend/management/re-authentication" },
+    { "source": "/v3/developer/auth/bring-your-vault", "destination": "/v3/embedded/frontend/management/bring-your-vault" },
+    { "source": "/v3/developer/auth/importing-existing-auth", "destination": "/v3/embedded/frontend/management/importing-existing-auth" },
+    { "source": "/v3/developer/auth/auth-logs", "destination": "/v3/embedded/frontend/management/auth-logs" },
     { "source": "/v3/developer/configure/app-configuration/multi-auth", "destination": "/v3/developer/configure/app-configuration/authentication" },
     { "source": "/v3/embedded/integration-settings/authentication", "destination": "/v3/developer/configure/app-configuration/authentication" },
     { "source": "/v3/embedded/integration-settings/scopes-permissions", "destination": "/v3/developer/configure/app-configuration/authentication#scopes-and-permissions" },
@@ -180,17 +186,6 @@
                       "v3/developer/configure/settings/organization/policy"
                     ]
                   }
-                ]
-              },
-              {
-                "group": "Authenticating User",
-                "pages": [
-                  "v3/developer/guide/ship/auth_flows/hosted",
-                  "v3/developer/guide/ship/auth_flows/build_your_own",
-                  "v3/developer/auth/bring-your-vault",
-                  "v3/developer/guide/ship/auth_flows/re-auth-flow",
-                  "v3/developer/auth/importing-existing-auth",
-                  "v3/developer/auth/auth-logs"
                 ]
               },
               {
@@ -1045,13 +1040,18 @@
               {
                 "group": "Building Integrations",
                 "pages": [
-                  "v3/embedded/config-fields",
-                  "v3/embedded/dataslots",
+                  {
+                    "group": "Config Fields",
+                    "pages": [
+                      "v3/embedded/config-fields",
+                      "v3/embedded/dataslots"
+                    ]
+                  },
                   "v3/embedded/testing"
                 ]
               },
               {
-                "group": "Frontend (Auth Flows)",
+                "group": "Connect",
                 "pages": [
                   "v3/embedded/frontend/overview",
                   "v3/embedded/frontend/hosted-flow",
@@ -1067,9 +1067,12 @@
                   {
                     "group": "Management",
                     "pages": [
+                      "v3/embedded/frontend/management/connection-status",
                       "v3/embedded/frontend/management/re-authentication",
                       "v3/embedded/frontend/management/token-refresh",
-                      "v3/embedded/frontend/management/connection-status"
+                      "v3/embedded/frontend/management/importing-existing-auth",
+                      "v3/embedded/frontend/management/bring-your-vault",
+                      "v3/embedded/frontend/management/auth-logs"
                     ]
                   }
                 ]
