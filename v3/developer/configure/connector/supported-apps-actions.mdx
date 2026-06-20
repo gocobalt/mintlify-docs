@@ -1,6 +1,75 @@
 ---
-title: "Supported Apps & Actions"
-description: "Catalog of supported applications and the actions Refold can perform on each."
+title: "Supported apps & actions"
+description: "What a connector is, and the actions and triggers it gives you for a third-party app."
 ---
 
-<Note>This page is a placeholder. Content coming soon.</Note>
+A **connector** is a prebuilt integration to a third-party application. Refold
+maintains 300+ connectors across categories like CRM, Accounting, HRIS, ATS,
+Sales, and Marketing, so you can offer an integration to your customers without
+building against each provider's API yourself.
+
+Every connector exposes two kinds of building blocks:
+
+- **Actions** — operations Refold can perform on the app, such as creating a
+  contact, reading records, or running a query. You call them directly or chain
+  them inside a [workflow](/v3/developer/configure/workflows/overview).
+- **Triggers** — events in the app that start a workflow, such as a record being
+  created or updated.
+
+The exact actions and triggers depend on the provider. Browse the full list per
+app in the [connector catalogue](/v3/developer/catalogue/applications/providers/overview).
+
+## Enable a connector
+
+Before a customer can connect an app, enable it in your workspace and configure
+its credentials.
+
+<Steps>
+  <Step title="Enable the app">
+    In the dashboard's **Apps** section, select the application and click **Go
+    Live**.
+  </Step>
+  <Step title="Configure credentials">
+    Open the app's **Settings** and provide what its auth method needs. For
+    OAuth apps, supply your **Client ID** and **Client Secret** (or use Refold's
+    credentials while testing). For API-key apps, no dashboard setup is
+    required — your customer enters their key during the auth flow.
+
+    See [Auth configs](/v3/developer/configure/app-configuration/authentication) for
+    the full setup.
+  </Step>
+  <Step title="Match the scopes">
+    Confirm the scopes listed under **Permissions & scopes** are also selected
+    in your developer account on the provider's side.
+  </Step>
+</Steps>
+
+<Check>
+Your customers can now connect this app from the [auth
+flow](/v3/embedded/frontend/hosted-flow) and use its actions and
+triggers.
+</Check>
+
+## When the catalogue isn't enough
+
+- Need an action a connector doesn't ship with? Define your own — see [Custom
+  actions](/v3/developer/configure/connector/custom-actions).
+- Need an app Refold doesn't list yet? Build it as a [custom
+  app](/v3/developer/guide/custom-apps/getting-started).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Browse the catalogue" icon="grip" href="/v3/developer/catalogue/applications/providers/overview">
+    See every supported app and its actions and triggers.
+  </Card>
+  <Card title="Custom actions" icon="plus" href="/v3/developer/configure/connector/custom-actions">
+    Add actions on top of a connector's built-in set.
+  </Card>
+  <Card title="Auth configs" icon="key" href="/v3/developer/configure/app-configuration/authentication">
+    Configure how a connector authenticates.
+  </Card>
+  <Card title="Workflows" icon="diagram-project" href="/v3/developer/configure/workflows/overview">
+    Chain actions and triggers into automations.
+  </Card>
+</CardGroup>

@@ -4,6 +4,80 @@ description: "Platform updates, API changes, and integration additions for April
 rss: true
 ---
 
+<Update label="April 29, 2026" description="v3.5.09 · Audit drawer, log filter persistence & UI polish">
+
+<Badge color="blue">Platform</Badge>
+
+**A redesigned audit log drawer, preserved page sizes when clearing filters, and polish across the workflow canvas, embedded chat, and connect config.**
+
+**New Features**
+
+- **Audit Log Drawer**: Audit log details now open in a right-side drawer with structured metadata display and improved readability.
+- **Centralized Status Enums**: Instance, batch, and node status values are now consistent across connect, workflow, and logs areas.
+
+**Improvements**
+
+- Resetting or clearing filters on log pages now preserves the chosen page size instead of reverting to the default.
+- Workflow testing split into separate paths for the new and legacy execution engines, with conditional polling for `RUNNING` and `QUEUED` states.
+- JSON response viewer toggles truncation based on expand state, with tooltips on truncated table cells across execution, logger, errors, and MCP log pages.
+- Smoother dropdown and combobox behavior with reduced DOM overhead.
+- Trash icon replaces the previous close button on the remove-action control to prevent accidental panel closures.
+
+**Bug Fixes**
+
+- Workbench tab no longer auto-switches on submit for existing workflows — it only opens for new workflow creation.
+- Embedded workflow chat now correctly uses the URL token for chat authentication.
+- Errors table row keys now include `workflow_id` to prevent collisions across workflows.
+
+</Update>
+
+
+<Update label="April 27, 2026" description="v3.5.06 · Workflow versions, log filter views, MCP audits & SAP Ariba">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A new "Create with Refold AI" workflow entry point, paginated workflow versions, extended filter views and log exports, MCP audits, queued execution for higher reliability, and new connectors for SAP Ariba, SAP Sourcing, Hexagon EAM, and Hexagon SDx.**
+
+**New Features**
+
+- **Create with Refold AI**: A new entry point on the new-workflow modal opens a fullscreen AI prompt with the selected application preserved.
+- **Workflow Versions**: Paginated Versions tab with full timestamps and release descriptions per version.
+- **Log Filter Views — Issues & Messages**: Filter views are now available on issues and messages pages, with horizontally scrollable tabs and a "view all views" search popover.
+- **Log Export**: New CSV and XLSX export action across log views.
+- **Custom Fields on Executions Header**: Custom fields surfaced as an executions header action with a variable-suggestion editor and keyboard navigation.
+- **MCP Audits**: New audits page with detail dialog, linked-account combobox, and an MCP-server enable/disable toggle.
+- **Subflow Sync & Fire-and-Forget**: Subflow nodes now support both synchronous and fire-and-forget execution with structured error pass-through.
+- **Templated Workflow Env Vars**: Workflow [environment variable](/v3/developer/configure/settings/organization/environment-variables) values now support templating for dynamic resolution.
+- **Logger Node Enhancements**: New `message_title` and `message_body` fields with full backward compatibility for existing `message_template` configurations.
+
+**Improvements**
+
+- Higher workflow reliability — workflow executions now queue gracefully when downstream services are temporarily unavailable, draining automatically when services return.
+- Smoother workflow canvas with Bezier edge connections, dedicated switch-case node, and improved group-node drag-and-drop.
+- Workflow node search now supports both ID and type with an improved menu layout.
+- API Proxy now supports paginated responses with URL validation.
+- Improved Send Email node handling for a wider range of attachment URLs.
+- Try-catch nodes now persist success bodies so downstream templates resolve correctly.
+- Date range filters now accept epoch milliseconds for precise boundary control.
+- Default page size on log views changed to 25 (10 removed from the options).
+
+**API Changes**
+
+- `GET /api/v1/audit/logger` now accepts a `linked_account_id` filter.
+- Logger messages API now returns instance `custom_field_values` and accepts custom-field filters in queries.
+
+**Integration Updates**
+
+- **SAP Ariba**: New connector covering Catalog, Purchase Requisition to PO, PO Integration, Goods Receipt, and end-to-end tracking across REST, SOAP, and cXML.
+- **SAP Sourcing**: New connector with OAuth2 and per-module client credentials.
+- **Hexagon EAM**: New connector covering Work and Grid entities with Databridge Pro support.
+- **Hexagon SDx**: New connector with key-based authentication and `getFDWDocuments` action.
+- **SAP**: CSRF token fetch now falls back to the `$metadata` endpoint when the primary fetch fails.
+- **ExecuteNode**, **Ironclad**, **HaloITSM**, **GitLab**, **Zuora**: Migrated to the current connector SDK contract for improved consistency.
+
+</Update>
+
+
 <Update label="April 23, 2026" description="v3.5.05 · Reliability hardening & CSV improvements">
 
 <Badge color="blue">Platform</Badge>
