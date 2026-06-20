@@ -1,6 +1,65 @@
 ---
 title: "Overview"
-description: "Documentation for overview"
+description: "How your customers connect their third-party accounts in your product, the auth flow options, what they share, and when to use each."
 ---
 
-Content coming soon.
+An **auth flow** is how a customer authorizes a third-party app inside your product so Refold can act on their behalf. The flow runs in your **frontend**; once a customer connects, their credentials are stored against their [linked account](/v3/developer/configure/linked-account) and Refold signs every request for them.
+
+This group covers the **customer-facing connect experience**: the three ways to present it, how to style it, and how to keep connections healthy over time. (How a *connector* authenticates, such as OAuth vs key-based and scopes, is set once on the connector; see [Authentication](/v3/developer/configure/app-configuration/authentication).)
+
+## Before you start
+
+Every flow needs two things in place on your **backend** first. Never expose your API key in the browser:
+
+<Steps>
+  <Step title="Create a linked account">
+    Create one [linked account](/v3/developer/configure/linked-account) per customer with a stable ID. See [Create a linked account](/v3/api-reference/linked-accounts/create-linked-account).
+  </Step>
+  <Step title="Generate a session token">
+    Mint a short-lived [session token](/v3/api-reference/session-tokens/generate-session-token) for that linked account and pass it to your frontend. The flow uses it instead of your API key.
+  </Step>
+</Steps>
+
+## Choose a flow
+
+All three flows do the same job, let a customer authorize an app, and differ mainly in how much UI you build:
+
+| Flow | What it is | Build effort | Best when |
+| --- | --- | --- | --- |
+| **[Hosted flow](/v3/embedded/frontend/hosted-flow)** | Redirect the customer to Refold's hosted portal | Lowest, no UI | You want connect + config handled for you |
+| **[React SDK flow](/v3/embedded/frontend/react-sdk-flow)** | Drop Refold's connect component into your React app (no redirect) | Low, prebuilt components | You have a React app and want it in-product |
+| **[Build your own](/v3/embedded/frontend/customization/build-your-own)** | Build a fully custom UI with the JavaScript SDK | Highest, full control | You need a bespoke connect experience |
+
+The React and build-your-own flows use the [client-side SDKs](/v3/sdks/client-side/javascript-sdk); the hosted flow needs none.
+
+## After a customer connects
+
+Once an account is connected, the customer configures what the integration does through [config fields](/v3/embedded/config-fields), and you keep the connection healthy over time:
+
+- **[Connection status](/v3/embedded/frontend/management/connection-status)**: check whether an account is connected.
+- **[Re-authentication](/v3/embedded/frontend/management/re-authentication)**: prompt a reconnect when a connection expires or is revoked.
+- **[Token refresh](/v3/embedded/frontend/management/token-refresh)**: how Refold keeps access tokens current automatically.
+
+## Make it yours
+
+Match the connect experience to your brand:
+
+- **[Custom styling](/v3/embedded/frontend/customization/custom-styling)**: colors, naming, and layout.
+- **[White-label flows](/v3/embedded/frontend/customization/white-label-flows)**: remove Refold branding from the experience.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Hosted flow" icon="window" href="/v3/embedded/frontend/hosted-flow">
+    The fastest way to ship, redirect to Refold's hosted portal.
+  </Card>
+  <Card title="React SDK flow" icon="react" href="/v3/embedded/frontend/react-sdk-flow">
+    Embed the connect experience in your React app.
+  </Card>
+  <Card title="Build your own" icon="code" href="/v3/embedded/frontend/customization/build-your-own">
+    Full control with the JavaScript SDK.
+  </Card>
+  <Card title="Config fields" icon="list-check" href="/v3/embedded/config-fields">
+    What the customer configures once they're connected.
+  </Card>
+</CardGroup>

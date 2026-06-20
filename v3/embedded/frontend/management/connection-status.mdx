@@ -1,6 +1,111 @@
 ---
-title: "Connection Status"
-description: "Documentation for connection status"
+title: "Connection status"
+description: "Read whether a customer's account is connected so your UI can show the right Connect, Connected, or Reconnect state."
 ---
 
-Content coming soon.
+A customer's **connection status** tells you whether they've authorized an app, who they connected as, and whether that connection still works. You read it from the **application object**: the same object the [connect flows](/v3/embedded/frontend/overview) hand you, and use it to render a **Connect**, **Connected**, or **Reconnect** state for each app.
+
+The fields that matter are `connected`, `connected_accounts`, and `reauth_required`. This page assumes the customer already has a [linked account and a session token](/v3/embedded/frontend/overview#before-you-start); it covers reading status, not setting up the flow.
+
+## Where status comes from
+
+The application object is available on both the client and the server, so you can read status wherever you render your UI:
+
+- **Client-side**: call `cobalt.getApp()` from the [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) (using the customer's session token). Pass a slug for one app, or omit it for every enabled app.
+- **Server-side**: call the List Applications API or the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk) with the customer's `linked_account_id`.
+
+<CodeGroup>
+```javascript JS SDK
+// one app
+const slack = await cobalt.getApp("slack");
+
+// every enabled app
+const apps = await cobalt.getApp();
+```
+
+```bash cURL
+curl --request GET \
+  --url https://api.gocobalt.io/api/v2/public/application \
+  --header 'linked_account_id: <linked_account_id>' \
+  --header 'x-api-key: <api-key>'
+```
+</CodeGroup>
+
+## The status fields
+
+Each application object carries three fields you use to decide what to show:
+
+| Field | Type | What it tells you |
+| --- | --- | --- |
+| `connected` | boolean | Whether the customer has authorized this app at all. |
+| `connected_accounts` | array | The accounts the customer connected, each with an `identifier` and a `connectedAt` timestamp. |
+| `reauth_required` | boolean | Whether an existing connection has stopped working and needs the customer to [re-authenticate](/v3/embedded/frontend/management/re-authentication). |
+
+`auth_type` (for example `oauth2` or `keybased`) tells you *how* the app authenticates, which you'll need if you're building your own connect UI.
+
+```json
+{
+  "name": "Slack",
+  "slug": "slack",
+  "auth_type": "oauth2",
+  "connected": true,
+  "connected_accounts": [
+    {
+      "identifier": "acme-workspace",
+      "connectedAt": "2023-05-31T07:45:59.841Z"
+    }
+  ],
+  "reauth_required": false
+}
+```
+
+## Render the three states
+
+Read the three fields together to pick what each app shows:
+
+<Steps>
+  <Step title="Not connected → Connect">
+    `connected` is `false` (or absent). Show a **Connect** button that starts the [connect flow](/v3/embedded/frontend/overview).
+  </Step>
+  <Step title="Connected and healthy → Connected">
+    `connected` is `true` and `reauth_required` is `false`. Show a **Connected** state. You can surface the account `identifier` and `connectedAt` from `connected_accounts` so the customer sees which account they linked.
+  </Step>
+  <Step title="Connected but broken → Reconnect">
+    `connected` is `true` but `reauth_required` is `true`. The connection has expired or been revoked. Show a **Reconnect** prompt and follow [Re-authentication](/v3/embedded/frontend/management/re-authentication).
+  </Step>
+</Steps>
+
+```javascript
+function statusFor(app) {
+  if (!app.connected) return "connect";
+  if (app.reauth_required) return "reconnect";
+  return "connected";
+}
+```
+
+<Frame>{/* SCREENSHOT: an app list rendering Connect, Connected, and Reconnect states side by side → /images/embedded/frontend/connection-status.png */}</Frame>
+
+<Tip>
+`reauth_required` is `true` only for an app the customer once connected, a brand-new app simply has `connected` set to `false`. Always check `connected` before `reauth_required`.
+</Tip>
+
+## Keep status fresh
+
+The application object reflects status at the moment you fetch it. To keep your UI current:
+
+- **Re-fetch after a connect**: call `cobalt.getApp()` again once a customer finishes the flow so the state flips to **Connected**.
+- **Listen for expiry**: subscribe to the **Connection Expired** webhook to learn the moment a connection breaks, instead of polling. See [Re-authentication](/v3/embedded/frontend/management/re-authentication).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Re-authentication" icon="rotate" href="/v3/embedded/frontend/management/re-authentication">
+    Prompt a reconnect when `reauth_required` is set.
+  </Card>
+  <Card title="Token refresh" icon="key" href="/v3/embedded/frontend/management/token-refresh">
+    How Refold keeps access tokens current automatically.
+  </Card>
+  <Card title="Frontend overview" icon="window" href="/v3/embedded/frontend/overview">
+    The connect flows that produce a connected account.
+  </Card>
+</CardGroup>

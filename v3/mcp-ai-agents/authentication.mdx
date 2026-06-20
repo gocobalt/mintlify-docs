@@ -5,7 +5,11 @@ description: "Authenticate agents to an MCP server with per-user tokens, control
 
 MCP authentication builds on Refold [linked accounts](/v3/developer/configure/linked-account). Every MCP server connection carries a token embedded in the Server URL that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents — see [Linked accounts](/v3/developer/configure/linked-account) for how those accounts and their credentials are established.
 
-This page covers what is MCP-specific: the Server-URL token, how access is scoped to the apps and actions you expose, and how to revoke a token.
+This page covers what is MCP-specific: the Server-URL token, how access is scoped to the apps and actions you expose, and how to revoke a token. For the connection flows that produce a linked account in the first place — hosted, build-your-own, re-authentication, and more — see the [authentication hub](/v3/developer/auth/overview).
+
+<Note>
+In MCP, the user authorizes connections **inline in the agent chat**. The flows are the same as every other Refold product; only the entry point differs.
+</Note>
 
 ## How authentication works
 
@@ -21,7 +25,7 @@ flowchart LR
     D -->|"Stored credentials<br/>(never exposed)"| E["Third-party App"]
 ```
 
-The agent never handles third-party credentials. Refold resolves the linked account's stored OAuth tokens and API keys internally when a tool executes, so credentials stay encrypted at rest and are never returned in tool inputs or outputs. For where those credentials come from, see [Connectors](/v3/developer/guide/build/connectors/overview); for how end users authorize them, see the [hosted auth flow](/v3/developer/guide/ship/auth_flows/hosted).
+The agent never handles third-party credentials. Refold resolves the linked account's stored OAuth tokens and API keys internally when a tool executes, so credentials stay encrypted at rest and are never returned in tool inputs or outputs. For where those credentials come from, see [Connectors](/v3/developer/guide/build/connectors/overview); for how end users authorize them, see the [hosted auth flow](/v3/embedded/frontend/hosted-flow).
 
 ## The Server-URL token
 
@@ -81,7 +85,7 @@ Because token state is checked on every request, revocation takes effect on the 
 
 - [Linked accounts](/v3/developer/configure/linked-account) — the account and credential model MCP authentication builds on
 - [Connectors](/v3/developer/guide/build/connectors/overview) — where the underlying OAuth and API-key credentials are configured
-- [Hosted auth flow](/v3/developer/guide/ship/auth_flows/hosted) — how end users connect their accounts in the first place
+- [Hosted auth flow](/v3/embedded/frontend/hosted-flow) — how end users connect their accounts in the first place
 - [Server configuration](/v3/mcp-ai-agents/overview/server-configuration) — where to set the app, action, and mode toggles
 - [Security & compliance](/v3/mcp-ai-agents/implementation/security-compliance) — tenant isolation, transport security, and data handling
 - [MCP Logs](/v3/mcp-ai-agents/security/mcp-logs) — the audit trail for every authenticated tool call
