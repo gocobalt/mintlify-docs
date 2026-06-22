@@ -1,93 +1,94 @@
 ---
 title: "Control Plane"
-description: "What the Refold control plane does, how it talks to your cluster, and when you operate it versus when Refold does."
+description: "What the Refold control plane does, how it relates to the data plane, and when you operate it versus when Refold does."
 ---
 
-The **control plane** is the management layer that orchestrates Refold
-deployments: it stores configuration, schedules workloads onto the data
-plane, exposes the dashboard and API, and handles auth, audit, and
-upgrades. The data plane (your workflow runners and connectors) executes
-the work; the control plane decides what runs where and keeps everything
-healthy.
+A Refold deployment splits into two planes. The **control plane** is the management layer — it serves the dashboard and API, stores configuration, authenticates requests, and decides what runs where. The **data plane** does the work the control plane tells it to: it executes workflows and runs integration calls against third-party apps. Think of the control plane as the brain and the data plane as the muscle.
 
-You choose who operates the control plane based on your data-residency and
-ops-capacity needs. The page you're on now is the architectural reference;
-the deployment guides below cover how to install each option.
-
-{/* NEEDS INPUT: confirm the canonical split between control plane and data
-    plane in v3. Confirm component names (api server, scheduler, dashboard,
-    workflow runner, connector pool, etc.) and which sit in which plane. */}
+You choose who operates the control plane based on your data-residency and ops-capacity needs. This page is the architectural reference; the deployment guides linked below cover how to install each option.
 
 ## What the control plane does
 
-{/* NEEDS INPUT: enumerate the control-plane responsibilities. Likely set:
-    - Hosts the dashboard and public API
-    - Stores workspace, integration, and workflow definitions
-    - Authenticates users and validates API keys
-    - Issues workflow execution jobs to the data plane
-    - Streams logs and metrics back to the user
-    - Manages credentials and secrets
-    - Coordinates upgrades and version rollouts */}
+The control plane is the system of record and the orchestrator. It:
+
+- **Serves the dashboard and REST API** that you and your applications interact with.
+- **Stores configuration** — organizations, linked accounts, connectors, and workflow definitions.
+- **Authenticates and authorizes** every request, validating tokens and applying role-based access.
+- **Schedules and dispatches** workflow runs and integration jobs to the data plane.
+- **Manages credentials** — it stores and resolves the secrets a linked account needs at execution time.
+- **Records audit and telemetry** — execution traces, logs, and metrics flow back here.
+- **Coordinates upgrades** and version rollouts.
+
+## What the data plane does
+
+The data plane is where execution happens. It:
+
+- **Runs workflows** step by step, including retries and error handling.
+- **Executes integration calls** against third-party SaaS APIs using the linked account's credentials.
+- **Reports status, logs, and results** back to the control plane.
+
+In a self-hosted Helm install, both planes run together in the same Kubernetes cluster. In Refold Managed and Refold Cloud, the control plane is operated by Refold while the data plane runs where your data must live.
 
 ## Control plane options
 
-You can run Refold's control plane in one of three modes. Pick the one that
-matches your data-residency and ops requirements.
+You can run Refold's control plane in one of three modes. Pick the one that matches your data-residency and ops requirements.
 
 | Option | Who runs the control plane | When to pick it |
 |---|---|---|
-| **Refold Cloud** | Refold, in Refold's own infrastructure | Fastest path. No deployment work. Data plane can be Refold-hosted or self-hosted. |
-| **Refold Managed** | Refold, inside your Kubernetes cluster | Data residency in your cloud account, without operating the control plane yourself. |
+| **Refold Cloud** | Refold, in Refold's own infrastructure | Fastest path. No deployment work. The data plane can be Refold-hosted or self-hosted. |
+| **Refold Managed (BYOC)** | Refold, inside your cloud account | Data residency in your own cloud, without operating the control plane yourself. |
 | **Self-Hosted** | You, inside your Kubernetes cluster | Full control over upgrades, networking, and the runtime. Highest ops burden. |
 
-{/* NEEDS INPUT: confirm the three options and their names. Add a row for
-    Docker Compose if that's a separate supported option vs a development
-    convenience. */}
+The [Helm](/v3/developer/deploy/kubernetes/helm) install deploys both planes in your cluster (Self-Hosted). [Refold Managed (BYOC)](/v3/developer/deploy/kubernetes/refold-cp) splits them, with Refold operating the control plane in your account. [Docker Compose](/v3/developer/deploy/docker-compose) runs everything on a single host for evaluation.
 
-## How the control plane talks to the data plane
+## How the planes communicate
 
-{/* NEEDS INPUT: document the wire protocol and direction of connection:
-    - Does the data plane open an outbound connection to the control plane,
-      or vice versa?
-    - What ports / protocols (gRPC, WebSocket, HTTPS)?
-    - How are jobs scheduled (pull-model from data plane, push from CP)?
-    - How are logs and metrics returned?
-    - What credentials authenticate the connection (mTLS, JWT, API key)?
-    The answers determine the customer's firewall and egress configuration.
-*/}
+In a **self-hosted** install, the control plane and data plane share a cluster and communicate over in-cluster service calls — gRPC for service-to-service traffic, with asynchronous work passed through queues. No cross-network connection is involved.
+
+{/* NEEDS INPUT: document the cross-plane wire protocol for Refold Managed /
+    Refold Cloud where the planes are split across networks — direction of
+    connection (does the data plane dial out to the control plane?), ports and
+    protocol (gRPC / HTTPS), how jobs are dispatched, and what credentials
+    authenticate the connection (mTLS / token). This determines the customer's
+    firewall and egress configuration. */}
 
 ## Multi-tenancy and isolation
 
-{/* NEEDS INPUT: explain how workspaces are isolated at the control-plane
-    level. Single CP per workspace? Shared CP with per-workspace
-    namespacing? How does that change in Refold Managed vs Self-Hosted? */}
+Refold isolates tenants at the organization level. Linked-account credentials are resolved server-side at execution time and are never exposed to callers.
+
+{/* NEEDS INPUT: confirm how isolation differs across the three options — a
+    shared control plane with per-org namespacing (Refold Cloud) versus a
+    dedicated control plane per customer (Refold Managed / Self-Hosted). */}
 
 ## Upgrades
 
-{/* NEEDS INPUT: describe the upgrade model. In Refold Cloud and Refold
-    Managed, Refold rolls out CP upgrades on a stated cadence. In
-    Self-Hosted, customer upgrades by re-running Helm with the new chart
-    version. Document version compatibility between CP and data plane. */}
+In **Self-Hosted**, you upgrade by re-running Helm with a new chart version — see [Helm upgrade and uninstall](/v3/developer/deploy/kubernetes/helm#upgrade-and-uninstall). In **Refold Cloud** and **Refold Managed**, Refold rolls out upgrades for you.
+
+{/* NEEDS INPUT: state the supported version-skew window between control plane
+    and data plane, and the upgrade cadence Refold commits to for the managed
+    options. */}
 
 ## High availability
 
-{/* NEEDS INPUT: list HA characteristics for each option: number of CP
-    replicas, recovery time objective (RTO), recovery point objective (RPO),
-    data plane behavior when the CP is unreachable. */}
+The application services are stateless, so you scale them horizontally and roll instances without downtime. Durability comes from the backing stores — MongoDB, Redis, and Temporal's PostgreSQL.
+
+{/* NEEDS INPUT: list HA targets per option — control-plane replica counts,
+    RTO/RPO, and how the data plane behaves when the control plane is briefly
+    unreachable. */}
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Refold Managed" href="/v3/developer/deploy/kubernetes/refold-cp">
+  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/developer/deploy/kubernetes/refold-cp">
     Run Refold in your cluster with Refold operating the control plane.
   </Card>
-  <Card title="Helm install" href="/v3/developer/deploy/kubernetes/helm">
+  <Card title="Helm install" icon="ship" href="/v3/developer/deploy/kubernetes/helm">
     Self-host the entire control plane and data plane on Kubernetes.
   </Card>
-  <Card title="Architecture" href="/v3/developer/deploy/architecture/overview">
-    Component-level diagram and the data flow through Refold.
+  <Card title="Architecture" icon="diagram-project" href="/v3/developer/deploy/architecture/overview">
+    The components of a deployment and what you provision.
   </Card>
-  <Card title="Hardware Requirements" href="/v3/developer/deploy/hardware-requirements">
-    Sizing guidance for self-hosted control plane and data plane.
+  <Card title="Hardware requirements" icon="server" href="/v3/developer/deploy/hardware-requirements">
+    Sizing guidance for the control plane and data plane.
   </Card>
 </CardGroup>
