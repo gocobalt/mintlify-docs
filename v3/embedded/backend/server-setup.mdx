@@ -1,8 +1,106 @@
 ---
 title: "Server setup"
-description: "Install and initialize the Refold server SDK in your backend."
+description: "Install the Refold server SDK in your backend and wire up your API key so every call runs server-side."
 ---
 
+The Refold server SDK is a thin wrapper over the Refold API for your backend. It manages [linked accounts](/v3/embedded/backend/linked-accounts), mints [session tokens](/v3/api-reference/session-tokens/generate-session-token) for your frontend, and triggers [events](/v3/embedded/backend/events), all with your API key held server-side. Use it as the backend half of every native integration.
+
+Your API key authenticates every call and must never reach the browser. The SDK keeps it on your server: your frontend gets a short-lived session token instead, and the SDK is where you mint that token.
+
 <Note>
-This page is a placeholder. Content coming soon.
+The SDK targets the base URL `https://app.refold.ai` and sends your API key in the `x-api-key` header for you. Run it only on your server.
 </Note>
+
+## Prerequisites
+
+- **An API key.** Copy it from **Settings > Credentials** in the [Refold Console](https://app.refold.ai). See [Developer app and API keys](/v3/embedded/backend/developer-app).
+- **A Node.js backend.** The examples below use the Node.js SDK.
+
+## Install the SDK
+
+<Steps>
+  <Step title="Install the package">
+    Add the Refold Node.js SDK to your backend.
+
+    ```bash
+    npm install @cobaltio/cobalt
+    ```
+
+    <Note>
+    TODO: confirm the published npm package name and import for the Refold-branded server SDK. The current package on npm is `@cobaltio/cobalt` and the client class is `Cobalt`. Verify whether a renamed Refold package exists before publishing.
+    </Note>
+  </Step>
+  <Step title="Initialize the client">
+    Create the client once at startup and read the API key from your environment.
+
+    ```javascript Node.js
+    const Cobalt = require("@cobaltio/cobalt");
+
+    const client = new Cobalt({
+      apiKey: process.env.REFOLD_API_KEY,
+    });
+    ```
+  </Step>
+  <Step title="Verify the connection">
+    Mint a session token for a test linked account to confirm the key and environment are correct.
+
+    ```javascript Node.js
+    const { token } = await client.getTokenForLinkedAccount({
+      linked_account_id: "demo-user-1",
+    });
+
+    console.log("Session token:", token);
+    ```
+  </Step>
+</Steps>
+
+For the full method list (linked accounts, tokens, config, and events), see the [Node.js SDK reference](/v3/sdks/server-side/nodejs-sdk).
+
+## Where the API key lives
+
+Keep one rule: the API key stays on the server, and the browser only ever sees a session token.
+
+- **Read the key from an environment variable**, never a literal in source. The examples use `process.env.REFOLD_API_KEY`.
+- **Use the test key in non-production environments** and the live key in production. The key selects the environment. See [Test vs production credentials](/v3/embedded/backend/developer-app#test-vs-production-credentials).
+- **Initialize one client per environment** and reuse it across requests rather than constructing a new client per call.
+
+<Warning>
+Never ship your API key to the frontend or embed it in client code. If a key is exposed, rotate it in **Settings > Credentials** and redeploy.
+</Warning>
+
+## Prefer the API directly?
+
+The SDK is optional. Every operation is a plain HTTP call you can make from any backend with the base URL `https://app.refold.ai` and the `x-api-key` header.
+
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/session-token" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "linked_account_id": "demo-user-1" }'
+```
+
+```json Output
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expires_in": 599747,
+  "refresh_expires_in": 2586947
+}
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Create linked accounts" icon="user-plus" href="/v3/embedded/backend/linked-accounts">
+    Create one account per customer and mint a session token for the frontend.
+  </Card>
+  <Card title="Node.js SDK reference" icon="node-js" href="/v3/sdks/server-side/nodejs-sdk">
+    Every method, parameter, and return shape.
+  </Card>
+  <Card title="Trigger events" icon="bolt" href="/v3/embedded/backend/events">
+    Start workflows from your backend when something happens in your app.
+  </Card>
+  <Card title="Make API proxy calls" icon="arrow-right-arrow-left" href="/v3/embedded/backend/api-proxies">
+    Call a connected app's API with the customer's stored credentials.
+  </Card>
+</CardGroup>

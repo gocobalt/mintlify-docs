@@ -1,8 +1,147 @@
 ---
 title: "API proxies"
-description: "Make authenticated passthrough calls to a connected app's API."
+description: "Call a connected app's API from your backend while Refold injects the customer's stored credentials for you."
 ---
 
+An API proxy call is an authenticated passthrough to a connected app's API, made through Refold. You call Refold, name the app and the action, and Refold attaches the [linked account's](/v3/developer/configure/linked-account) stored credentials before forwarding the request to the provider. No app tokens go in your request, and no per-app auth lives in your backend.
+
+This is how your product reads and writes data in a customer's connected systems. Refold owns the credential storage, token refresh, and per-customer isolation, so your backend sends the same shape of request whether the app behind it is HubSpot, Salesforce, or NetSuite.
+
+<Warning>
+Write actions (create, update, delete) make real changes in the connected app. Test with a read action such as `get_contact` first, and use a sandbox account while you build.
+</Warning>
+
+## How it works
+
+Every proxy call is account-scoped and runs through the execute-action endpoint:
+
+- **You name the app and action** in the URL: an app `slug` (for example, `hubspot`) and an `action_id` (for example, `get_contact`).
+- **You pass the action's parameters** in the body. The fields come from the action's parameter schema, not from raw provider API shapes.
+- **Refold injects credentials** for the linked account named in the `linked_account_id` header, then forwards the call to the provider.
+
+You authenticate to Refold with your API key. The customer's app credentials never appear in your code.
+
 <Note>
-This page is a placeholder. Content coming soon.
+All calls use the base URL `https://app.refold.ai`, send your API key in the `x-api-key` header, and send the customer's `linked_account_id` as a header. The app credentials are stored against that linked account, so Refold knows which customer's connection to use.
 </Note>
+
+## Find the available actions
+
+Before executing, list the actions an app exposes and inspect a given action's parameters.
+
+```bash cURL
+curl "https://app.refold.ai/api/v2/integration-schema/hubspot/actions" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: user_12345"
+```
+
+For the parameter schema of one action, see [Get action parameters](/v3/api-reference/applications/get-action-parameters).
+
+## Make a read call
+
+A read action returns data in the provider's native shape. Refold attaches the credentials, so the body holds only the action's parameters.
+
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/integration-schema/hubspot/actions/get_contact/execute" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{ "limit": "1" }'
+```
+
+```json Output
+{
+  "node_status": "Success",
+  "data": {
+    "results": [
+      {
+        "id": "51",
+        "properties": {
+          "email": "contact@example.com",
+          "firstname": "Brian",
+          "lastname": "Halligan (Sample Contact)"
+        },
+        "createdAt": "2023-10-06T09:53:17.242Z",
+        "archived": false
+      }
+    ],
+    "paging": {}
+  }
+}
+```
+
+## Make a write call
+
+A write action changes data in the customer's connected app. The pattern is identical, only the action and parameters differ.
+
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/integration-schema/hubspot/actions/create_contact/execute" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "firstname": "Jane",
+    "lastname": "Doe"
+  }'
+```
+
+```json Output
+{
+  "node_status": "Success",
+  "data": {
+    "id": "1510721",
+    "createdAt": "2026-06-21T10:04:11.000Z"
+  }
+}
+```
+
+<Check>
+A `node_status` of `Success` means Refold authenticated as the customer and the provider accepted the call.
+</Check>
+
+## Custom actions for your own APIs
+
+The actions above are the connectors Refold maintains. To proxy calls to an endpoint Refold doesn't model, define a **custom action** (an API proxy) in the Console: give it fields, set the request method and URL, and reference it the same way as any other action.
+
+<Steps>
+  <Step title="Create the action">
+    In the [Refold Console](https://app.refold.ai), go to **Settings > Developer > API Proxies**, click **New Action**, and give it a name and description.
+  </Step>
+  <Step title="Add fields">
+    On the **Fields** tab, add the inputs your call needs. These become the action's parameters.
+  </Step>
+  <Step title="Configure the API call">
+    On the **API Call** tab, set the HTTP method, URL, headers, and body. Reference your fields as variables in the request.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: API Proxies API Call tab showing method, URL, and field variables -> /images/embedded/backend/api-proxy-call.png */}</Frame>
+
+<Tip>
+Custom actions can also run inside [workflows](/v3/embedded/configure/workflow) as a node, so one definition serves both direct calls and multi-step automations.
+</Tip>
+
+## Common errors
+
+| Response | Cause | Fix |
+|----------|-------|-----|
+| `404` "Action ... not found" | The `action_id` or `slug` is wrong. | List actions for the app and use an exact `action_id`. |
+| Credential or auth failure from the provider | The linked account is not connected, or its token expired. | Reconnect the app. Subscribe to the `Connection Expired` [webhook](/v3/embedded/backend/webhooks) to catch this. |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Execute action API" icon="code" href="/v3/api-reference/applications/execute-action">
+    Full request, parameters, and response shapes.
+  </Card>
+  <Card title="Action parameters" icon="list-check" href="/v3/api-reference/applications/get-action-parameters">
+    Inspect the schema for any action before you call it.
+  </Card>
+  <Card title="Run a workflow" icon="diagram-project" href="/v3/embedded/configure/workflow">
+    Chain reads, transforms, and writes across apps.
+  </Card>
+  <Card title="Handle connection health" icon="signal" href="/v3/embedded/frontend/management/connection-status">
+    Catch expired connections before a proxy call fails.
+  </Card>
+</CardGroup>
