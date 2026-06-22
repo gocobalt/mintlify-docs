@@ -1,6 +1,6 @@
 ---
 title: "React SDK flow"
-description: "Embed Refold's connect experience directly in your React app — no redirect, no UI to build."
+description: "Embed Refold's connect experience directly in your React app, no redirect, no UI to build."
 ---
 
 The **React SDK flow** drops Refold's prebuilt connect component into your React app. You wrap your integration UI in a `<Provider>` and render a `<Config>` component; the customer connects and configures in an in-app modal, with **no redirect** to an external page.
@@ -8,7 +8,7 @@ The **React SDK flow** drops Refold's prebuilt connect component into your React
 It's the low-effort, in-product option: you get prebuilt components that handle connection status, OAuth, config fields, and workflow toggles, while keeping the whole flow inside your application.
 
 <Note>
-This flow needs a [linked account](/v3/developer/configure/linked-account) and a [session token](/v3/embedded/frontend/overview#before-you-start) in place first. Both are created on your backend and documented on the [Overview](/v3/embedded/frontend/overview) — never expose your API key in the browser.
+This flow needs a [linked account](/v3/developer/configure/linked-account) and a [session token](/v3/embedded/frontend/overview#before-you-start) in place first. Both are created on your backend and documented on the [Overview](/v3/embedded/frontend/overview). Never expose your API key in the browser.
 </Note>
 
 ## When to use it
@@ -16,7 +16,7 @@ This flow needs a [linked account](/v3/developer/configure/linked-account) and a
 Choose the React SDK flow when:
 
 - **You have a React app** and want the connect experience embedded in-product.
-- **You want prebuilt components**, not a fully custom UI — `<Config>` renders connection status, fields, and workflow toggles for you.
+- **You want prebuilt components**, not a fully custom UI, `<Config>` renders connection status, fields, and workflow toggles for you.
 - **You don't want a redirect** to an externally hosted page.
 
 For a no-code option with no React, use the [Hosted flow](/v3/embedded/frontend/hosted-flow). For a fully bespoke UI, [build your own](/v3/embedded/frontend/customization/build-your-own).
@@ -47,11 +47,11 @@ function Integrations({ sessionToken }) {
 ```
   </Step>
   <Step title="Render the Config component">
-    Render `<Config>` with the app's `slug` — typically inside a modal. It only renders when `slug` is set, so you can mount it on demand.
+    Render `<Config>` with the app's `slug`, typically inside a modal. It only renders when `slug` is set, so you can mount it on demand.
 
 ```jsx
 <Config
-  slug="hubspot"          // app slug — required
+  slug="hubspot"          // app slug: required
   id="user_config_123"    // optional config id; defaults to the linked account id
   labels={{}}             // optional dynamic labels for Map v2 fields
   style={{                // optional container style overrides

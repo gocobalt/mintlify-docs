@@ -1,14 +1,14 @@
 ---
 title: "Build your own"
-description: "Build a fully custom connect experience with the Refold JavaScript SDK — total control over the UI."
+description: "Build a fully custom connect experience with the Refold JavaScript SDK, total control over the UI."
 ---
 
-**Build your own** uses the Refold [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) to wire the connect experience into a UI you build yourself. You list apps, run connect and disconnect, and render config fields with your own components — Refold handles the auth flows and credential storage underneath.
+**Build your own** uses the Refold [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) to wire the connect experience into a UI you build yourself. You list apps, run connect and disconnect, and render config fields with your own components. Refold handles the auth flows and credential storage underneath.
 
 This is the highest-effort flow and gives you the most control: every screen, button, and layout is yours. Use it when neither the [hosted portal](/v3/embedded/frontend/hosted-flow) nor the [React component](/v3/embedded/frontend/react-sdk-flow) gives you the experience you want.
 
 <Note>
-This flow needs a [linked account](/v3/developer/configure/linked-account) and a [session token](/v3/embedded/frontend/overview#before-you-start) in place first. Both are created on your backend and documented on the [Overview](/v3/embedded/frontend/overview) — never expose your API key in the browser.
+This flow needs a [linked account](/v3/developer/configure/linked-account) and a [session token](/v3/embedded/frontend/overview#before-you-start) in place first. Both are created on your backend and documented on the [Overview](/v3/embedded/frontend/overview). Never expose your API key in the browser.
 </Note>
 
 ## When to use it
@@ -46,15 +46,15 @@ const slack = await cobalt.getApp("slack"); // one app
 ```
 
     <Tip>
-    Use the icons and branded buttons Refold returns for each app — some providers (for example, QuickBooks Online) require their official branded button, including specific hover states.
+    Use the icons and branded buttons Refold returns for each app, some providers (for example, QuickBooks Online) require their official branded button, including specific hover states.
     </Tip>
   </Step>
   <Step title="Connect and disconnect">
-    Call `connect(slug)` to start the auth flow — OAuth apps open a popup, key-based apps take a credentials payload. Call `disconnect(slug)` to revoke access and delete the app's config for the linked account.
+    Call `connect(slug)` to start the auth flow, OAuth apps open a popup, key-based apps take a credentials payload. Call `disconnect(slug)` to revoke access and delete the app's config for the linked account.
 
 ```javascript
-await cobalt.connect("slack");                  // OAuth — opens popup
-await cobalt.connect("twilio", {                // key-based — saves credentials
+await cobalt.connect("slack");                  // OAuth: opens popup
+await cobalt.connect("twilio", {                // key-based: saves credentials
   number: "1234567890",
   sid: "ACCOUNT_SID",
   auth_token: "AUTH_TOKEN",
@@ -75,7 +75,7 @@ See the [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) reference for ever
 </Tip>
 
 <Warning>
-Call `connect()` in response to a user action (a click). Browsers block OAuth popups that aren't triggered by user interaction. Session tokens also expire after 24 hours — generate a fresh one for each session.
+Call `connect()` in response to a user action (a click). Browsers block OAuth popups that aren't triggered by user interaction. Session tokens also expire after 24 hours. Generate a fresh one for each session.
 </Warning>
 
 ## Next steps

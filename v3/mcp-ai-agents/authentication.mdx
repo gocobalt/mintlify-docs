@@ -5,7 +5,11 @@ description: "Authenticate agents to an MCP server with per-user tokens, control
 
 MCP authentication builds on Refold [linked accounts](/v3/developer/configure/linked-account). Every MCP server connection carries a token embedded in the Server URL that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents — see [Linked accounts](/v3/developer/configure/linked-account) for how those accounts and their credentials are established.
 
-This page covers what is MCP-specific: the Server-URL token, how access is scoped to the apps and actions you expose, and how to revoke a token.
+This page covers what is MCP-specific: the Server-URL token, how access is scoped to the apps and actions you expose, and how to revoke a token. For the connection flows that produce a linked account in the first place — hosted, build-your-own, re-authentication, and more — see the [authentication hub](/v3/developer/auth/overview).
+
+<Note>
+In MCP, the user authorizes connections **inline in the agent chat**. The flows are the same as every other Refold product; only the entry point differs.
+</Note>
 
 ## How authentication works
 
