@@ -1,14 +1,14 @@
 ---
 title: Go Live Checklist
-description: Validate that your application is ready for deployment with the Cobalt go-live checklist.
+description: Validate that your application is ready for deployment with the Refold go-live checklist.
 ---
 If you have followed the [Implementation Guide](https://docs.gocobalt.io/implementation/overview) completely, your application is ready for deployment. The following checklist is focused list of recommendations to validate that your application is ready for deployment. This will ensure a seamless experience for your customers, make your integration more robust and secure, and set you up for success when you launch into production.
 
-## Integrate Cobalt Auth flow 
+## Integrate Refold Auth flow 
 
-Cobalt auth flows lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf.
+Refold auth flows lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf.
 
-- [Integrate Cobalt auth flows](https://docs.gocobalt.io/guides/auth-flows/embedded-flow) into your application’s frontend. It should be displayed as a part of your onboarding flow, preferably behind an authentication login.
+- [Integrate Refold auth flows](https://docs.gocobalt.io/guides/auth-flows/embedded-flow) into your application’s frontend. It should be displayed as a part of your onboarding flow, preferably behind an authentication login.
 - [Create Session Tokens](https://docs.gocobalt.io/implementation/integrate/get-access-token) for your linked accounts.
 
 **Design a seamless connection experience**
@@ -18,15 +18,15 @@ Cobalt auth flows lets your users connect their integration accounts. It stores 
 
 ## Configure Integration 
 
-Configure the integration that you want to enable for your customers, correctly in the Cobalt Dashboard.
+Configure the integration that you want to enable for your customers, correctly in the Refold Dashboard.
 - Ensure that the correct Client ID and Client Secret are used in the OAuth app Setup.
-- Check if the Callback URL provided by Cobalt has been added to your OAuth app.
+- Check if the Callback URL provided by Refold has been added to your OAuth app.
 - The scopes selected in the OAuth app should be correct for the actions that you want to perform.
 
-## Integrate Cobalt API or SDK
+## Integrate Refold API or SDK
 
 Following steps are recommended to build a resilient integration using the API or SDK.
-- [Integrate the Cobalt APIs](https://docs.gocobalt.io/api-reference/linked-accounts/get-linked-account) or SDKs for Listing Applications, Config etc. into your application’s backend.
+- [Integrate the Refold APIs](https://docs.gocobalt.io/api-reference/customer/get-linked-account) or SDKs for Listing Applications, Config etc. into your application’s backend.
 
 **Handle Responses**
 - Parse through the response received and use the required fields from it.
@@ -51,13 +51,13 @@ For a workflow, it is essential that the correct information is read and write.
 - [Orchestration testing](https://docs.gocobalt.io/implementation/Test-Integration/orchestration-test) will make sure that the Workflow is able to provide the required functionality.
 
 ## Test the integration and go live
-Before going live, it is valuable to know the test scenarios for your Cobalt integration.
+Before going live, it is valuable to know the test scenarios for your Refold integration.
 - An integration involves different [test scenarios](https://docs.gocobalt.io/implementation/Test-Integration/develop-test) which should be thoroughly tested.
 - Some integrations provide free Sandbox/trial accounts which should be used for testing before going live.
 
 ## Support
-The following steps will ensure you and your team is set up for success once your Cobalt integration has gone live.
-- You can contact Cobalt Support either by sending an email to `integrations@gocobalt.io`, or `@Cobalt Support` if you have a shared Slack channel with Cobalt.
+The following steps will ensure you and your team is set up for success once your Refold integration has gone live.
+- You can contact Refold Support either by sending an email to `integrations@gocobalt.io`, or `@Cobalt Support` if you have a shared Slack channel with Refold.
 
 
 

@@ -3,14 +3,14 @@ title: Events & API Proxies
 description: In this, you'll setup the Events and API Proxies required for the integrations
 ---
 
-**API Proxies** and **Events** allows your organization to integrate your services better with the workflows in Cobalt. 
+**API Proxies** and **Events** allows your organization to integrate your services better with the workflows in Refold. 
 
 **API Proxies** help you to setup your own APIs to be used in workflows which can be used to fetch data to your system;
 
-While you can send data from your apps to other apps by using Cobalt **Events**. These Events contain the payload of any object that you want to write to the third party application.
+While you can send data from your apps to other apps by using Refold **Events**. These Events contain the payload of any object that you want to write to the third party application.
 
 
-Let's look in detail how you can setup both of these in Cobalt.
+Let's look in detail how you can setup both of these in Refold.
 
 ## Create API Proxy
 
@@ -21,7 +21,7 @@ You can learn in detail about API Proxies in our guide [here](https://docs.gocob
 Follow these steps to create an API Proxy:
 <Steps>
   <Step title="Create Action">
-    Navigate to `Developer` in Cobalt > `API Proxies` > Click on the `New Action` button > provide a `Name` and `Description` for the API Proxy > Click on the `Create Action` button.
+    Navigate to `Developer` in Refold > `API Proxies` > Click on the `New Action` button > provide a `Name` and `Description` for the API Proxy > Click on the `Create Action` button.
   </Step>
   <Step title="Configure the Fields">
     Click on the `Fields` tab > Click `Edit` > And add Custom fields for your action.
@@ -42,12 +42,12 @@ To learn more about how you can create a sample workflow with an API Proxy, refe
 An event model contains name of the event and the trigger payload. The trigger payload contains sample data schema that can be used as data variables and are used inside a workflow as placeholders while defining the workflow.
 
 <Info>
-To learn more about Cobalt Events, you can refer to our guide [here](https://docs.gocobalt.io/build/basics/events).
+To learn more about Refold Events, you can refer to our guide [here](https://docs.gocobalt.io/build/basics/events).
 </Info>
 
-Follow these steps to create an Event in Cobalt:
+Follow these steps to create an Event in Refold:
 
-Navigate to `Developer` in Cobalt > `Events` > Click on `New Event` > Select a `Model` > Update the sample Payload to your requirements > Click on `Create Event`.
+Navigate to `Developer` in Refold > `Events` > Click on `New Event` > Select a `Model` > Update the sample Payload to your requirements > Click on `Create Event`.
 <img height="200" src="/images/Developer/create-event.png" alt="Creating an event"/>
 
 <Tip>
@@ -55,7 +55,7 @@ It is expected that you pass on the data as the Sample Payload while you are tri
 </Tip>
 
 
-You can trigger an event that was created in Cobalt by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/events/trigger-event-by-slug).
+You can trigger an event that was created in Refold by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application).
 
 <Accordion title="Trigger an Event">
 Make a POST request to the `/event/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.

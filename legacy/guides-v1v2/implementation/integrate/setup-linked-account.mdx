@@ -3,9 +3,9 @@ title: Set Up Linked Accounts
 ---
 <img height="200" src="/images/implementation/linked_account_sequence.png" alt="Sequence Diagram for Creating Linked Account and Session Token"/>
 
-**Linked Accounts** refers to the end-users or customers of our users who utilize the integrations built using the Cobalt platform. When you create a Linked Account, you must provide a `linked_account_id`. This ID can be anything you want, but it must be unique.
+**Linked Accounts** refers to the end-users or customers of our users who utilize the integrations built using the Refold platform. When you create a Linked Account, you must provide a `linked_account_id`. This ID can be anything you want, but it must be unique.
 
-Most of the time, the linked_account_id is an ID from your internal data model that represents a user or account in your system. For example, if you have a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Cobalt Linked Account.
+Most of the time, the linked_account_id is an ID from your internal data model that represents a user or account in your system. For example, if you have a user in your system with the ID `account:12345`, you could use that ID as the **linked_account_id** for your Refold Linked Account.
 
 Auth tokens and User configurations will be stored against the Linked account id of each user.
 
@@ -13,8 +13,8 @@ Auth tokens and User configurations will be stored against the Linked account id
 To learn more about Linked Accounts, you can refer to the Linked Accounts Guide [here](https://docs.gocobalt.io/build/basics/linked_account).
 </Info>
 
-### Using Cobalt API or SDK
-Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/linked-accounts/upsert-linked-account) call below or the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create or update a linked account.
+### Using Refold API or SDK
+Use the [Upsert Linked Account API](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) call below or the **.upsertLinkedAccount()** method of the [NodeJS SDK](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk) to create or update a linked account.
 <CodeGroup>
 ```bash cURL
 curl --request PUT \
@@ -102,11 +102,11 @@ The API request or Method call will respond with a JSON Object containing data a
 }
 ```
 
-You can check the Linked Accounts present in your account by using the [List Linked Accounts API](https://docs.gocobalt.io/api-reference/linked-accounts/list-linked-accounts) Or through the **Cobalt Dashboard** by navigating to `Linked Accounts` in the side menu.
+You can check the Linked Accounts present in your account by using the [List Linked Accounts API](https://docs.gocobalt.io/api-reference/customer/list-linked-accounts) Or through the **Refold Dashboard** by navigating to `Linked Accounts` in the side menu.
 <img height="200" src="/images/implementation/la.png" alt="Linked Accounts on Dashboard"/>
 
 ### Checkpoint + Next Step 
 
 <Check>
-After completing this step, you have successfully created Linked Accounts of your end-users. This will now allow your clients to make a request to the Cobalt APIs successfully by using their **Session Tokens** which we will create in the [next step](https://docs.gocobalt.io/implementation/integrate/get-access-token).
+After completing this step, you have successfully created Linked Accounts of your end-users. This will now allow your clients to make a request to the Refold APIs successfully by using their **Session Tokens** which we will create in the [next step](https://docs.gocobalt.io/implementation/integrate/get-access-token).
 </Check>

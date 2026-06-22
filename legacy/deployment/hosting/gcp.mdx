@@ -1,12 +1,12 @@
 ---
 title: GCP Deployment
-description: "This guide helps you install and deploy Cobalt’s on-prem solution on your Kubernetes cluster. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on GCP. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts."
+description: "This guide helps you install and deploy Refold’s on-prem solution on your Kubernetes cluster. It covers the setup of essential dependencies, including Redis and MongoDB, and guides you through creating a Kubernetes cluster on GCP. After successfully setting up your cluster, you'll configure your environment to pull images from our private Docker repository and install our services via Helm charts."
 ---
 
 ## Prerequisites
 
 - A Kubernetes cluster (GCP setup instructions provided below)
-- Docker credentials (you will receive a Personal Access Token (PAT) from the Cobalt team)
+- Docker credentials (you will receive a Personal Access Token (PAT) from the Refold team)
 - Redis (managed or self-hosted)
 - MongoDB (managed or self-hosted, recommended: MongoDB Atlas)
 
@@ -23,7 +23,7 @@ You can either use a managed Redis instance or host Redis yourself.
    - **Region**: Select the same region as your Kubernetes cluster.
    - **Tier**: Select a tier depending on your requirements (Standard or Basic).
    - **Eviction Policy**: Set to `no-eviction` to ensure Redis works properly with BullMQ.
-4. Once the instance is created, note down the connection endpoint. You will use this endpoint in your environment configuration to connect Cobalt services to Redis.
+4. Once the instance is created, note down the connection endpoint. You will use this endpoint in your environment configuration to connect Refold services to Redis.
 5. Ensure your Kubernetes pods can access this Redis instance by setting up appropriate firewall rules in your GCP project.
 
 ### Option 2: Self-Hosted Redis Installation
@@ -100,7 +100,7 @@ You can either create an autopilot or a standard cluster on GCP. Here’s how:
 
 ## 4. Creating Docker Registry Credentials
 
-Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a Personal Access Token (PAT) from the Cobalt team.
+Once your Kubernetes cluster is ready, you'll need to create a secret to pull Docker images from the private GitHub Container Registry (GHCR). You will receive a Personal Access Token (PAT) from the Refold team.
 
 Run the following command to create the secret:
 
@@ -116,9 +116,9 @@ kubectl create secret docker-registry regcred \
 This command creates a secret named regcred in the services namespace that will allow Kubernetes to authenticate and pull images from the private repository.
 
 
-## 5. Applying ConfigMaps and Secrets Provided by Cobalt
+## 5. Applying ConfigMaps and Secrets Provided by Refold
 
-As part of the Cobalt setup, you'll receive ConfigMaps and Secrets from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
+As part of the Refold setup, you'll receive ConfigMaps and Secrets from our team. These files contain important configurations such as `REDIS_HOST`, `MONGODB_URI`, and other service-related settings.
 
 ### Option 1: Manually Applying ConfigMaps and Secrets
 
@@ -147,11 +147,11 @@ This should display properly when rendered in a compatible MDX environment. Let 
 
 
 
-## 6. Installing Cobalt Services via Helm
+## 6. Installing Refold Services via Helm
 
-After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Cobalt services.
+After setting up Redis, MongoDB, the Kubernetes cluster, Docker registry credentials, ConfigMaps, and Secrets, you are ready to install the Refold services.
 
-### To Install Cobalt Services
+### To Install Refold Services
 
 Use the provided `install_all.sh` script to install all necessary services:
 
@@ -159,10 +159,10 @@ Use the provided `install_all.sh` script to install all necessary services:
 ./install_all.sh
 ```
 
-This script will handle the installation of all Cobalt services on your Kubernetes cluster.
+This script will handle the installation of all Refold services on your Kubernetes cluster.
 
 
-## To Uninstall Cobalt Services
+## To Uninstall Refold Services
 
 If you need to uninstall the services, use the provided `uninstall_all.sh` script:
 
@@ -170,6 +170,6 @@ If you need to uninstall the services, use the provided `uninstall_all.sh` scrip
 ./uninstall_all.sh
 ```
 
-This script will cleanly uninstall all Cobalt services from your cluster.
+This script will cleanly uninstall all Refold services from your cluster.
 
-<Info>This guide provides the foundational setup for deploying Cobalt services, including the option to use the apply_all.sh script for easier management of ConfigMaps and Secrets. For further questions or assistance, feel free to reach out to the Cobalt support team.</Info>
+<Info>This guide provides the foundational setup for deploying Refold services, including the option to use the apply_all.sh script for easier management of ConfigMaps and Secrets. For further questions or assistance, feel free to reach out to the Refold support team.</Info>
