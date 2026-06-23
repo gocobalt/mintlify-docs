@@ -26,11 +26,10 @@
     { "source": "/v3/mcp-ai-agents/implementation/account-hierarchy", "destination": "/v3/mcp-ai-agents/implementation/security-compliance" },
     { "source": "/v3/mcp-ai-agents/implementation/multi-tenant-workflows", "destination": "/v3/mcp-ai-agents/implementation/security-compliance" }
   ],
-  "versions": ["v2", "v1"],
   "logo": {
     "dark": "/logo/white-icon.svg",
     "light": "/logo/black-icon.svg",
-    "href": "/welcome"
+    "href": "/welcome-v2"
   },
   "favicon": "/logo/favicon.svg",
   "colors": {
@@ -55,7 +54,7 @@
     }
   },
   "navigation": {
-    "default": "welcome",
+    "default": "welcome-v2",
     "anchors": [
       {
         "anchor": "Postman",
@@ -74,6 +73,484 @@
       }
     ],
     "versions": [
+      {
+        "version": "v2",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "legacy/overview",
+                  "legacy/quickstart"
+                ]
+              },
+              {
+                "group": "Build",
+                "pages": [
+                  {
+                    "group": "Platform Setup",
+                    "pages": [
+                      "legacy/build/basics/linked_account",
+                      "legacy/build/basics/developer_settings",
+                      "legacy/build/basics/proxies",
+                      "legacy/build/basics/events",
+                      "legacy/build/basics/webhooks",
+                      {
+                        "group": "Account Management",
+                        "pages": [
+                          "legacy/build/basics/account-management/general",
+                          "legacy/build/basics/account-management/users",
+                          "legacy/build/basics/account-management/access",
+                          "legacy/build/basics/account-management/branding"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Connectors",
+                    "pages": [
+                      "legacy/build/connectors/overview",
+                      {
+                        "group": "Config",
+                        "pages": [
+                          "legacy/build/connectors/config/config",
+                          {
+                            "group": "Field Types",
+                            "pages": [
+                              "legacy/build/connectors/config/field_type_intro",
+                              "legacy/build/connectors/config/datasource",
+                              "legacy/build/connectors/config/mapping",
+                              "legacy/build/connectors/config/dependent",
+                              "legacy/build/connectors/config/rule_engine"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Workflows",
+                    "pages": [
+                      "legacy/build/workflow/overview",
+                      "legacy/build/workflow/public_workflow",
+                      {
+                        "group": "Triggers",
+                        "pages": [
+                          "legacy/build/workflow/triggering_workflow",
+                          "legacy/build/workflow/workflow_api",
+                          "legacy/build/workflow/triggers/schedule"
+                        ]
+                      },
+                      {
+                        "group": "Nodes",
+                        "pages": [
+                          "legacy/build/workflow/csv-excel",
+                          "legacy/build/workflow/custom-code",
+                          "legacy/build/workflow/data_mapper",
+                          "legacy/build/workflow/delay",
+                          "legacy/build/workflow/file_handler",
+                          "legacy/build/workflow/group",
+                          "legacy/build/workflow/httpnode",
+                          "legacy/build/workflow/merge",
+                          "legacy/build/workflow/pdf",
+                          "legacy/build/workflow/response",
+                          "legacy/build/workflow/rule",
+                          "legacy/build/workflow/sub_flows",
+                          "legacy/build/workflow/email",
+                          "legacy/build/workflow/transform",
+                          "legacy/build/workflow/wait_for_webhook"
+                        ]
+                      },
+                      "legacy/build/workflow/human_task",
+                      "legacy/build/workflow/variables",
+                      "legacy/build/workflow/environment-variables",
+                      "legacy/build/workflow/encrypted-output-fields",
+                      "legacy/build/workflow/workflow_testing",
+                      "legacy/build/workflow/templating",
+                      "legacy/build/workflow/best-practices"
+                    ]
+                  },
+                  {
+                    "group": "Advanced Features",
+                    "pages": [
+                      "legacy/build/workflow/datarefs",
+                      "legacy/build/workflow/internal_functions",
+                      "legacy/build/workflow/tables",
+                      "legacy/build/workflow/user_forms"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Ship Integrations",
+                "pages": [
+                  {
+                    "group": "Auth Flows",
+                    "pages": [
+                      "legacy/ship/auth_flows/flows",
+                      "legacy/ship/auth_flows/hosted",
+                      "legacy/ship/auth_flows/embedded",
+                      "legacy/ship/auth_flows/build_your_own",
+                      "legacy/ship/auth_flows/re-auth-flow"
+                    ]
+                  },
+                  "legacy/ship/tryapi"
+                ]
+              },
+              {
+                "group": "Maintain",
+                "pages": [
+                  "legacy/maintain/logs",
+                  "legacy/maintain/reliability"
+                ]
+              },
+              {
+                "group": "Custom App",
+                "pages": [
+                  "legacy/custom_app/custom_app",
+                  {
+                    "group": "Custom App Setup",
+                    "pages": [
+                      "legacy/custom_app/custom_app_scratch",
+                      "legacy/custom_app/custom_app_ai",
+                      "legacy/custom_app/custom_app_openapi"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Deployment",
+                "pages": [
+                  "legacy/deployment/overview",
+                  {
+                    "group": "Hosting Solutions",
+                    "pages": [
+                      "legacy/deployment/hosting/intro",
+                      "legacy/deployment/hosting/aws",
+                      "legacy/deployment/hosting/azure",
+                      "legacy/deployment/hosting/gcp",
+                      "legacy/deployment/hosting/standalone"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Governance & Compliance",
+                "pages": [
+                  "legacy/governance/overview",
+                  "legacy/governance/application-security",
+                  "legacy/governance/certifications",
+                  "legacy/governance/privacy",
+                  "legacy/governance/terms-of-use"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Implementation & Guides",
+            "groups": [
+              {
+                "group": "Implementation Guide",
+                "pages": [
+                  {
+                    "group": "Platform Setup",
+                    "pages": [
+                      "legacy/implementation/overview",
+                      "legacy/implementation/communicate/events_proxies"
+                    ]
+                  },
+                  {
+                    "group": "Build Integration",
+                    "pages": [
+                      "legacy/implementation/app/setup",
+                      {
+                        "group": "Workflows",
+                        "pages": [
+                          "legacy/implementation/workflow/overview",
+                          "legacy/implementation/workflow/sync_using_proxy",
+                          "legacy/implementation/workflow/create_using_event"
+                        ]
+                      },
+                      "legacy/implementation/integrate/config_setup"
+                    ]
+                  },
+                  {
+                    "group": "Backend",
+                    "pages": [
+                      "legacy/implementation/integrate/setup-linked-account",
+                      "legacy/implementation/integrate/get-access-token"
+                    ]
+                  },
+                  {
+                    "group": "Frontend",
+                    "pages": [
+                      "legacy/implementation/integrate/display-apps",
+                      "legacy/implementation/integrate/manage-connection",
+                      "legacy/implementation/integrate/end-user-config"
+                    ]
+                  },
+                  {
+                    "group": "Go Live",
+                    "pages": [
+                      "legacy/implementation/Test-Integration/develop-test",
+                      "legacy/implementation/deploy/live-checklist"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Examples",
+                "pages": [
+                  "legacy/implementation/examples/build_salesforce",
+                  "legacy/implementation/examples/build_netsuite",
+                  "legacy/implementation/examples/build_workday"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "API references & SDK",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "v3/api-reference/overview",
+                  "v3/api-reference/sdks"
+                ]
+              },
+              {
+                "group": "Linked Accounts",
+                "pages": [
+                  "v3/api-reference/linked-accounts/create-linked-account",
+                  "v3/api-reference/linked-accounts/get-linked-account",
+                  "v3/api-reference/linked-accounts/list-linked-accounts",
+                  "v3/api-reference/linked-accounts/upsert-linked-account",
+                  "v3/api-reference/linked-accounts/delete-integration",
+                  "v3/api-reference/linked-accounts/delete-linked-account",
+                  "v3/api-reference/linked-accounts/get-active-linked-account"
+                ]
+              },
+              {
+                "group": "Applications",
+                "pages": [
+                  "v3/api-reference/applications/list-applications",
+                  "v3/api-reference/applications/get-application",
+                  "v3/api-reference/applications/get-actions",
+                  "v3/api-reference/applications/get-action-parameters",
+                  "v3/api-reference/applications/execute-action"
+                ]
+              },
+              {
+                "group": "Auth Structure",
+                "pages": [
+                  "v3/api-reference/auth-structure/get-auth-structure",
+                  "v3/api-reference/auth-structure/get-oauth-url"
+                ]
+              },
+              {
+                "group": "Credentials",
+                "pages": [
+                  "v3/api-reference/credentials/get-credentials",
+                  "v3/api-reference/credentials/get-token",
+                  "v3/api-reference/credentials/save-key-credentials",
+                  "v3/api-reference/credentials/migrate-token",
+                  "v3/api-reference/credentials/upsert-default-app-credential",
+                  "v3/api-reference/credentials/delete-default-app-credential"
+                ]
+              },
+              {
+                "group": "Session Tokens",
+                "pages": [
+                  "v3/api-reference/session-tokens/generate-session-token",
+                  "v3/api-reference/session-tokens/revoke-session-token"
+                ]
+              },
+              {
+                "group": "Connect",
+                "pages": [
+                  "v3/api-reference/connect/create-connect-url"
+                ]
+              },
+              {
+                "group": "Hosted Properties",
+                "pages": [
+                  "v3/api-reference/hosted-properties/get-hosted-properties"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "v3/api-reference/webhooks/create-webhook",
+                  "v3/api-reference/webhooks/update-webhook",
+                  "v3/api-reference/webhooks/get-webhook",
+                  "v3/api-reference/webhooks/get-webhook-by-id",
+                  "v3/api-reference/webhooks/delete-webhook",
+                  "v3/api-reference/webhooks/edit-webhook-group"
+                ]
+              },
+              {
+                "group": "Configs",
+                "pages": [
+                  "v3/api-reference/configs/create-config",
+                  "v3/api-reference/configs/update-config",
+                  "v3/api-reference/configs/get-config-default",
+                  "v3/api-reference/configs/get-config",
+                  "v3/api-reference/configs/list-configs",
+                  "v3/api-reference/configs/toggle-workflow",
+                  "v3/api-reference/configs/delete-config-default",
+                  "v3/api-reference/configs/delete-config"
+                ]
+              },
+              {
+                "group": "Config Fields",
+                "pages": [
+                  "v3/api-reference/config-fields/get-all-fields",
+                  "v3/api-reference/config-fields/get-field-by-id",
+                  "v3/api-reference/config-fields/update-field-value",
+                  "v3/api-reference/config-fields/delete-field-value",
+                  "v3/api-reference/config-fields/get-options-for-rule-engine"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "v3/api-reference/events/create-event",
+                  "v3/api-reference/events/get-event",
+                  "v3/api-reference/events/update-event",
+                  "v3/api-reference/events/delete-event",
+                  "v3/api-reference/events/list-events",
+                  "v3/api-reference/events/trigger-event-by-slug",
+                  "v3/api-reference/events/trigger-event"
+                ]
+              },
+              {
+                "group": "Schedule",
+                "pages": [
+                  "v3/api-reference/schedule/register-schedule",
+                  "v3/api-reference/schedule/list-schedules",
+                  "v3/api-reference/schedule/update-schedule",
+                  "v3/api-reference/schedule/pause-schedule",
+                  "v3/api-reference/schedule/resume-schedule",
+                  "v3/api-reference/schedule/delete-schedule"
+                ]
+              },
+              {
+                "group": "Executions",
+                "pages": [
+                  "v3/api-reference/executions/list-executions",
+                  "v3/api-reference/executions/get-execution",
+                  "v3/api-reference/executions/list-batches",
+                  "v3/api-reference/executions/stop-execution"
+                ]
+              },
+              {
+                "group": "Human Tasks",
+                "pages": [
+                  "v3/api-reference/human-tasks/get-human-task",
+                  "v3/api-reference/human-tasks/submit-human-task"
+                ]
+              },
+              {
+                "group": "Datarefs",
+                "pages": [
+                  "v3/api-reference/datarefs/list-datarefs",
+                  "v3/api-reference/datarefs/create-dataref",
+                  "v3/api-reference/datarefs/get-dataref",
+                  "v3/api-reference/datarefs/clear-records",
+                  "v3/api-reference/datarefs/edit-group",
+                  "v3/api-reference/datarefs/delete-dataref"
+                ]
+              },
+              {
+                "group": "Environment Variables",
+                "pages": [
+                  "v3/api-reference/environment-variables/list-definitions",
+                  "v3/api-reference/environment-variables/get-definition",
+                  "v3/api-reference/environment-variables/get-value",
+                  "v3/api-reference/environment-variables/set-value",
+                  "v3/api-reference/environment-variables/list-values",
+                  "v3/api-reference/environment-variables/delete-value"
+                ]
+              },
+              {
+                "group": "Persistent Tables",
+                "pages": [
+                  "v3/api-reference/tables/list-tables",
+                  "v3/api-reference/tables/create-table",
+                  "v3/api-reference/tables/get-records",
+                  "v3/api-reference/tables/add-records",
+                  "v3/api-reference/tables/search-records",
+                  "v3/api-reference/tables/add-columns",
+                  "v3/api-reference/tables/rename-columns",
+                  "v3/api-reference/tables/remove-columns",
+                  "v3/api-reference/tables/delete-record",
+                  "v3/api-reference/tables/edit-group",
+                  "v3/api-reference/tables/delete-table"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "v3/api-reference/workflows/list-workflows",
+                  "v3/api-reference/workflows/create-workflow",
+                  "v3/api-reference/workflows/get-workflow",
+                  "v3/api-reference/workflows/list-enabled-workflows",
+                  "v3/api-reference/workflows/request-structure",
+                  "v3/api-reference/workflows/get-draft",
+                  "v3/api-reference/workflows/publish-workflow",
+                  "v3/api-reference/workflows/versions",
+                  "v3/api-reference/workflows/execute-workflow",
+                  "v3/api-reference/workflows/delete-workflow"
+                ]
+              },
+              {
+                "group": "MCP Servers",
+                "pages": [
+                  "v3/api-reference/mcp-servers/list-mcp-servers",
+                  "v3/api-reference/mcp-servers/get-mcp-server",
+                  "v3/api-reference/mcp-servers/create-mcp-server",
+                  "v3/api-reference/mcp-servers/update-mcp-server",
+                  "v3/api-reference/mcp-servers/delete-mcp-server"
+                ]
+              },
+              {
+                "group": "Deprecated",
+                "pages": [
+                  "v3/api-reference/datastores/list-config-datastores",
+                  "v3/api-reference/datastores/list-records",
+                  "v3/api-reference/datastores/search-records"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "groups": [
+              {
+                "group": "Changes",
+                "pages": [
+                  "v3/changelog/overview",
+                  {
+                    "group": "2026",
+                    "pages": [
+                      "v3/changelog/2026/june",
+                      "v3/changelog/2026/may",
+                      "v3/changelog/2026/april",
+                      "v3/changelog/2026/march",
+                      "v3/changelog/2026/february",
+                      "v3/changelog/2026/january"
+                    ]
+                  },
+                  "v3/changelog/2025",
+                  "v3/changelog/2024"
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "version": "v3",
         "tabs": [
@@ -1529,635 +2006,6 @@
                   },
                   "v3/changelog/2025",
                   "v3/changelog/2024"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "version": "v2",
-        "tabs": [
-          {
-            "tab": "Documentation",
-            "groups": [
-              {
-                "group": "Getting Started",
-                "pages": [
-                  "legacy/overview",
-                  "legacy/quickstart"
-                ]
-              },
-              {
-                "group": "Build",
-                "pages": [
-                  {
-                    "group": "Platform Setup",
-                    "pages": [
-                      "legacy/build/basics/linked_account",
-                      "legacy/build/basics/developer_settings",
-                      "legacy/build/basics/proxies",
-                      "legacy/build/basics/events",
-                      "legacy/build/basics/webhooks",
-                      {
-                        "group": "Account Management",
-                        "pages": [
-                          "legacy/build/basics/account-management/general",
-                          "legacy/build/basics/account-management/users",
-                          "legacy/build/basics/account-management/access",
-                          "legacy/build/basics/account-management/branding"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "group": "Connectors",
-                    "pages": [
-                      "legacy/build/connectors/overview",
-                      {
-                        "group": "Config",
-                        "pages": [
-                          "legacy/build/connectors/config/config",
-                          {
-                            "group": "Field Types",
-                            "pages": [
-                              "legacy/build/connectors/config/field_type_intro",
-                              "legacy/build/connectors/config/datasource",
-                              "legacy/build/connectors/config/mapping",
-                              "legacy/build/connectors/config/dependent",
-                              "legacy/build/connectors/config/rule_engine"
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "group": "Workflows",
-                    "pages": [
-                      "legacy/build/workflow/overview",
-                      "legacy/build/workflow/public_workflow",
-                      {
-                        "group": "Triggers",
-                        "pages": [
-                          "legacy/build/workflow/triggering_workflow",
-                          "legacy/build/workflow/workflow_api",
-                          "legacy/build/workflow/triggers/schedule"
-                        ]
-                      },
-                      {
-                        "group": "Nodes",
-                        "pages": [
-                          "legacy/build/workflow/csv-excel",
-                          "legacy/build/workflow/custom-code",
-                          "legacy/build/workflow/data_mapper",
-                          "legacy/build/workflow/delay",
-                          "legacy/build/workflow/file_handler",
-                          "legacy/build/workflow/group",
-                          "legacy/build/workflow/httpnode",
-                          "legacy/build/workflow/merge",
-                          "legacy/build/workflow/pdf",
-                          "legacy/build/workflow/response",
-                          "legacy/build/workflow/rule",
-                          "legacy/build/workflow/sub_flows",
-                          "legacy/build/workflow/email",
-                          "legacy/build/workflow/transform",
-                          "legacy/build/workflow/wait_for_webhook"
-                        ]
-                      },
-                      "legacy/build/workflow/human_task",
-                      "legacy/build/workflow/variables",
-                      "legacy/build/workflow/environment-variables",
-                      "legacy/build/workflow/encrypted-output-fields",
-                      "legacy/build/workflow/workflow_testing",
-                      "legacy/build/workflow/templating",
-                      "legacy/build/workflow/best-practices"
-                    ]
-                  },
-                  {
-                    "group": "Advanced Features",
-                    "pages": [
-                      "legacy/build/workflow/datarefs",
-                      "legacy/build/workflow/internal_functions",
-                      "legacy/build/workflow/tables",
-                      "legacy/build/workflow/user_forms"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Ship Integrations",
-                "pages": [
-                  {
-                    "group": "Auth Flows",
-                    "pages": [
-                      "legacy/ship/auth_flows/flows",
-                      "legacy/ship/auth_flows/hosted",
-                      "legacy/ship/auth_flows/embedded",
-                      "legacy/ship/auth_flows/build_your_own",
-                      "legacy/ship/auth_flows/re-auth-flow"
-                    ]
-                  },
-                  "legacy/ship/tryapi"
-                ]
-              },
-              {
-                "group": "Maintain",
-                "pages": [
-                  "legacy/maintain/logs",
-                  "legacy/maintain/reliability"
-                ]
-              },
-              {
-                "group": "Custom App",
-                "pages": [
-                  "legacy/custom_app/custom_app",
-                  {
-                    "group": "Custom App Setup",
-                    "pages": [
-                      "legacy/custom_app/custom_app_scratch",
-                      "legacy/custom_app/custom_app_ai",
-                      "legacy/custom_app/custom_app_openapi"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Deployment",
-                "pages": [
-                  "legacy/deployment/overview",
-                  {
-                    "group": "Hosting Solutions",
-                    "pages": [
-                      "legacy/deployment/hosting/intro",
-                      "legacy/deployment/hosting/aws",
-                      "legacy/deployment/hosting/azure",
-                      "legacy/deployment/hosting/gcp",
-                      "legacy/deployment/hosting/standalone"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Governance & Compliance",
-                "pages": [
-                  "legacy/governance/overview",
-                  "legacy/governance/application-security",
-                  "legacy/governance/certifications",
-                  "legacy/governance/privacy",
-                  "legacy/governance/terms-of-use"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Implementation & Guides",
-            "groups": [
-              {
-                "group": "Implementation Guide",
-                "pages": [
-                  {
-                    "group": "Platform Setup",
-                    "pages": [
-                      "legacy/implementation/overview",
-                      "legacy/implementation/communicate/events_proxies"
-                    ]
-                  },
-                  {
-                    "group": "Build Integration",
-                    "pages": [
-                      "legacy/implementation/app/setup",
-                      {
-                        "group": "Workflows",
-                        "pages": [
-                          "legacy/implementation/workflow/overview",
-                          "legacy/implementation/workflow/sync_using_proxy",
-                          "legacy/implementation/workflow/create_using_event"
-                        ]
-                      },
-                      "legacy/implementation/integrate/config_setup"
-                    ]
-                  },
-                  {
-                    "group": "Backend",
-                    "pages": [
-                      "legacy/implementation/integrate/setup-linked-account",
-                      "legacy/implementation/integrate/get-access-token"
-                    ]
-                  },
-                  {
-                    "group": "Frontend",
-                    "pages": [
-                      "legacy/implementation/integrate/display-apps",
-                      "legacy/implementation/integrate/manage-connection",
-                      "legacy/implementation/integrate/end-user-config"
-                    ]
-                  },
-                  {
-                    "group": "Go Live",
-                    "pages": [
-                      "legacy/implementation/Test-Integration/develop-test",
-                      "legacy/implementation/deploy/live-checklist"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Examples",
-                "pages": [
-                  "legacy/implementation/examples/build_salesforce",
-                  "legacy/implementation/examples/build_netsuite",
-                  "legacy/implementation/examples/build_workday"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "API references & SDK",
-            "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "v3/api-reference/overview",
-                  "v3/api-reference/sdks"
-                ]
-              },
-              {
-                "group": "Linked Accounts",
-                "pages": [
-                  "v3/api-reference/linked-accounts/create-linked-account",
-                  "v3/api-reference/linked-accounts/get-linked-account",
-                  "v3/api-reference/linked-accounts/list-linked-accounts",
-                  "v3/api-reference/linked-accounts/upsert-linked-account",
-                  "v3/api-reference/linked-accounts/delete-integration",
-                  "v3/api-reference/linked-accounts/delete-linked-account",
-                  "v3/api-reference/linked-accounts/get-active-linked-account"
-                ]
-              },
-              {
-                "group": "Applications",
-                "pages": [
-                  "v3/api-reference/applications/list-applications",
-                  "v3/api-reference/applications/get-application",
-                  "v3/api-reference/applications/get-actions",
-                  "v3/api-reference/applications/get-action-parameters",
-                  "v3/api-reference/applications/execute-action"
-                ]
-              },
-              {
-                "group": "Auth Structure",
-                "pages": [
-                  "v3/api-reference/auth-structure/get-auth-structure",
-                  "v3/api-reference/auth-structure/get-oauth-url"
-                ]
-              },
-              {
-                "group": "Credentials",
-                "pages": [
-                  "v3/api-reference/credentials/get-credentials",
-                  "v3/api-reference/credentials/get-token",
-                  "v3/api-reference/credentials/save-key-credentials",
-                  "v3/api-reference/credentials/migrate-token",
-                  "v3/api-reference/credentials/upsert-default-app-credential",
-                  "v3/api-reference/credentials/delete-default-app-credential"
-                ]
-              },
-              {
-                "group": "Session Tokens",
-                "pages": [
-                  "v3/api-reference/session-tokens/generate-session-token",
-                  "v3/api-reference/session-tokens/revoke-session-token"
-                ]
-              },
-              {
-                "group": "Connect",
-                "pages": [
-                  "v3/api-reference/connect/create-connect-url"
-                ]
-              },
-              {
-                "group": "Hosted Properties",
-                "pages": [
-                  "v3/api-reference/hosted-properties/get-hosted-properties"
-                ]
-              },
-              {
-                "group": "Webhooks",
-                "pages": [
-                  "v3/api-reference/webhooks/create-webhook",
-                  "v3/api-reference/webhooks/update-webhook",
-                  "v3/api-reference/webhooks/get-webhook",
-                  "v3/api-reference/webhooks/get-webhook-by-id",
-                  "v3/api-reference/webhooks/delete-webhook",
-                  "v3/api-reference/webhooks/edit-webhook-group"
-                ]
-              },
-              {
-                "group": "Configs",
-                "pages": [
-                  "v3/api-reference/configs/create-config",
-                  "v3/api-reference/configs/update-config",
-                  "v3/api-reference/configs/get-config-default",
-                  "v3/api-reference/configs/get-config",
-                  "v3/api-reference/configs/list-configs",
-                  "v3/api-reference/configs/toggle-workflow",
-                  "v3/api-reference/configs/delete-config-default",
-                  "v3/api-reference/configs/delete-config"
-                ]
-              },
-              {
-                "group": "Config Fields",
-                "pages": [
-                  "v3/api-reference/config-fields/get-all-fields",
-                  "v3/api-reference/config-fields/get-field-by-id",
-                  "v3/api-reference/config-fields/update-field-value",
-                  "v3/api-reference/config-fields/delete-field-value",
-                  "v3/api-reference/config-fields/get-options-for-rule-engine"
-                ]
-              },
-              {
-                "group": "Events",
-                "pages": [
-                  "v3/api-reference/events/create-event",
-                  "v3/api-reference/events/get-event",
-                  "v3/api-reference/events/update-event",
-                  "v3/api-reference/events/delete-event",
-                  "v3/api-reference/events/list-events",
-                  "v3/api-reference/events/trigger-event-by-slug",
-                  "v3/api-reference/events/trigger-event"
-                ]
-              },
-              {
-                "group": "Schedule",
-                "pages": [
-                  "v3/api-reference/schedule/register-schedule",
-                  "v3/api-reference/schedule/list-schedules",
-                  "v3/api-reference/schedule/update-schedule",
-                  "v3/api-reference/schedule/pause-schedule",
-                  "v3/api-reference/schedule/resume-schedule",
-                  "v3/api-reference/schedule/delete-schedule"
-                ]
-              },
-              {
-                "group": "Executions",
-                "pages": [
-                  "v3/api-reference/executions/list-executions",
-                  "v3/api-reference/executions/get-execution",
-                  "v3/api-reference/executions/list-batches",
-                  "v3/api-reference/executions/stop-execution"
-                ]
-              },
-              {
-                "group": "Human Tasks",
-                "pages": [
-                  "v3/api-reference/human-tasks/get-human-task",
-                  "v3/api-reference/human-tasks/submit-human-task"
-                ]
-              },
-              {
-                "group": "Datarefs",
-                "pages": [
-                  "v3/api-reference/datarefs/list-datarefs",
-                  "v3/api-reference/datarefs/create-dataref",
-                  "v3/api-reference/datarefs/get-dataref",
-                  "v3/api-reference/datarefs/clear-records",
-                  "v3/api-reference/datarefs/edit-group",
-                  "v3/api-reference/datarefs/delete-dataref"
-                ]
-              },
-              {
-                "group": "Environment Variables",
-                "pages": [
-                  "v3/api-reference/environment-variables/list-definitions",
-                  "v3/api-reference/environment-variables/get-definition",
-                  "v3/api-reference/environment-variables/get-value",
-                  "v3/api-reference/environment-variables/set-value",
-                  "v3/api-reference/environment-variables/list-values",
-                  "v3/api-reference/environment-variables/delete-value"
-                ]
-              },
-              {
-                "group": "Persistent Tables",
-                "pages": [
-                  "v3/api-reference/tables/list-tables",
-                  "v3/api-reference/tables/create-table",
-                  "v3/api-reference/tables/get-records",
-                  "v3/api-reference/tables/add-records",
-                  "v3/api-reference/tables/search-records",
-                  "v3/api-reference/tables/add-columns",
-                  "v3/api-reference/tables/rename-columns",
-                  "v3/api-reference/tables/remove-columns",
-                  "v3/api-reference/tables/delete-record",
-                  "v3/api-reference/tables/edit-group",
-                  "v3/api-reference/tables/delete-table"
-                ]
-              },
-              {
-                "group": "Workflows",
-                "pages": [
-                  "v3/api-reference/workflows/list-workflows",
-                  "v3/api-reference/workflows/create-workflow",
-                  "v3/api-reference/workflows/get-workflow",
-                  "v3/api-reference/workflows/list-enabled-workflows",
-                  "v3/api-reference/workflows/request-structure",
-                  "v3/api-reference/workflows/get-draft",
-                  "v3/api-reference/workflows/publish-workflow",
-                  "v3/api-reference/workflows/versions",
-                  "v3/api-reference/workflows/execute-workflow",
-                  "v3/api-reference/workflows/delete-workflow"
-                ]
-              },
-              {
-                "group": "MCP Servers",
-                "pages": [
-                  "v3/api-reference/mcp-servers/list-mcp-servers",
-                  "v3/api-reference/mcp-servers/get-mcp-server",
-                  "v3/api-reference/mcp-servers/create-mcp-server",
-                  "v3/api-reference/mcp-servers/update-mcp-server",
-                  "v3/api-reference/mcp-servers/delete-mcp-server"
-                ]
-              },
-              {
-                "group": "Deprecated",
-                "pages": [
-                  "v3/api-reference/datastores/list-config-datastores",
-                  "v3/api-reference/datastores/list-records",
-                  "v3/api-reference/datastores/search-records"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Changelog",
-            "groups": [
-              {
-                "group": "Changes",
-                "pages": [
-                  "v3/changelog/overview",
-                  {
-                    "group": "2026",
-                    "pages": [
-                      "v3/changelog/2026/june",
-                      "v3/changelog/2026/may",
-                      "v3/changelog/2026/april",
-                      "v3/changelog/2026/march",
-                      "v3/changelog/2026/february",
-                      "v3/changelog/2026/january"
-                    ]
-                  },
-                  "v3/changelog/2025",
-                  "v3/changelog/2024"
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "version": "v1",
-        "tabs": [
-          {
-            "tab": "Documentation",
-            "groups": [
-              {
-                "group": "Documentation",
-                "pages": [
-                  "legacy/introduction",
-                  "legacy/quickstart",
-                  "legacy/glossary"
-                ]
-              },
-              {
-                "group": "Implementation Guide",
-                "pages": [
-                  "legacy/implement/implementation/overview",
-                  {
-                    "group": "Integrate",
-                    "pages": [
-                      "legacy/implement/implementation/integrate/cobalt-account",
-                      "legacy/implement/implementation/integrate/setup-linked-account",
-                      "legacy/implement/implementation/integrate/get-access-token",
-                      "legacy/implement/implementation/integrate/display-apps",
-                      "legacy/implement/implementation/integrate/manage-connection",
-                      "legacy/implement/implementation/integrate/end-user-config"
-                    ]
-                  },
-                  {
-                    "group": "Communicate",
-                    "pages": [
-                      "legacy/implement/implementation/communicate/write-data",
-                      "legacy/implement/implementation/communicate/get-data"
-                    ]
-                  },
-                  {
-                    "group": "Test Integration",
-                    "pages": [
-                      "legacy/implement/implementation/Test-Integration/develop-test",
-                      "legacy/implement/implementation/Test-Integration/node-test",
-                      "legacy/implement/implementation/Test-Integration/orchestration-test"
-                    ]
-                  },
-                  {
-                    "group": "Additional",
-                    "pages": [
-                      "legacy/implement/implementation/additional/reauth",
-                      "legacy/implement/implementation/additional/workflow-failure",
-                      "legacy/implement/implementation/additional/workflow-access"
-                    ]
-                  },
-                  {
-                    "group": "Deploy",
-                    "pages": [
-                      "legacy/implement/implementation/deploy/live-checklist"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Concepts",
-                "pages": [
-                  "legacy/concepts/linked_account",
-                  {
-                    "group": "Auth Flows",
-                    "pages": [
-                      "legacy/concepts/auth-flows/auth-flows",
-                      "legacy/concepts/auth-flows/re-auth-flow"
-                    ]
-                  },
-                  "legacy/concepts/logs",
-                  {
-                    "group": "Workflow",
-                    "pages": [
-                      "legacy/concepts/workflow/overview",
-                      "legacy/concepts/workflow/workflow_api",
-                      "legacy/concepts/workflow/workflow_testing",
-                      "legacy/concepts/workflow/templating",
-                      "legacy/concepts/workflow/dataslots",
-                      {
-                        "group": "Nodes",
-                        "pages": [
-                          "legacy/concepts/workflow/custom-code",
-                          "legacy/concepts/workflow/datastore",
-                          "legacy/concepts/workflow/delay",
-                          "legacy/concepts/workflow/group",
-                          "legacy/concepts/workflow/httpnode",
-                          "legacy/concepts/workflow/merge",
-                          "legacy/concepts/workflow/pdf",
-                          "legacy/concepts/workflow/response",
-                          "legacy/concepts/workflow/rule",
-                          "legacy/concepts/workflow/email",
-                          "legacy/concepts/workflow/transform"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "group": "App Config",
-                    "pages": [
-                      "legacy/concepts/application/how-to-configure",
-                      "legacy/concepts/application/mapping",
-                      "legacy/concepts/application/dependent",
-                      "legacy/concepts/application/field-types"
-                    ]
-                  },
-                  "legacy/concepts/integration",
-                  {
-                    "group": "Custom Apps",
-                    "pages": [
-                      "legacy/concepts/advance-concepts/about-custom-apps",
-                      "legacy/concepts/advance-concepts/setting-up-custom-app"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Guides",
-            "groups": [
-              {
-                "group": "Developer Settings",
-                "pages": [
-                  "legacy/guides/developer-settings/overview",
-                  "legacy/guides/developer-settings/events",
-                  "legacy/guides/developer-settings/api_proxy"
-                ]
-              },
-              {
-                "group": "Platform",
-                "pages": [
-                  {
-                    "group": "Account Management",
-                    "pages": [
-                      "legacy/guides/platform/account-management/general",
-                      "legacy/guides/platform/account-management/users",
-                      "legacy/guides/platform/account-management/access",
-                      "legacy/guides/platform/account-management/branding"
-                    ]
-                  },
-                  "legacy/guides/platform/webhook",
-                  "legacy/guides/platform/tables",
-                  "legacy/guides/platform/tryapi"
                 ]
               }
             ]
