@@ -1,186 +1,39 @@
 ---
 title: "Webhooks"
-description: "Subscribe to Refold events and verify their signatures so your backend reacts the moment a connection or workflow changes."
+description: "Receive Refold events in your Native backend so your product reacts the moment a connection or workflow changes."
 ---
 
-A webhook is an HTTP callback Refold sends to your backend the moment something happens, so you react in real time instead of polling. Refold pushes connection lifecycle and workflow lifecycle events to a URL you register, for example when a customer's connection expires or a workflow run errors.
+In a Native integration, your backend receives Refold webhooks to stay in sync with your customers' connections and workflow runs. When a connection expires or a workflow errors, Refold POSTs the event to a URL you own, and you update your UI, retry, or alert from there.
 
-Subscribe once with the events you care about, expose an HTTPS endpoint to receive them, and verify each delivery's signature before you trust it. Refold then POSTs every matching event to your URL as it occurs.
+Webhooks are an org-level resource shared across Refold. The event catalog, subscription options, signature scheme, and retry behavior are documented once in [Webhooks](/v3/developer/configure/settings/organization/webhooks). This page covers wiring the handler into your Native backend.
 
 <Note>
-Webhooks are an org-level resource registered with your API key (base URL `https://app.refold.ai`, header `x-api-key`). Subscriptions are scoped per environment, so register them with both your test and live keys.
+Subscriptions are scoped per environment and registered with your API key (base URL `https://app.refold.ai`, header `x-api-key`). Register them with both your test and live keys.
 </Note>
 
-## Event types
-
-Refold delivers these event types. Subscribe to the ones your product needs.
-
-| Event | Fires when | Typical use |
-|-------|-----------|-------------|
-| `Connection Created` | A [linked account](/v3/developer/configure/linked-account) connects an app | Mark the integration active in your UI |
-| `Connection Deleted` | A linked account disconnects an app | Stop syncing, prompt to reconnect |
-| `Connection Expired` | An app's authentication expires | Surface a [reconnect prompt](/v3/embedded/frontend/management/connection-status) |
-| `Workflow Completed` | A workflow execution succeeds | Update status, continue downstream work |
-| `Workflow Errored` | A workflow execution fails | Alert, retry, or log for support |
-
-A connection event payload identifies the account and app:
-
-```json Connection Expired payload
-{
-  "linked_account_id": "user_12345",
-  "org_id": "645270e37917442c4307297a",
-  "environment": "test",
-  "type": "General",
-  "event": "Connection Expired",
-  "slug": "hubspot",
-  "createdAt": "Tue, 07 Nov 2023 08:38:33 GMT"
-}
-```
-
-A workflow event payload identifies the run:
-
-```json Workflow Errored payload
-{
-  "linked_account_id": "user_12345",
-  "instance_id": "656f308b9144bb8f183bfc7b",
-  "workflow_id": "6495792b9b6ca6d77a17e513",
-  "config_id": "user_12345",
-  "event": "Workflow Errored",
-  "workflow_name": "Export contact to HubSpot",
-  "status": "ERRORED"
-}
-```
-
-## Subscribe to events
-
-You can subscribe from the Console or the API. Either way, the endpoint must be HTTPS and accept `POST`.
+## Handle webhooks in your backend
 
 <Steps>
-  <Step title="Expose an endpoint">
-    Stand up an HTTPS route in your backend (for example, `https://your-app.com/webhooks`) that accepts `POST` and returns `200 OK`.
+  <Step title="Expose an HTTPS endpoint">
+    Stand up a route (for example `https://your-app.com/webhooks/refold`) that accepts `POST` and returns `200 OK`.
   </Step>
-  <Step title="Register the subscription">
-    Call [Create webhook](/v3/api-reference/webhooks/create-webhook) with your URL and the events you want.
-
-    ```bash cURL
-    curl -X POST "https://app.refold.ai/api/v2/public/webhook" \
-      -H "x-api-key: $REFOLD_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "webhook_url": "https://your-app.com/webhooks",
-        "webhook_events": ["Workflow Errored", "Connection Expired"],
-        "webhook_type": "default"
-      }'
-    ```
-
-    ```json Output
-    {
-      "_id": "6a313eda6d5528bdcf71ebac",
-      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
-      "environment": "test",
-      "is_enabled": true,
-      "webhook_events": ["Workflow Errored", "Connection Expired"],
-      "workflow_ids": [],
-      "webhook_url": "https://your-app.com/webhooks",
-      "webhook_body": "{{event}}",
-      "method": "POST",
-      "webhook_type": "default",
-      "createdAt": "2026-06-16T12:17:30.231Z"
-    }
-    ```
+  <Step title="Subscribe to the events you need">
+    Register the URL and events with [Create Webhook](/v3/api-reference/webhooks/create-webhook), or in the Console under **Developer > Webhooks**. The events most Native backends use are `Connection Expired` (prompt a reconnect) and `Workflow Errored` (alert or retry). See the [event catalog](/v3/developer/configure/settings/organization/webhooks#event-types).
   </Step>
-  <Step title="Acknowledge deliveries">
-    Respond `200 OK` as soon as you receive an event. Do the slow work afterward, off the request path.
+  <Step title="Verify the signature">
+    Confirm each delivery came from Refold by checking the `x-cobalt-signature` header against an HMAC-SHA256 of the raw body keyed on your API key. See the [verification code](/v3/developer/configure/settings/organization/webhooks#verify-the-signature).
+  </Step>
+  <Step title="Acknowledge fast, then process">
+    Return `200 OK` immediately and do the slow work off the request path. A non-`200` makes Refold retry (up to 3 times with exponential backoff).
   </Step>
 </Steps>
 
-<Tip>
-Prefer the Console? Go to **Settings > Developer > Webhooks**, click **Add Webhook**, enter your URL, and select the events. The API and Console manage the same subscriptions.
-</Tip>
-
-<Note>
-To scope to one app or specific workflows, pass `slug` or `workflow_ids` when you create the webhook. When `slug` is set, only workflow-type events are allowed.
-</Note>
-
-## Verify the signature
-
-Refold signs each delivery with an HMAC-SHA256 of the raw request body, keyed by your API key, and sends it in a signature header. Verify it before trusting any payload.
-
-<Note>
-TODO: confirm the signature header name for the Refold-branded webhooks. Legacy Cobalt used `x-cobalt-signature`. Verify whether this is renamed (for example `x-refold-signature`) before publishing, and confirm the HMAC key is the environment API key.
-</Note>
-
-<CodeGroup>
-```typescript Node.js
-import * as crypto from "crypto";
-
-// Your Refold API key for the environment the webhook belongs to.
-const WEBHOOK_SECRET = process.env.REFOLD_API_KEY!;
-
-/**
- * Verify the HMAC signature of a webhook received from Refold.
- * @param payload The raw request body as a string.
- * @param signature The signature from the webhook header.
- */
-function verifyWebhookSignature(payload: string, signature: string): boolean {
-  const expected = crypto
-    .createHmac("sha256", WEBHOOK_SECRET)
-    .update(payload)
-    .digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expected, "hex")
-  );
-}
-```
-
-```python Python
-import hashlib, hmac, os
-
-# Your Refold API key for the environment the webhook belongs to.
-WEBHOOK_SECRET = os.environ["REFOLD_API_KEY"]
-
-def verify_webhook_signature(payload: str, signature: str) -> bool:
-    """Verify the HMAC signature of a webhook received from Refold.
-
-    payload:   the raw request body as a string
-    signature: the signature from the webhook header
-    """
-    expected = hmac.new(
-        key=WEBHOOK_SECRET.encode(),
-        msg=payload.encode(),
-        digestmod=hashlib.sha256,
-    ).hexdigest()
-    return hmac.compare_digest(signature, expected)
-```
-</CodeGroup>
-
 <Warning>
-Verify against the **raw request body**, not a re-serialized object. Re-encoding the JSON changes whitespace and key order, so the HMAC will not match.
+Retries mean the same event can arrive more than once. Make handlers idempotent: key on `instance_id` for workflow events, or on the account and app for connection events.
 </Warning>
 
-## Delivery and retries
+## See also
 
-Refold treats any non-`200` response as a failed delivery and retries up to 3 times with exponential backoff.
-
-- **Return `200 OK` quickly.** Acknowledge first, process after.
-- **Make handlers idempotent.** A retried delivery can arrive more than once, so key your processing on `instance_id` (workflow events) or the account and app (connection events).
-- **Customize the payload if needed.** With `webhook_type: "custom"`, set `webhook_headers` and a `webhook_body` template. Template event fields with `{{event.<key>}}` (for example, `{{event.instance_id}}`).
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Surface connection status" icon="signal" href="/v3/embedded/frontend/management/connection-status">
-    Use `Connection Expired` to prompt reconnects in your UI.
-  </Card>
-  <Card title="Create webhook API" icon="code" href="/v3/api-reference/webhooks/create-webhook">
-    Full subscription parameters and responses.
-  </Card>
-  <Card title="Trigger events" icon="bolt" href="/v3/embedded/backend/events">
-    Send events into Refold to start workflows.
-  </Card>
-  <Card title="Developer app" icon="key" href="/v3/embedded/backend/developer-app">
-    Where your API key and environments live.
-  </Card>
-</CardGroup>
+- [Webhooks](/v3/developer/configure/settings/organization/webhooks): event catalog, subscription, signature verification, and retries
+- [Connection status](/v3/embedded/frontend/management/connection-status): act on a `Connection Expired` event
+- [Events](/v3/embedded/backend/events): send events into Refold to start workflows
