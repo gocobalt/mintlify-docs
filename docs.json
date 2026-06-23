@@ -144,6 +144,7 @@
                         ]
                       },
                       "v3/developer/configure/workflows/templating",
+                      "v3/developer/configure/workflows/idempotency",
                       "v3/developer/configure/workflows/custom-output",
                       "v3/developer/configure/workflows/testing",
                       "v3/developer/configure/workflows/best-practices"
@@ -203,6 +204,7 @@
                       "v3/developer/configure/settings/organization/users",
                       "v3/developer/configure/settings/organization/roles",
                       "v3/developer/configure/settings/organization/credentials",
+                      "v3/developer/configure/settings/organization/webhooks",
                       "v3/developer/configure/settings/organization/email",
                       "v3/developer/configure/settings/organization/connect-portal",
                       "v3/developer/configure/settings/organization/environment-variables",
@@ -1070,20 +1072,11 @@
                 ]
               },
               {
-                "group": "Backend",
-                "pages": [
-                  "v3/embedded/backend/developer-app",
-                  "v3/embedded/backend/server-setup",
-                  "v3/embedded/backend/linked-accounts",
-                  "v3/embedded/backend/webhooks",
-                  "v3/embedded/backend/events"
-                ]
-              },
-              {
                 "group": "Frontend",
                 "pages": [
                   "v3/embedded/frontend/overview",
                   "v3/embedded/frontend/react-sdk-flow",
+                  "v3/embedded/frontend/expose-workflow",
                   {
                     "group": "Customization",
                     "pages": [
@@ -1094,30 +1087,45 @@
                 ]
               },
               {
-                "group": "Configure the integration",
+                "group": "Configure",
                 "pages": [
-                  "v3/embedded/config-fields",
                   {
-                    "group": "Field types",
+                    "group": "Integration",
                     "pages": [
-                      "v3/embedded/configure/field-types/overview",
-                      "v3/embedded/configure/field-types/datasource",
-                      "v3/embedded/configure/field-types/mapping",
-                      "v3/embedded/configure/field-types/dependent",
-                      "v3/embedded/configure/field-types/rule-engine"
+                      "v3/embedded/config-fields",
+                      {
+                        "group": "Field types",
+                        "pages": [
+                          "v3/embedded/configure/field-types/overview",
+                          "v3/embedded/configure/field-types/datasource",
+                          "v3/embedded/configure/field-types/mapping",
+                          "v3/embedded/configure/field-types/dependent",
+                          "v3/embedded/configure/field-types/rule-engine"
+                        ]
+                      },
+                      "v3/embedded/dataslots",
+                      "v3/embedded/configure/workflow"
                     ]
                   },
-                  "v3/embedded/dataslots"
+                  {
+                    "group": "Developer",
+                    "pages": [
+                      "v3/embedded/backend/developer-app",
+                      "v3/embedded/backend/server-setup",
+                      "v3/embedded/backend/linked-accounts",
+                      "v3/embedded/backend/webhooks",
+                      "v3/embedded/backend/events",
+                      "v3/embedded/backend/api-proxies"
+                    ]
+                  }
                 ]
               },
               {
                 "group": "Move data",
                 "pages": [
                   "v3/embedded/move-data/read-write",
-                  "v3/embedded/move-data/api-proxies",
                   "v3/embedded/move-data/sync-data",
-                  "v3/embedded/move-data/data-mapping",
-                  "v3/embedded/move-data/workflows-for-native"
+                  "v3/embedded/move-data/data-mapping"
                 ]
               },
               {
@@ -1141,8 +1149,8 @@
               {
                 "group": "Best practices",
                 "pages": [
-                  "v3/embedded/advanced-enterprise/rate-limiting",
-                  "v3/embedded/workflows/advanced/error-handling",
+                  "v3/embedded/best-practices/rate-limiting",
+                  "v3/embedded/best-practices/error-handling",
                   "v3/embedded/best-practices/idempotency",
                   "v3/embedded/best-practices/embedding-security"
                 ]

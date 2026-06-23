@@ -1,8 +1,77 @@
 ---
 title: "Dependent fields"
-description: "Show or populate a field based on the value of another."
+description: "Chain fields so each selection narrows the next, giving customers a guided, cascading config instead of one long list of guesses."
 ---
 
+A **dependent field** is a field whose options load only after another field, its **parent**, has a value. The child uses the parent's value to fetch a narrower list, so the customer makes each choice in order and never sees options that don't apply. This is how you build cascading config: pick a sheet, then a worksheet inside it, then the headers inside that worksheet.
+
+Use a dependency whenever one selection determines what the next one can be. Without it, a customer would have to pick from every worksheet across every spreadsheet at once. With it, each step is scoped to the choice before it.
+
+<Frame>{/* SCREENSHOT: a connector field's editor with the Dependency setting pointing at a parent field -> /images/embedded/field-types/dependent.png */}</Frame>
+
+## How it works
+
+You set a field's **Dependency** to point at a parent field. Refold then holds the child field empty until the parent has a value, and resolves the child's options using that value.
+
+- The **parent** is filled first. It's usually a [Select](/v3/embedded/configure/field-types/overview#basic-inputs) or a [datasource field](/v3/embedded/configure/field-types/datasource).
+- The **child** stays empty, returning no options, until the parent is set.
+- Once the parent has a value, Refold runs the child's [datasource](/v3/embedded/configure/field-types/datasource) with that value and loads the narrowed list.
+
+Because the child needs the parent's value to fetch its list, dependent fields are almost always backed by a [datasource](/v3/embedded/configure/field-types/datasource).
+
+## Set up a dependency
+
+<Steps>
+  <Step title="Build the parent field">
+    Add the field the customer fills first, typically a [datasource](/v3/embedded/configure/field-types/datasource)-backed **Select** (for example, *Select a sheet*).
+  </Step>
+  <Step title="Build the child field">
+    Add the field that depends on it. Back it with a [datasource workflow](/v3/embedded/configure/field-types/datasource) that accepts the parent's value and returns the narrowed options (for example, *Select a worksheet*).
+  </Step>
+  <Step title="Set the Dependency">
+    In the child field's editor, set its **Dependency** [field setting](/v3/embedded/dataslots#field-settings) to the parent field. Refold won't resolve the child's options until the parent is chosen.
+  </Step>
+  <Step title="Chain further if needed">
+    Repeat to add a third level (for example, *Select headers* depending on the worksheet). Each field depends on the one above it.
+  </Step>
+</Steps>
+
+## Example: Google Sheets headers
+
+Loading a worksheet's headers takes three chained fields, each depending on the last:
+
+1. **Select a sheet** is the parent and lists the customer's spreadsheets.
+2. **Select a worksheet** depends on the sheet; its options load only after a sheet is chosen.
+3. **Select headers** depends on the worksheet; it loads once the worksheet is set.
+
+Until a parent has a value, its dependent field returns no options, so the customer fills the fields top-down. In the config response, a dependent field carries a `parent` pointing at the field it depends on, and its `options` stay absent until that parent's `value` is set.
+
 <Note>
-This page is a placeholder. Content coming soon.
+Dependent fields resolve strictly top-down. A child returns no options until its parent has a value, and a grandchild waits on the child. Order the fields so the customer fills them in sequence.
 </Note>
+
+## Best practices
+
+<Tip>
+- **Order fields parent-first** in the page so the customer fills them in the sequence the dependency requires.
+- **Name each field for the choice it narrows** (*Select a worksheet*, not *Worksheet*) so the cascade is obvious.
+- **Back the child with a [datasource](/v3/embedded/configure/field-types/datasource)** that takes the parent's value, that's what produces the narrowed list.
+- **Keep chains short.** Three levels (sheet, worksheet, headers) is about as deep as a customer will follow comfortably.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The dependent field never loads options">
+    Check that the child's **Dependency** points at the correct parent and that the parent has a value. Cascading options resolve only once the parent is set.
+  </Accordion>
+  <Accordion title="The child loads the wrong options">
+    Confirm the child's [datasource workflow](/v3/embedded/configure/field-types/datasource) uses the parent's value to scope its query, and returns `name`/`value` pairs.
+  </Accordion>
+</AccordionGroup>
+
+## See also
+
+- [Datasource fields](/v3/embedded/configure/field-types/datasource): the workflows that supply a dependent field's options.
+- [Mapping fields](/v3/embedded/configure/field-types/mapping): a mapping column can depend on an earlier field too.
+- [Dataslots](/v3/embedded/dataslots#dependent-fields): the Dependency setting in the full palette.

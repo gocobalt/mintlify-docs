@@ -1,8 +1,187 @@
 ---
 title: "Quickstart"
-description: "Build your first native integration end to end, from backend wiring to an embedded connect flow."
+description: "Take your first native integration live: connect a customer's app, write data to it, and embed the flow in your product."
 ---
 
+This quickstart runs a native integration end to end. You will create a customer, connect their third-party app, write data into that app from your backend, and see what it takes to go live. Plan about 15 minutes.
+
+By the end you will have connected a real account and created a record in the connected app through Refold, the same loop your product will run for every customer.
+
+## Prerequisites
+
+- **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai). Don't have one? [Contact us](https://www.refold.ai/contact-us) to get set up.
+- **An app to integrate.** This guide uses HubSpot (`hubspot`) as the example. Any [connector](/v3/developer/configure/connector/supported-apps-actions) works; swap the slug and action names to match yours.
+- **A backend that can make HTTP calls.** Every example here is a `curl` you can run from a terminal, then move into your server.
+
 <Note>
-This page is a placeholder. Content coming soon.
+Every API call uses the base URL `https://app.refold.ai` and sends your API key in the `x-api-key` header. Account-scoped calls also send the customer's `linked_account_id` as a header. Never expose your API key in the browser.
 </Note>
+
+## Step 1: Get your API key
+
+<Steps>
+  <Step title="Open Settings > Credentials">
+    In the [Refold Console](https://app.refold.ai), go to **Settings > Credentials**.
+  </Step>
+  <Step title="Export your key">
+    Copy your API key and export it so the commands below can read it.
+
+    ```bash
+    export REFOLD_API_KEY="your-api-key-here"
+    ```
+  </Step>
+</Steps>
+
+## Step 2: Configure the app
+
+Before a customer can connect an app, tell Refold how to authenticate with it.
+
+<Steps>
+  <Step title="Open the app settings">
+    Go to **Apps > HubSpot > Settings**.
+  </Step>
+  <Step title="Set the auth method">
+    Choose **OAuth 2.0** and either add your own client ID and secret or select **Use our credentials** to test with Refold's. For key-based apps, add the API key instead. Click **Save**.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: HubSpot app Settings tab showing the OAuth credential fields and Save button -> /images/embedded/quickstart/app-settings.png */}</Frame>
+
+<Note>
+Not ready to use a real app? Configure the built-in **Playground app** (`playground_app`) the same way and run the rest of this guide against it.
+</Note>
+
+## Step 3: Create a linked account
+
+A [linked account](/v3/developer/configure/linked-account) represents one of your customers. You choose its `linked_account_id` and reuse that id in every account-scoped call. Create one per customer, typically when they sign up.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/linked-account \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "linked_account_id": "demo-user-1",
+    "name": "Demo User"
+  }'
+```
+
+```json Output
+{ "success": true }
+```
+
+## Step 4: Connect the app
+
+Your customer authorizes the app from your product. The fastest way to see it work is the hosted [Connect portal](/v3/embedded/frontend/overview): generate a URL for the linked account and open it.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
+
+```json Output
+{ "hosted_url": "https://app.refold.ai/connect/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+<Steps>
+  <Step title="Open the portal">
+    Open the `hosted_url` from the response in your browser.
+  </Step>
+  <Step title="Connect HubSpot">
+    Find **HubSpot**, click **Connect**, and complete authentication. A **Connected** tag appears when it succeeds.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: Connect portal showing HubSpot with a Connect button, and the Connected state after auth -> /images/embedded/quickstart/connect-portal.png */}</Frame>
+
+<Note>
+To embed the flow inside your product instead of redirecting, mint a [session token](/v3/api-reference/session-tokens/generate-session-token) for the linked account on your backend and pass it to the [React SDK](/v3/embedded/frontend/react-sdk-flow). The token authenticates the frontend so your API key stays server-side.
+</Note>
+
+## Step 5: Write data to the connected app
+
+This is the payoff. With the account connected, write data straight into the customer's HubSpot from your backend by executing an action. Refold uses the stored credentials automatically, so no app tokens go in the request.
+
+First, confirm the action you want exists for the app:
+
+```bash cURL
+curl https://app.refold.ai/api/v2/integration-schema/hubspot/actions \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1"
+```
+
+Then execute it. Here you create a contact in the customer's HubSpot:
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/hubspot/actions/create_contact/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "firstname": "Jane",
+    "lastname": "Doe"
+  }'
+```
+
+```json Output
+{
+  "success": true,
+  "data": {
+    "id": "1510721",
+    "createdAt": "2026-06-21T10:04:11.000Z"
+  }
+}
+```
+
+<Check>
+Open the customer's HubSpot. The contact **Jane Doe** is there. You just wrote data to an external system through Refold.
+</Check>
+
+<Frame>{/* SCREENSHOT: the newly created "Jane Doe" contact in HubSpot, proving the write succeeded -> /images/embedded/quickstart/created-contact.png */}</Frame>
+
+<Warning>
+Write actions (create, update, delete) make real changes in the connected app. Test with a read action such as `get_contact` first, and use a sandbox account while you build.
+</Warning>
+
+<Tip>
+For multi-step logic (read, transform, then write, or fan out to several apps), run a [workflow](/v3/embedded/configure/workflow) instead of a single action.
+</Tip>
+
+## Step 6: Go live
+
+You have run the full loop in test. To take it to production:
+
+<Steps>
+  <Step title="Switch to your production environment">
+    Generate a production API key in **Settings > Credentials** and use real OAuth credentials for the app, not the shared test ones.
+  </Step>
+  <Step title="Embed the connect flow in your product">
+    Replace the hosted portal with the [React SDK](/v3/embedded/frontend/react-sdk-flow) or a [build-your-own](/v3/embedded/frontend/customization/build-your-own) flow so customers connect without leaving your app.
+  </Step>
+  <Step title="Handle connection health">
+    Subscribe to [webhooks](/v3/embedded/backend/webhooks) and surface [connection status](/v3/embedded/frontend/management/connection-status) so customers can reconnect when a token expires.
+  </Step>
+  <Step title="Run the go-live checklist">
+    Walk the [go-live checklist](/v3/embedded/operate/go-live) before your first customer.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Embed the connect flow" icon="window" href="/v3/embedded/frontend/overview">
+    Bring the connection experience into your own UI.
+  </Card>
+  <Card title="Configure the integration" icon="sliders" href="/v3/embedded/config-fields">
+    Collect customer input with config fields and field types.
+  </Card>
+  <Card title="Move data" icon="arrows-rotate" href="/v3/embedded/move-data/read-write">
+    Read, write, and sync data between your app and connected systems.
+  </Card>
+  <Card title="Recipes" icon="book-open" href="/v3/embedded/recipes/netsuite">
+    Follow end-to-end builds for NetSuite, Salesforce, and Workday.
+  </Card>
+</CardGroup>

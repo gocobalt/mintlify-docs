@@ -1,8 +1,39 @@
 ---
 title: "Webhooks"
-description: "Receive and verify Refold webhook events in your backend."
+description: "Receive Refold events in your Native backend so your product reacts the moment a connection or workflow changes."
 ---
 
+In a Native integration, your backend receives Refold webhooks to stay in sync with your customers' connections and workflow runs. When a connection expires or a workflow errors, Refold POSTs the event to a URL you own, and you update your UI, retry, or alert from there.
+
+Webhooks are an org-level resource shared across Refold. The event catalog, subscription options, signature scheme, and retry behavior are documented once in [Webhooks](/v3/developer/configure/settings/organization/webhooks). This page covers wiring the handler into your Native backend.
+
 <Note>
-This page is a placeholder. Content coming soon.
+Subscriptions are scoped per environment and registered with your API key (base URL `https://app.refold.ai`, header `x-api-key`). Register them with both your test and live keys.
 </Note>
+
+## Handle webhooks in your backend
+
+<Steps>
+  <Step title="Expose an HTTPS endpoint">
+    Stand up a route (for example `https://your-app.com/webhooks/refold`) that accepts `POST` and returns `200 OK`.
+  </Step>
+  <Step title="Subscribe to the events you need">
+    Register the URL and events with [Create Webhook](/v3/api-reference/webhooks/create-webhook), or in the Console under **Developer > Webhooks**. The events most Native backends use are `Connection Expired` (prompt a reconnect) and `Workflow Errored` (alert or retry). See the [event catalog](/v3/developer/configure/settings/organization/webhooks#event-types).
+  </Step>
+  <Step title="Verify the signature">
+    Confirm each delivery came from Refold by checking the `x-cobalt-signature` header against an HMAC-SHA256 of the raw body keyed on your API key. See the [verification code](/v3/developer/configure/settings/organization/webhooks#verify-the-signature).
+  </Step>
+  <Step title="Acknowledge fast, then process">
+    Return `200 OK` immediately and do the slow work off the request path. A non-`200` makes Refold retry (up to 3 times with exponential backoff).
+  </Step>
+</Steps>
+
+<Warning>
+Retries mean the same event can arrive more than once. Make handlers idempotent: key on `instance_id` for workflow events, or on the account and app for connection events.
+</Warning>
+
+## See also
+
+- [Webhooks](/v3/developer/configure/settings/organization/webhooks): event catalog, subscription, signature verification, and retries
+- [Connection status](/v3/embedded/frontend/management/connection-status): act on a `Connection Expired` event
+- [Events](/v3/embedded/backend/events): send events into Refold to start workflows
