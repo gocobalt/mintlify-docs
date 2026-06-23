@@ -1,8 +1,123 @@
 ---
 title: "Build a NetSuite integration"
-description: "End-to-end walkthrough of a native NetSuite integration."
+description: "Connect a customer's NetSuite account and write records to it from your backend, end to end."
 ---
 
+By the end of this recipe you will have a customer's NetSuite account connected through Refold and a record created in it from your backend, the same loop your product runs for every customer.
+
+This recipe assumes you have already run the [Quickstart](/v3/embedded/quickstart). It reuses the same flow (create a linked account, connect the app, execute an action) and only shows what is specific to NetSuite. NetSuite is the connector slug `netsuite`.
+
+## Prerequisites
+
+- **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai).
+- **The Quickstart loop, once.** You have created a [linked account](/v3/embedded/backend/linked-accounts) and connected an app at least once, so the pattern below is familiar.
+- **NetSuite credentials.** NetSuite is a key-based connector, so the customer supplies credentials rather than running an OAuth redirect.
+
+## Step 1: Configure the NetSuite app
+
+Before a customer can connect, tell Refold how to authenticate with NetSuite.
+
+<Steps>
+  <Step title="Open the app settings">
+    In the [Refold Console](https://app.refold.ai), go to **Apps > NetSuite > Settings**.
+  </Step>
+  <Step title="Set the auth method">
+    NetSuite authenticates with account-level credentials rather than OAuth. Add the credential fields the connector asks for, then click **Save**.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: NetSuite app Settings tab showing the credential fields and Save button -> /images/embedded/recipes/netsuite-settings.png */}</Frame>
+
 <Note>
-This page is a placeholder. Content coming soon.
+NetSuite is key-based, so the customer enters credentials in the connect step instead of going through an OAuth consent screen. The rest of the flow is identical to an OAuth app.
 </Note>
+
+## Step 2: Connect the customer's NetSuite
+
+Create a [linked account](/v3/embedded/backend/linked-accounts) for the customer and generate a [Connect portal](/v3/embedded/frontend/overview) URL, exactly as in the Quickstart.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
+
+```json Output
+{ "hosted_url": "https://connect.refold.ai/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+Open the `hosted_url`, find **NetSuite**, and enter the customer's credentials. A **Connected** tag appears when it succeeds.
+
+<Frame>{/* SCREENSHOT: Connect portal showing NetSuite with its credential fields and the Connected state -> /images/embedded/recipes/netsuite-connect.png */}</Frame>
+
+<Tip>
+To embed this flow in your own UI instead of redirecting to the hosted portal, see [Embed the connect flow](/v3/embedded/frontend/overview).
+</Tip>
+
+## Step 3: List the actions NetSuite supports
+
+Confirm the action you need exists for the connector before you call it.
+
+```bash cURL
+curl https://app.refold.ai/api/v2/integration-schema/netsuite/actions \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1"
+```
+
+The response lists every action and its input fields. Use the exact action name and field names it returns in the next step.
+
+## Step 4: Write a record to NetSuite
+
+With the account connected, create a record in the customer's NetSuite from your backend. Refold uses the stored credentials automatically, so no NetSuite tokens go in the request.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/netsuite/actions/create_contact/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@example.com",
+    "firstname": "Jane",
+    "lastname": "Doe"
+  }'
+```
+
+```json Output
+{
+  "success": true,
+  "data": {
+    "id": "1510721"
+  }
+}
+```
+
+<Check>
+Open the customer's NetSuite. The contact **Jane Doe** is there. You just wrote data to NetSuite through Refold.
+</Check>
+
+<Warning>
+`create_contact` and its fields are placeholders. Replace them with the real action name and fields from Step 3. Write actions make real changes in the connected account, so test against a NetSuite sandbox first.
+</Warning>
+
+## Step 5: Read records from NetSuite
+
+To pull data the other direction, execute a read action (for example, a "get" or "list" action from Step 3) the same way, then store or display the result in your product. For a repeatable import that loops over many records and posts them back to your server, build a [workflow](/v3/embedded/configure/workflow) and follow the [Data import recipe](/v3/embedded/recipes/data-import).
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Move data" icon="arrows-rotate" href="/v3/embedded/move-data/read-write">
+    Read, write, and sync NetSuite data from your backend.
+  </Card>
+  <Card title="Data import recipe" icon="download" href="/v3/embedded/recipes/data-import">
+    Pull many records out of a connected app on a schedule.
+  </Card>
+  <Card title="Two-way sync recipe" icon="arrows-left-right" href="/v3/embedded/recipes/two-way-sync">
+    Keep NetSuite and your app in sync in both directions.
+  </Card>
+  <Card title="Configure the integration" icon="sliders" href="/v3/embedded/config-fields">
+    Let each customer pick the records and fields they sync.
+  </Card>
+</CardGroup>

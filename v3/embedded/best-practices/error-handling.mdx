@@ -1,0 +1,101 @@
+---
+title: "Error handling"
+description: "Handle failures in actions and workflows so a single bad call recovers gracefully instead of breaking your customer's integration."
+---
+
+An **error** is any call that does not complete as intended: a connected app rejects a request, a token has expired, a record is missing, or a network hop times out. Integrations talk to systems you don't control, so failures are normal. Good error handling decides whether one bad call recovers quietly or surfaces to your customer as a broken integration.
+
+This page covers the failure modes you will hit when you [read and write data](/v3/embedded/move-data/read-write) and run [workflows](/v3/developer/configure/workflows/overview): when to retry, how to catch errors inside a workflow, how to surface a failure to your customer, and how to recover from an auth failure.
+
+## Classify the failure first
+
+How you respond depends on the kind of error. Sort every failure into one of three buckets before you handle it.
+
+| Failure type | Examples | What to do |
+| --- | --- | --- |
+| **Transient** | Timeout, `429` rate limit, `5xx` from the app | Retry with backoff. See [Rate limiting](/v3/embedded/best-practices/rate-limiting). |
+| **Auth** | Expired or revoked token, `401`/`403`, `reauth_required` set | Prompt the customer to [reconnect](/v3/embedded/frontend/management/re-authentication). |
+| **Permanent** | Bad input (`400`), missing record (`404`), validation failure | Don't retry. Surface the error so it can be fixed. |
+
+<Warning>
+Retrying a permanent error wastes calls against your [rate limit](/v3/embedded/best-practices/rate-limiting) and never succeeds. Only retry transient failures, and only when the operation is safe to repeat. See [Idempotency](/v3/embedded/best-practices/idempotency).
+</Warning>
+
+## Retry transient failures
+
+A transient failure is temporary, so the fix is to wait and try again rather than fail immediately.
+
+- **Back off between attempts.** Increase the wait after each failure (for example 1s, 2s, 4s) and add jitter so retries don't realign. Full detail is in [Rate limiting](/v3/embedded/best-practices/rate-limiting).
+- **Cap the attempts.** Stop after a fixed number and treat the operation as failed, rather than retrying forever.
+- **Make retries idempotent.** Ensure a retried write can't create a duplicate, because the first attempt may have succeeded before its response reached you. See [Idempotency](/v3/embedded/best-practices/idempotency).
+
+## Catch errors inside a workflow
+
+When the failing call runs inside a [workflow](/v3/developer/configure/workflows/overview), handle the error in the workflow itself so one failed node does not error out the whole run.
+
+<Steps>
+  <Step title="Wrap the risky nodes">
+    Put the calls that can fail (app actions, HTTP requests, lookups) inside a [Try & Catch node](/v3/developer/configure/workflows/nodes/try-catch-node). When a node in the try block fails, execution branches to the catch path instead of failing the workflow.
+  </Step>
+  <Step title="Set a retry policy">
+    On the Try & Catch node, configure the **Retry Policy** with an **Exponential** strategy, a delay, and a max-attempts cap so transient failures retry automatically before the catch branch runs.
+  </Step>
+  <Step title="Recover in the catch branch">
+    In the catch branch, provide a fallback: substitute a default value, queue the item in a [Tables node](/v3/developer/configure/workflows/nodes/tables) for later processing, or notify your team. Keep the catch branch simple so it does not fail too.
+  </Step>
+  <Step title="Read the error details">
+    Use the error fields the node exposes (`error_message`, `failed_node_id`) to log or branch on what went wrong. Record errors even when you handle them, so you can debug later.
+  </Step>
+</Steps>
+
+<Tip>
+For complete node behavior, retry settings, and fallback examples, see the [Try & Catch node](/v3/developer/configure/workflows/nodes/try-catch-node) reference.
+</Tip>
+
+## Recover from an auth failure
+
+An **auth failure** means the customer's credentials no longer work: the token was revoked, the refresh token expired, or the customer uninstalled your app. Refold cannot recover this on its own, so the customer has to reconnect.
+
+Refold surfaces an auth failure in two places:
+
+- **The `reauth_required` field** flips to `true` on the application object. Read it through [Connection status](/v3/embedded/frontend/management/connection-status) and show a **Reconnect** prompt.
+- **The Connection Expired webhook** fires the moment a connection breaks, so you can react without polling. Subscribe through [webhooks](/v3/embedded/backend/webhooks).
+
+When you detect it, walk the customer through [re-authentication](/v3/embedded/frontend/management/re-authentication). Routine token expiry never reaches this path, because Refold handles it automatically through [token refresh](/v3/embedded/frontend/management/token-refresh).
+
+## Surface failures to your customer
+
+A failed integration is only actionable if the right person sees it. Match the audience to the failure.
+
+- **Show connection problems in your UI.** Render the **Reconnect** state from [Connection status](/v3/embedded/frontend/management/connection-status) so the customer can fix an auth failure themselves.
+- **Notify your team of workflow failures.** Subscribe to the workflow-errored event through [webhooks](/v3/embedded/backend/webhooks) so your team learns about a broken run in real time instead of from a customer ticket.
+- **Keep customer-facing messages plain.** Say what broke and what to do ("Reconnect HubSpot to resume syncing"), not the raw provider error code.
+
+## Best practices
+
+<Steps>
+  <Step title="Classify before you react">
+    Decide whether a failure is transient, auth, or permanent, and handle each differently.
+  </Step>
+  <Step title="Retry only what is safe and temporary">
+    Back off on transient errors, never retry permanent ones, and keep writes idempotent.
+  </Step>
+  <Step title="Contain failures inside workflows">
+    Wrap risky steps in Try & Catch so one node's failure doesn't sink the whole run.
+  </Step>
+  <Step title="Always log, even when you recover">
+    Record error details in the catch branch so handled failures are still debuggable.
+  </Step>
+  <Step title="Route the failure to whoever can fix it">
+    Auth failures to the customer, workflow failures to your team.
+  </Step>
+</Steps>
+
+## See also
+
+- [Rate limiting](/v3/embedded/best-practices/rate-limiting) : backoff and retry for throttled calls
+- [Idempotency](/v3/embedded/best-practices/idempotency) : make retries safe from duplicates
+- [Try & Catch node](/v3/developer/configure/workflows/nodes/try-catch-node) : error handling and retry policy in workflows
+- [Re-authentication](/v3/embedded/frontend/management/re-authentication) : prompt a reconnect after an auth failure
+- [Connection status](/v3/embedded/frontend/management/connection-status) : read whether a connection is healthy
+- [Webhooks](/v3/embedded/backend/webhooks) : get notified of connection and workflow failures
