@@ -5,7 +5,13 @@ description: "Make integration operations safe to retry so a repeated call never
 
 An operation is **idempotent** when running it twice has the same result as running it once. This matters because integrations retry: a [rate limit](/v3/embedded/best-practices/rate-limiting) or a timeout can cause you to repeat a call whose first attempt actually succeeded, and without idempotency that retry creates a duplicate contact, a double payment, or a second order. Designing operations to be safe to retry is what makes retry logic trustworthy.
 
-This page covers how to keep writes idempotent when you [read and write data](/v3/embedded/move-data/read-write) through actions and [workflows](/v3/developer/configure/workflows/overview): idempotency keys, deduplication, and upsert patterns.
+There are two layers to get right: stopping a duplicate *event* from starting a workflow twice, and stopping a duplicate *write* from creating two records in a connected app. This page covers both.
+
+## Built-in idempotency on event triggers
+
+For event-triggered workflows, Refold deduplicates at the source. Turn on [idempotency](/v3/developer/configure/workflows/idempotency) in the workflow's event trigger: Refold reads a key from each incoming event (from the **Header** or **Payload**, written as `{event:<key>}`) and ignores any repeat that carries the same key within the time window (5 minutes by default). A double-sent event never starts a second run.
+
+Use a key that is unique per logical event and stable across retries, such as an upstream record or event ID. For everything that happens after the workflow starts (the writes into connected apps), apply the patterns below.
 
 ## Why retries cause duplicates
 
@@ -79,6 +85,7 @@ An **upsert** updates a record if it exists and creates it if it doesn't, keyed 
 
 ## See also
 
+- [Workflow idempotency](/v3/developer/configure/workflows/idempotency) : the built-in event deduplication setting
 - [Error handling](/v3/embedded/best-practices/error-handling) : when and how to retry safely
 - [Rate limiting](/v3/embedded/best-practices/rate-limiting) : the throttling that triggers retries
 - [Tables node](/v3/developer/configure/workflows/nodes/tables) : store processed IDs to deduplicate
