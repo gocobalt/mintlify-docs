@@ -1,0 +1,222 @@
+---
+title: "Rule node"
+description: "Add conditional logic to workflows with if/else branching based on condition evaluation"
+sidebarTitle: "Rule"
+---
+
+The Rule node enables conditional logic in workflows by evaluating conditions and creating different execution paths. It acts as an if/else statement, routing workflow execution down different branches depending on whether defined conditions are met.
+
+## When to use
+
+- Filter records based on criteria (status, score, region)
+- Route data to different systems based on properties
+- Skip processing for records that do not meet requirements
+- Create approval workflows with conditional branching
+- Validate data before proceeding with sync operations
+
+## Condition logic
+
+The Rule node evaluates a set of conditions and routes execution down a **true** or **false** path. Set the **Condition Rule** to control how multiple conditions combine:
+
+- **Match All Conditions** (AND) — the rule passes only when every condition is true. Use for strict criteria where every condition must pass.
+- **Match Any Condition** (OR) — the rule passes when at least one condition is true. Use for alternative criteria where only one condition needs to pass.
+
+Match All Conditions (AND) is selected by default.
+
+### Conditions
+
+Each condition compares a resolved value (the **Variable**, or *data slot*) against a target (the **Value**, or *compare value*) using a comparison operator. Click **Add Condition** to add one or more condition rows. Each condition has:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| Variable | Yes | The field or data point to evaluate (the data slot) |
+| Operator | Yes | Comparison operator for evaluation (see below) |
+| Value | Conditional | Value to compare against. Ignored by operators that only inspect the data slot — Is Null, Is Not Null, Does Exist?, and Does Not Exist? |
+
+### Available operators
+
+| Operator | Key | Description |
+|----------|-----|-------------|
+| Equal To | `eq` | Equal to. Numeric comparison when the value is a number; for arrays, passes when the array contains the compare value. |
+| Not Equal To | `neq` | Not equal to. Numeric comparison when both sides are numbers, string comparison otherwise. |
+| Greater Than | `gt` | Numeric: the data slot is greater than the value. |
+| Less Than | `lt` | Numeric: the data slot is less than the value. |
+| Greater Than Or Equal To | `gte` | Numeric: the data slot is greater than or equal to the value. |
+| Less Than Or Equal To | `lte` | Numeric: the data slot is less than or equal to the value. |
+| Like | `like` | SQL-style wildcard pattern match against the data slot text. Use `%` to match any sequence of characters and `_` to match a single character (e.g. `Acme%` matches "Acme Corp", `%corp` matches "Acme Corp", `Ac_e` matches "Acme"). |
+| Contains | `contains` | Array: the data slot array contains the compare value. String: the data slot contains the compare value as a substring. |
+| Does Not Contain | `not_contains` | Inverse of Contains. |
+| Included In | `included_in` | The compare value (an array) contains the data slot value. |
+| Not Included In | `not_included_in` | The compare value array does not contain the data slot value. |
+| Is Null | `is_null` | True only when the value is an explicit `null`. An empty string is **not** null. |
+| Is Not Null | `not_null` | True when the value is not `null` (an empty string counts as not null). |
+| Does Exist? | `exist` | True when the value is present and non-empty. Both `null` and `""` are treated as not present. |
+| Does Not Exist? | `not_exist` | True when the value is absent or empty (`null` or `""`). |
+
+<Note>
+**Numeric operators** (`gt`, `gte`, `lt`, `lte`) evaluate to false if either side is not a valid number.
+
+**Is Null vs. Does Exist?** — Is Null checks for an explicit JSON `null`, while Does Exist? treats both `null` and an empty string as "not present".
+</Note>
+
+## Output
+
+The Rule node creates two execution paths based on condition evaluation:
+
+- **Left Path (True)**: Executes when conditions are met
+- **Right Path (False)**: Executes when conditions are not met
+```json
+{
+  "condition_result": true,
+  "evaluated_conditions": [
+    {
+      "variable": "sap_vendor.STATUS",
+      "operator": "equals",
+      "value": "Active",
+      "result": true
+    }
+  ],
+  "execution_path": "true"
+}
+```
+
+<Warning>Both left (true) and right (false) paths must be connected to prevent workflow execution errors. If you do not need actions on the false path, connect it directly to the next shared node or end the branch.</Warning>
+
+## Adding to your workflow
+
+<Steps>
+  <Step title="Add the node">
+    Click **Add Node** in the workflow canvas, select **Rule** from the list of available nodes, then position it in your workflow.
+  </Step>
+  <Step title="Select condition logic">
+    Choose your evaluation strategy: **Match All Conditions** (AND logic) or **Match Any Condition** (OR logic). AND logic is selected by default.
+  </Step>
+  <Step title="Configure conditions">
+    Set Variable, Operator, and Value for each condition.
+  </Step>
+  <Step title="Connect execution paths">
+    Connect nodes to both output paths: **Left (True)** and **Right (False)**.
+  </Step>
+  <Step title="Test the node">
+    Run the workflow with sample data to verify conditions evaluate correctly.
+  </Step>
+</Steps>
+
+## Examples
+
+### Filter active high-value SAP vendors
+
+Route only vendors that are both active and have purchase volume above threshold.
+
+**Action:** Match All Conditions
+
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| sap_vendor.STATUS | Equal To | Active |
+| sap_vendor.PURCHASE_VOLUME | Greater Than Or Equal To | 100000 |
+
+**Left Path (True):** Proceed to sync vendor to internal system
+
+**Right Path (False):** Skip vendor, log to monitoring
+
+**Result (True Path):**
+```json
+{
+  "condition_result": true,
+  "evaluated_conditions": [
+    {"variable": "Active", "operator": "equals", "value": "Active", "result": true},
+    {"variable": "250000", "operator": "greater than or equal", "value": "100000", "result": true}
+  ],
+  "execution_path": "true"
+}
+```
+
+### Process multiple order sources
+
+Process orders from any of the approved channels.
+
+**Action:** Match Any Condition
+
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| netsuite_order.source | Equal To | Web |
+| netsuite_order.source | Equal To | EDI |
+| netsuite_order.source | Equal To | API |
+
+**Left Path (True):** Process order through fulfillment workflow
+
+**Right Path (False):** Route to manual review queue
+
+**Result (True Path when source is EDI):**
+```json
+{
+  "condition_result": true,
+  "evaluated_conditions": [
+    {"variable": "EDI", "operator": "equals", "value": "Web", "result": false},
+    {"variable": "EDI", "operator": "equals", "value": "EDI", "result": true}
+  ],
+  "execution_path": "true"
+}
+```
+
+### Validate required fields before sync
+
+Ensure required fields are populated before syncing to Tipalti.
+
+**Action:** Match All Conditions
+
+**Conditions:**
+
+| Variable | Operator | Value |
+|----------|----------|-------|
+| event.vendor.tax_id | Is Not Null | - |
+| event.vendor.bank_account | Is Not Null | - |
+| event.vendor.email | Contains | @ |
+
+**Left Path (True):** Create vendor in Tipalti
+
+**Right Path (False):** Return validation error via Response node
+
+## Runtime behavior
+
+### Condition evaluation
+
+The Rule node evaluates conditions in the following order:
+
+1. **Variable Resolution**: Resolves variables from previous nodes or event data
+2. **Type Conversion**: Automatically converts data types for comparison
+3. **Condition Checking**: Applies the specified operator logic
+4. **Path Selection**: Routes to left (true) or right (false) branch based on result
+
+### Evaluation logic
+
+- **Match All Conditions**: All conditions must evaluate to true (AND logic)
+- **Match Any Condition**: At least one condition must evaluate to true (OR logic)
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Rule always goes to false path | Verify variable references are correct. Check data types match (numbers vs strings). |
+| Variable not found error | Confirm referenced node executed successfully. Check variable path syntax. |
+| Unexpected data type comparison | Use text operators (Contains, Equal To) for string fields. Add Transform node to convert types. |
+
+<Tip>Add a Custom Code node after your Rule node during testing to inspect condition evaluation results and understand path selection.</Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Transform node" icon="shuffle" href="/v3/platform/concepts/workflows/nodes/transform">
+    Prepare data before rule evaluation.
+  </Card>
+  <Card title="Response node" icon="reply" href="/v3/platform/concepts/workflows/nodes/response">
+    Build conditional response paths.
+  </Card>
+  <Card title="Loop node" icon="repeat" href="/v3/platform/concepts/workflows/nodes/loop">
+    Apply rules across multiple records.
+  </Card>
+</CardGroup>

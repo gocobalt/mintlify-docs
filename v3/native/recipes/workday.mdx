@@ -1,0 +1,144 @@
+---
+title: "Build a Workday integration"
+description: "Connect a customer's Workday tenant, read workers out of it, and write a worker back, end to end."
+---
+
+By the end of this recipe you will have a customer's Workday tenant connected through Refold, workers read out of it, and a new worker written back into it, all from your backend.
+
+This recipe assumes you have run the [Quickstart](/v3/native/overview/quickstart). It reuses that flow (create a linked account, connect the app, execute an action) and shows only what is specific to Workday. Workday is the connector slug `workday`.
+
+## Prerequisites
+
+- **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai).
+- **The Quickstart loop, once**, so the connect-and-execute pattern is familiar.
+- **Workday credentials.** Workday is a key-based connector, so the customer supplies credentials rather than running an OAuth redirect.
+
+## Step 1: Configure the Workday app
+
+Tell Refold how to authenticate with Workday before a customer connects.
+
+<Steps>
+  <Step title="Open the app settings">
+    In the [Refold Console](https://app.refold.ai), go to **Apps > Workday > Settings**.
+  </Step>
+  <Step title="Set the auth method">
+    Workday authenticates with tenant-level credentials rather than OAuth. Add the credential fields the connector asks for, then click **Save**.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: Workday app Settings tab showing the credential fields and Save button -> /images/embedded/recipes/workday-settings.png */}</Frame>
+
+<Note>
+Workday is key-based, so the customer enters credentials in the connect step instead of going through an OAuth consent screen. The rest of the flow is identical to an OAuth app.
+</Note>
+
+## Step 2: Connect the customer's Workday
+
+Create a [linked account](/v3/native/configure/developer/linked-accounts) for the customer and generate a [Connect portal](/v3/native/frontend/overview) URL.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
+
+```json Output
+{ "hosted_url": "https://connect.refold.ai/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+Open the `hosted_url`, find **Workday**, and enter the customer's credentials. A **Connected** tag appears when it succeeds.
+
+<Frame>{/* SCREENSHOT: Connect portal showing Workday with its credential fields and the Connected state -> /images/embedded/recipes/workday-connect.png */}</Frame>
+
+<Tip>
+To embed this flow in your own UI instead of redirecting, see [Embed the connect flow](/v3/native/frontend/overview).
+</Tip>
+
+## Step 3: List the actions Workday supports
+
+Confirm the actions you need before calling them.
+
+```bash cURL
+curl https://app.refold.ai/api/v2/integration-schema/workday/actions \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1"
+```
+
+The response lists every action and its input fields. Use the exact action and field names it returns below.
+
+## Step 4: Read workers from Workday
+
+Execute a read action to pull the customer's workers into your product.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/workday/actions/get_workers/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+```json Output
+{
+  "success": true,
+  "data": {
+    "workers": [
+      { "id": "21001", "display_name": "Jane Doe", "primary_email": "jane@example.com" }
+    ]
+  }
+}
+```
+
+<Warning>
+The action name `get_workers` and the response shape are placeholders. Workday returns a deeply nested SOAP-style envelope, so confirm the exact action name and reshape the response before storing it. See [Data mapping](/v3/native/move-data/data-mapping).
+</Warning>
+
+## Step 5: Write a worker back to Workday
+
+Now write a record into the customer's tenant. Refold uses the stored credentials automatically.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/workday/actions/create_worker/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "primary_email": "jane@example.com"
+  }'
+```
+
+```json Output
+{
+  "success": true,
+  "data": { "id": "21002" }
+}
+```
+
+<Check>
+Open the customer's Workday. The new worker is there, and your read returned the tenant's existing workers. You just ran data both ways through Refold.
+</Check>
+
+<Warning>
+`create_worker` and its fields are placeholders. Use the real action name and required fields from Step 3, and test against a Workday sandbox tenant first.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Data import recipe" icon="download" href="/v3/native/recipes/data-import">
+    Pull many workers out of Workday on a schedule.
+  </Card>
+  <Card title="Data mapping" icon="shuffle" href="/v3/native/move-data/data-mapping">
+    Flatten Workday's nested responses into your own schema.
+  </Card>
+  <Card title="Move data" icon="arrows-rotate" href="/v3/native/move-data/read-write">
+    Read, write, and sync Workday data from your backend.
+  </Card>
+  <Card title="Configure the integration" icon="sliders" href="/v3/native/configure/integration/config-fields">
+    Let each customer choose what they sync.
+  </Card>
+</CardGroup>

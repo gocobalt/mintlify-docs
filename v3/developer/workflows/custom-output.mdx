@@ -5,7 +5,7 @@ description: "Define a node's output schema and mark specific fields as encrypte
 
 Custom Output lets you declare the shape of a node's output and mark individual fields as encrypted. Declaring the shape makes those fields available in the downstream data picker so later nodes can reference them by name. Marking a field as encrypted stores its value securely and renders it as `[REDACTED]` in the Run tab, execution logs, and history, while still passing the real value to downstream nodes at runtime.
 
-Use this when a node returns dynamic JSON (for example, a [Custom Code](/v3/developer/configure/workflows/nodes/custom-code) or [HTTP](/v3/developer/configure/workflows/nodes/http) node) and you want downstream nodes to consume typed fields, keep sensitive values out of logs, or both.
+Use this when a node returns dynamic JSON (for example, a [Custom Code](/v3/platform/concepts/workflows/nodes/custom-code) or [HTTP](/v3/platform/concepts/workflows/nodes/http) node) and you want downstream nodes to consume typed fields, keep sensitive values out of logs, or both.
 
 ## Define a custom output schema
 
@@ -151,7 +151,7 @@ Use encryption for any field whose value must reach a downstream node but should
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Environment Variables" href="/v3/developer/configure/settings/organization/environment-variables">
+  <Card title="Environment Variables" href="/v3/platform/platform-settings/workspace-settings/environment-variables">
     Store reusable secrets and configuration outside individual workflows.
   </Card>
   <Card title="Workflow Testing" href="/v3/developer/guide/workflows/testing/workflow-testing">

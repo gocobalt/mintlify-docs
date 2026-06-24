@@ -1,0 +1,92 @@
+---
+title: "Rule engine fields"
+description: "Give customers a grid to build their own conditional rules in your config, so they decide when an integration acts without you shipping code per rule."
+---
+
+A **rule engine field** lets your customer build conditional rules inside your config UI. The customer adds rows like "provision a user only if their **type** is *Agent* **and** their **role** is *Admin*," and your workflow reads the saved rules to decide what to do. It collapses the work of fetching options and chaining comparisons into a single field, so customers express their own logic without you building a rule for each one.
+
+Reach for a rule engine when the *condition* belongs to the customer: which records to sync, which users to provision, when to skip. For a single fixed choice, a [Select](/v3/native/configure/integration/field-types/overview#basic-inputs) is clearer, and for matching fields between schemas, use a [mapping field](/v3/native/configure/integration/field-types/mapping).
+
+<Frame>{/* SCREENSHOT: a rule engine field a customer fills in, with LHS / Operator / RHS columns across each rule row -> /images/embedded/field-types/rule-engine.png */}</Frame>
+
+## How it works
+
+A rule engine field shows the customer a grid. Each rule is a row with three columns:
+
+- **LHS**: the field the customer picks to evaluate (for example, *Region* or *Role*).
+- **Operator**: how to compare it, such as *Equals* or *Not equals*.
+- **RHS**: the value to compare the LHS against.
+
+You define what the **LHS** column offers. The customer then adds as many rule rows as they need, and your workflow reads the saved rules at run time.
+
+## Build a rule engine field
+
+<Steps>
+  <Step title="Add a Rule Engine field">
+    In **Connect Portal → Fields**, add a field and set its type to **Rule Engine**, then edit it.
+  </Step>
+  <Step title="Set the LHS options">
+    Configure the **Options** for the **LHS** column. Type a fixed list yourself, or check **Use Data Source** to load the choices from a published [datasource workflow](/v3/native/configure/integration/field-types/datasource).
+  </Step>
+  <Step title="Save the field">
+    Save the field. The customer can now build rules against the LHS options you defined.
+  </Step>
+</Steps>
+
+## Dynamic operators and values
+
+When the operators or right-hand values should change with the LHS choice, use the **Conditional Code** block. It's JavaScript that sets the **Operator** and **RHS** columns at run time based on the selected LHS. A sample snippet ships in the block; remove it if you don't need dynamic columns.
+
+```javascript Conditional Code
+async function main() {
+  // check whether the `lhs` column's value is set to "Region"
+  if (lhs === "Region") {
+    // define the operators for this LHS
+    const operatorOptions = [
+      { name: "Equals To", value: "eq" },
+      { name: "Not Equals To", value: "neq" },
+    ];
+    cobaltRuleEngine.setColumnProperties("operator", operatorOptions);
+
+    // run the `get_regions` datasource workflow and use its result as the RHS options
+    const rhsOptions = await cobaltDataSource.getDataSourceResponse("get_regions", {}).return_value;
+    cobaltRuleEngine.setColumnProperties("rhs", rhsOptions);
+  }
+}
+
+main();
+```
+
+Two helpers are available inside the block:
+
+- **`cobaltRuleEngine.setColumnProperties("operator" | "rhs", options)`** sets a column's options for the current LHS.
+- **`cobaltDataSource.getDataSourceResponse("<workflow>", {})`** pulls live values from a [datasource workflow](/v3/native/configure/integration/field-types/datasource), so the RHS can offer account-specific values.
+
+<Note>
+The Conditional Code block runs to compute column options when the customer builds a rule. Console logs from it surface when you call the rule-field options method in the SDK. TODO: confirm the exact SDK method name and signature for fetching rule field options.
+</Note>
+
+## When to use a rule engine
+
+| Need | Use |
+| --- | --- |
+| A single fixed choice | [Select](/v3/native/configure/integration/field-types/overview#basic-inputs) |
+| Match your fields to the customer's fields | [Mapping field](/v3/native/configure/integration/field-types/mapping) |
+| Customer-defined conditions with fixed operators | Rule engine, static LHS options |
+| Conditions whose operators or values change with the LHS choice | Rule engine, **Conditional Code** |
+
+## Best practices
+
+<Tip>
+- **Use a rule engine only for conditional logic.** A fixed choice is clearer as a [Select](/v3/native/configure/integration/field-types/overview#basic-inputs).
+- **Keep LHS options self-explanatory**, the customer reasons about your rules in their own terms.
+- **Load account-specific RHS values from a [datasource](/v3/native/configure/integration/field-types/datasource)** so customers compare against their real data, not a guessed list.
+- **Remove the sample Conditional Code** if you don't need dynamic operators or values, an empty block is one less thing to maintain.
+</Tip>
+
+## See also
+
+- [Datasource fields](/v3/native/configure/integration/field-types/datasource): supply LHS or RHS options live from the connected account.
+- [Mapping fields](/v3/native/configure/integration/field-types/mapping): match fields between schemas rather than build conditions.
+- [Dataslots](/v3/native/configure/integration/dataslots#rule-engine): the Rule Engine field in the full palette.
+- [Config fields](/v3/native/configure/integration/config-fields): read and write a rule field's saved value from code.
