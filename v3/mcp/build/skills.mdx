@@ -1,0 +1,183 @@
+---
+title: "Skills"
+description: "Attach reusable, tested procedures to your MCP server so agents follow defined steps instead of improvising."
+---
+
+A skill is a reusable procedure attached to an MCP server. Use skills to give agents structured guidance for operations that span multiple API calls, such as "sync contacts from Salesforce to HubSpot" or "create a purchase order with vendor validation in SAP."
+
+Without a skill, an agent works out a multi-step operation on its own. With a skill, it follows a tested procedure with defined steps, pre-checks, and error handling. Each skill is scoped to the MCP server it's attached to.
+
+## When to use a skill
+
+A skill wraps logic; a tool wraps a single call. Start with [per-action tools](/v3/mcp/reference/tools) and add a skill when you notice agents struggling with multi-step operations or making inconsistent decisions about step ordering. For the full direct-vs-agent-vs-workflow decision, see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern); for procedures you want Refold to run deterministically rather than the agent, see [Workflows as tools](/v3/mcp/build/workflow-as-mcp).
+
+| | Skills | Per-action tools |
+|--|--------|------------------|
+| **Scope** | Multi-step procedures with logic | Single API calls |
+| **Agent guidance** | Agent follows your defined steps | Agent decides the approach |
+| **Error handling** | Defined in the procedure | Agent handles on its own |
+| **Best for** | Complex business processes | Simple CRUD operations |
+
+## How agents discover and use skills
+
+When **Retrieve Skill** is enabled, the server gains two tools: `SEARCH_INTEGRATION_GRAPH` and `LOAD_SKILL`. See [Tools](/v3/mcp/reference/tools#skill-tools) for their full parameter reference.
+
+At session start, Refold injects skill summaries (name, ID, and a short description) into the agent's context. To keep the context window lean, only the **top 10 most relevant skills** are surfaced, ranked by:
+
+1. **App match** — skills associated with apps configured on this server rank higher.
+2. **Usage count** — skills used more often by other agents on this server rank higher.
+3. **Confidence** — Refold's match score for the skill against the server's configured apps and actions.
+
+The agent doesn't receive full skill content upfront. It loads a skill on demand when one matches the task:
+
+```
+User: "Qualify this lead from the webinar"
+
+1. The agent already sees "Lead Qualification" in the injected skill list.
+   It calls LOAD_SKILL(skill_id="...") to get the full procedure.
+
+2. If the skill isn't in the injected top 10, the agent calls
+   SEARCH_INTEGRATION_GRAPH("Lead Qualification") to find it,
+   then LOAD_SKILL on the result.
+
+3. With the procedure loaded, the agent follows the steps,
+   calling RESOLVE_ACTIONS and EXECUTE_ACTION for each
+   integration action the skill requires.
+```
+
+## Create a skill
+
+<Steps>
+  <Step title="Open the Skills tab">
+    In your MCP server, go to the **Skills** tab and click **+ Add Skill**.
+    <img src="/images/mcp-skill-create.png" alt="Creating a skill with name, description, app, and content" />
+  </Step>
+  <Step title="Fill in the skill fields">
+    | Field | Description |
+    |-------|-------------|
+    | **Name** | What the agent sees during discovery. Be descriptive, such as "Salesforce Lead Qualification Process". |
+    | **Summary** | A short description of what the skill does and when to use it. |
+    | **App** | Which connected application the skill relates to. |
+    | **Content** | The procedure body: steps, API patterns, conditional logic, input/output specs. |
+    | **Status** | Enable or disable the skill without deleting it. |
+  </Step>
+  <Step title="Write the procedure">
+    Write the content as structured instructions an agent can follow. Mix prose with the concrete API or query patterns the agent should use — SOQL queries, REST endpoints, parameter names — so it doesn't have to guess them at runtime. Structure each procedure with five sections:
+
+    - **Goal** — one line stating what the skill accomplishes.
+    - **Pre-checks** — conditions that must hold before the agent proceeds (required inputs, an active connection).
+    - **Steps** — the ordered actions, including the exact action IDs and query patterns to call.
+    - **On success** — what to return when the procedure completes.
+    - **On failure** — what to do when a step fails, including whether to stop or retry.
+  </Step>
+</Steps>
+
+<Tip>
+Write a skill the way you'd write a runbook for a junior team member: clear steps, explicit conditions, no ambiguity.
+</Tip>
+
+Click any skill in the **Skills** tab to see its rendered content, metadata, and usage stats.
+
+<img src="/images/mcp-skill-detail.png" alt="Skill detail view showing rendered content and stats" />
+
+## Examples
+
+The actions referenced below are real Refold action IDs. Copy the structure and adapt the field names to your data. To find action IDs for an app on your server, browse the **Applications** tab in the dashboard — every action exposed to the agent shows its slug.
+
+<Note>
+Most Refold connectors use `snake_case` action IDs (`create_contact`, `get_purchase_orders`). NetSuite uses `camelCase` (`createAccount`, `getVendorById`). Use the exact ID for each app.
+</Note>
+
+### Lead qualification (Salesforce)
+
+A single-app skill that combines a SOQL lookup, a conditional create, and scoring.
+
+```markdown
+## Goal
+Qualify an inbound lead and capture the result on a Salesforce contact.
+
+## Pre-checks
+- Email address is provided
+- Salesforce connection is active
+
+## Steps
+
+1. Look up the contact in Salesforce.
+   Use action `get_entity_with_soql` with:
+   `SELECT Id, AccountId, OwnerId FROM Contact WHERE Email = :email LIMIT 1`
+
+2. If a contact exists, check for open opportunities on its account:
+   Action `get_entity_with_soql` with:
+   `SELECT Id, StageName FROM Opportunity WHERE AccountId = :accountId AND IsClosed = false`
+
+3. If no contact exists, call `create_contact` with:
+   `{ FirstName, LastName, Email, Phone, additional_fields: { LeadSource: "Webinar" } }`
+
+4. Score the lead in the agent layer based on company size:
+   > 500 employees → "high"
+   200–500 → "medium"
+   < 200 → "low"
+
+5. Persist the score by updating the contact: action `update_contact` with
+   `{ Id: <contactId>, additional_fields: { Lead_Score__c: <score> } }`.
+
+## On success
+Return the contact ID, qualification score, and any open opportunity IDs.
+
+## On failure
+If Salesforce is unreachable, return an error asking the user to retry.
+```
+
+### Cross-app contact sync (Salesforce → HubSpot)
+
+A two-app skill that reads from one system, writes to another, and handles existing records idempotently.
+
+```markdown
+## Goal
+Mirror a Salesforce contact into HubSpot. Update if it already exists.
+
+## Pre-checks
+- Salesforce contact ID is provided
+- Both Salesforce and HubSpot are connected on this server
+
+## Steps
+
+1. Fetch the contact from Salesforce. Use action `get_entity_with_soql`:
+   `SELECT Id, FirstName, LastName, Email, Phone, Account.Name FROM Contact WHERE Id = :sfdcContactId`
+
+2. Look up the contact in HubSpot by email:
+   Action `search_contacts` with the email filter.
+
+3. If found, call `update_contact` with the HubSpot contact ID and the
+   mapped fields from step 1.
+
+4. If not found, call `create_contact` with the mapped fields.
+
+5. Return both the Salesforce and HubSpot contact IDs in the result.
+
+## Field mapping
+
+| Salesforce   | HubSpot   |
+|--------------|-----------|
+| FirstName    | firstname |
+| LastName     | lastname  |
+| Email        | email     |
+| Phone        | phone     |
+| Account.Name | company   |
+
+## On failure
+- If Salesforce lookup fails: stop, return the error to the user.
+- If HubSpot is unreachable: do not retry indefinitely. Return the error
+  with the partial data fetched from Salesforce.
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Tools" icon="wrench" href="/v3/mcp/reference/tools">
+    The tools agents use to discover, load, and run skills.
+  </Card>
+  <Card title="Choose your pattern" icon="route" href="/v3/mcp/get-started/choose-your-pattern">
+    Decide between direct tools, agent skills, and workflows as tools.
+  </Card>
+</CardGroup>

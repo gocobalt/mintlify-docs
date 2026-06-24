@@ -134,7 +134,7 @@ rss: true
 - **Execution Log Search**: Search executions by partial workflow name, full execution ID, event/app, and custom field name or partial value, with cursor-based pagination.
 - **cURL Trace on Outbound HTTP Calls**: Node execution results now include a `parsed_request_curl` field — a ready-to-run cURL representation of the outbound call (headers excluded for security).
 - **Custom Field Snapshot at Instance Completion**: Custom field values are now resolved using node outputs and snapshotted at instance completion.
-- **Encrypted Environment Variables**: Encrypted env var values are now redacted across logs, persisted state, and execution archives. See [Environment Variables](/build/workflow/environment-variables).
+- **Encrypted Environment Variables**: Encrypted env var values are now redacted across logs, persisted state, and execution archives. See [Environment Variables](/v3/platform/platform-settings/workspace-settings/environment-variables).
 - **JSON Schema Validation on Custom Nodes**: Client-side schema validation for custom node payloads.
 - **Workflow Webhook Events**: Workflow Stopped and Workflow Timed Out added as selectable webhook event options.
 - **Linked Account Guardrail**: Linked account creation is now blocked when the account ID matches the tenant ID.
@@ -304,7 +304,7 @@ rss: true
 
 **Improvements**
 
-- [Environment variable](/build/workflow/environment-variables) templating now uses cleaner dot notation (`env.workflow.variable`).
+- [Environment variable](/v3/platform/platform-settings/workspace-settings/environment-variables) templating now uses cleaner dot notation (`env.workflow.variable`).
 - Response Viewer now supports expand and collapse all.
 - Cron schedules now register against workflow aliases for improved reliability across deployments.
 

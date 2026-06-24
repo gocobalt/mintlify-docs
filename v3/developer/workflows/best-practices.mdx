@@ -6,7 +6,7 @@ description: "Recommended patterns for building reliable, maintainable Refold wo
 Use these recommendations as a checklist when you design, ship, and maintain workflows. They cover naming, error handling, performance, security, testing, and observability so your workflows stay predictable as your integration catalog grows.
 
 <Note>
-  This page collects guidance that applies across every workflow you build in Refold. For node-level details, see the [workflow overview](/v3/developer/configure/workflows/overview) and the individual node reference pages.
+  This page collects guidance that applies across every workflow you build in Refold. For node-level details, see the [workflow overview](/v3/platform/concepts/workflows/overview) and the individual node reference pages.
 </Note>
 
 ## Naming and organization
@@ -24,16 +24,16 @@ Consistent names make workflows searchable, reviewable, and safe to refactor. Ap
     Replace default node titles (`HTTP Request`, `Transform`) with what the node actually does in context, for example `Fetch contact by email` or `Map Salesforce lead to Refold schema`.
   </Accordion>
   <Accordion title="Name variables for their meaning, not their type">
-    Prefer `customerEmail` over `string1`, and `invoiceTotalCents` over `number2`. Include the unit when it matters. See [variables](/v3/developer/configure/workflows/nodes/variables) for the variable system.
+    Prefer `customerEmail` over `string1`, and `invoiceTotalCents` over `number2`. Include the unit when it matters. See [variables](/v3/platform/concepts/data-variables) for the variable system.
   </Accordion>
   <Accordion title="Document the trigger contract in the workflow description">
     Record which fields the trigger payload must contain, and what shape downstream consumers expect on success. New maintainers can then change the flow without rereading every node.
   </Accordion>
   <Accordion title="Split large flows into sub-flows">
-    When a workflow exceeds roughly a screen of nodes, extract repeated logic into a [sub-flow](/v3/developer/configure/workflows/nodes/sub_flows). Sub-flows give you reuse, unit-testable boundaries, and shorter diffs in review.
+    When a workflow exceeds roughly a screen of nodes, extract repeated logic into a [sub-flow](/v3/platform/concepts/workflows/nodes/sub-flows). Sub-flows give you reuse, unit-testable boundaries, and shorter diffs in review.
   </Accordion>
   <Accordion title="Keep data references intentional">
-    Use [data refs](/v3/developer/configure/workflows/nodes/datarefs) to pass structured payloads between nodes instead of stringifying and re-parsing JSON. Refs preserve types and surface schema drift earlier.
+    Use [data refs](/v3/platform/concepts/workflows/nodes/data-ref-node) to pass structured payloads between nodes instead of stringifying and re-parsing JSON. Refs preserve types and surface schema drift earlier.
   </Accordion>
 </AccordionGroup>
 
@@ -96,13 +96,13 @@ Workflows that run on every event need to stay fast even as event volume grows. 
     When two downstream calls do not depend on each other, run them as parallel branches rather than serial nodes. Total latency drops to the slower of the two instead of the sum.
   </Accordion>
   <Accordion title="Avoid N+1 lookups">
-    If you find yourself fetching one related record per item in a list, pull the related records in a single query first, then join in a [transform](/v3/developer/configure/workflows/nodes/transform) node.
+    If you find yourself fetching one related record per item in a list, pull the related records in a single query first, then join in a [transform](/v3/platform/concepts/workflows/nodes/transform) node.
   </Accordion>
   <Accordion title="Cache static reference data">
     Field mappings, picklist values, and lookup tables that change rarely belong in a data ref or sub-flow that fetches once per run, not per record.
   </Accordion>
   <Accordion title="Move heavy logic into custom code nodes">
-    Long chains of transform and rule nodes are slower and harder to read than a single [custom code](/v3/developer/configure/workflows/nodes/custom-code) node. Use custom code when the logic is non-trivial.
+    Long chains of transform and rule nodes are slower and harder to read than a single [custom code](/v3/platform/concepts/workflows/nodes/custom-code) node. Use custom code when the logic is non-trivial.
   </Accordion>
   <Accordion title="Stream large payloads instead of holding them in memory">
     For exports and bulk syncs, page through results and process each page, rather than loading the full result set into a single variable.
@@ -160,7 +160,7 @@ Treat workflows as code. The editor's convenience does not remove the need for r
 
 <Steps>
   <Step title="Build a test event for every trigger">
-    Save a representative payload for each [trigger](/v3/developer/configure/workflows/triggers) so you can replay it during development. See [workflow testing](/v3/developer/configure/workflows/nodes/workflow_testing) for the test runner.
+    Save a representative payload for each [trigger](/v3/platform/concepts/workflows/triggers/overview) so you can replay it during development. See [workflow testing](/v3/platform/concepts/workflows/testing) for the test runner.
   </Step>
   <Step title="Cover error paths, not just the happy path">
     Run tests with malformed input, missing fields, and simulated upstream failures. A workflow that only works on clean data fails the first time a real user sends something unexpected.
@@ -236,16 +236,16 @@ These habits keep the catalog healthy over the long run, separate from any singl
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Workflow overview" icon="diagram-project" href="/v3/developer/configure/workflows/overview">
+  <Card title="Workflow overview" icon="diagram-project" href="/v3/platform/concepts/workflows/overview">
     Review the building blocks before applying these practices.
   </Card>
-  <Card title="Workflow testing" icon="vial" href="/v3/developer/configure/workflows/nodes/workflow_testing">
+  <Card title="Workflow testing" icon="vial" href="/v3/platform/concepts/workflows/testing">
     Set up the test runner so you can practice safe rollouts.
   </Card>
-  <Card title="Sub-flows" icon="code-branch" href="/v3/developer/configure/workflows/nodes/sub_flows">
+  <Card title="Sub-flows" icon="code-branch" href="/v3/platform/concepts/workflows/nodes/sub-flows">
     Extract shared logic into reusable sub-flows.
   </Card>
-  <Card title="Custom code" icon="code" href="/v3/developer/configure/workflows/nodes/custom-code">
+  <Card title="Custom code" icon="code" href="/v3/platform/concepts/workflows/nodes/custom-code">
     Move complex transforms into a single maintainable node.
   </Card>
 </CardGroup>
