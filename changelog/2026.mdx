@@ -4,6 +4,26 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="June 15, 2026" description="v3.6.00 · Workday SOAP custom output & Zoho webhook fixes">
+
+<Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Custom output now applies for Workday SOAP actions, external node templating handles unresolved fields more cleanly, and Zoho webhook deletions are reliable.**
+
+**Improvements**
+
+- **External Node Templating**: Unresolved templated action fields are now dropped instead of passed through, and empty templated fields in params, headers, and body are blanked so values no longer serialize as `<nil>`.
+- **External Node Output Filtering**: External node operations now support output field filtering.
+- **Instance Error Persistence**: Instances are now reliably marked as errored when DAG persistence fails, instead of being left in an inconsistent state.
+
+**Integration Updates**
+
+- **Workday**: Custom output now applies for Workday SOAP API actions.
+- **Zoho**: Improved reliability of `delete_webhook` and `create_webhook` actions.
+- **HTTP Requests**: Resolved double-encoding of query parameters across outbound HTTP calls.
+
+</Update>
+
 <Update label="June 11, 2026" description="v3.5.36 · Webhook trigger UI, Knowledge Library & execution reliability">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
