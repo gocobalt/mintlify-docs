@@ -4,6 +4,53 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="June 17, 2026" description="v3.7.00 · Universal Connector, MongoDB integration, trigger idempotency & rate limiting">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**The Universal Connector lets you connect to any API-backed service and run its actions inside workflows, with auth, execution, and lifecycle handled end-to-end. This release also ships per-tenant rate limiting, trigger idempotency, a native MongoDB connector, and a redesigned Custom Output field picker.**
+
+<Note>The MCP server path has moved from `/mcp/v3` to `/mcp/v1`. Update any client, gateway, or ingress configuration that targets the MCP path.</Note>
+
+**New Features**
+
+- **Universal Connector**: Connect to any API-backed service and run its actions inside workflows. Auth, OAuth callbacks, action execution, and connection lifecycle (including cascading deletes of connections and chat memory) are handled end-to-end. Actions are addressed by a stable, immutable operation ID.
+- **Per-Tenant Rate Limiting**: New token-bucket rate limiter scoped per organization and environment, with configurable burst capacity and refill rate. Disabled by default; over-budget requests receive HTTP 429 when enabled. Fails open during transient infrastructure conditions.
+- **Trigger Idempotency**: Opt-in idempotency on triggers — duplicate events scoped to the same trigger and linked account are recorded with a new `DUPLICATE` status instead of re-running the workflow. Optional headers are supported on the custom-webhook trigger.
+- **Custom Output Field Picker**: The workflow builder's Custom Output configuration now uses a checkbox list driven by the node's actual test response, with an inline Run Node action, loading and error states, and encrypt indicators. Saved fields absent from the latest response are preserved, and wildcard selectors recurse into arrays of objects.
+- **Connect Portal — Faster Field Setup**: A new "Add Fields" CTA and a ghost "Add a field" row open the Dataslots palette directly, and dataslot cards can be dragged from the palette onto the fields list.
+- **Legacy Connect Portal Access**: A new "Connect Portal" sidebar item (tagged Legacy) renders the previous configuration UI under the new design's URL space.
+- **Connections Workflow Search**: Search across Shared and Private connection views by workflow name or alias, with contextual empty states and a clear button.
+- **Incremental Sync Ledger**: A new account-level sync ledger tab replaces the per-workflow delta cron screen, with workflow, configuration, and date filters, instance links, and split workflow and instance columns.
+- **Unified MCP Logs**: Global MCP logs and per-server audit logs now use the shared catalog and table layout, with a toolbar aligned to project executions, an export button, and a reusable detail panel.
+- **Integration Graph Review Queue**: Org-wide and per-app pending review queues let you approve or reject artifacts, with confidence-score color coding, artifact metadata, and library counts in the sidebar.
+- **Private Workflows Grouping**: Private workflows are now grouped by folder, with application icons and names on items and search-aware empty states.
+
+**Improvements**
+
+- **Default AI Chat View**: The instance panel now defaults to the AI chat view where supported, with per-agent starter prompts on session chat.
+- **Workflow Settings Consolidation**: Workflow metadata now appears in the Settings tab; the separate workflow-details sidebar panel has been removed.
+- **Public Workflow List Group Field**: The public workflow list response now includes the workflow's `group` field.
+- **Unified Auth Config Field Naming**: The `additional_fields` parameter on key-based, API key, and bearer auth configurations has been renamed to `pre_requisite_fields` to align with OAuth2.
+- **Edit Saved Field Values**: The new-field modal now prefills saved field values when editing.
+- **Workflow Builder Start Node**: The start-node payload is now retained in the UI after saving.
+- **Archived Instance Storage**: Archived instance data is now packed into a single blob per unit, reducing object count and storage footprint. Reads auto-detect packed and legacy formats, so previously archived instances remain readable. Supports gzip compression and AES-256-GCM encryption.
+- **Faster Archival**: Reworked archival with a sliding-window org fan-out, bounded per-unit parallelism, equal-jitter retry backoff, and panic-tolerant unit handling.
+- **Visible Integration Retries**: Transient upstream failures (429s, 5xx responses, connection resets) are now retried at the orchestration layer, so every retry is visible in workflow execution history and the attempts counter. Retryable status codes are configurable.
+- **Terminate Semantics in Loops**: `terminate_with_error` inside a loop iteration now correctly marks the instance as `ERRORED`, while `terminate_with_success` reports `COMPLETED` for the iteration without propagating as a terminate. Mirrored in subflows and try-catch blocks; sibling batches continue running.
+- **Try-Catch with Terminate Iteration**: `terminate_iteration` with the success toggle no longer runs the wrapping try-catch's success branch — the iteration ends as intended.
+- **Tenant-Aware Archival Keys**: Archival now correctly reads top-level organization, linked account, and environment identifiers, so instances with live data are no longer incorrectly flagged as missing.
+- **Clearer Permission Errors**: A 403 response from a role lacking access now includes a descriptive message instead of a generic denial.
+- **Environment Propagation in Auth**: The active environment is now propagated from the session token through the auth middleware to downstream requests.
+
+**Integration Updates**
+
+- **MongoDB**: New native MongoDB connector with key-based authentication and 18 actions covering documents (insert, find, update, delete, replace, find-and-modify), collection operations (aggregate with automatic result cap, count, distinct, bulk write), and metadata (list collections, list databases, ping). Find and aggregate operations cap results at 1,000 documents.
+- **PostgreSQL**: File upload size limits on PostgreSQL actions are now configurable.
+- **Dropbox**: Improved `get_user` action reliability for Dropbox Business accounts.
+
+</Update>
+
 <Update label="June 15, 2026" description="v3.6.00 · Workday SOAP custom output & Zoho webhook fixes">
 
 <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
