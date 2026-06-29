@@ -1,0 +1,76 @@
+---
+title: Create MCP Server
+api: post /api/v2/public/mcp-servers
+description: Create a new MCP server for a linked account.
+---
+
+Create a new MCP (Model Context Protocol) server. Only `name` and `description` are required at creation; configure associated apps, chains, and suggestions afterward via [Update MCP Server](/v3/api-reference/mcp-servers/update-mcp-server).
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account. Required with API-key auth.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>Name of the MCP server. **Example:** `Production CRM Server`</ParamField>
+<ParamField body="description" type="string" required>What the server is for.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="201 Created">
+    <ResponseField name="_id" type="string">The new MCP server ID.</ResponseField>
+    <ResponseField name="name" type="string">Server name.</ResponseField>
+    <ResponseField name="description" type="string">Server description.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 201
+{
+  "_id": "6a314ee8d0aeb8165beacc6e",
+  "name": "Production CRM Server",
+  "description": "MCP server for CRM workflows"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "name and description are required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Production CRM Server", "description": "MCP server for CRM workflows" }'
+```
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Production CRM Server", "description": "MCP server for CRM workflows" }'
+```
+</RequestExample>

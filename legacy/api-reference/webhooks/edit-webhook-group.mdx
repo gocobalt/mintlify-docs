@@ -1,0 +1,85 @@
+---
+title: Edit Webhook Group
+api: put /api/v2/public/webhooks/group/edit
+description: Bulk-assign or clear the group on multiple webhooks.
+---
+
+Assign (or clear) a group label on multiple webhooks in one call. Groups let you organize webhooks; passing an empty/falsy `group` unsets it. The response is the updated list of the affected webhooks.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhookIds" type="array" required>
+  IDs of the webhooks to update (at least one).
+</ParamField>
+
+<ParamField body="group" type="string">
+  Group label to set. An empty string unsets the group.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the array of updated webhooks.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "6a313eda6d5528bdcf71ebac",
+    "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+    "environment": "test",
+    "is_enabled": false,
+    "webhook_events": ["Workflow Completed"],
+    "webhook_url": "https://your-app.com/webhooks",
+    "group": "billing-webhooks",
+    "webhook_type": "default",
+    "method": "POST"
+  }
+]
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "webhookIds is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (set group)
+curl -X PUT "https://app.refold.ai/api/v2/public/webhooks/group/edit" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhookIds": ["6a313eda6d5528bdcf71ebac"],
+    "group": "billing-webhooks"
+  }'
+```
+```bash cURL (clear group)
+curl -X PUT "https://app.refold.ai/api/v2/public/webhooks/group/edit" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "webhookIds": ["6a313eda6d5528bdcf71ebac"],
+    "group": ""
+  }'
+```
+</RequestExample>

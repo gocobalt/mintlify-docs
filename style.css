@@ -619,12 +619,9 @@ nav a[href="https://app.refold.ai"]:hover {
 }
 
 /* ---------------------------------------------------------------------------
-   Version notices: v3 "in progress" bar (v3-notice.js on /v3/* pages) and the
-   v2 "API/SDK/changelog moved to v3" bar (v2-notice.js on /legacy/* pages).
-   Both share one style.
+   v3 "in progress" notice (injected by v3-notice.js on /v3/* pages only)
    --------------------------------------------------------------------------- */
-#rf-v3-notice,
-#rf-v2-notice {
+#rf-v3-notice {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -643,26 +640,22 @@ nav a[href="https://app.refold.ai"]:hover {
   box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.18);
 }
 
-#rf-v3-notice .rf-v3-notice__text,
-#rf-v2-notice .rf-v2-notice__text {
+#rf-v3-notice .rf-v3-notice__text {
   max-width: 1100px;
 }
 
-#rf-v3-notice a,
-#rf-v2-notice a {
+#rf-v3-notice a {
   color: var(--rf-electric-blue-light, #4D8AFF);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-#rf-v3-notice a:hover,
-#rf-v2-notice a:hover {
+#rf-v3-notice a:hover {
   color: var(--rf-sky-cyan, #04CFFF);
 }
 
-#rf-v3-notice .rf-v3-notice__close,
-#rf-v2-notice .rf-v2-notice__close {
+#rf-v3-notice .rf-v3-notice__close {
   flex: 0 0 auto;
   background: transparent;
   border: none;
@@ -673,24 +666,19 @@ nav a[href="https://app.refold.ai"]:hover {
   padding: 0 4px;
 }
 
-#rf-v3-notice .rf-v3-notice__close:hover,
-#rf-v2-notice .rf-v2-notice__close:hover {
+#rf-v3-notice .rf-v3-notice__close:hover {
   color: var(--rf-base-100, #FFFFFF);
 }
 
 /* Keep page content clear of the fixed bar */
 html.rf-has-v3-notice #content-area,
 html.rf-has-v3-notice #body-content,
-html.rf-has-v3-notice footer,
-html.rf-has-v2-notice #content-area,
-html.rf-has-v2-notice #body-content,
-html.rf-has-v2-notice footer {
+html.rf-has-v3-notice footer {
   padding-bottom: 76px;
 }
 
 @media (max-width: 640px) {
-  #rf-v3-notice,
-  #rf-v2-notice {
+  #rf-v3-notice {
     font-size: 0.82rem;
     padding: 10px 14px;
     gap: 10px;
