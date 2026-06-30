@@ -58,7 +58,7 @@ Refold supports two authentication methods. Which one applies depends on whether
 
     **Where it applies:** linked-account-level endpoints — configs, config fields, workflows, executions, MCP servers, events, datastores, hosted Connect, and more. Because a session token represents one customer, it is **not** accepted for org-admin operations such as managing linked accounts, webhooks, or variable definitions.
 
-    Generate a session token with the [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token) endpoint.
+    Generate a session token with the [Generate Session Token](/legacy/api-reference/session-tokens/generate-session-token) endpoint.
   </Accordion>
 </AccordionGroup>
 
@@ -76,55 +76,55 @@ When you exceed rate limits, the API returns a `429 Too Many Requests` response.
 ## API Resources
 
 <CardGroup cols={2}>
-  <Card title="Linked Accounts" icon="user" href="/v3/api-reference/linked-accounts/list-linked-accounts">
+  <Card title="Linked Accounts" icon="user" href="/legacy/api-reference/linked-accounts/list-linked-accounts">
     Create and manage end-users who connect their third-party accounts through your integration.
   </Card>
-  <Card title="Applications" icon="grid-2" href="/v3/api-reference/applications/list-applications">
+  <Card title="Applications" icon="grid-2" href="/legacy/api-reference/applications/list-applications">
     Discover the integrations enabled in your account and a linked account's connection status.
   </Card>
-  <Card title="Auth Structure & OAuth" icon="lock" href="/v3/api-reference/auth-structure/get-auth-structure">
+  <Card title="Auth Structure & OAuth" icon="lock" href="/legacy/api-reference/auth-structure/get-auth-structure">
     Inspect an app's auth fields and build OAuth authorization URLs.
   </Card>
-  <Card title="Credentials" icon="key" href="/v3/api-reference/credentials/get-credentials">
+  <Card title="Credentials" icon="key" href="/legacy/api-reference/credentials/get-credentials">
     Read tokens, save key-based credentials, and migrate existing auth onto an integration.
   </Card>
-  <Card title="Session Tokens" icon="ticket" href="/v3/api-reference/session-tokens/generate-session-token">
+  <Card title="Session Tokens" icon="ticket" href="/legacy/api-reference/session-tokens/generate-session-token">
     Issue scoped tokens for secure frontend authentication.
   </Card>
-  <Card title="Hosted Connect" icon="browser" href="/v3/api-reference/connect/create-connect-url">
+  <Card title="Hosted Connect" icon="browser" href="/legacy/api-reference/connect/create-connect-url">
     Generate hosted Connect URLs for end-user authentication flows.
   </Card>
-  <Card title="Webhooks" icon="webhook" href="/v3/api-reference/webhooks/create-webhook">
+  <Card title="Webhooks" icon="webhook" href="/legacy/api-reference/webhooks/create-webhook">
     Subscribe to real-time notifications when events occur in Refold.
   </Card>
-  <Card title="Configs & Config Fields" icon="sliders" href="/v3/api-reference/configs/create-config">
+  <Card title="Configs & Config Fields" icon="sliders" href="/legacy/api-reference/configs/create-config">
     Install and configure apps per linked account, and set field values.
   </Card>
-  <Card title="Events" icon="bolt" href="/v3/api-reference/events/trigger-event">
+  <Card title="Events" icon="bolt" href="/legacy/api-reference/events/trigger-event">
     Define custom events and fire them to start workflows.
   </Card>
-  <Card title="Workflows" icon="diagram-project" href="/v3/api-reference/workflows/list-workflows">
+  <Card title="Workflows" icon="diagram-project" href="/legacy/api-reference/workflows/list-workflows">
     Manage public (org/slug-level) and private (linked-account) workflows, then publish and execute them.
   </Card>
-  <Card title="Executions" icon="play" href="/v3/api-reference/executions/list-executions">
+  <Card title="Executions" icon="play" href="/legacy/api-reference/executions/list-executions">
     Retrieve details, status, and node output of workflow executions.
   </Card>
-  <Card title="Schedule" icon="clock" href="/v3/api-reference/schedule/register-schedule">
+  <Card title="Schedule" icon="clock" href="/legacy/api-reference/schedule/register-schedule">
     Run workflows on cron or interval triggers.
   </Card>
-  <Card title="Datarefs" icon="database" href="/v3/api-reference/datarefs/list-datarefs">
+  <Card title="Datarefs" icon="database" href="/legacy/api-reference/datarefs/list-datarefs">
     Manage named reference-data tables for a linked account.
   </Card>
-  <Card title="Persistent Tables" icon="table" href="/v3/api-reference/persistent-tables/list-tables">
+  <Card title="Persistent Tables" icon="table" href="/legacy/api-reference/persistent-tables/list-tables">
     Create API-managed tables, columns, and records.
   </Card>
-  <Card title="Environment Variables" icon="rectangle-code" href="/v3/api-reference/environment-variables/list-definitions">
+  <Card title="Environment Variables" icon="rectangle-code" href="/legacy/api-reference/environment-variables/list-definitions">
     Manage variable definitions and scoped values.
   </Card>
-  <Card title="MCP Servers" icon="robot" href="/v3/api-reference/mcp-servers/list-mcp-servers">
+  <Card title="MCP Servers" icon="robot" href="/legacy/api-reference/mcp-servers/list-mcp-servers">
     Expose integrations and chains as tools for AI agents.
   </Card>
-  <Card title="Human Tasks" icon="list-check" href="/v3/api-reference/human-tasks/get-human-task">
+  <Card title="Human Tasks" icon="list-check" href="/legacy/api-reference/human-tasks/get-human-task">
     Retrieve and submit public human-in-the-loop forms.
   </Card>
 </CardGroup>
@@ -158,13 +158,13 @@ The API returns standard HTTP status codes and a consistent error response shape
 ## What's Next
 
 <CardGroup cols={3}>
-  <Card title="Create a Linked Account" icon="user-plus" href="/v3/api-reference/linked-accounts/create-linked-account">
+  <Card title="Create a Linked Account" icon="user-plus" href="/legacy/api-reference/linked-accounts/create-linked-account">
     Set up your first end-user to start building integrations.
   </Card>
-  <Card title="Trigger a Workflow" icon="bolt" href="/v3/api-reference/events/trigger-event">
+  <Card title="Trigger a Workflow" icon="bolt" href="/legacy/api-reference/events/trigger-event">
     Learn how to execute workflows programmatically.
   </Card>
-  <Card title="Explore SDKs" icon="code" href="/v3/api-reference/sdks">
+  <Card title="Explore SDKs" icon="code" href="/legacy/api-reference/sdks">
     Use our Node.js, React, or JavaScript SDKs for faster development.
   </Card>
 </CardGroup>

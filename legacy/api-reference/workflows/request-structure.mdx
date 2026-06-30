@@ -4,7 +4,7 @@ api: get /api/v2/public/workflow/request-structure/:workflow_id
 description: Get the request body structure a workflow expects on execute.
 ---
 
-Return the structure a workflow expects when you [execute](/v3/api-reference/workflows/execute-workflow) it — its JSON Schema (if defined) and/or a structure derived from the workflow's `manual_execution_payload`. Use this to build a valid execute payload.
+Return the structure a workflow expects when you [execute](/legacy/api-reference/workflows/execute-workflow) it — its JSON Schema (if defined) and/or a structure derived from the workflow's `manual_execution_payload`. Use this to build a valid execute payload.
 
 <Note>
   This authenticates as a linked account, so it resolves the structure for that account's **private** workflow.

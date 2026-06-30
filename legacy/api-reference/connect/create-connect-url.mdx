@@ -4,7 +4,7 @@ api: post /api/v2/public/connect-url
 description: Create a hosted Connect URL for a linked account.
 ---
 
-Create a hosted Connect URL. The request body is stashed (keyed by the session token, with a 3-day TTL) and a URL of the form `{app_url}/connect/{token}` is returned. Redirect your user there to launch the hosted Connect experience; the hosted page reads your stashed properties back via [Get Hosted Properties](/v3/api-reference/hosted-properties/get-hosted-properties).
+Create a hosted Connect URL. The request body is stashed (keyed by the session token, with a 3-day TTL) and a URL of the form `{app_url}/connect/{token}` is returned. Redirect your user there to launch the hosted Connect experience; the hosted page reads your stashed properties back via [Get Hosted Properties](/legacy/api-reference/hosted-properties/get-hosted-properties).
 
 Any JSON you put in the body is preserved verbatim — use it to pass context (company name, plan, theming, etc.) to the hosted page.
 
@@ -16,7 +16,7 @@ Any JSON you put in the body is preserved verbatim — use it to pass context (c
   **Format:** `Bearer YOUR_SESSION_TOKEN`
 </ParamField>
 
-Issue a token with [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token).
+Issue a token with [Generate Session Token](/legacy/api-reference/session-tokens/generate-session-token).
 
 ## Query Parameters
 
@@ -31,7 +31,7 @@ Issue a token with [Generate Session Token](/v3/api-reference/session-tokens/gen
 ## Body Parameters
 
 <ParamField body="body" type="object">
-  Arbitrary JSON properties to stash for the hosted page. Returned verbatim by [Get Hosted Properties](/v3/api-reference/hosted-properties/get-hosted-properties).
+  Arbitrary JSON properties to stash for the hosted page. Returned verbatim by [Get Hosted Properties](/legacy/api-reference/hosted-properties/get-hosted-properties).
 </ParamField>
 
 ## Response

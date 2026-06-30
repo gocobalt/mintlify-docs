@@ -4,7 +4,7 @@ api: post /api/v2/public/workflow
 description: Create a private workflow scoped to a linked account.
 ---
 
-Create a workflow scoped to a linked account. If you don't supply `associated_application` or `slug`, the workflow is attached to the org's default custom application. The new workflow starts as an unpublished draft with a single start node — build it out, then [publish](/v3/api-reference/workflows/publish-workflow) it.
+Create a workflow scoped to a linked account. If you don't supply `associated_application` or `slug`, the workflow is attached to the org's default custom application. The new workflow starts as an unpublished draft with a single start node — build it out, then [publish](/legacy/api-reference/workflows/publish-workflow) it.
 
 <Note>
   Because this call authenticates as a linked account (API key + `linked_account_id`, or a session token), it creates a **private workflow** — one that belongs to that specific linked account. **Public workflows** are org-level and tied to application slugs; they are not created through this endpoint.
@@ -36,7 +36,7 @@ This endpoint is scoped to a linked account, so it accepts **either** authentica
     <ResponseField name="workflow" type="object">
       The created workflow.
       <Expandable title="properties">
-        <ResponseField name="_id" type="string">The **draft** workflow ID — pass this to [Publish Workflow](/v3/api-reference/workflows/publish-workflow). Publishing returns a separate published ID.</ResponseField>
+        <ResponseField name="_id" type="string">The **draft** workflow ID — pass this to [Publish Workflow](/legacy/api-reference/workflows/publish-workflow). Publishing returns a separate published ID.</ResponseField>
         <ResponseField name="name" type="string">Workflow name.</ResponseField>
         <ResponseField name="nodes" type="array">Initial nodes (a `start` node).</ResponseField>
         <ResponseField name="published" type="boolean">`false` for a new draft.</ResponseField>

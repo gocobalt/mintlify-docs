@@ -4,7 +4,7 @@ api: post /api/v2/integration-schema/:slug/actions/:action_id/execute
 description: Execute an application action against a connected account.
 ---
 
-Execute an action against a linked account's connected application. The request body holds the action's parameters, as described by its [parameter schema](/v3/api-reference/applications/get-action-parameters). Refold uses the linked account's stored credentials automatically — you don't put app tokens in the body.
+Execute an action against a linked account's connected application. The request body holds the action's parameters, as described by its [parameter schema](/legacy/api-reference/applications/get-action-parameters). Refold uses the linked account's stored credentials automatically — you don't put app tokens in the body.
 
 <Warning>
   Write actions (create / update / delete) make real changes in the connected application. Test with read actions (e.g. `get_contact`, `search_contacts`) first.

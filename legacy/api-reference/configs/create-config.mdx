@@ -6,10 +6,10 @@ description: Get or create an application config for a linked account.
 
 Get or create the config (app installation) for an app on a linked account. If a config already exists it is returned; otherwise a new one is created. The `config_id` defaults to the linked account ID.
 
-**Only `slug` is required.** With just a slug, this installs the config's field and workflow *skeleton* (the app's definitions, with default values) — it does not need any field values up front. You can optionally seed `workflows` (enable/disable) and `labels` in the body. Field **values** are normally set afterward via [Update Config Field Value](/v3/api-reference/config-fields/update-field-value), which is the reliable way to populate them.
+**Only `slug` is required.** With just a slug, this installs the config's field and workflow *skeleton* (the app's definitions, with default values) — it does not need any field values up front. You can optionally seed `workflows` (enable/disable) and `labels` in the body. Field **values** are normally set afterward via [Update Config Field Value](/legacy/api-reference/config-fields/update-field-value), which is the reliable way to populate them.
 
 <Note>
-  **Multiple configs per account.** Omit `config_id` to manage the single default config (its ID is the linked account ID). Pass a custom `config_id` (e.g. `production`, `staging`) to create and manage **additional named configs** for the same linked account and app. Each is retrieved with [Get Config by ID](/v3/api-reference/configs/get-config) and all are returned by [List Config IDs](/v3/api-reference/configs/list-configs).
+  **Multiple configs per account.** Omit `config_id` to manage the single default config (its ID is the linked account ID). Pass a custom `config_id` (e.g. `production`, `staging`) to create and manage **additional named configs** for the same linked account and app. Each is retrieved with [Get Config by ID](/legacy/api-reference/configs/get-config) and all are returned by [List Config IDs](/legacy/api-reference/configs/list-configs).
 </Note>
 
 ## Authentication
@@ -35,7 +35,7 @@ Configs are scoped to a linked account via the `linked_account_id` header.
 </ParamField>
 <ParamField body="labels" type="object">Arbitrary key/value labels for the config.</ParamField>
 <ParamField body="fields" type="array">
-  Optional initial field definitions, each `{ "id": "...", "value": ... }`. Field **values** are more reliably set after install via [Update Config Field Value](/v3/api-reference/config-fields/update-field-value).
+  Optional initial field definitions, each `{ "id": "...", "value": ... }`. Field **values** are more reliably set after install via [Update Config Field Value](/legacy/api-reference/config-fields/update-field-value).
 </ParamField>
 
 ## Response
@@ -44,7 +44,7 @@ Configs are scoped to a linked account via the `linked_account_id` header.
   <Tab title="200 OK">
     <ResponseField name="slug" type="string">The app slug.</ResponseField>
     <ResponseField name="config_id" type="string">The config ID.</ResponseField>
-    <ResponseField name="fields" type="array">Configurable fields (see [Get All Config Fields](/v3/api-reference/config-fields/get-all-fields)).</ResponseField>
+    <ResponseField name="fields" type="array">Configurable fields (see [Get All Config Fields](/legacy/api-reference/config-fields/get-all-fields)).</ResponseField>
     <ResponseField name="workflows" type="array">Workflows in the config, each `{id, name, description, enabled}`.</ResponseField>
     <ResponseField name="field_errors" type="array">Any datasource resolution errors.</ResponseField>
   </Tab>
