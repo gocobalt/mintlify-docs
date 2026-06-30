@@ -1,0 +1,79 @@
+---
+title: Create Event
+api: post /api/v2/public/application/event
+description: Define a custom event on your org's default app.
+---
+
+Add a custom event (trigger) to your organization's default custom application. Once defined, your application can [fire the event](/legacy/api-reference/events/trigger-event) for a linked account to start workflows. The response is the full, updated list of events.
+
+## Authentication
+
+Events are defined at the org level, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>
+  Event name. Used as the `event` value when firing a trigger.
+</ParamField>
+
+<ParamField body="response" type="string" required>
+  A sample payload (as a string) describing the event's data shape. Refold parses this into a field map.
+</ParamField>
+
+<ParamField body="json_schema" type="object">
+  Optional JSON schema describing the payload.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the full updated array of events for the default app (see [List Events](/legacy/api-reference/events/list-events) for the object shape).
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "6a314123d0aeb8165be4f175",
+    "name": "candidate_created",
+    "response": [
+      { "key": "event", "type": "text" },
+      { "key": "payload", "type": "object" }
+    ]
+  }
+]
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "name and response are required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/application/event" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "candidate_created",
+    "response": "{ \"event\": \"candidate_created\", \"payload\": { \"jobid\": \"123\", \"email\": \"jane@example.com\" } }"
+  }'
+```
+</RequestExample>

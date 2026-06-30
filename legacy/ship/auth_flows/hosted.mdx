@@ -10,7 +10,7 @@ Below are a few pre-requisites that you need to do before moving forward:
 
 In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
 <Note>
-Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/build/basics/linked_account).
+Know more about Linked Accounts and how you can create one in the guide [here](/legacy/build/basics/linked_account).
 </Note>
 
 <Tip>
@@ -19,7 +19,7 @@ We recommend you create a linked account at the same time as your customer signs
 
 **2. Generate Session Token**
 
-  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-tokens/generate-session-token) for your Linked Account.
+  [Generate a Session Token](/legacy/api-reference/session-tokens/generate-session-token) for your Linked Account.
 
   <Warning>
   The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
@@ -27,7 +27,7 @@ We recommend you create a linked account at the same time as your customer signs
 
 ## Steps to Implement
 
-It redirects user to Hosted Portal hosted on `https://connect.gocobalt.io` and handles the following features:
+It redirects user to Hosted Portal hosted on `https://app.refold.ai/connect` and handles the following features:
 
 - List all enabled applications
 - Handle the Auth flow
@@ -41,7 +41,7 @@ To get started, follow these 2 steps:
     To use Hosted flow, you will need to first get the hosted URL. This can be achieved by making a `POST` request to the `Create Hosted URL` API by using the Session Token.
 ```JavaScript cURL
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --url https://app.refold.ai/api/v2/public/connect-url \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
@@ -51,7 +51,7 @@ curl --request POST \
 }'
 ```
 <Tip>
-Check out the [Refold's API Reference](https://docs.gocobalt.io/api-reference/cobalt-connect/get-connect-url) for more details. 
+Check out the [Refold's API Reference](/legacy/api-reference/connect/create-connect-url) for more details. 
 </Tip>
   </Step>
 
@@ -63,7 +63,7 @@ Check out the [Refold's API Reference](https://docs.gocobalt.io/api-reference/co
 </Steps>
 
 
-You can also modify the UI of Hosted Portal using the [Hosted_properties API](https://docs.gocobalt.io/api-reference/hosted-properties/get-hosted-properties).
+You can also modify the UI of Hosted Portal using the [Hosted_properties API](/legacy/api-reference/hosted-properties/get-hosted-properties).
 
 
 | Property | Description |

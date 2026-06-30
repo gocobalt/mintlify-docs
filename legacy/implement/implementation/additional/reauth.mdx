@@ -7,7 +7,7 @@ In Cobalt, re-authentication of a user for an integration is typically managed a
 In certain scenarios where automatic re-authentication is not feasible, users may need to manually handle re-authentication. This process becomes necessary when either the refresh tokens expire, OAuth apps are deleted, integrations are disconnected, or access tokens are manually expired by the user. To facilitate this, you can identify the need for re-authentication and guide your users through the reconnection process effectively.
 
 ## Determining the Need for Re-Authentication
-To determine if re-authentication is required, you can either use the [**List Applications API**](https://docs.gocobalt.io/api-reference/applications/list-applications) or [**.getApp()**](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#getapp) SDK method and check the **reauth_required** field in the response. By default, the field is false but if it returns true, then it indicates that re-authentication is necessary.
+To determine if re-authentication is required, you can either use the [**List Applications API**](/legacy/api-reference/applications/list-applications) or [**.getApp()**](/legacy/api-reference/sdks) SDK method and check the **reauth_required** field in the response. By default, the field is false but if it returns true, then it indicates that re-authentication is necessary.
 
 ``` JavaScript Response
 [

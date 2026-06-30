@@ -2,7 +2,7 @@
 title: Sub Flows Node
 ---
 
-This node allows you to call a workflow within another workflow using [Workflow API](https://docs.gocobalt.io/build/workflow/workflow_api). For eg: If you have a standard error notification policy, you can create a Internal Conductor sub flow and then have all workflows call this for error notification. 
+This node allows you to call a workflow within another workflow using [Workflow API](/legacy/build/workflow/workflow_api). For eg: If you have a standard error notification policy, you can create a Internal Conductor sub flow and then have all workflows call this for error notification. 
 
 ## Node Functionality
 
@@ -19,7 +19,7 @@ Ensure that you put a break condition in your workflow to avoid infinite recursi
 A workflow that is being used as a Sub-flow is triggered by a Workflow API call from another workflow instead of an event based trigger in an application.
 
 <Tip>
-To learn more about how to fire a Workflow API Call, refer to the doc [here](https://docs.gocobalt.io/build/workflow/workflow_api#workflow-api-endpoints).
+To learn more about how to fire a Workflow API Call, refer to the doc [here](/legacy/build/workflow/workflow_api#workflow-api-endpoints).
 </Tip>
 
 ## Example Usage of Sub Flow
@@ -46,12 +46,12 @@ Go to [Internal Conductor](https://app.gocobalt.io/internal-workflows) in dashbo
   <Step title="Split Full Name">
     Connect a Custom Code node to Start Node and write a function that splits the full name.
     <Info>
-    Learn more about how to use Custom Code Node [here](https://docs.gocobalt.io/build/workflow/custom-code).
+    Learn more about how to use Custom Code Node [here](/legacy/build/workflow/custom-code).
     </Info>
     <img height="200" src="/images/Guides/Workflow/split-name.png" alt="Split Name in Workflow"/>
   </Step>
   <Step title="Return Workflow Response">
-    Now simply return the response of this node in [Response Node](https://docs.gocobalt.io/build/workflow/response) so that it can be used as a Sub Flow.
+    Now simply return the response of this node in [Response Node](/legacy/build/workflow/response) so that it can be used as a Sub Flow.
     <Note>
     Since Sub Flows work using Workflow API Call, it is necessary to return the data that you want to use in Response Node.
     </Note>
@@ -71,17 +71,17 @@ Let's use it in a HubSpot workflow to create a new contact where we need to prov
     Create a new workflow or in an existing workflow for Creating Contact, add a Sub Flows Node.
   </Step>
   <Step title="Configure the Node">
-    Select the sub flow that you created in [Step 1](/build/workflow/sub_flows#step-1-creating-a-sub-flow) in **Select Workflow**. Once selected, you will see the payload that you added in the Sub Flow and add the full name that you want to pass as an input in the `full_name` key.
+    Select the sub flow that you created in [Step 1](/legacy/build/workflow/sub_flows#step-1-creating-a-sub-flow) in **Select Workflow**. Once selected, you will see the payload that you added in the Sub Flow and add the full name that you want to pass as an input in the `full_name` key.
     <img height="200" src="/images/Guides/Workflow/select-flow.png" alt="Selecting Sub Flow in Refold"/> 
     <Note>
-    We are passing the full name from our event using [Workflow Templating](https://docs.gocobalt.io/build/workflow/templating).
+    We are passing the full name from our event using [Workflow Templating](/legacy/build/workflow/templating).
     </Note>
   </Step>
 </Steps>
 </Accordion>
 **Synchronous Execution Toggle**
 
-By default the toggle is turned off and only returns the execution ID which you can then use in the [/response](https://docs.gocobalt.io/build/workflow/workflow_api#response-api) API to get the response returned by the Sub Flow.
+By default the toggle is turned off and only returns the execution ID which you can then use in the [/response](/legacy/build/workflow/workflow_api#response-api) API to get the response returned by the Sub Flow.
 
 If the toggle is turned On i.e Synchronous Execution is true, the API response will include both the execution_id and the return_value object containing response as set in the Response node.
 

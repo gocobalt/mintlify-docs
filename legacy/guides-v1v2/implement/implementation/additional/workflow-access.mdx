@@ -5,7 +5,7 @@ description:  In this, you will get to know how you can control access of the us
 In Refold, you can manage which users can access a workflow created by you. One of the primary tools for implementing access control is through **User-Defined Function (UDF)** parameters. UDF parameters empower users to filter configurations for Linked Accounts, thereby granting access to specific workflows only to authorized users or entities.
 
 <Info>
-Learn in detail about the UDF Parameter in our guide [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).
+Learn in detail about the UDF Parameter in our guide here.
 </Info>
 
 ## Creating UDF Parameters
@@ -15,15 +15,15 @@ In the Config Portal of a Workflow, users can set up Access conditions to contro
 Please ensure that UDF Parameters on which the access will be controlled, have been created and set for the Linked Accounts. 
 </Note>
 
-You can add UDF Parameters to the Linked Accounts either programmatically or by the UI of Refold. Using either the [Upsert Linked Account](https://docs.gocobalt.io/api-reference/customer/upsert-a-linked-account) API or [**.upsertLinkedAccount()**](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#upsertlinkedaccount) method of the NodeJS SDK, you can add UDF parameter.
+You can add UDF Parameters to the Linked Accounts either programmatically or by the UI of Refold. Using either the Upsert Linked Account API or [**.upsertLinkedAccount()**](/legacy/api-reference/sdks) method of the NodeJS SDK, you can add UDF parameter.
 <Info>
-Learn how to create UDF Parameter through the dashboard [here](https://docs.gocobalt.io/guides/platform/linked-account/udf#creating-udf-parameters).
+Learn how to create UDF Parameter through the dashboard here.
 </Info>
 
 <CodeGroup>
 ```bash cURL
 curl --request PUT \
-  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --url https://app.refold.ai/api/v2/public/linked-account \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{

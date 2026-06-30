@@ -1,0 +1,132 @@
+---
+title: Register Schedule
+api: post /api/v1/workflow/public/scheduled
+description: Schedule a workflow to run on a cron or interval trigger.
+---
+
+Register a scheduled trigger that runs a workflow automatically — either on a recurring **cron** expression or at specific **interval** date/times.
+
+<Note>
+  Schedules are part of the v1 workflow service (`/api/v1/workflow/public/scheduled`). They are scoped to a linked account.
+</Note>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+
+## Header Parameters
+
+<ParamField header="linked_account_id" type="string" required>The linked account that will run the scheduled workflow.</ParamField>
+<ParamField header="slug" type="string" required>The application slug the workflow belongs to. **Example:** `hubspot`</ParamField>
+<ParamField header="workflow_id_alias" type="string" required>The workflow ID to execute on schedule.</ParamField>
+<ParamField header="config_id" type="string" required>The config to run under. Defaults to the linked account ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="trigger_type" type="string" required>
+  `cron` for recurring schedules, or `interval` for specific date/times.
+</ParamField>
+
+<ParamField body="regex" type="string">
+  **(cron)** The cron expression. Stored on the schedule as `cron_patten`. **Example:** `0 9 * * 1` (every Monday 09:00).
+</ParamField>
+
+<ParamField body="interval_dates" type="array">
+  **(interval)** Specific date/time objects, each `{ day, month, year, hour, minute }`.
+</ParamField>
+
+<ParamField body="startDate" type="string">Earliest date the schedule may run (`YYYY-MM-DD`).</ParamField>
+<ParamField body="endDate" type="string">Latest date the schedule may run (`YYYY-MM-DD`).</ParamField>
+<ParamField body="tz" type="string">Timezone, e.g. `UTC`, `America/New_York`.</ParamField>
+<ParamField body="payload" type="object">Event payload passed to the workflow on each run.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the created schedule.
+    <ResponseField name="_id" type="string">Schedule ID (use it to pause/resume/update/delete).</ResponseField>
+    <ResponseField name="event_id" type="string">The event the schedule fires.</ResponseField>
+    <ResponseField name="workflow" type="string">The scheduled workflow ID.</ResponseField>
+    <ResponseField name="config_id" type="string">The config it runs under.</ResponseField>
+    <ResponseField name="linked_account_id" type="string">The owning linked account.</ResponseField>
+    <ResponseField name="trigger_type" type="string">`cron` or `interval`.</ResponseField>
+    <ResponseField name="cron_patten" type="string">The cron expression (cron schedules).</ResponseField>
+    <ResponseField name="trigger_interval" type="array">The interval dates (interval schedules).</ResponseField>
+    <ResponseField name="status" type="string">`running` or `paused`.</ResponseField>
+    <ResponseField name="inactive" type="boolean">`true` when paused.</ResponseField>
+    <ResponseField name="registered_by_api" type="boolean">`true` for API-created schedules.</ResponseField>
+    <ResponseField name="options" type="object">Echo of `startDate`/`endDate`/`tz`/`trigger_type`.</ResponseField>
+    <ResponseField name="payload" type="object">The payload passed to the workflow.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a315b7ad396207fd2547678",
+  "event_id": "6a315b7ad396207fd2547676",
+  "workflow": "6a17f312aae660322b26883e",
+  "config_id": "user_12345",
+  "linked_account_id": "user_12345",
+  "environment": "test",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "trigger_type": "cron",
+  "cron_patten": "0 9 * * 1",
+  "trigger_interval": [],
+  "status": "running",
+  "inactive": false,
+  "registered_by_api": true,
+  "options": { "startDate": "2026-07-01", "tz": "UTC", "trigger_type": "cron" },
+  "payload": { "sync_type": "full" }
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "trigger_type is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (cron)
+curl -X POST "https://app.refold.ai/api/v1/workflow/public/scheduled" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "workflow_id_alias: YOUR_WORKFLOW_ID" \
+  -H "config_id: YOUR_CONFIG_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "trigger_type": "cron",
+    "regex": "0 9 * * 1",
+    "tz": "UTC",
+    "startDate": "2026-07-01",
+    "payload": { "sync_type": "full" }
+  }'
+```
+```bash cURL (interval)
+curl -X POST "https://app.refold.ai/api/v1/workflow/public/scheduled" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "workflow_id_alias: YOUR_WORKFLOW_ID" \
+  -H "config_id: YOUR_CONFIG_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "trigger_type": "interval",
+    "interval_dates": [ { "day": 1, "month": 7, "year": 2026, "hour": 9, "minute": 0 } ],
+    "tz": "UTC"
+  }'
+```
+</RequestExample>

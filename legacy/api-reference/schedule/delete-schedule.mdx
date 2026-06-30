@@ -1,0 +1,55 @@
+---
+title: Delete Schedule
+api: delete /api/v1/workflow/public/scheduled/:schedule_id
+description: Delete a scheduled trigger.
+---
+
+Permanently delete a schedule and deregister its job. To temporarily stop a schedule instead, use [Pause Schedule](/legacy/api-reference/schedule/pause-schedule).
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the schedule.</ParamField>
+
+## Path Parameters
+
+<ParamField path="schedule_id" type="string" required>The schedule ID to delete.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="message" type="string">Confirmation message.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "message": "Scheduled Job Deleted Successfully"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "RESOURCE_NOT_FOUND",
+  "message": "Scheduled Job Not Found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v1/workflow/public/scheduled/{schedule_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

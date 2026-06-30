@@ -41,7 +41,7 @@ These are not linked to any specific integration and are used for internal autom
 To embed the Private Workflow into your platform, use the following iframe:
 ```bash
 <iframe
-    src={ `https://app.gocobalt.io/workflows/${ workflowId }?token=${ cobaltSessionToken }` }
+    src={ `https://app.refold.ai/workflows/${ workflowId }?token=${ cobaltSessionToken }` }
     height="100%"
     width="100%"
     style={{
@@ -49,14 +49,14 @@ To embed the Private Workflow into your platform, use the following iframe:
     }}
 />
 ```
-You need to provide the [Workflow Id](https://docs.gocobalt.io/api-reference/private_workflows/get_private_workflows) and [Session Token](https://docs.gocobalt.io/api-reference/session-token/generate-token-for-linked-account).
+You need to provide the [Workflow Id](/legacy/api-reference/workflows/list-workflows) and [Session Token](/legacy/api-reference/session-tokens/generate-session-token).
 
 ## Creating Private Workflows
 
 To create a Private Workflow, simply use Refold's API
 ```bash Create Private Workflow
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/workflow \
+  --url https://app.refold.ai/api/v2/public/workflow \
   --header 'Content-Type: application/json' \
   --header 'Authorization: Bearer {Session_token}' \
   --data '{
@@ -66,17 +66,17 @@ curl --request POST \
 }'
 ```
 <Tip>
-Learn more about the Create Private Workflow API [here](https://docs.gocobalt.io/api-reference/private_workflows/create_private_workflow).
+Learn more about the Create Private Workflow API [here](/legacy/api-reference/workflows/create-workflow).
 </Tip>
 
 To create a draft or editable version of the workflow, use the following cURL:
 ```bash Create Draft version
 curl --request GET \
-  --url https://api.gocobalt.io/api/v2/public/workflow/:workflow_id/edit \
+  --url https://app.refold.ai/api/v2/public/workflow/:workflow_id/edit \
   --header 'Authorization: Bearer {Session_token}' \
 ```
 <Tip>
-Learn more about the Create Draft of Workflow API [here](https://docs.gocobalt.io/api-reference/private_workflows/get_draft).
+Learn more about the Create Draft of Workflow API [here](/legacy/api-reference/workflows/get-draft).
 </Tip>
 
 

@@ -56,7 +56,7 @@ Using Workflow API, the workflow gets executed even for those Linked Accounts wh
 
 Sample cURL for Workflow Execute API:
 ``` bash cURL
-curl --location --request POST 'https://api.gocobalt.io/api/v1/workflow/{workflow_id or alias}/execute' \
+curl --location --request POST 'https://app.refold.ai/api/v1/workflow/{workflow_id or alias}/execute' \
 --header 'content-type: application/json' \
 --header 'linked_account_id: john@acme.io' \
 --header 'slug: asana' \
@@ -101,7 +101,7 @@ To fetch the response received in a previously executed workflow, use the follow
 Sample cURL for Execution Response API:
 
 ``` bash cURL
-curl --location --request GET 'https://api.gocobalt.io/api/v1/execution/{execution_id}/response' \
+curl --location --request GET 'https://app.refold.ai/api/v1/execution/{execution_id}/response' \
 --header 'linked_account_id: john@acme.io' \
 --header 'x-api-key: tkb5b9f358-4160-4fea-a926-cf52b271489d'
 ```

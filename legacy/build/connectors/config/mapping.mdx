@@ -26,7 +26,7 @@ Follow these steps to setup a Map V2 Config
 
     Provide a **Name** for the column, select `Type` as **Select** and then add the options.
 
-    For mapping, you can either provide [Static](/build/connectors/config/mapping#static-mapping) or [Dynamic](/build/connectors/config/mapping#dynamic-mapping) mapping based on your usecase.
+    For mapping, you can either provide [Static](/legacy/build/connectors/config/mapping#static-mapping) or [Dynamic](/legacy/build/connectors/config/mapping#dynamic-mapping) mapping based on your usecase.
 
     For Static mapping, simply add the fields as options and if you want to add Dynamic Mapping here, then `Use DataSource` and select the workflow from which you are fetching fields.
         <img height="200" src="/images/Config/static-mapping.png" alt="Static Mapping"/>
@@ -53,7 +53,7 @@ Static mapping essentially means that you have a set of pre-defined fields for w
 In the **Destination** column, under `Type`, choose the object properties which you want the user to map.
 
 <Tip>
-If an object fields are not present under Type, you can check the `Use Data Source` option and get the fields using Data Source. Learn more about DataSource [here](https://docs.gocobalt.io/build/connectors/config/datasourc).
+If an object fields are not present under Type, you can check the `Use Data Source` option and get the fields using Data Source. Learn more about DataSource [here](/legacy/build/connectors/config/datasource).
 </Tip>
 
 On setting the static map type dataslot, the config returns the application fields along with the created labels. These labels consist of the name provided by you and system generated static value. This `value` is mapped to the application platform fields. 
@@ -105,7 +105,7 @@ the system generated `value`.
 
 
 ### Dynamic mapping
-Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Refold provides a feature to load your fields dynamically using [DataSource](https://docs.gocobalt.io/build/connectors/config/datasource). 
+Scenarios where the fields cannot be pre-defined for mapping and changes dynamically cannot be mapped using static mapping. For this Refold provides a feature to load your fields dynamically using [DataSource](/legacy/build/connectors/config/datasource). 
 
 To do so, instead of creating the options in the config specific to a workflow or the application, simply toggle the `Use Data Source` option under **Source** column and select the workflow from which you will fetch fields dynamically during run time.
 

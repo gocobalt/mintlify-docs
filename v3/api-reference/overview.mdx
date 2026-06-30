@@ -6,7 +6,7 @@ description: Programmatically manage linked accounts, trigger workflows, configu
 The Refold API provides RESTful endpoints to manage your integration platform programmatically. You can create and manage linked accounts, trigger workflow executions, configure integrations, handle webhooks, manage persistent data, and interact with MCP servers.
 
 <Info>
-All API requests use the base URL `https://app.refold.ai`. We've updated our domain to `app.refold.ai` from `api.gocobalt.io` — existing `api.gocobalt.io` requests will continue to work until it is decommissioned at a later date.
+All API requests use the base URL `https://app.refold.ai`. We've updated our domain to `app.refold.ai` from `app.refold.ai` — existing `app.refold.ai` requests will continue to work until it is decommissioned at a later date.
 </Info>
 
 ## Authentication
@@ -85,8 +85,8 @@ When you exceed rate limits, the API returns a `429 Too Many Requests` response.
   <Card title="Auth Structure & OAuth" icon="lock" href="/v3/api-reference/auth-structure/get-auth-structure">
     Inspect an app's auth fields and build OAuth authorization URLs.
   </Card>
-  <Card title="Credentials" icon="key" href="/v3/api-reference/credentials/get-credentials">
-    Read tokens, save key-based credentials, and migrate existing auth onto an integration.
+  <Card title="Credentials" icon="key" href="/v3/api-reference/credentials/save-key-credentials">
+    Save key-based credentials and migrate existing auth onto an integration.
   </Card>
   <Card title="Session Tokens" icon="ticket" href="/v3/api-reference/session-tokens/generate-session-token">
     Issue scoped tokens for secure frontend authentication.
@@ -164,7 +164,7 @@ The API returns standard HTTP status codes and a consistent error response shape
   <Card title="Trigger a Workflow" icon="bolt" href="/v3/api-reference/events/trigger-event">
     Learn how to execute workflows programmatically.
   </Card>
-  <Card title="Explore SDKs" icon="code" href="/v3/sdks/overview">
+  <Card title="Explore SDKs" icon="code" href="/v3/api-reference/sdks">
     Use our Node.js, React, or JavaScript SDKs for faster development.
   </Card>
 </CardGroup>

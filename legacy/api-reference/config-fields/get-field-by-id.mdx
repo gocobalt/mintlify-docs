@@ -1,0 +1,102 @@
+---
+title: Get Config Field Options
+api: post /api/v2/public/config/field/:fieldId
+description: Resolve the options for a single config field.
+---
+
+Resolve a single config field's options via its datasource. The datasource may consume the optional `value` payload (e.g. callable-workflow data sources that depend on other field values).
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Headers
+
+<ParamField header="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
+
+## Path Parameters
+
+<ParamField path="fieldId" type="string" required>The field ID (from [Get All Config Fields](/legacy/api-reference/config-fields/get-all-fields)).</ParamField>
+
+## Query Parameters
+
+<ParamField query="config_id" type="string">Config to scope to. Defaults to the linked account's config.</ParamField>
+<ParamField query="workflow_id" type="string">Scope options to a specific workflow.</ParamField>
+
+## Body Parameters
+
+<ParamField body="value" type="any">Optional value passed to the field's datasource when resolving options.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the field with its resolved options.
+    <ResponseField name="id" type="string">Field ID.</ResponseField>
+    <ResponseField name="name" type="string">Field label.</ResponseField>
+    <ResponseField name="field_type" type="string">Field type.</ResponseField>
+    <ResponseField name="options" type="array">Resolved options (`{name, value}`).</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "id": "699fec7a5bd27ed2af7243ad",
+  "name": "Select",
+  "field_type": "select",
+  "required": false,
+  "multiple": true,
+  "hidden": false,
+  "dynamic_slot_identifier": "options",
+  "options": [
+    { "name": "A", "value": "A" },
+    { "name": "B", "value": "B" },
+    { "name": "C", "value": "C" }
+  ],
+  "defaultValue": ""
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Field with id 699fec7a5bd27ed2af7243ad not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field/{fieldId}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field/{fieldId}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

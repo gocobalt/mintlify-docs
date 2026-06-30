@@ -10,7 +10,7 @@ You can send data from your apps to other apps by using Refold **Events**.
 An event model contains name of the event and the trigger payload. The trigger payload contains sample data schema that can be used as data variables and are used inside a workflow as placeholders while defining the workflow.
 
 <Info>
-To learn more about Refold Events, you can refer to our guide [here](https://docs.gocobalt.io/guides/developer-settings/events).
+To learn more about Refold Events, you can refer to our guide [here](/legacy/guides-v1v2/developer-settings/events).
 </Info>
 
 ## Create Event
@@ -26,12 +26,12 @@ It is expected that you pass on the data as the Sample Payload while you are tri
 
 ## Trigger an Event
 
-You can trigger an event that was created in Refold by using the [Trigger Event API](https://docs.gocobalt.io/api-reference/event/trigger-an-event-from-your-application).
+You can trigger an event that was created in Refold by using the Trigger Event API.
 
 1. **Request** : Make a POST request to the `/event/:slug` endpoint. `linked_account_id` is a mandatory field to be passed while making the request.
 ``` JavaScript Request
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/event/:slug \
+  --url https://app.refold.ai/api/v2/public/event/:slug \
   --header 'Content-Type: application/json' \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>' \
