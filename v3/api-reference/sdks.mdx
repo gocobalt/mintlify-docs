@@ -1,68 +1,47 @@
 ---
 title: "SDKs"
-description: "Official Refold SDKs for client-side and server-side integration."
+description: "Build a custom integration UI with the JavaScript SDK, plus React and Node.js packages and the REST API."
 ---
 
-Refold provides native SDKs that handle authentication, third-party app interaction, end-user configuration, and integration delivery — so you can ship native integrations without building the plumbing yourself.
+Refold provides a JavaScript SDK for building integration UIs, plus React and Node.js packages and a REST API for backend work.
 
-This page covers what each SDK does, when to choose it, and where to install it.
+<Note>
+  The **[JavaScript SDK](/v3/api-reference/javascript-sdk)** (`@refoldai/refold-js`) is the actively maintained client SDK. Use it to build a dynamic connect UI tailored to your product. A **React package** and a **Node.js package** are also available, described below.
+</Note>
 
-## Choose your SDK
+## Build your integration UI
 
-<CardGroup cols={2}>
-  <Card title="React SDK" icon="react" href="https://github.com/gocobalt/react-cobalt-js">
-    **Pre-built UI.** Drop the Refold connect modal and auth flow directly into a React app. The fastest path to a working integration in production.
-  </Card>
-  <Card title="JavaScript SDK" icon="js" href="https://gocobalt.github.io/cobalt-js/">
-    **Headless.** A framework-agnostic client for building a fully custom integration UI in any web app.
-  </Card>
-  <Card title="Node SDK" icon="node-js" href="https://github.com/gocobalt/cobalt-sdk">
-    **Server-side.** Recommended for production: more control, tighter security, and the ability to design the entire end-user experience from your backend.
-  </Card>
-</CardGroup>
+Use the JavaScript SDK in the browser to let customers connect apps and manage their configuration, with a UI you control. It handles auth, session tokens, and event firing, so you build only the interface.
 
----
+<Card title="JavaScript SDK" icon="js" href="/v3/api-reference/javascript-sdk">
+  Actively maintained. A framework-agnostic client (vanilla JS, Vue, Svelte, or any stack) for a fully custom, dynamic integration UI. View the full [reference](https://gocobalt.github.io/refold-js/).
+</Card>
 
-## Client-side SDKs
+## React package
 
-Use a client-side SDK when the integration UX lives in the browser — for example, an in-app "Connect to Salesforce" button that opens a connect modal.
+The React package renders Refold-built components, so you get a ready-to-go connect experience with minimal code. It is **not actively maintained**: for a maintained client SDK, build your UI with the JavaScript SDK instead.
 
-<CardGroup cols={2}>
-  <Card title="React SDK" icon="react" href="https://github.com/gocobalt/react-cobalt-js">
-    Pre-built React components and a turn-key connect modal. Wire it up in minutes with `<RefoldConnect />`.
-  </Card>
-  <Card title="JavaScript SDK" icon="js" href="https://gocobalt.github.io/cobalt-js/">
-    Headless client for vanilla JS, Vue, Svelte, or any frontend stack. Build the UI you want; the SDK handles auth, tokens, and event firing.
-  </Card>
-</CardGroup>
+<Card title="React package" icon="react" href="https://github.com/gocobalt/react-cobalt-js">
+  Ready-to-go Refold components for React. Not actively maintained.
+</Card>
 
-**When to pick client-side:**
-- You want users to authenticate against third-party apps directly from your frontend.
-- You're prototyping or shipping a self-serve integration flow.
-- You want the fastest time-to-first-integration.
+## Node.js package
 
-## Server-side SDK
+The Node.js package wraps Refold's backend APIs for server-side use, such as creating [linked accounts](/v3/api-reference/linked-accounts/create-linked-account), issuing [session tokens](/v3/api-reference/session-tokens/generate-session-token), and triggering workflows.
 
-Use the server-side SDK when integrations are orchestrated from your backend — recommended for production.
+<Note>
+  Some backend APIs may not be available in the package. For anything it doesn't cover, call the endpoint directly from the [API reference](/v3/api-reference/overview).
+</Note>
 
-<CardGroup cols={1}>
-  <Card title="Node SDK" icon="node-js" href="https://github.com/gocobalt/cobalt-sdk">
-    Programmatic access to linked accounts, workflows, events, and the rest of the Refold API from a Node.js server. Pairs with whatever frontend you build.
-  </Card>
-</CardGroup>
-
-**When to pick server-side:**
-- You want full control over the connect flow and credential storage.
-- You're building enterprise-grade integrations that need server-issued tokens.
-- You want to keep API keys off the client and orchestrate workflows from trusted infrastructure.
-
----
+<Card title="Node.js package" icon="node-js" href="https://github.com/gocobalt/cobalt-sdk">
+  Server-side wrapper around Refold's backend APIs.
+</Card>
 
 ## What's next
 
 <CardGroup cols={2}>
   <Card title="Quick start" icon="play" href="/v3/platform/get-started/quickstart">
-    Wire up your first integration end-to-end in five minutes.
+    Wire up your first integration end to end in five minutes.
   </Card>
   <Card title="API reference" icon="code" href="/v3/api-reference/overview">
     Full reference for the REST API the SDKs are built on.

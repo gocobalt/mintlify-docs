@@ -7,7 +7,7 @@ sidebarTitle: "JavaScript SDK"
 The JavaScript SDK provides methods to connect users to third-party applications, manage configurations, and build custom integration experiences in your frontend. It gives you full control over the UI while handling OAuth flows, API key authentication, and configuration management.
 
 <Tip>
-View the source code on [GitHub](https://gocobalt.github.io/cobalt-js/).
+View the full [JavaScript SDK reference](https://gocobalt.github.io/refold-js/).
 </Tip>
 
 ## When to Use
@@ -21,8 +21,8 @@ View the source code on [GitHub](https://gocobalt.github.io/cobalt-js/).
 
 Before using the JavaScript SDK:
 
-1. **Create a Linked Account** for your user using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#createlinkedaccount) or [API](/v3/api-reference/linked-accounts/create-linked-account)
-2. **Generate a Session Token** using the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk#gettokenforlinkedaccount) or [API](/v3/api-reference/session-tokens/generate-session-token)
+1. **Create a Linked Account** for your user using the [Node.js SDK](/v3/api-reference/sdks) or [API](/v3/api-reference/linked-accounts/create-linked-account)
+2. **Generate a Session Token** using the [Node.js SDK](/v3/api-reference/sdks) or [API](/v3/api-reference/session-tokens/generate-session-token)
 
 <Warning>
 Session tokens expire after 24 hours. Generate a new token for each user session.
@@ -35,16 +35,16 @@ Install the SDK using npm or include it directly in your browser.
 <Tabs>
   <Tab title="npm">
 ```bash
-npm install --save @cobaltio/cobalt-js
+npm install --save @refoldai/refold-js
 ```
   </Tab>
   <Tab title="Browser (CDN)">
 ```html
 <!-- Production: Use a specific version -->
-<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js@8.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@refoldai/refold-js@10.0.0"></script>
 
 <!-- Development only: Latest version -->
-<script src="https://cdn.jsdelivr.net/npm/@cobaltio/cobalt-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@refoldai/refold-js"></script>
 ```
 
 <Warning>
@@ -53,33 +53,43 @@ Always use a specific version in production to avoid breaking changes.
   </Tab>
 </Tabs>
 
+<Note>
+  **Upgrading from `@cobaltio/cobalt-js`?** The JavaScript SDK has been renamed to **`@refoldai/refold-js`** (now major version 10). To upgrade:
+
+  - Install the new package and remove the old one: `npm install @refoldai/refold-js`
+  - Update imports: `import { Cobalt } from "@cobaltio/cobalt-js"` becomes `import { Refold } from "@refoldai/refold-js"`
+  - Rename the client: `new Cobalt(...)` becomes `new Refold(...)`
+
+  See the [package on npm](https://www.npmjs.com/package/@refoldai/refold-js) and the [JavaScript SDK reference](https://gocobalt.github.io/refold-js/) for full method docs and any other changes in v10.
+</Note>
+
 ## Initialization
 
 Import and initialize the SDK with your session token.
 
 <CodeGroup>
 ```javascript ES Modules
-import { Cobalt } from "@cobaltio/cobalt-js";
+import { Refold } from "@refoldai/refold-js";
 
-const cobalt = new Cobalt({
+const refold = new Refold({
   token: "YOUR_SESSION_TOKEN"
 });
 ```
 ```javascript CommonJS
-const { Cobalt } = require("@cobaltio/cobalt-js");
+const { Refold } = require("@refoldai/refold-js");
 
-const cobalt = new Cobalt({
+const refold = new Refold({
   token: "YOUR_SESSION_TOKEN"
 });
 ```
 ```javascript Deferred Token
-import { Cobalt } from "@cobaltio/cobalt-js";
+import { Refold } from "@refoldai/refold-js";
 
 // Initialize without token
-const cobalt = new Cobalt();
+const refold = new Refold();
 
 // Set token later (e.g., after fetching from your backend)
-cobalt.token = "YOUR_SESSION_TOKEN";
+refold.token = "YOUR_SESSION_TOKEN";
 ```
 </CodeGroup>
 
@@ -97,12 +107,12 @@ cobalt.token = "YOUR_SESSION_TOKEN";
 
     <CodeGroup>
 ```javascript Get All Applications
-const apps = await cobalt.getApp();
+const apps = await refold.getApp();
 console.log(apps);
 // Returns array of all enabled applications
 ```
 ```javascript Get Single Application
-const slack = await cobalt.getApp("slack");
+const slack = await refold.getApp("slack");
 console.log(slack);
 ```
     </CodeGroup>
@@ -129,7 +139,7 @@ console.log(slack);
     **Use Case:** Build an integrations catalog page showing all available applications.
 ```javascript
 // Display integration cards
-const apps = await cobalt.getApp();
+const apps = await refold.getApp();
 
 apps.forEach(app => {
   console.log(`${app.name} - ${app.auth_type}`);
@@ -154,7 +164,7 @@ apps.forEach(app => {
     <CodeGroup>
 ```javascript OAuth Application
 // Opens OAuth popup for user authorization
-const success = await cobalt.connect("slack");
+const success = await refold.connect("slack");
 
 if (success) {
   console.log("Slack connected successfully");
@@ -162,7 +172,7 @@ if (success) {
 ```
 ```javascript API Key Application
 // Saves API credentials directly
-const success = await cobalt.connect("twilio", {
+const success = await refold.connect("twilio", {
   number: "1234567890",
   sid: "ACCOUNT_SID",
   auth_token: "AUTH_TOKEN"
@@ -183,11 +193,11 @@ if (success) {
 async function handleConnect(appSlug, authType) {
   try {
     if (authType === "oauth2") {
-      await cobalt.connect(appSlug);
+      await refold.connect(appSlug);
     } else {
       // Show form for API credentials
       const credentials = await showCredentialsForm(appSlug);
-      await cobalt.connect(appSlug, credentials);
+      await refold.connect(appSlug, credentials);
     }
     showSuccessMessage(`${appSlug} connected!`);
   } catch (error) {
@@ -206,7 +216,7 @@ async function handleConnect(appSlug, authType) {
 
     **Returns:** `Promise<boolean>` - `true` if disconnection succeeds
 ```javascript
-await cobalt.disconnect("slack");
+await refold.disconnect("slack");
 console.log("Slack disconnected");
 ```
 
@@ -222,7 +232,7 @@ async function handleDisconnect(appSlug) {
   );
   
   if (confirmed) {
-    await cobalt.disconnect(appSlug);
+    await refold.disconnect(appSlug);
     refreshIntegrationList();
   }
 }
@@ -250,7 +260,7 @@ async function handleDisconnect(appSlug) {
 
     **Returns:** `Promise<ConfigResponse>`
 ```javascript
-const config = await cobalt.config({
+const config = await refold.config({
   slug: "slack",
   config_id: "config_123",
   labels: {}
@@ -304,7 +314,7 @@ console.log(config);
     **Use Case:** Build a settings page for users to configure their integration.
 ```javascript
 async function loadConfigurationPage(appSlug) {
-  const config = await cobalt.config({ slug: appSlug });
+  const config = await refold.config({ slug: appSlug });
   
   // Render global settings fields
   config.fields.forEach(field => {
@@ -356,7 +366,7 @@ async function loadConfigurationPage(appSlug) {
 
     **Returns:** `Promise<ConfigResponse>` - Updated configuration
 ```javascript
-const updatedConfig = await cobalt.updateConfig({
+const updatedConfig = await refold.updateConfig({
   slug: "slack",
   config_id: "config_123",
   fields: {
@@ -378,7 +388,7 @@ const updatedConfig = await cobalt.updateConfig({
 ```javascript
 async function saveConfiguration(appSlug, configId, formData) {
   try {
-    await cobalt.updateConfig({
+    await refold.updateConfig({
       slug: appSlug,
       config_id: configId,
       fields: formData.globalFields,
@@ -409,7 +419,7 @@ async function saveConfiguration(appSlug, configId, formData) {
 
     **Returns:** `Promise<void>`
 ```javascript
-await cobalt.deleteConfig("slack", "config_123");
+await refold.deleteConfig("slack", "config_123");
 console.log("Configuration deleted");
 ```
 
@@ -423,16 +433,16 @@ console.log("Configuration deleted");
 
 This example demonstrates a full integration page with connection management and configuration.
 ```javascript
-import { Cobalt } from "@cobaltio/cobalt-js";
+import { Refold } from "@refoldai/refold-js";
 
 class IntegrationManager {
   constructor(sessionToken) {
-    this.cobalt = new Cobalt({ token: sessionToken });
+    this.refold = new Refold({ token: sessionToken });
   }
 
   async loadIntegrations() {
     // Get all enabled applications
-    const apps = await this.cobalt.getApp();
+    const apps = await this.refold.getApp();
     return apps;
   }
 
@@ -440,10 +450,10 @@ class IntegrationManager {
     try {
       if (credentials) {
         // API key authentication
-        return await this.cobalt.connect(slug, credentials);
+        return await this.refold.connect(slug, credentials);
       } else {
         // OAuth authentication
-        return await this.cobalt.connect(slug);
+        return await this.refold.connect(slug);
       }
     } catch (error) {
       console.error(`Failed to connect ${slug}:`, error);
@@ -452,18 +462,18 @@ class IntegrationManager {
   }
 
   async disconnectApp(slug) {
-    return await this.cobalt.disconnect(slug);
+    return await this.refold.disconnect(slug);
   }
 
   async getConfig(slug, configId) {
-    return await this.cobalt.config({
+    return await this.refold.config({
       slug,
       config_id: configId
     });
   }
 
   async saveConfig(slug, configId, fields, workflows) {
-    return await this.cobalt.updateConfig({
+    return await this.refold.updateConfig({
       slug,
       config_id: configId,
       fields,
@@ -514,7 +524,7 @@ async function initializeIntegrationPage(sessionToken) {
   <Accordion title="Connection Issues">
     | Problem | Solution |
     |---------|----------|
-    | OAuth popup closes without completing | Check browser popup settings. Ensure your domain is whitelisted in the Cobalt dashboard. |
+    | OAuth popup closes without completing | Check browser popup settings. Ensure your domain is whitelisted in the Refold dashboard. |
     | API key connection fails | Verify credentials are correct. Check the application's required fields in the dashboard. |
     | `reauth_required: true` in response | The user's credentials have expired. Call `.connect()` again to re-authenticate. |
   </Accordion>
@@ -530,7 +540,7 @@ async function initializeIntegrationPage(sessionToken) {
 
 ## What's Next
 
-- [React SDK](/v3/sdks/client-side/react-sdk) for pre-built components in React applications
-- [NodeJS SDK](/v3/sdks/server-side/nodejs-sdk) for backend operations and workflow triggers
+- [React SDK](/v3/api-reference/sdks) for pre-built components in React applications
+- [NodeJS SDK](/v3/api-reference/sdks) for backend operations and workflow triggers
 - [Auth Flows](/v3/native/frontend/overview) to understand different authentication methods
 - [Config API Reference](/v3/api-reference/configs/create-config) for detailed parameter documentation

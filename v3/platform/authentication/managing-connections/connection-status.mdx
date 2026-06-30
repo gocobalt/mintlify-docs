@@ -11,8 +11,8 @@ The fields that matter are `connected`, `connected_accounts`, and `reauth_requir
 
 The application object is available on both the client and the server, so you can read status wherever you render your UI:
 
-- **Client-side**: call `cobalt.getApp()` from the [JavaScript SDK](/v3/sdks/client-side/javascript-sdk) (using the customer's session token). Pass a slug for one app, or omit it for every enabled app.
-- **Server-side**: call the List Applications API or the [Node.js SDK](/v3/sdks/server-side/nodejs-sdk) with the customer's `linked_account_id`.
+- **Client-side**: call `cobalt.getApp()` from the [JavaScript SDK](/v3/api-reference/javascript-sdk) (using the customer's session token). Pass a slug for one app, or omit it for every enabled app.
+- **Server-side**: call the List Applications API or the [Node.js SDK](/v3/api-reference/sdks) with the customer's `linked_account_id`.
 
 <CodeGroup>
 ```javascript JS SDK
@@ -25,7 +25,7 @@ const apps = await cobalt.getApp();
 
 ```bash cURL
 curl --request GET \
-  --url https://api.gocobalt.io/api/v2/public/application \
+  --url https://app.refold.ai/api/v2/public/application \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>'
 ```

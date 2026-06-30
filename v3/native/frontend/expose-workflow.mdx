@@ -41,7 +41,7 @@ You have two ways to expose workflows, matching the two [frontend flows](/v3/nat
 
 ### With the React SDK component
 
-The [React SDK](/v3/sdks/client-side/react-sdk) `<Config>` component renders connection status, [config fields](/v3/native/configure/integration/config-fields), and a toggle for each available workflow. The customer enables a workflow and fills its fields inside the component, and the SDK saves the result. You write no toggle logic.
+The [React SDK](/v3/api-reference/sdks) `<Config>` component renders connection status, [config fields](/v3/native/configure/integration/config-fields), and a toggle for each available workflow. The customer enables a workflow and fills its fields inside the component, and the SDK saves the result. You write no toggle logic.
 
 ```jsx
 import { Provider, Config } from "@cobaltio/react-cobalt-js";
@@ -55,7 +55,7 @@ function Integrations({ sessionToken }) {
 }
 ```
 
-See the [React SDK flow](/v3/native/frontend/react-sdk-flow) for setup, and the [React SDK reference](/v3/sdks/client-side/react-sdk) for every prop.
+See the [React SDK flow](/v3/native/frontend/react-sdk-flow) for setup, and the [React SDK reference](/v3/api-reference/sdks) for every prop.
 
 ### With your own UI
 
@@ -122,5 +122,5 @@ The trigger type is part of the workflow definition on the platform, not a Nativ
 - [Workflows overview](/v3/platform/concepts/workflows/overview): build the automation on the platform
 - [Workflows (Native)](/v3/native/configure/integration/workflow): the Native-side summary
 - [Config fields](/v3/native/configure/integration/config-fields): collect the inputs a workflow needs
-- [React SDK](/v3/sdks/client-side/react-sdk): the `<Config>` component reference
+- [React SDK](/v3/api-reference/sdks): the `<Config>` component reference
 - [Events](/v3/native/configure/developer/events): fire an event to trigger a workflow
