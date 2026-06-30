@@ -21,7 +21,7 @@ Linked Accounts can be `created`, `updated` or `deleted` either through the **da
     <Accordion title="via Refold Dashboard" icon="laptop">
 In the Refold Dashboard, go to `Dashboard` > `Linked Accounts`. Click **+ Add Account**, then enter the `Linked Account ID`, `Name` and `UDF Parameter`.
 
-<Tip>Learn more about UDF parameters in detail [here](https://docs.gocobalt.io/guides/platform/linked-account/udf).</Tip>
+<Tip>Learn more about UDF parameters in detail here.</Tip>
 
 <Frame>
     <img height="200" src="/images/Guides/Linked-account/linked-create.png" alt="Create a single Linked Account"/>
@@ -32,13 +32,13 @@ You can also `bulk` create linked accounts by importing a `.csv` file.
 </Accordion>
 
 <Accordion title="via API" icon="code">
-You can create the [**Linked Account**](https://docs.gocobalt.io/api-reference/linked-accounts/create-linked-account) using the below curl.
+You can create the [**Linked Account**](/legacy/api-reference/linked-accounts/create-linked-account) using the below curl.
 <Note>Linked account operations should always happen on the server side</Note>
 
 <CodeGroup>
     ```JavaScript cURL
     curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --url https://app.refold.ai/api/v2/public/linked-account \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
@@ -79,7 +79,7 @@ You can create the [**Linked Account**](https://docs.gocobalt.io/api-reference/l
 You can get insights into how each customer uses the integration, including logs for `executions`, `schedules`, `events`, and `webhooks`, aiding in observability and debugging.
 
 <Tip>
-To learn more about the Logs available, refer [here](/concepts/logs).
+To learn more about the Logs available, refer [here](/legacy/concepts/logs).
 </Tip>
 
 

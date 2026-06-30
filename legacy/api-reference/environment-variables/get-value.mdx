@@ -1,0 +1,81 @@
+---
+title: Get Variable Value
+api: get /api/v2/public/env/value/:definition_id
+description: Resolve a single environment-variable value in its scope.
+---
+
+Resolve the value of a variable definition in the appropriate scope. For linked-account or workflow scope, pass the corresponding query parameter. Encrypted values are redacted in the response.
+
+## Authentication
+
+This endpoint resolves a scoped value, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">Required (header or query) for linked-account-scoped values.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token, for the account's own scope. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Path Parameters
+
+<ParamField path="definition_id" type="string" required>The variable definition ID.</ParamField>
+
+## Query Parameters
+
+<ParamField query="linked_account_id" type="string">Resolve the linked-account-scoped value.</ParamField>
+<ParamField query="workflow_id" type="string">Resolve the workflow-scoped value.</ParamField>
+<ParamField query="environment" type="string">Override the environment.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="value" type="string">The resolved value. `[REDACTED]` if the definition is encrypted.</ResponseField>
+    <ResponseField name="encrypted" type="boolean">Whether the value is encrypted.</ResponseField>
+    <ResponseField name="name" type="string">Variable name.</ResponseField>
+    <ResponseField name="scope" type="string">The resolved scope.</ResponseField>
+    <ResponseField name="variable_definition_id" type="string">The definition ID.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200 Plain value
+{
+  "value": "https://api.example.com",
+  "encrypted": false,
+  "name": "API_BASE_URL",
+  "scope": "org",
+  "variable_definition_id": "6a159a9741e63efd0833773f"
+}
+```
+```json 200 Encrypted value
+{
+  "value": "[REDACTED]",
+  "encrypted": true,
+  "name": "API_SECRET",
+  "scope": "linked_account",
+  "variable_definition_id": "6a1401de41e63efd08fb3e54"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key, linked-account scope)
+curl -X GET "https://app.refold.ai/api/v2/public/env/value/{definition_id}?linked_account_id=YOUR_LINKED_ACCOUNT_ID" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/env/value/{definition_id}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

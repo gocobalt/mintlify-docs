@@ -23,7 +23,7 @@ Navigate to `Apps` in Cobalt and search for **Salesforce** and enable the app by
 
 Now, go to `Settings` and provide the **Client ID** and **Client Secret** of your Salesforce OAuth app and click on `Save`.
 <Tip>
-Follow the steps given [here](https://docs.gocobalt.io/resources/integration-providers/salesforce) to get your credentials.
+Follow the steps given [here](/applications/providers/salesforce) to get your credentials.
 </Tip>
 
 Once the app is enabled, you can proceed to create and manage workflows and linked accounts associated with Salesforce.
@@ -35,14 +35,14 @@ Once the app is enabled, you can proceed to create and manage workflows and link
 A Linked Account in Cobalt represents the end-users or customers who will use the integration through the platform. Each Linked Account requires a unique linked_account_id, which typically corresponds to an ID from your internal data model (e.g., a user or account ID).
 
 <Tip>
-Learn more about Linked Accounts [here](/build/basics/linked_account).
+Learn more about Linked Accounts [here](/legacy/build/basics/linked_account).
 </Tip>
 
 To upsert (create or update) a Linked Account, use the following API call:
 <CodeGroup>
 ```bash cURL
 curl --request PUT \
-  --url https://api.gocobalt.io/api/v2/public/linked-account \
+  --url https://app.refold.ai/api/v2/public/linked-account \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
@@ -70,7 +70,7 @@ To create a session token, use the following API call:
 <CodeGroup>
 ```JavaScript cURL
     curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/session-token \
+  --url https://app.refold.ai/api/v2/public/session-token \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
@@ -90,7 +90,7 @@ Use the following API call to generate the Hosted URL:
 <CodeGroup>
 ```JavaScript cURL
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/connect-url \
+  --url https://app.refold.ai/api/v2/public/connect-url \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
@@ -155,7 +155,7 @@ Follow the steps given to build the workflow:
     All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
    For this workflow we will use the Event Based trigger.
   <Tip>
-  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  Learn more about the triggers and its types [here](/legacy/build/workflow/triggering_workflow).
   </Tip>
     Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
 <img height="200" src="/images/Examples/salesforce/event_salesforce.png" alt="Event for workflow"/>
@@ -225,7 +225,7 @@ In Cobalt Dashboard, navigate to `Developer` > `API Proxies` and click on `New A
 If you want to test, go to [webhook.site](https://webhook.site/) and copy `Your unique URL` and configure this as a POST Request and `Save`.
     <img height="200" src="/images/Examples/salesforce/proxy_salesforce.png" alt="Configuring API Proxy workflow"/>
 
-<Tip>Learn more about API Proxies [here](https://docs.gocobalt.io/build/basics/proxies).</Tip>
+<Tip>Learn more about API Proxies [here](/legacy/build/basics/proxies).</Tip>
 </Step>
 
 <Step title="Use API Proxy in Workflow">
@@ -265,7 +265,7 @@ Follow the steps given to build the workflow:
     All workflows start with a trigger, which determines when the workflow will run and how data is passed into the workflow.
    For this workflow we will use the Event Based trigger.
   <Tip>
-  Learn more about the triggers and its types [here](https://docs.gocobalt.io/build/workflow/triggering_workflow).
+  Learn more about the triggers and its types [here](/legacy/build/workflow/triggering_workflow).
   </Tip>
     Click on the `Start Node`, select your native app option and click on `+ Create New Event`.
 <img height="200" src="/images/Examples/salesforce/event_salesforce_add.png" alt="Event for workflow"/>
@@ -301,11 +301,11 @@ You have successfully created a Salesforce workflow to create a new contact.
 
 For bi-directional sync, usually three workflows are required:
 - **Workflow for Initial sync** where all the records are fetched from Salesforce.
-  This is the same workflow as Data Import workflow that we created [here](/implementation/examples/build_salesforce#data-import-from-salesforce).
+  This is the same workflow as Data Import workflow that we created [here](/legacy/implementation/examples/build_salesforce#data-import-from-salesforce).
 
 - **Workflow to push record** in Salesforce when a new record is created on your platform.
 
-  We created this workflow of Push Data [here](/implementation/examples/build_salesforce#push-data-to-salesforce).
+  We created this workflow of Push Data [here](/legacy/implementation/examples/build_salesforce#push-data-to-salesforce).
 
 - **Workflow to update records** in your system whenever a contact gets created or updated in Salesforce.
 
@@ -360,7 +360,7 @@ To run these workflows for your users or Linked Accounts, you need to do the fol
   ## Create Config
 You can create config for the Linked Account through the Cobalt Connect SDKs or using the APIs.
 
-You can use the **.config()** method or the [Create Config API](https://docs.gocobalt.io/api-reference/config/find-or-create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
+You can use the **.config()** method or the [Create Config API](/legacy/api-reference/configs/create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
 
 Make a request with the  `Application Slug` and `linked_account_id` as mandatory fields for it. You can request in the following way:
 <CodeGroup>
@@ -373,7 +373,7 @@ cobalt.config({
 ```
 ``` JavaScript cURL
 curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/config \
+  --url https://app.refold.ai/api/v2/public/config \
   --header 'Content-Type: application/json' \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>' \
@@ -406,7 +406,7 @@ It will return information about config of the application for the Linked Accoun
   </Step>
 
   <Step title="Enable Workflow">
-    Now you need to enable the workflow for your Linked account. You can either ask the user to enable them or you can do so for them by using the [Update Config API](https://docs.gocobalt.io/api-reference/configs/update-config) or **.updateconfig()** method.
+    Now you need to enable the workflow for your Linked account. You can either ask the user to enable them or you can do so for them by using the [Update Config API](/legacy/api-reference/configs/update-config) or **.updateconfig()** method.
 
 Make the following request:
 <CodeGroup>
@@ -431,7 +431,7 @@ cobalt.updateConfig({
 ```
 ``` JavaScript cURL
 curl --request PUT \
-  --url https://api.gocobalt.io/api/v2/public/config \
+  --url https://app.refold.ai/api/v2/public/config \
   --header 'Content-Type: application/json' \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>' \
@@ -458,10 +458,10 @@ In response, you get the updated config information for the application.
   </Step>
 
   <Step title="Third Step">
-    Once the required workflows are enabled, you need to fire event to start execution. You can use the [Trigger Event for app](https://docs.gocobalt.io/api-reference/events/trigger-event) API with the following request:
+    Once the required workflows are enabled, you need to fire event to start execution. You can use the [Trigger Event for app](/legacy/api-reference/events/trigger-event) API with the following request:
     ```JavaScript cURL
   curl --request POST \
-    --url https://api.gocobalt.io/api/v2/public/event/:slug \
+    --url https://app.refold.ai/api/v2/public/event/:slug \
     --header 'Content-Type: application/json' \
     --header 'linked_account_id: <linked_account_id>' \
     --header 'x-api-key: <api-key>' \
@@ -472,10 +472,10 @@ In response, you get the updated config information for the application.
     ```
   </Step>
   <Step title="Check Execution Logs">
-  Once the workflow execution has been fired, you can check the Logs of the workflow [here](https://app.gocobalt.io/logs).
+  Once the workflow execution has been fired, you can check the Logs of the workflow [here](https://app.refold.ai/logs/executions).
 
   <Tip>
-Learn more about logs and observability [here](https://docs.gocobalt.io/maintain/logs).
+Learn more about logs and observability [here](/legacy/maintain/logs).
   </Tip>
   </Step>
 

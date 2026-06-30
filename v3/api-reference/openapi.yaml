@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   contact: {}
 servers:
-  - url: 'https://api.gocobalt.io'
+  - url: 'https://app.refold.ai'
 paths:
   /api/v2/public/linked-account:
     put:
@@ -5562,7 +5562,7 @@ paths:
       summary: Get Connect URL
       description: >-
         Returns the connection URL in format:
-        \`[https://connect.gocobalt.io/TOKEN\`](https://connect.gocobalt.io/TOKEN`)
+        \`[https://app.refold.ai/connect/TOKEN\`](https://app.refold.ai/connect/TOKEN`)
 
 
         Accepts hosted properties - optional body parameters defining linked
@@ -5639,12 +5639,12 @@ paths:
                   hosted_url:
                     type: string
                     example: >-
-                      https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8
+                      https://app.refold.ai/connect/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8
               examples:
                 Success:
                   value:
                     hosted_url: >-
-                      https://connect.gocobalt.io/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8
+                      https://app.refold.ai/connect/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmdfaWQiOiI2M2M5M2RhMGI0NmI3MjQzNzg1YTFlMTciLCJsaW5rZWRfYWNjb3VudF9pZCI6IjEyMzQ1Njc4IiwiZW52aXJvbm1lbnQiOiJ0ZXN0IiwiaWF0IjoxNjg2NzM1ODMxLCJleHAiOjE2ODY5OTUwMzF9.DOKY6iXkfjLcSK8vIqtQ1mHuh92pZMhlddladdovGL8
         '401':
           description: Error - Token Expired
           headers:
