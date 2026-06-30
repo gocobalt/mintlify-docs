@@ -9,14 +9,16 @@ For how agents authenticate and how you scope and revoke their access, see [Auth
 
 ## Tenant isolation
 
-MCP servers are multi-tenant by design. Isolation is enforced at multiple layers:
+Each MCP server is multi-tenant by design. One Server URL token maps to one linked account, and that pairing is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single customer.
 
-| Layer | Mechanism |
-|-------|-----------|
-| **Request identity** | Session context is resolved per-request from the validated token. No shared mutable state across sessions. |
-| **Tool resolution** | Tools are resolved per-request based on the authenticated identity. Two concurrent sessions never share tool objects. |
-| **Execution context** | Each tool call reads `org_id`, `linked_account_id`, and `environment` from the per-request session context. These fields are immutable for the duration of the request. |
-| **Data** | Audit records, tool outputs, and execution metadata are partitioned by `org_id`. Queries are always scoped. |
+Refold enforces this at every layer:
+
+| Guarantee | What it means |
+|-----------|---------------|
+| **Each request is scoped to one customer** | Every request resolves its identity from the token you present, and that identity is fixed for the life of the request. |
+| **Sessions never share state** | Two concurrent sessions never share identity or tool state, and nothing is cached across requests. |
+| **Tools are resolved per request** | The actions an agent can see and call are resolved fresh on each request, based on the authenticated identity. |
+| **Data is partitioned per customer** | Audit records, tool outputs, and execution metadata are partitioned per customer, and queries are always scoped to that customer. |
 
 <Info>
 The MCP server is stateless. Identity and tool state are resolved on every request and never cached across requests, so concurrent sessions cannot leak into each other.
@@ -26,13 +28,13 @@ The MCP server is stateless. Identity and tool state are resolved on every reque
 
 | Property | Detail |
 |----------|--------|
-| **Protocol** | MCP v2025-11-25 over Streamable HTTP |
+| **Protocol** | The current MCP specification over streamable HTTP |
 | **Encryption** | TLS 1.2+ for all connections (agent-to-Refold, internal Refold traffic, and Refold-to-third-party apps) |
 | **Transport mode** | Stateless HTTP (no persistent WebSocket connections) |
 
 ## Data handling
 
-Refold manages OAuth tokens and API keys for connected applications on behalf of linked accounts. Third-party credentials are stored encrypted at rest and are never exposed in MCP tool inputs, outputs, or audit logs. MCP tool handlers never receive raw third-party credentials — Refold resolves them internally when an action executes.
+Refold manages OAuth tokens and API keys for connected applications on behalf of linked accounts. These third-party credentials are encrypted at rest with AES-256 field-level encryption, and they are never exposed in MCP tool inputs, outputs, or audit logs. The tools an agent calls never receive raw credentials. Refold resolves them internally when an action executes.
 
 ## Audit logging
 
@@ -42,8 +44,16 @@ Every MCP tool call is logged automatically, and logging cannot be disabled. See
 
 Refold MCP servers run on Refold's managed infrastructure.
 
+## Platform security and compliance
+
+This page covers the MCP-specific security model. For Refold's org-wide security posture, see the platform Security section:
+
+- [Application Security](/v3/platform/security/application-security): platform security features and data protection
+- [Certifications](/v3/platform/security/certifications): SOC 2, ISO 27001, and compliance certifications
+- [Privacy](/v3/platform/security/privacy): data handling and privacy practices
+
 ## See also
 
-- [Authentication](/v3/mcp/connect/authentication) — the Server-URL token, access scoping, and revocation
-- [MCP Logs](/v3/mcp/operate/mcp-logs) — the audit trail for every tool call
-- [How it works](/v3/mcp/get-started/architecture) — how a single tool call flows end to end
+- [Authentication](/v3/mcp/connect/authentication): the Server URL token, access scoping, and revocation
+- [MCP Logs](/v3/mcp/operate/mcp-logs): the audit trail for every tool call
+- [How it works](/v3/mcp/get-started/architecture): how a single tool call flows end to end

@@ -1,9 +1,9 @@
 ---
 title: "MCP Logs"
-description: "Inspect every tool call your MCP server makes — with full request, response, and identity detail."
+description: "Inspect every tool call your MCP server makes, with full request, response, and identity detail."
 ---
 
-MCP Logs is the audit trail for your MCP servers. Every tool call is recorded automatically — no configuration required. Use logs to debug failing actions, trace a full agent session, monitor integration adoption, and satisfy compliance reviews.
+MCP Logs is the audit trail for your MCP servers. Every tool call is recorded automatically, with no configuration required. Use logs to debug failing actions, trace a full agent session, monitor integration adoption, and satisfy compliance reviews.
 
 <Note>
 For authentication and access control details, see [Authentication](/v3/mcp/connect/authentication). For the MCP server architecture and request lifecycle, see [How it works](/v3/mcp/get-started/architecture).
@@ -15,9 +15,9 @@ Every request your MCP server handles writes one log entry before it returns. Lo
 
 Key characteristics:
 
-- **Retention** — records are kept for 90 days. Contact your account team for longer retention on enterprise plans.
-- **Payload capture** — request inputs are captured up to 32 KB; response outputs up to 64 KB. Truncation is flagged in the record.
-- **Downstream errors** — errors from third-party APIs (Salesforce, SAP, and others) are not surfaced verbatim to the agent. The agent receives a generic message; the full upstream error is stored in the `internal_error` field and visible in the detail panel.
+- **Retention.** Records are kept for 90 days. Contact your account team for longer retention on enterprise plans.
+- **Payload capture.** Request inputs are captured up to 32 KB and response outputs up to 64 KB. Truncation is flagged in the record.
+- **Downstream errors.** Errors from third-party APIs (Salesforce, SAP, and others) are not surfaced verbatim to the agent. The agent receives a clean, user-facing message, and the detail panel shows that same user-facing error. The full upstream error from the third-party API is not exposed.
 
 Access logs in the Refold dashboard under **Maintain > MCP Logs**.
 
@@ -71,7 +71,40 @@ The detail panel shows four groups of fields:
 - Protocol version
 - Transport type (`streamable-http`)
 - Session ID
-- Trace ID (`X-Request-Id`)
+- Request ID
+
+### Sample record
+
+A single log record looks like this. Fields use the same shape across direct-mode and agent-mode tools.
+
+```json Log record
+{
+  "status": "success",
+  "tool": "EXECUTE_ACTION",
+  "action": "salesforce_create_record_action",
+  "application": "salesforce",
+  "identity": {
+    "linkedAccount": "acme-prod-01",
+    "server": "Acme CRM Agent",
+    "environment": "production"
+  },
+  "request": {
+    "object": "Lead",
+    "fields": { "Company": "Acme", "Email": "jordan@acme.com" }
+  },
+  "response": {
+    "success": true,
+    "data": { "id": "00Q5g00000ABCDE" }
+  },
+  "client": {
+    "name": "Claude Desktop",
+    "version": "1.4.0",
+    "transport": "streamable-http"
+  },
+  "durationMs": 412,
+  "timestamp": "2026-06-28T14:03:11Z"
+}
+```
 
 ## Filtering logs
 
@@ -86,24 +119,24 @@ Use the filter bar to narrow the log view.
 
 ## Common use cases
 
-**Debug a failing action** — filter by `execution_error` or `validation_error`. The detail panel shows the exact input payload the agent sent and the error returned. Start here when an end user reports that an agent couldn't complete a task.
+**Debug a failing action.** Filter by `execution_error` or `validation_error`. The detail panel shows the exact input payload the agent sent and the error returned. Start here when an end user reports that an agent couldn't complete a task.
 
-**Trace a full agent session** — filter by Session ID to see every tool call from one agent session in chronological order. The Session ID is stable for the lifetime of a connection, so every `RESOLVE_ACTIONS`, `EXECUTE_ACTION`, `SEARCH_INTEGRATION_GRAPH`, and `LOAD_SKILL` call from one conversation is grouped together. You can see exactly what the agent did, in what order, and how long each step took.
+**Trace a full agent session.** Filter by Session ID to see every tool call from one agent session in chronological order. The Session ID is stable for the lifetime of a connection, so every `GET_KNOWLEDGE_INDEX`, `LOAD_SKILL`, `RESOLVE_ACTIONS`, and `EXECUTE_ACTION` call from one conversation is grouped together. You can see exactly what the agent did, in what order, and how long each step took.
 
-**Monitor adoption** — filter by application or MCP server to see which integrations agents use most, how often they fail, and where response times are slow.
+**Monitor adoption.** Filter by application or MCP server to see which integrations agents use most, how often they fail, and where response times are slow.
 
-**Security review** — filter by linked account to audit what a specific user's agent accessed. Each log entry includes the full identity chain: organization, linked account, environment, and server.
+**Security review.** Filter by linked account to audit what a specific user's agent accessed. Each log entry includes the full identity chain: organization, linked account, environment, and server.
 
 ## Compliance
 
 MCP Logs provide the raw material for compliance and governance reviews:
 
-- **Who** — every record ties to a specific linked account and organization
-- **What was requested** — full input payloads captured up to 32 KB
-- **What was returned** — full output payloads captured up to 64 KB; truncation is flagged
-- **When** — timestamps with millisecond precision on start and completion
-- **Duration** — milliseconds, for performance auditing
-- **From where** — MCP client name, version, and transport metadata
+- **Who.** Every record ties to a specific linked account and organization.
+- **What was requested.** Full input payloads captured up to 32 KB.
+- **What was returned.** Full output payloads captured up to 64 KB, with truncation flagged.
+- **When.** Timestamps with millisecond precision on start and completion.
+- **Duration.** Milliseconds, for performance auditing.
+- **From where.** MCP client name, version, and transport metadata.
 
 For the broader security and data governance model, see [Security & compliance](/v3/mcp/operate/security-compliance).
 
@@ -113,11 +146,11 @@ Logs are viewable and filterable in the dashboard. For bulk export or programmat
 
 ## Rate limits
 
-The MCP server does not impose per-tool rate limits. Plan-level limits apply to overall request volume. Rate limits enforced by a third-party application (for example, Salesforce API governor limits) propagate back to the agent as `execution_error` entries with the downstream error preserved in the detail panel.
+The MCP server does not impose per-tool rate limits. Plan-level limits apply to overall request volume. Rate limits enforced by a third-party application (for example, Salesforce API governor limits) propagate back to the agent as `execution_error` entries, which you can find by filtering on status.
 
 ## See also
 
-- [Debugging](/v3/mcp/operate/debugging) — use MCP Inspector alongside logs to reproduce and diagnose issues
-- [Security & compliance](/v3/mcp/operate/security-compliance) — tenant isolation, transport security, and data governance
-- [Authentication](/v3/mcp/connect/authentication) — how agents authenticate and how tokens are scoped
-- [Tools](/v3/mcp/reference/tools) — what each logged tool name corresponds to
+- [Debugging](/v3/mcp/operate/debugging): use MCP Inspector alongside logs to reproduce and diagnose issues
+- [Security & compliance](/v3/mcp/operate/security-compliance): tenant isolation, transport security, and data governance
+- [Authentication](/v3/mcp/connect/authentication): how agents authenticate and how tokens are scoped
+- [Tools](/v3/mcp/reference/tools): what each logged tool name corresponds to

@@ -5,8 +5,8 @@ description: "Isolate MCP tool failures with MCP Inspector and MCP Logs."
 
 When an agent doesn't see the tools you expect, or a tool call fails silently, two tools cover most cases:
 
-- **[MCP Inspector](https://github.com/modelcontextprotocol/inspector)** — points at your Refold MCP server before you wire it into an agent, lists tools, and lets you call them with arbitrary input.
-- **[MCP Logs](/v3/mcp/operate/mcp-logs)** — the audit panel in the Refold dashboard. Shows every tool call your agent made, the exact input it sent, and what came back.
+- **[MCP Inspector](https://github.com/modelcontextprotocol/inspector)** points at your Refold MCP server before you wire it into an agent, lists tools, and lets you call them with arbitrary input.
+- **[MCP Logs](/v3/mcp/operate/mcp-logs)** is the audit panel in the Refold dashboard. It shows every tool call your agent made, the exact input it sent, and what came back.
 
 Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what the agent actually did once it's running.
 
@@ -27,7 +27,18 @@ Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what th
     In the server connection pane, select **Streamable HTTP** from the transport dropdown.
   </Step>
   <Step title="Paste your Server URL">
-    Enter your Refold Server URL: `https://<domain>/mcp/v1/<token>/<server_id>`
+    Enter your Refold Server URL. Refold accepts the token two ways, so use whichever the Inspector supports.
+
+    <CodeGroup>
+    ```bash Path token
+    https://<domain>/mcp/v1/<token>/<server_id>
+    ```
+
+    ```bash Authorization header
+    https://<domain>/mcp/v1/<server_id>
+    # Add an Authorization: Bearer <token> header in the Inspector's Authentication settings
+    ```
+    </CodeGroup>
   </Step>
   <Step title="Connect">
     Click **Connect**. The Inspector lists the tools your server exposes and shows the JSON schema for each.
@@ -39,8 +50,8 @@ Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what th
 | Panel | What it shows |
 |---|---|
 | **Tools** | Every MCP tool the server exposes with its JSON schema. Click any tool to fill in arguments and run it. |
-| **Resources** | MCP resources — empty for Refold servers. |
-| **Prompts** | MCP prompts — empty for Refold servers. |
+| **Resources** | MCP resources (empty for Refold servers). |
+| **Prompts** | MCP prompts (empty for Refold servers). |
 | **Notifications** | Server logs and raw JSON-RPC traffic. |
 
 ### Call a tool
@@ -55,24 +66,43 @@ For agent mode servers, the typical test sequence is:
 
 See [Tools](/v3/mcp/reference/tools) for the full request and response shapes.
 
+### The agent sees no tools, or not the tools you expect
+
+If the Inspector's **Tools** panel is empty or lists tools you didn't expect, the cause is almost always the server's configuration, not the connection. Check two settings on the MCP server in the dashboard:
+
+- **Mode.** A server runs in one mode at a time. In direct mode the Inspector lists one tool per configured action or workflow (named like `salesforce_list_contacts_action`). In agent mode it lists two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. If you see the meta-tools but expected per-action tools, or the reverse, the server is in the other mode. Toggle **Agent Mode** to switch.
+- **Enabled actions and skills.** Only the apps and actions you added to the server appear as tools, so add any missing action on the server's **Applications** tab. The skill tools `LOAD_SKILL` and `GET_KNOWLEDGE_INDEX` appear only when **Retrieve Skill** is on, in either mode.
+
+See [Server configuration](/v3/mcp/build/server-configuration) for where these toggles live and [How it works](/v3/mcp/get-started/architecture) for how each mode changes the tool list.
+
 ### CLI mode
 
 For scripting or smoke-testing without the UI:
 
-```bash CLI — list tools
+```bash CLI: list tools
 npx @modelcontextprotocol/inspector --cli \
   https://<domain>/mcp/v1/<token>/<server_id> \
   --transport http \
   --method tools/list
 ```
 
-```bash CLI — call a tool
+```bash CLI: call a tool
 npx @modelcontextprotocol/inspector --cli \
   https://<domain>/mcp/v1/<token>/<server_id> \
   --transport http \
   --method tools/call \
   --tool-name salesforce_list_contacts_action \
   --tool-arg input_payload='{"limit":10}'
+```
+
+To send the token as a header instead of in the path, use the header-form URL and pass `--header`:
+
+```bash CLI: token in a header
+npx @modelcontextprotocol/inspector --cli \
+  https://<domain>/mcp/v1/<server_id> \
+  --transport http \
+  --method tools/list \
+  --header "Authorization: Bearer <token>"
 ```
 
 ## Debugging with MCP Logs
@@ -93,24 +123,24 @@ Once your agent is running, every tool call is captured in **Maintain > MCP Logs
 
     | Status | What it means |
     |---|---|
-    | `success` | Refold completed the call. The issue is on the agent's interpretation side — compare the response payload to what the agent told the user. |
-    | `validation_error` | The agent sent input that didn't match the tool's schema, referenced an app or action that isn't on the server, or hit a known business-rule rejection. The `user_message` field shows what the agent received. |
-    | `execution_error` | Refold couldn't reach the downstream service. The agent receives a generic message; the full error is in `internal_error`. |
-    | `pending` | The call started but never completed — the process crashed between log start and log completion. |
+    | `success` | Refold completed the call. The issue is on the agent's interpretation side, so compare the response payload to what the agent told the user. |
+    | `validation_error` | The agent sent input that didn't match the tool's schema, referenced an app or action that isn't on the server, or hit a known business-rule rejection. The message the agent received explains what failed. |
+    | `execution_error` | Refold couldn't reach the downstream service. The agent receives a generic message, and the call's detail panel shows the full error. |
+    | `pending` | The call started but did not record completion. |
   </Step>
 </Steps>
 
 <Note>
-Downstream API errors from third-party apps are not surfaced verbatim to the agent. The agent receives a generic message; the full upstream error is recorded in the `internal_error` field and visible in the detail panel.
+Downstream API errors from third-party apps are not surfaced verbatim to the agent. The agent receives a generic message, and the full upstream error is recorded in the call's detail panel.
 </Note>
 
 ### Trace a full agent conversation
 
-Filter **MCP Logs** by **Session ID** to see every tool call from a single agent session in chronological order. This is the fastest way to understand what an agent actually did when it called several tools in sequence — for example, `RESOLVE_ACTIONS` → `LOAD_SKILL` → `EXECUTE_ACTION` × 3.
+Filter **MCP Logs** by **Session ID** to see every tool call from a single agent session in chronological order. This is the fastest way to understand what an agent actually did when it called several tools in sequence, for example `GET_KNOWLEDGE_INDEX` → `LOAD_SKILL` → `RESOLVE_ACTIONS` → `EXECUTE_ACTION` × 3.
 
 ## See also
 
-- [MCP Logs](/v3/mcp/operate/mcp-logs) — full field reference, filters, and compliance details
-- [Tools](/v3/mcp/reference/tools) — request and response shapes for every tool
-- [Connect from agent code](/v3/mcp/connect/connect-from-agent-code) — wiring the Server URL into your agent
-- [Authentication](/v3/mcp/connect/authentication) — token model and per-user Server URLs
+- [MCP Logs](/v3/mcp/operate/mcp-logs): full field reference, filters, and compliance details
+- [Tools](/v3/mcp/reference/tools): request and response shapes for every tool
+- [Connect from agent code](/v3/mcp/connect/connect-from-agent-code): wiring the Server URL into your agent
+- [Authentication](/v3/mcp/connect/authentication): token model and per-user Server URLs
