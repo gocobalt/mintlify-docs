@@ -31,7 +31,7 @@ When an agent connects, Refold reads the server's configuration and exposes the 
 | **Workflow** (`sync_leads`) | One tool that runs the whole workflow | A single call; steps, retries, and error paths stay server-side |
 | **Skill** | A loadable procedure | `GET_KNOWLEDGE_INDEX` to browse, `LOAD_SKILL` to load, when the Retrieve Skill toggle is on |
 
-How actions appear depends on the server's mode. In direct mode, every selected action and workflow is exposed as its own tool. In agent mode, actions are reached through `RESOLVE_ACTIONS` and `EXECUTE_ACTION` instead. See [Choose your pattern](/v3/mcp/get-started/choose-your-pattern) for the trade-offs.
+How actions appear depends on the server's mode. In direct mode, every selected action and workflow is exposed as its own tool. In agent mode, actions and workflows are reached through `RESOLVE_ACTIONS` and `EXECUTE_ACTION` instead. See [Choose your pattern](/v3/mcp/get-started/choose-your-pattern) for the trade-offs.
 
 ## Request lifecycle
 
@@ -69,7 +69,7 @@ The agent never sees a linked account's credentials. Refold resolves them server
 The sequence below shows a single `EXECUTE_ACTION` call against Salesforce.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 sequenceDiagram
     participant Agent
     participant Refold as Refold MCP server

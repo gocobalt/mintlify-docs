@@ -9,16 +9,16 @@ For how agents authenticate and how you scope and revoke their access, see [Auth
 
 ## Tenant isolation
 
-Each MCP server is multi-tenant by design. One Server URL token maps to one linked account, and that pairing is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single customer.
+Each MCP server is multi-tenant by design. One Server URL token maps to one linked account, and that pairing is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single tenant.
 
 Refold enforces this at every layer:
 
 | Guarantee | What it means |
 |-----------|---------------|
-| **Each request is scoped to one customer** | Every request resolves its identity from the token you present, and that identity is fixed for the life of the request. |
-| **Sessions never share state** | Two concurrent sessions never share identity or tool state, and nothing is cached across requests. |
+| **Each request is scoped to one tenant** | Every request resolves its identity from the token you present, and that identity is fixed for the life of the request. |
+| **Sessions never share state** | Two concurrent sessions never share identity or tool state, and neither is cached across requests. |
 | **Tools are resolved per request** | The actions an agent can see and call are resolved fresh on each request, based on the authenticated identity. |
-| **Data is partitioned per customer** | Audit records, tool outputs, and execution metadata are partitioned per customer, and queries are always scoped to that customer. |
+| **Data is partitioned per tenant** | Audit records, tool outputs, and execution metadata are partitioned per tenant, and queries are always scoped to that tenant. |
 
 <Info>
 The MCP server is stateless. Identity and tool state are resolved on every request and never cached across requests, so concurrent sessions cannot leak into each other.

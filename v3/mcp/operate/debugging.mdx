@@ -12,7 +12,7 @@ Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what th
 
 ## MCP Inspector
 
-[MCP Inspector](https://github.com/modelcontextprotocol/inspector) is Anthropic's open-source debugger for any MCP server.
+[MCP Inspector](https://github.com/modelcontextprotocol/inspector) is the Model Context Protocol project's open-source debugger for any MCP server.
 
 ### Connect to your server
 
@@ -61,7 +61,7 @@ In the **Tools** panel, click the tool you want to test. The Inspector renders a
 For agent mode servers, the typical test sequence is:
 
 1. Run `RESOLVE_ACTIONS` with `integration_query: ["List Contacts Salesforce"]`
-2. Copy the returned `slug`, `identifier`, and `json_schema`
+2. Copy the returned `slug`, `type`, `identifier`, and `json_schema`
 3. Run `EXECUTE_ACTION` with `application_slug`, `action_id`, `type`, and an `input_payload` that matches the schema
 
 See [Tools](/v3/mcp/reference/tools) for the full request and response shapes.
@@ -124,14 +124,14 @@ Once your agent is running, every tool call is captured in **Maintain > MCP Logs
     | Status | What it means |
     |---|---|
     | `success` | Refold completed the call. The issue is on the agent's interpretation side, so compare the response payload to what the agent told the user. |
-    | `validation_error` | The agent sent input that didn't match the tool's schema, referenced an app or action that isn't on the server, or hit a known business-rule rejection. The message the agent received explains what failed. |
-    | `execution_error` | Refold couldn't reach the downstream service. The agent receives a generic message, and the call's detail panel shows the full error. |
+    | `validation_error` | The agent sent input that didn't match the tool's schema, or referenced an app or action that isn't on the server. The message the agent received explains what failed. |
+    | `execution_error` | Refold couldn't reach the downstream service. The agent and the detail panel both show the same user-facing message; the full upstream error is not exposed. |
     | `pending` | The call started but did not record completion. |
   </Step>
 </Steps>
 
 <Note>
-Downstream API errors from third-party apps are not surfaced verbatim to the agent. The agent receives a generic message, and the full upstream error is recorded in the call's detail panel.
+Downstream API errors from third-party apps are not surfaced verbatim to the agent. The agent receives a clean, user-facing message, and the detail panel shows that same message. The full upstream error from the third-party API is not exposed.
 </Note>
 
 ### Trace a full agent conversation

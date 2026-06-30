@@ -37,7 +37,7 @@ A workflow moves runtime decisions out of the agent and into a tested, determini
 | **Determinism** | Same input may produce different orderings across runs | Same input runs the same steps in the same order every time |
 | **Error handling** | Agent decides what to do on failure | Handled server-side inside the workflow |
 | **Business rules** | Enforced only if the agent remembers | Encoded in the workflow definition |
-| **Auditability** | Each tool call logged individually | One execution logged with all steps |
+| **Auditability** | Each tool call logged individually | One audit entry for the whole execution |
 
 Determinism matters where order is load-bearing: approval gates that must run before the action they gate, validation that must succeed before any side effect runs, and error handling that must run when a step fails.
 

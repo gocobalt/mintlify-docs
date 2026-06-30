@@ -3,7 +3,7 @@ title: "Tools reference"
 description: "Every MCP tool exposed by a Refold server: parameters, return shapes, and availability conditions."
 ---
 
-The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/get-started/architecture). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern).
+The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/build/server-configuration). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern).
 
 ## Tool availability
 
@@ -131,7 +131,7 @@ Runs a single action or workflow. Call once per resolved action from the `RESOLV
 }
 ```
 
-The shape of `data` is the third-party app's response passed through, so it varies by action. On failure, the agent receives a generic error message. The full upstream detail is recorded in the audit log, not returned to the agent.
+The shape of `data` is the third-party app's response passed through, so it varies by action. On failure, the agent receives an error message describing what went wrong, and the same detail is recorded in the audit log.
 
 ---
 
@@ -170,8 +170,7 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
       "snippet": "## Goal\nQualify an inbound lead...",
       "skill_name": "Lead Qualification",
       "category": "Sales",
-      "apps": ["salesforce"],
-      "skills_summary": "Score and route inbound leads"
+      "apps": ["salesforce"]
     }
   ]
 }
@@ -200,7 +199,7 @@ For the underlying token and access model, see [Authentication](/v3/mcp/connect/
 When both Agent Mode and Retrieve Skill are enabled, call the tools in this order:
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 flowchart LR
     A["GET_KNOWLEDGE_INDEX<br/>Browse available skills"] --> B["LOAD_SKILL<br/>(if relevant)<br/>Load procedure"]
     B --> C["RESOLVE_ACTIONS<br/>Resolve intent<br/>to specific actions"]
@@ -208,7 +207,7 @@ flowchart LR
 ```
 
 <Note>
-The tool descriptions enforce this ordering. Call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. Agents that skip `RESOLVE_ACTIONS` receive an error-guidance response from the tool description.
+The tool descriptions instruct agents to follow this ordering and to call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. The ordering is guided by these descriptions, not enforced by a runtime check.
 </Note>
 
 ## See also

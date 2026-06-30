@@ -16,7 +16,7 @@ In MCP, the user authorizes connections **inline in the agent chat**. The flows 
 An MCP client (Claude, Cursor, your own agent) connects to your MCP server with an auth token. You can embed the token in the URL path or send it in an Authorization header. Either way, the token resolves to a single linked account, and that account is the customer the request runs as for the rest of the call.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 flowchart LR
     A["MCP Client<br/>(Claude, Cursor)"] -->|"Server URL with token"| B["Refold validates<br/>the token"]
     B -->|"Request runs as<br/>that customer"| C["Tool Execution"]
@@ -85,7 +85,7 @@ A token authenticates the agent; the MCP server's configuration decides what tha
 |---------|-----|
 | **Which apps an agent can access** | Add or remove apps on the MCP server's **Applications** tab |
 | **Which actions are available** | Select specific actions per app when adding it to the server |
-| **Direct vs agent mode** | Toggle **Agent Mode** to control whether agents see raw tools or resolve-then-execute |
+| **Direct vs agent mode** | Toggle **Agent Mode** to control whether agents see per-action tools or resolve-then-execute |
 | **Skill access** | Toggle **Retrieve Skill** to control whether agents can discover and load skills |
 | **Per-user scoping** | Each linked account gets a unique token, so each user connects with a different URL |
 
