@@ -13,14 +13,14 @@ Refold connect lets your users connect their integration accounts. It stores the
 <img height="200" src="/images/implementation/display_apps_sequence.png" alt="Sequence Diagram for Displaying Apps on Frontend"/>
 
 ## Building Custom UI
-To build a custom UI for your integrations, you can do so by using the [Refold SDKs](/sdks/client-side-sdks/js-sdk#getapp) or the [List Applications API](https://docs.gocobalt.io/api-reference/integration-meta/list-applications).
+To build a custom UI for your integrations, you can do so by using the [Refold SDKs](/legacy/api-reference/sdks) or the List Applications API.
 
 If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the 
 
 <Steps>
 
 <Step title="Request">
-Call the **.getapp()** method provided in the SDK or the [List Applications API](https://docs.gocobalt.io/api-reference/applications/list-applications) to get a list of enabled apps.
+Call the **.getapp()** method provided in the SDK or the [List Applications API](/legacy/api-reference/applications/list-applications) to get a list of enabled apps.
 <CodeGroup>
 ``` JavaScript JS SDK
 cobalt.getApp()  // to get a list of all apps
@@ -28,13 +28,13 @@ cobalt.getApp("slack")  // to get details of a single app, e.g. slack
 ```
 ``` JavaScript cURL
 curl --request GET \
-  --url https://api.gocobalt.io/api/v2/public/application \
+  --url https://app.refold.ai/api/v2/public/application \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>'
 ```
 </CodeGroup>
 <Tip>
-You can also fetch information about a single application by providing the app slug in the [Get Application API](https://docs.gocobalt.io/api-reference/applications/get-application).
+You can also fetch information about a single application by providing the app slug in the [Get Application API](/legacy/api-reference/applications/get-application).
 </Tip>
 </Step>
 
@@ -94,7 +94,7 @@ In the response, you will receive an array containing the List of Applications t
 ]
 ```
 <Note>
-Learn more about the Embedded and Seamless flow of Hosted Portal [here](https://docs.gocobalt.io/ship/auth_flows/flows).
+Learn more about the Embedded and Seamless flow of Hosted Portal [here](/legacy/ship/auth_flows/flows).
 </Note>
 </Step>
 </Steps>
@@ -103,5 +103,5 @@ You have successfully received the response and can now render the applications 
 
 ## Checkpoint + Next Step
 <Check>
-You have now successfully built a Custom UI for your end users which displays all the integrations enabled for them. Next step is to [Manage Connections](https://docs.gocobalt.io/implementation/integrate/manage-connection) for your customers.
+You have now successfully built a Custom UI for your end users which displays all the integrations enabled for them. Next step is to [Manage Connections](/legacy/implementation/integrate/manage-connection) for your customers.
 </Check>

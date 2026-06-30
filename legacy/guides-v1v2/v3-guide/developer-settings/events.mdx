@@ -2,7 +2,7 @@
 title: Events
 ---
 
-Events are the trigger entities that are used to define a start point of a workflow and can be triggered using the [REST APIs](https://docs.gocobalt.io/api-reference/events/trigger-event-by-slug) or the Event URL assigned for the Organization.
+Events are the trigger entities that are used to define a start point of a workflow and can be triggered using the [REST APIs](/legacy/api-reference/events/trigger-event-by-slug) or the Event URL assigned for the Organization.
 Think of these custom events as signals sent from your app using the Cobalt SDK or Event API to kick off different processes. Cobalt events are `common models`. This means 
 once you set it up, one event can make several workflows get executed. This is handy when you want the same event to do similar things in different apps. For example, an event 
 'User verified' could set off one workflow in Salesforce and another in HubSpot, making it easy to achieve consistent integration across various platforms without needing extra 
@@ -45,7 +45,7 @@ Then you can just make the POST API call with `linked_account_id` and `x-api-key
 
 ```curl
 curl --request POST \
-  --url https://api.gocobalt.io/api/v1/webhook/64c357c739ec788238ab5f9b \
+  --url https://app.refold.ai/api/v1/webhook/64c357c739ec788238ab5f9b \
   --header 'Content-Type: application/json' \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <x-api-key>' \
@@ -67,6 +67,6 @@ curl --request POST \
 </Warning>
 
 Event URL can be used as a quick resort to trigger an event. If you wish to have better control on triggering such as triggering the worflow executions for a specific application,
-instead of for all application workflows with which the event is associated, kindly refer the [REST APIs](https://docs.gocobalt.io/api-reference/events/trigger-event-by-slug) support for events.
+instead of for all application workflows with which the event is associated, kindly refer the [REST APIs](/legacy/api-reference/events/trigger-event-by-slug) support for events.
 
-To trigger an event from Cobalt platform so that you can simulate event execution, test workflows and validate the behavior of associated actions, you can use the `Try API` feature of Cobalt. Refer [here](https://docs.gocobalt.io/guides/platform/tryapi) to learn how you can use Try API.
+To trigger an event from Cobalt platform so that you can simulate event execution, test workflows and validate the behavior of associated actions, you can use the `Try API` feature of Cobalt. Refer [here](/legacy/guides-v1v2/platform/tryapi) to learn how you can use Try API.

@@ -13,7 +13,7 @@ Below are a few pre-requisites that you need to do before moving forward:
 
 In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
 <Note>
-Know more about Linked Accounts and how you can create one in the guide [here](https://docs.gocobalt.io/build/basics/linked_account).
+Know more about Linked Accounts and how you can create one in the guide [here](/legacy/build/basics/linked_account).
 </Note>
 
 <Tip>
@@ -22,7 +22,7 @@ We recommend you create a linked account at the same time as your customer signs
 
 **2. Generate Session Token**
 
-  [Generate a Session Token](https://docs.gocobalt.io/api-reference/session-tokens/generate-session-token) for your Linked Account.
+  [Generate a Session Token](/legacy/api-reference/session-tokens/generate-session-token) for your Linked Account.
 
   <Warning>
   The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
@@ -33,12 +33,12 @@ We recommend you create a linked account at the same time as your customer signs
 The general steps to build your own flow are:
 <AccordionGroup>
   <Accordion title="Display a list of integrations for your users to select">
-Retrieve a list of all integrations available to connect using the [List Applications API](https://docs.gocobalt.io/api-reference/applications/list-applications) or [.getApplications()](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#getapplications) method and display them in your UI.
+Retrieve a list of all integrations available to connect using the [List Applications API](/legacy/api-reference/applications/list-applications) or [.getApplications()](/legacy/api-reference/sdks) method and display them in your UI.
 <CodeGroup>
 
 ``` JavaScript cURL
 curl --request GET \
-  --url https://api.gocobalt.io/api/v2/public/application \
+  --url https://app.refold.ai/api/v2/public/application \
   --header 'linked_account_id: <linked_account_id>' \
   --header 'x-api-key: <api-key>'
 ```
@@ -82,13 +82,13 @@ Online require the specific use of QuickBooks branded buttons, including specifi
 Initialize the javascript SDK using the Session token.
 
 <Tip>
-Learn more about Refold’s JS SDK and how to initialize it [here](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk).
+Learn more about Refold’s JS SDK and how to initialize it [here](/legacy/api-reference/sdks).
 </Tip>
 
   </Accordion>
 
   <Accordion title="Manage Connections">
-Refold provides the flexibility for you to manage your customers' application connections. The [`.connect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#connect) method
+Refold provides the flexibility for you to manage your customers' application connections. The [`.connect()`](/legacy/api-reference/sdks) method
 lets your customers to connect to an application platform, authorizing you to access the platform APIs and data on their behalf.
 
 ```Javascript
@@ -99,7 +99,7 @@ cobalt.connect("twilio", {
 }) // saves the auth data for key based apps
 ```
 
-The [`.disconnect()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#disconnect) method similarly, lets the user to disconnect from the application platform, revoking
+The [`.disconnect()`](/legacy/api-reference/sdks) method similarly, lets the user to disconnect from the application platform, revoking
 the authorization and deleting any and all configurations of the Linked account saved for that particular application.
 
 ```Javascript
@@ -108,7 +108,7 @@ cobalt.disconnect("slack")
   </Accordion>
 
   <Accordion title="Allow users to configure the connection">
-Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the [`.config()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk) method to find an 
+Once the user has successfully authenticated in their platform, he is redirected back to your app integration page. Use the [`.config()`](/legacy/api-reference/sdks) method to find an 
 exisiting config or creating a new config for the linked account. 
 
 ``` Javascript
@@ -122,7 +122,7 @@ cobalt.config({
 
   <Accordion title="Save/Update the configuration">
 The `.config()` method provides you with all the published workflows and settings input for the user. The user can now enable the workflows,
-enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](https://docs.gocobalt.io/sdks/client-side-sdks/js-sdk#updateconfig) method.
+enter data for the settings and map fields. These updates to the config can be made using the [`.updateConfig()`](/legacy/api-reference/sdks) method.
 
 ```Javascript
 cobalt.updateConfig({
