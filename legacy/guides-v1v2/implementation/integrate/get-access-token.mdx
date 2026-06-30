@@ -10,7 +10,7 @@ To generate Session Token for a Linked Account, you can use the Refold API or Re
 
 ### Refold API/SDK for Session Token
 
-1. **Request** : In your server side code, make a POST Request to the `/session-token` endpoint or call the [**.getTokenForLinkedAccount()**](https://docs.gocobalt.io/sdks/server-side-sdks/nodejs-sdk#gettokenforlinkedaccount) method of the **NodeJS SDK**. The request should include the `linked-account_id` of the user for which the Session token is to be generated.
+1. **Request** : In your server side code, make a POST Request to the `/session-token` endpoint or call the [**.getTokenForLinkedAccount()**](/legacy/api-reference/sdks) method of the **NodeJS SDK**. The request should include the `linked-account_id` of the user for which the Session token is to be generated.
 <Warning>
 The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
 </Warning>
@@ -18,7 +18,7 @@ The session token gets expired in 24 hours. Please make sure you generate a new 
 <CodeGroup>
 ```JavaScript cURL
     curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/session-token \
+  --url https://app.refold.ai/api/v2/public/session-token \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{

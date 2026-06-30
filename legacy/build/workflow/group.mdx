@@ -8,10 +8,10 @@ The Loop Node in Refold allows users to iterate over entities or execute a serie
 Loop node is like a repetitive steps executor within the workflow. It can:
 
 - Wrap around other nodes and execute them repetitively;
-- Use the data received from all iterations of the Loop node in other nodes of workflow. Refer [here](/build/workflow/group#group-node-output);
-- Execute nodes for fixed number of times using [Fixed Iteration](/build/workflow/group#actions);
-- Execute as many times as there are items in an array using [Array Iteration](/build/workflow/group#actions); &
-- Execute nodes repetitively based on case and break conditions using [Do While](/build/workflow/group#actions);
+- Use the data received from all iterations of the Loop node in other nodes of workflow. Refer [here](/legacy/build/workflow/group#group-node-output);
+- Execute nodes for fixed number of times using [Fixed Iteration](/legacy/build/workflow/group#actions);
+- Execute as many times as there are items in an array using [Array Iteration](/legacy/build/workflow/group#actions); &
+- Execute nodes repetitively based on case and break conditions using [Do While](/legacy/build/workflow/group#actions);
 
 
 <iframe
@@ -62,13 +62,13 @@ In Break Condition, by using `+ Add Condition`, you can add multiple **AND** or 
 
 ### Sample Workflow for Do While
 
-Let's consider a simple example to understand Do While by creating a [workflow](https://docs.gocobalt.io/build/workflow/overview). In this, we will execute the loop with the condition that it will be executed until the iteration count is 5 and will break out of loop if iteration count is greater than or equal to 3.
+Let's consider a simple example to understand Do While by creating a [workflow](/legacy/build/workflow/overview). In this, we will execute the loop with the condition that it will be executed until the iteration count is 5 and will break out of loop if iteration count is greater than or equal to 3.
 <Steps>
 <Step title= "Create workflow">
 Create a new workflow, add an event to the Start Node and connect it with a Loop Node and choose `Do While` action. 
 </Step>
 <Step title="Add other nodes">
-Add a [Custom Code](https://docs.gocobalt.io/build/workflow/custom-code) and a [Response node](https://docs.gocobalt.io/build/workflow/response) inside the Loop Node.
+Add a [Custom Code](/legacy/build/workflow/custom-code) and a [Response node](/legacy/build/workflow/response) inside the Loop Node.
 </Step>
 <Step title="Configure the nodes">
 In the Custom Node, add the iteration count of the loop as a parameter and simply return it. We will use this output to set conditions for Loop Node.
@@ -142,5 +142,5 @@ When using **Do While** action, you might need to access the iteration count of 
 {{node.<no. of loop node>.body.iteration_count}}
 ```
 <Tip>
-To know more about Templating in Refold, refer to our doc [here](https://docs.gocobalt.io/build/workflow/templating).
+To know more about Templating in Refold, refer to our doc [here](/legacy/build/workflow/templating).
 </Tip>

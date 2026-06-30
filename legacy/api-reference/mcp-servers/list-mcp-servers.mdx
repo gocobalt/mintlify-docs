@@ -1,0 +1,87 @@
+---
+title: List MCP Servers
+api: get /api/v2/public/mcp-servers
+description: List the MCP servers for a linked account.
+---
+
+List the MCP (Model Context Protocol) servers available to a linked account, paginated. MCP servers expose your integrations and chains as tools for AI agents.
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account. Required with API-key auth.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a paginated envelope of MCP server objects.
+    <ResponseField name="docs" type="array">MCP servers, each `{_id, name, description, ...}`.</ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total servers.</ResponseField>
+    <ResponseField name="page" type="integer">Current page.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    Returned when using API-key auth without a `linked_account_id`.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code, e.g. `MISSING_REQUIRED_FIELD`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a314ee8d0aeb8165beacc6e",
+      "name": "Production CRM Server",
+      "description": "MCP server for CRM workflows",
+      "associated_org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+      "environment": "test",
+      "createdAt": "2026-06-16T13:22:00.000Z"
+    }
+  ],
+  "totalDocs": 18,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 2,
+  "hasNextPage": true
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "MISSING_REQUIRED_FIELD",
+  "message": "Linked account id is required with API Key, for this resource"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

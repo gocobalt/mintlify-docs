@@ -35,19 +35,19 @@ Retry can be performed only one time each for the workflow and the node.
 Users can subscribe to Refold Webhooks to receive real-time notifications about errored workflows. This will allow users to proactively address issues as they occur.
 
 <Tip>
-To learn more about the Refold Webhooks, you can refer to our guide [here](https://docs.gocobalt.io/guides/platform/webhook).
+To learn more about the Refold Webhooks, you can refer to our guide [here](/legacy/guides-v1v2/platform/webhook).
 </Tip>
 
-Refold Webhook Subscription can be done either through the dashboard or the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+Refold Webhook Subscription can be done either through the dashboard or the Subscribe to Events API.
 
 1. **Subscription via Dashboard**: Navigate to the `Webhooks` section in the Refold dashboard, enter the `Webhook URL`, choose the Webhook Payload as either `Default` or `Slack` and select the `Workflow Errored` event for which the notifications will be sent.
 <img height="200" src="/images/implementation/webhook-subscribe.png" alt="Subscribe to Webhooks in Refold"/>
 
-2. **Subscription via API**: Users can subscribe to Refold Webhooks using the [Subscribe to Events](https://docs.gocobalt.io/api-reference/webhooks/subscribe-webhook-event) API.
+2. **Subscription via API**: Users can subscribe to Refold Webhooks using the Subscribe to Events API.
  - **Request** - Make a POST request to the `/webhook/subscribe` endpoint with the webhook event as `workflow-errored`.
  ``` JavaScript cURL
  curl --request POST \
-  --url https://api.gocobalt.io/api/v2/public/webhook/subscribe \
+  --url https://app.refold.ai/api/v2/public/webhook/subscribe \
   --header 'Content-Type: application/json' \
   --header 'x-api-key: <api-key>' \
   --data '{
