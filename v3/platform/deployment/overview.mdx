@@ -5,7 +5,7 @@ description: "Choose how to run Refold — Refold Cloud, Refold Managed, or self
 
 Refold runs as a set of stateless services behind a single load balancer, backed by a database, a cache, and object storage. You decide where those services run and who operates them: fully hosted by Refold, managed by Refold inside your own cloud, or self-hosted end-to-end on your own Kubernetes cluster. This section helps you pick a deployment model, install the platform, and keep it healthy in production.
 
-If you're new here, read the [Control Plane](/v3/platform/deployment/control-plane) reference first to understand the deployment models, then follow the install guide for the option you choose.
+If you're new here, start with the deployment models below, then follow the install guide for the option you choose.
 
 ## Choose a deployment model
 
@@ -17,7 +17,7 @@ Every install is one of three models, which differ in who operates the **control
 | **Refold Managed (BYOC)** | Refold, inside your own cloud account | Data residency in your cloud without operating the platform yourself. |
 | **Self-Hosted** | You, in your own Kubernetes cluster | Full control over upgrades, networking, and the runtime. Highest ops burden. |
 
-See [Control Plane](/v3/platform/deployment/control-plane) for how the control plane and data plane split across each model.
+See the [architecture overview](/v3/platform/deployment/architecture/overview) for how Refold's services are structured across each model.
 
 ## Install
 
@@ -30,7 +30,7 @@ Choose the path that matches your model and environment. Each one brings up the 
   <Card title="Helm" icon="ship" href="/v3/platform/deployment/kubernetes/helm">
     Self-host and operate Refold end-to-end on your own Kubernetes cluster.
   </Card>
-  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/platform/deployment/kubernetes/refold-cp">
+  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/platform/deployment/kubernetes/refold-managed">
     Run Refold inside your own AWS account while Refold provisions and manages it.
   </Card>
 </CardGroup>
@@ -74,8 +74,5 @@ Once Refold is running, these guides cover day-2 operations:
   </Card>
   <Card title="Troubleshooting" icon="wrench" href="/v3/platform/deployment/troubleshooting">
     Diagnose and fix common deployment issues.
-  </Card>
-  <Card title="Go-live checklist" icon="circle-check" href="/v3/platform/deployment/go-live-checklist">
-    Verify everything is production-ready before you launch.
   </Card>
 </CardGroup>
