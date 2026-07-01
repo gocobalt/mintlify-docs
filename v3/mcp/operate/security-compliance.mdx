@@ -1,15 +1,15 @@
 ---
-title: "Security & Compliance"
+title: "Security & compliance"
 description: "How Refold MCP isolates tenants, secures transport, and handles data on managed infrastructure."
 ---
 
-This page documents how Refold MCP isolates tenants, secures connections, and handles data. It is intended for security reviews, compliance evaluations, and architecture assessments.
+Every Refold MCP request resolves to exactly one tenant, runs over TLS, and executes on Refold's managed infrastructure. Every tool call is logged automatically to an audit trail that cannot be disabled. Use this page for security reviews, compliance evaluations, and architecture assessments.
 
 For how agents authenticate and how you scope and revoke their access, see [Authentication](/v3/mcp/connect/authentication).
 
 ## Tenant isolation
 
-Each MCP server is multi-tenant by design. One Server URL token maps to one linked account, and that pairing is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single tenant.
+Each MCP server is multi-tenant by design. Each Server URL carries one token that maps to one linked account, and that mapping is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single tenant.
 
 Refold enforces this at every layer:
 
@@ -21,14 +21,14 @@ Refold enforces this at every layer:
 | **Data is partitioned per tenant** | Audit records, tool outputs, and execution metadata are partitioned per tenant, and queries are always scoped to that tenant. |
 
 <Info>
-The MCP server is stateless. Identity and tool state are resolved on every request and never cached across requests, so concurrent sessions cannot leak into each other.
+Because the MCP server is stateless, nothing from one session carries into another: there is no identity or tool state to leak, so the per-tenant guarantees above hold even under heavy concurrency.
 </Info>
 
 ## Transport security
 
 | Property | Detail |
 |----------|--------|
-| **Protocol** | The current MCP specification over streamable HTTP |
+| **Protocol** | MCP specification `2025-11-25` over Streamable HTTP |
 | **Encryption** | TLS 1.2+ for all connections (agent-to-Refold, internal Refold traffic, and Refold-to-third-party apps) |
 | **Transport mode** | Stateless HTTP (no persistent WebSocket connections) |
 

@@ -24,12 +24,12 @@ When **Retrieve Skill** is enabled (in either direct or agent mode), the server 
 
 Agents discover skills by browsing, not by having them pushed up front:
 
-1. **`GET_KNOWLEDGE_INDEX`** returns a compact, server-scoped index of the skills available on this server. Each entry carries a name, an ID, and a short description. Page through it with `limit` (default 50) and `offset` (default 0).
+1. **`GET_KNOWLEDGE_INDEX`** returns a compact, server-scoped index of the skills available on this server. (The tool name says "knowledge"; the index it returns is this server's skills.) Each entry carries a name, an ID, and a short description. Page through it with `limit` (default 50) and `offset` (default 0).
 2. **`LOAD_SKILL`** loads the full markdown content of one skill by ID, on demand, once the agent picks a match.
 
 The agent never receives full skill content up front. It scans the index, finds the skill that fits the task, then loads only that one:
 
-```
+```text
 User: "Qualify this lead from the webinar"
 
 1. The agent calls GET_KNOWLEDGE_INDEX to list the skills on this
@@ -48,19 +48,21 @@ User: "Qualify this lead from the webinar"
 <Steps>
   <Step title="Open the Skills tab">
     In your MCP server, go to the **Skills** tab and click **+ Add Skill**.
-    <img src="/images/mcp-skill-create.png" alt="Creating a skill with name, description, app, and content" />
+    <Frame>
+      <img src="/images/mcp-skill-create.png" alt="Creating a skill with name, summary, app, content, and status" />
+    </Frame>
   </Step>
   <Step title="Fill in the skill fields">
     | Field | Description |
     |-------|-------------|
     | **Name** | What the agent sees during discovery. Be descriptive, such as "Salesforce Lead Qualification Process". |
     | **Summary** | A short description of what the skill does and when to use it. |
-    | **App** | Which connected application the skill relates to. |
+    | **App** | Which app the skill relates to. |
     | **Content** | The procedure body: steps, API patterns, conditional logic, input/output specs. |
     | **Status** | Enable or disable the skill without deleting it. |
   </Step>
   <Step title="Write the procedure">
-    Write the content as structured instructions an agent can follow. Mix prose with the concrete API or query patterns the agent should use (SOQL queries, REST endpoints, parameter names) so it doesn't have to guess them at runtime. Structure each procedure with five sections:
+    Write the content as structured instructions an agent can follow. Mix prose with the concrete API or query patterns the agent should use (SOQL queries, REST endpoints, parameter names) so it doesn't have to guess them at runtime. Structure each procedure around these sections:
 
     - **Goal** states, in one line, what the skill accomplishes.
     - **Pre-checks** are the conditions that must hold before the agent proceeds (required inputs, an active connection).
@@ -76,11 +78,13 @@ Write a skill the way you'd write a runbook for a junior team member: clear step
 
 Click any skill in the **Skills** tab to see its rendered content, metadata, and usage stats.
 
-<img src="/images/mcp-skill-detail.png" alt="Skill detail view showing rendered content and stats" />
+<Frame>
+  <img src="/images/mcp-skill-detail.png" alt="Skill detail view showing rendered content and stats" />
+</Frame>
 
 ## Examples
 
-The actions referenced below are real Refold action IDs. Copy the structure and adapt the field names to your data. To find action IDs for an app on your server, browse the **Applications** tab in the dashboard. Every action exposed to the agent shows its slug.
+The actions referenced below are real Refold action IDs. Copy the structure and adapt the field names to your data. To find action IDs for an app on your server, browse the **Applications** tab in the dashboard. Every action exposed to the agent shows its action ID.
 
 <Note>
 Most Refold connectors use `snake_case` action IDs (`create_contact`, `get_purchase_orders`). NetSuite uses `camelCase` (`createAccount`, `getVendorById`). Use the exact ID for each app.
@@ -111,7 +115,7 @@ Qualify an inbound lead and capture the result on a Salesforce contact.
 3. If no contact exists, call `create_contact` with:
    `{ FirstName, LastName, Email, Phone, additional_fields: { LeadSource: "Webinar" } }`
 
-4. Score the lead in the agent layer based on company size:
+4. Score the lead yourself (no API call) based on company size:
    > 500 employees → "high"
    200-500 → "medium"
    < 200 → "low"
@@ -128,7 +132,7 @@ If Salesforce is unreachable, return an error asking the user to retry.
 
 ### Cross-app contact sync (Salesforce → HubSpot)
 
-A two-app skill that reads from one system, writes to another, and handles existing records idempotently.
+A two-app skill that reads from one system, writes to another, and updates existing records instead of creating duplicates.
 
 ```markdown
 ## Goal
@@ -169,7 +173,7 @@ Mirror a Salesforce contact into HubSpot. Update if it already exists.
   with the partial data fetched from Salesforce.
 ```
 
-### Purchase order with vendor validation (SAP S/4HANA)
+### Purchase order with supplier validation (SAP S/4HANA)
 
 A skill with strict ordering and explicit failure paths. Use this pattern for ERP processes where a wrong step has downstream cost.
 
@@ -213,6 +217,6 @@ These three examples cover the common shapes: single-app lookup-and-act, cross-a
     The tools agents use to discover, load, and run skills.
   </Card>
   <Card title="Choose your pattern" icon="route" href="/v3/mcp/get-started/choose-your-pattern">
-    Decide between direct tools, agent skills, and workflows as tools.
+    Decide between direct tools, skills, and workflows as tools.
   </Card>
 </CardGroup>

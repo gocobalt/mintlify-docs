@@ -3,7 +3,7 @@ title: "Server configuration"
 description: "Configure what an AI agent can access on your MCP server: connected apps, exposed actions, and capability toggles."
 ---
 
-An MCP server has three configuration tabs in the Refold dashboard: **Overview**, **Applications**, and **Skills**. Use these tabs to control the agent's identity context, its access boundary, and the reusable procedures it can load.
+An MCP server has three configuration tabs in the Refold dashboard: **Overview**, **Applications**, and **Skills**. Use these tabs to set the agent's identity and mode, define its access boundary, and attach the reusable procedures it can load.
 
 ## Overview tab
 
@@ -17,7 +17,7 @@ The **Name** and **Description** are surfaced to the agent when it connects. Wri
 
 ### Server URL
 
-Each customer connects with their own Server URL. The URL comes in two forms that carry the same token and `server_id`: the token in the path, or the token in an `Authorization` header.
+Each end user connects with their own Server URL. The URL comes in two forms that carry the same token and `server_id`: the token in the path, or the token in an `Authorization` header.
 
 <CodeGroup>
 ```bash Path token
@@ -32,20 +32,20 @@ https://<domain>/mcp/v1/<server_id>
 
 | Segment | What it is |
 |---------|------------|
-| `token` | Auth token tied to a specific [linked account](/v3/platform/concepts/linked-account). It goes in the URL path or in an `Authorization: Bearer` header. Each customer gets a unique token. |
+| `token` | Auth token tied to a specific [linked account](/v3/platform/concepts/linked-account). It goes in the URL path or in an `Authorization: Bearer` header. Each end user gets a unique token. |
 | `server_id` | Identifies this MCP server configuration. |
 
-The token authenticates every request. It scopes the session to one customer's linked account, and every tool call in that session runs under that customer's credentials.
+The token authenticates every request. It scopes the session to one end user's linked account, and every tool call in that session runs under that end user's credentials.
 
-You build one server configuration and reuse it for every customer. Each customer connects with their own Server URL, so one URL maps to one [linked account](/v3/platform/concepts/linked-account), which maps to one customer. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/mcp/connect/authentication).
+You build one server configuration and reuse it for every end user. Because each URL is unique to an end user, one URL maps to one [linked account](/v3/platform/concepts/linked-account), which maps to one end user. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/mcp/connect/authentication).
 
 <Info>
-The Server URL is generated per linked account and retrieved from the dashboard.
+The Server URL is generated per linked account and retrieved from the dashboard. The examples above show its structure; copy the complete URL, including the host, from there rather than assembling it by hand.
 </Info>
 
 ### Access controls
 
-A server always runs in one of two mutually exclusive modes, set by the **Agent Mode** toggle in the **Server Details** panel:
+A server always runs in one of two mutually exclusive modes, set by the **Agent Mode** toggle:
 
 - **Direct mode** (default): the agent sees one tool per configured action or workflow and calls them directly. This is the tightest scope.
 - **Agent mode**: the agent sees two meta-tools, `RESOLVE_ACTIONS` (plans which actions to use) and `EXECUTE_ACTION` (runs them). Use it when the number of actions makes individual tools unwieldy.
@@ -55,15 +55,15 @@ Two more toggles layer capabilities onto whichever mode is active. Neither is a 
 | Toggle | What it does | Default |
 |--------|----------------|---------|
 | **Agent Mode** | Switches the server from direct mode to agent mode, replacing per-action tools with `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. | Off |
-| **Retrieve Skill** | Adds `GET_KNOWLEDGE_INDEX` and `LOAD_SKILL`. The agent browses the index of skills attached to this server, then loads the full procedure it needs. Works in either mode. See [Skills](/v3/mcp/build/skills). | Off |
-| **Auth Tool** | If a connection needs re-authorization, the end user is prompted to reconnect instead of the call failing silently. | Off |
+| **Retrieve Skill** | Adds `GET_KNOWLEDGE_INDEX` (the skill index) and `LOAD_SKILL`. The agent browses the index of skills attached to this server, then loads the full procedure it needs. Works in either mode. See [Skills](/v3/mcp/build/skills). | Off |
+| **Auth Tool** | Adds a reconnect prompt. If a connection needs re-authorization, the end user is prompted to reconnect instead of the call failing silently. See [Authentication](/v3/mcp/connect/authentication). | Off |
 
 <Note>
-The **Agent Mode** and **Retrieve Skill** toggles change which tools the agent sees and how it invokes actions. They also have access-control implications. See [Authentication](/v3/mcp/connect/authentication) for the security model.
+The **Agent Mode** and **Retrieve Skill** toggles change which tools the agent sees and how it invokes actions. They also change what the agent can reach in a session, so review the security model before enabling them. See [Authentication](/v3/mcp/connect/authentication).
 </Note>
 
 <Tip>
-Start with direct mode and a small set of actions. Enable Agent Mode when you need broader coverage or when the number of actions makes individual tools unwieldy.
+Start with direct mode and a small set of actions. Enable Agent Mode when you need broader coverage, or when there are too many actions to expose as individual tools.
 </Tip>
 
 For the full decision framework (when to use direct mode, agent mode, or workflow patterns), see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern).
@@ -108,10 +108,10 @@ Skills attached here are scoped to this MCP server only. See [Skills](/v3/mcp/bu
 
 ## See also
 
-- [How it works](/v3/mcp/get-started/architecture). Request lifecycle, per-user URLs, and the object-to-tool model.
-- [Authentication](/v3/mcp/connect/authentication). Token security, revocation, and how the toggles affect access.
-- [Choose your pattern](/v3/mcp/get-started/choose-your-pattern). Direct, agent, and workflow patterns compared.
-- [Skills](/v3/mcp/build/skills). Create and attach reusable agent procedures.
-- [Workflows as tools](/v3/mcp/build/workflow-as-mcp). Expose a workflow as a single MCP tool call.
-- [Tools](/v3/mcp/reference/tools). Full tool reference and schemas.
-- [MCP Logs](/v3/mcp/operate/mcp-logs). Audit trail for every tool call.
+- [How it works](/v3/mcp/get-started/architecture): request lifecycle, per-user URLs, and the object-to-tool model.
+- [Authentication](/v3/mcp/connect/authentication): token security, revocation, and how the toggles affect access.
+- [Choose your pattern](/v3/mcp/get-started/choose-your-pattern): direct, agent, and workflow patterns compared.
+- [Skills](/v3/mcp/build/skills): create and attach reusable agent procedures.
+- [Workflows as tools](/v3/mcp/build/workflow-as-mcp): expose a workflow as a single MCP tool call.
+- [Tools](/v3/mcp/reference/tools): full tool reference and schemas.
+- [MCP Logs](/v3/mcp/operate/mcp-logs): audit trail for every tool call.

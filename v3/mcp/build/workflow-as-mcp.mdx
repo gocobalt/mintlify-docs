@@ -1,9 +1,9 @@
 ---
 title: "Workflows as tools"
-description: "Expose a tested workflow as a single MCP tool so the agent calls one tool instead of orchestrating a sequence of API calls"
+description: "Expose a tested workflow as a single MCP tool so the agent calls one tool instead of orchestrating a sequence of separate actions"
 ---
 
-A [platform workflow](/v3/platform/concepts/workflows/overview) can be exposed as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
+You can expose a [platform workflow](/v3/platform/concepts/workflows/overview) as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
 
 Use a workflow when a process needs precise sequencing, error handling, or business logic. Use it instead of [letting the agent orchestrate](/v3/mcp/get-started/choose-your-pattern) the same process step by step, where sequencing and error handling become decisions the agent makes at runtime.
 
@@ -26,9 +26,9 @@ A workflow added to a server shows up as a tool:
 - **Direct mode:** as `<app_slug>_<workflow_name>_workflow`
 - **Agent mode:** reachable through `EXECUTE_ACTION` with `type: "workflow"`
 
-The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and it returns the final result. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/reference/tools) for the exact parameter shape.
+The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and the final result comes back. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/reference/tools) for the exact parameter shape.
 
-## What you get
+## What a workflow guarantees
 
 A workflow moves runtime decisions out of the agent and into a tested, deterministic procedure.
 
@@ -39,7 +39,7 @@ A workflow moves runtime decisions out of the agent and into a tested, determini
 | **Business rules** | Enforced only if the agent remembers | Encoded in the workflow definition |
 | **Auditability** | Each tool call logged individually | One audit entry for the whole execution |
 
-Determinism matters where order is load-bearing: approval gates that must run before the action they gate, validation that must succeed before any side effect runs, and error handling that must run when a step fails.
+Determinism matters when the order of steps affects the outcome: approval gates that must run before the action they gate, validation that must succeed before any side effect runs, and error handling that must run when a step fails.
 
 ### Failure model
 
@@ -62,7 +62,7 @@ Every workflow invocation is logged in [MCP Logs](/v3/mcp/operate/mcp-logs) with
     Open the MCP server, go to the **Applications** tab, and add the app the workflow belongs to. Select the workflow alongside any actions you want exposed. See [Server configuration](/v3/mcp/build/server-configuration#applications-tab) for the full Applications tab walkthrough.
   </Step>
 
-  <Step title="The workflow appears as a tool">
+  <Step title="Confirm the workflow is exposed">
     The workflow is now callable by the agent: in direct mode as `<app_slug>_<workflow_name>_workflow`, in agent mode through `EXECUTE_ACTION` with `type: "workflow"`.
   </Step>
 </Steps>
@@ -72,7 +72,7 @@ Every workflow invocation is logged in [MCP Logs](/v3/mcp/operate/mcp-logs) with
 An agent needs to handle "Buy a laptop from Dell for $1,200", an eight-step process in SAP.
 
 <Tabs>
-  <Tab title="Agent calling raw APIs">
+  <Tab title="Agent calling actions">
     The agent has to figure out and execute all eight steps:
 
     1. Validate vendor master data and compliance status

@@ -19,10 +19,10 @@ The tools an agent sees depend on which toggles are enabled on your [server conf
 
 ## Direct mode
 
-When Agent Mode is off, each action and workflow on the server becomes its own tool. Names are auto-generated from the app slug and action name.
+When Agent Mode is off, each action and workflow on the server becomes its own tool. Names are auto-generated from the app slug and the action or workflow name.
 
 **Example tool names:**
-```
+```text
 salesforce_create_contact_action
 salesforce_list_deals_action
 sap_get_purchase_order_action
@@ -48,7 +48,7 @@ Takes the user's request and resolves it to a list of specific actions to run.
 **Building `integration_query`:** Break the user's request into individual actions. Each entry should be a short description of the action and the target app.
 
 **Example:**
-```
+```text
 User: "Get all my Salesforce contacts and create a note in HubSpot"
 
 integration_query: [
@@ -84,7 +84,7 @@ integration_query: [
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `slug` | `string` | Application slug (e.g., `salesforce`, `hubspot`) |
+| `slug` | `string` | Application slug (for example, `salesforce` or `hubspot`). Pass this as `application_slug` to `EXECUTE_ACTION`. |
 | `type` | `"action"` \| `"workflow"` | Whether the entity is an action or a workflow |
 | `identifier` | `string` | The action or workflow ID. Pass this as `action_id` to `EXECUTE_ACTION` |
 | `json_schema` | `object` | JSON Schema for the action's input. Pass through to `input_payload`. May be `{}` if the entity has no inputs. |
@@ -99,9 +99,9 @@ Runs a single action or workflow. Call once per resolved action from the `RESOLV
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `application_slug` | `string` | Yes | The app to run against (e.g., `"salesforce"`) |
+| `application_slug` | `string` | Yes | The app to run against (for example, `"salesforce"`) |
 | `action_id` | `string` | Yes | The action or workflow ID from the resolved plan |
-| `input_payload` | `object` \| `string` | Yes | Input fields for the action, as a JSON object or a JSON string (e.g., `{"email": "user@example.com"}`) |
+| `input_payload` | `object` \| `string` | Yes | Input fields for the action, as a JSON object or a JSON string (for example, `{"email": "user@example.com"}`) |
 | `type` | `"action"` \| `"workflow"` | Yes | Whether this is an action or a workflow |
 
 **Example call:**
@@ -141,7 +141,7 @@ Available when Retrieve Skill is enabled. Skill tools can be combined with eithe
 
 ### GET_KNOWLEDGE_INDEX
 
-Returns a compact index of the skills available on this server. The agent browses the index, then loads the full content of a specific entry with `LOAD_SKILL`.
+Returns a compact index of the skills available on this server. Despite the tool name, the "knowledge index" and the skill index are the same thing. The agent browses the index, then loads the full content of a specific entry with `LOAD_SKILL`.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|

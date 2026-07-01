@@ -1,21 +1,26 @@
 ---
 title: "What is MCP"
-description: "Give AI agents access to 300+ enterprise integrations through hosted MCP servers"
+description: "Give AI agents access to 300+ enterprise connectors through hosted MCP servers"
 ---
 
-The [Model Context Protocol](https://modelcontextprotocol.io) is an open standard for connecting AI agents to external systems and data. Refold MCP lets SaaS platforms expose their integrations to AI agents over MCP. You configure an MCP server in the Refold dashboard, connect the enterprise apps your customers use, and hand each customer their own URL. Their AI agents connect to that URL and get access to integration actions they can discover and call.
+The [Model Context Protocol](https://modelcontextprotocol.io) is an open standard for connecting AI agents to external systems and data. Refold MCP lets SaaS platforms expose their integrations to AI agents over MCP.
 
-No custom integration code. No agent framework. Refold handles authentication, execution, tenant isolation, and audit logging.
+Two roles share one server:
+
+- **You (the platform team)** configure an MCP server in the Refold dashboard, connect the enterprise apps your customers use, and issue each end user their own URL.
+- **The end user's AI agent** connects to that URL and can discover and call integration actions.
+
+Without Refold, connecting agents to your integrations means building and maintaining the integration code, auth, and agent tooling yourself. With Refold, that work is done for you: no custom integration code, no agent framework. Refold handles authentication, execution, tenant isolation, and audit logging.
 
 <CardGroup cols={3}>
-  <Card title="300+ Connectors" icon="plug">
+  <Card title="300+ connectors" icon="plug">
     Salesforce, SAP, NetSuite, Workday, HubSpot, and hundreds more
   </Card>
-  <Card title="Full Audit Trail" icon="clipboard-list">
+  <Card title="Full audit trail" icon="clipboard-list">
     Every tool call logged with identity, input, output, and timing
   </Card>
-  <Card title="Tenant Isolation" icon="shield">
-    Each request runs as the customer you issued the URL to. Sessions never share state.
+  <Card title="Tenant isolation" icon="shield">
+    Each request runs as the end user you issued the URL to. Sessions never share state.
   </Card>
 </CardGroup>
 
@@ -30,14 +35,16 @@ Once connected, an agent can:
 
 Every tool call is authenticated and logged in [MCP Logs](/v3/mcp/operate/mcp-logs). For how the server resolves identity and executes each call, see [How it works](/v3/mcp/get-started/architecture).
 
-## Patterns
+## Modes and layers
 
-A server runs in one of two modes, and you choose one. Skills and workflows then layer onto whichever mode is active.
+A server runs in one of two modes. Skills and workflows then layer onto whichever mode you choose.
 
 | Mode | What the agent sees | Best for |
 |------|---------------------|----------|
 | **Direct** (default) | One tool per configured action or workflow, called directly | Simple CRUD |
 | **Agent** | The server plans which actions to use, then runs them | Multi-step tasks where you want the server to choose the steps |
+
+<Note>Every client is an agent in both modes. "Agent mode" refers to where planning happens, on the server, not whether an agent is involved.</Note>
 
 **Skills** add pre-built procedures the agent can load in either mode. **Workflows** run server-side as one call. See [Choose your pattern](/v3/mcp/get-started/choose-your-pattern) for the decision framework.
 

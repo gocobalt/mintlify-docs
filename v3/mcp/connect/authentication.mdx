@@ -3,23 +3,23 @@ title: "Authentication"
 description: "Authenticate agents to an MCP server with per-user tokens, control which apps and actions they reach, and revoke access on demand."
 ---
 
-MCP authentication builds on Refold [linked accounts](/v3/platform/concepts/linked-account). Every MCP server connection carries a token that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents. See [Linked accounts](/v3/platform/concepts/linked-account) for how those accounts and their credentials are established.
+MCP authentication builds on Refold [linked accounts](/v3/platform/concepts/linked-account). Every MCP server connection carries a token that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents, including how those accounts and their credentials are established.
 
-This page covers what is MCP-specific: the auth token, how access is scoped to the apps and actions you expose, and how to revoke a token. For the connection flows that produce a linked account in the first place (hosted, build-your-own, re-authentication, and more), see the [authentication hub](/v3/platform/authentication/overview).
+Three things are MCP-specific: the auth token, how access is scoped to the apps and actions you expose, and how to revoke a token. For the connection flows that produce a linked account in the first place (hosted, build-your-own, re-authentication, and more), see the [authentication hub](/v3/platform/authentication/overview).
 
 <Note>
-In MCP, the user authorizes connections **inline in the agent chat**. The flows are the same as every other Refold product; only the entry point differs.
+In MCP, the user authorizes connections **inline in the agent chat**, which launches the same authorization flow used across every other Refold product. Only the entry point is different.
 </Note>
 
 ## How authentication works
 
-An MCP client (Claude, Cursor, your own agent) connects to your MCP server with an auth token. You can embed the token in the URL path or send it in an Authorization header. Either way, the token resolves to a single linked account, and that account is the customer the request runs as for the rest of the call.
+An MCP client (Claude, Cursor, your own agent) connects to your MCP server with an auth token. You can embed the token in the URL path or send it in an Authorization header. Either way, the token resolves to a single linked account, and that account is the end user the request runs as for the rest of the call.
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 flowchart LR
     A["MCP Client<br/>(Claude, Cursor)"] -->|"Server URL with token"| B["Refold validates<br/>the token"]
-    B -->|"Request runs as<br/>that customer"| C["Tool Execution"]
+    B -->|"Request runs as<br/>that end user"| C["Tool Execution"]
     C -->|"Stored credentials<br/>(never exposed)"| D["Third-party App"]
 ```
 
@@ -27,7 +27,7 @@ The agent never handles third-party credentials. Refold resolves the linked acco
 
 ### Pass the token in the URL or a header
 
-You connect one of two ways, both pointing at the same MCP server:
+You connect one of two ways, both pointing at the same MCP server. The Refold dashboard gives you the full Server URL with `<domain>`, `<token>`, and `<server_id>` already filled in; the templates below just show its structure:
 
 - **Token in the URL path** embeds the token directly in the path.
 - **Authorization header** keeps the token out of the URL and sends it as `Authorization: Bearer <token>`.
@@ -49,13 +49,13 @@ Authorization: Bearer <token>
 |----------|--------|
 | **Token type** | Linked account token (opaque, server-generated) |
 | **Validation** | Every request is validated against Refold |
-| **Identity** | Resolves to a single linked account, the customer the request runs as |
+| **Identity** | Resolves to a single linked account, the end user the request runs as |
 | **Token scope** | One token per linked account per MCP server |
 
 The token state is checked on every request, so there is no cached validation window.
 
 <Warning>
-Your token carries the same access wherever it travels, in the URL path or an Authorization header. Treat it as a secret: store it like an API key and rotate it the same way. A leaked token grants the same access it carries.
+Your token carries the same access wherever it travels, in the URL path or an Authorization header. Treat it as a secret: store it like an API key and rotate it the same way. If a token is ever exposed, revoke it immediately (see Revoke access below).
 </Warning>
 
 ### Issue one URL per end user
@@ -75,7 +75,7 @@ A successful tool call returns `{"success": true, "data": ...}`. A failed call r
 | **401** | Missing token or server ID |
 | **403** | Invalid or expired token |
 | **404** | Server is disabled |
-| **503** | Token validation is temporarily unavailable (the request fails closed) |
+| **503** | Token validation is temporarily unavailable, so the request is denied rather than allowed through (it fails closed) |
 
 ## Control which apps and actions an agent can reach
 
@@ -85,7 +85,7 @@ A token authenticates the agent; the MCP server's configuration decides what tha
 |---------|-----|
 | **Which apps an agent can access** | Add or remove apps on the MCP server's **Applications** tab |
 | **Which actions are available** | Select specific actions per app when adding it to the server |
-| **Direct vs agent mode** | Toggle **Agent Mode** to control whether agents see per-action tools or resolve-then-execute |
+| **Direct vs agent mode** | Toggle **Agent Mode** to control whether agents see per-action tools or the resolve-then-execute pair |
 | **Skill access** | Toggle **Retrieve Skill** to control whether agents can discover and load skills |
 | **Per-user scoping** | Each linked account gets a unique token, so each user connects with a different URL |
 
@@ -95,14 +95,10 @@ For where these toggles live in the dashboard, see [Server configuration](/v3/mc
 
 When a Server URL leaks or you need to cut off a user, revoke at the linked-account level.
 
-<Steps>
-  <Step title="Regenerate the token to invalidate one URL">
-    Regenerate the linked account token in the Refold dashboard. The old token becomes invalid immediately, and every request using it returns HTTP 403. Issue the new Server URL to the user to restore access.
-  </Step>
-  <Step title="Delete the linked account to revoke everywhere">
-    Delete the linked account to revoke all of that end user's tokens across every MCP server they were connected to.
-  </Step>
-</Steps>
+| Scope | Action | Effect |
+|-------|--------|--------|
+| **Invalidate one URL** | Regenerate the linked account token in the Refold dashboard | The old token stops working immediately and every request using it returns HTTP 403. Issue the new Server URL to the end user to restore access. |
+| **Revoke everywhere** | Delete the linked account | Revokes all of that end user's tokens across every MCP server they were connected to. |
 
 Because token state is checked on every request, revocation takes effect on the next call. There is no cached validation window to wait out.
 

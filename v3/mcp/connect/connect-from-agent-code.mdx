@@ -1,6 +1,6 @@
 ---
 title: "Connect from agent code"
-description: "Wire a Refold MCP Server URL into your agent SDK with a few lines of config."
+description: "Wire a Refold Server URL into your agent SDK with a few lines of config."
 ---
 
 A Refold Server URL is everything an agent SDK needs. The URL carries an auth token, so there's no separate OAuth flow or token exchange to build. Paste the URL and the SDK handles the rest.
@@ -11,7 +11,7 @@ You need a Server URL before you can run these snippets. See the [Quickstart](/v
 
 ## Two URL forms
 
-Every Server URL authenticates in one of two equivalent ways. Both reach the same linked account, so pick whichever your SDK makes easier.
+You can pass the token in one of two equivalent ways. Both reach the same linked account, so pick whichever your SDK makes easier.
 
 - **Path-token form** carries the token in the URL path. Most SDKs need nothing else: paste the URL and go.
 - **Authorization-header form** carries the token in a request header. Use the shorter URL and send `Authorization: Bearer <token>`.
@@ -27,7 +27,7 @@ Authorization: Bearer <token>
 ```
 </CodeGroup>
 
-The snippets below use the path-token form. Each tab's **Auth** row shows how to switch to the header form.
+In these examples, `<domain>`, `<token>`, and `<server_id>` are placeholders. When you copy your Server URL from the dashboard, all three are already filled in. The snippets below use the path-token form. Each tab's **Auth** row shows how to switch to the header form.
 
 ## Wire the URL into your SDK
 
@@ -215,11 +215,11 @@ The snippets below use the path-token form. Each tab's **Auth** row shows how to
 
 ### One URL per end user
 
-Refold issues a unique Server URL per linked account. In production, issue one URL per customer, store it alongside the customer record, and inject it into the agent SDK at request time.
+Refold issues a unique Server URL per linked account. In production, issue one URL per end user, store it alongside the end user's record, and inject it into the agent SDK at request time.
 
 ```python Python
 # Pseudocode, same shape across all SDKs
-url = db.fetch_refold_url(customer_id)
+url = db.fetch_refold_url(end_user_id)
 agent = build_agent_with_mcp(url)
 ```
 
@@ -227,7 +227,7 @@ For the full token model, including what happens when a token is invalid and how
 
 ### Rotating tokens
 
-If you regenerate a linked account's token in the Refold dashboard, the old URL stops working immediately. Fetch the latest URL before reconstructing the agent, or store the URL with an expiry and refresh on rotation. See [Authentication](/v3/mcp/connect/authentication) for the revocation model.
+If you regenerate a linked account's token in the Refold dashboard, the old URL stops working immediately. Fetch the latest URL before rebuilding the agent, or store the URL with an expiry and refresh on rotation. See [Authentication](/v3/mcp/connect/authentication) for the revocation model.
 
 ### When a connection fails
 
@@ -235,10 +235,10 @@ If the Server URL can't authenticate, the connection fails before any tool runs 
 
 | Status | Cause | Fix |
 |--------|-------|-----|
+| `401` | The URL is missing its token or `<server_id>` | Copy the full Server URL from the dashboard |
 | `403` | Token is invalid or expired, often after a rotation | Fetch the current URL from the dashboard and rebuild the agent |
 | `404` | The MCP server is disabled | Re-enable the server in the dashboard, or check the `<server_id>` in the URL |
-
-A missing token or `<server_id>` returns `401`. If validation is briefly unavailable, you get a `503`, so retry the request.
+| `503` | Token validation is temporarily unavailable | Retry the request |
 
 ## Next steps
 
