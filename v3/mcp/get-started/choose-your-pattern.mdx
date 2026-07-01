@@ -1,66 +1,81 @@
 ---
 title: "Choose your pattern"
-description: "Decide whether agents call actions directly, follow guided skills, or run workflows as one tool"
+description: "Choose between direct and agent mode, then layer skills and workflows to control how much the agent decides"
 ---
 
-Refold MCP exposes your integrations to an agent in three patterns: **direct**, **agent mode with skills**, and **workflows as tools**. They differ in one thing — how much of the work the agent decides versus how much you define ahead of time. Pick based on how complex the operation is and how much control you need over how it runs.
+Every Refold MCP server comes down to one question: how much of the work does the agent decide at runtime, and how much do you define ahead of time? You answer it with one **mode**, **direct** or **agent**, then optional **layers**: **skills** for guided procedures and **workflows** for fixed processes. A mode plus its layers is your pattern.
 
-The patterns are not exclusive. A single MCP server can use all three at once, because each is controlled by an independent toggle. Most production servers do.
+Mode is exclusive, but layers stack. A server in either mode can also expose skills, workflows, or both. Many servers settle on one mode and add a workflow or two for the high-stakes processes.
 
 ## How to choose
 
 Start from the operation the agent needs to perform.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 flowchart TD
-    Q{"What does the agent<br/>need to do?"}
-    Q -->|One action at a time| D["<b>Direct</b><br/>Each action is its own tool"]
-    Q -->|Multi-step, agent adapts| S["<b>Agent mode + Skills</b><br/>Agent follows a guided procedure"]
-    Q -->|Multi-step, runs the same way every time| W["<b>Workflows as tools</b><br/>One tool runs the whole process"]
+    M{"How should the agent<br/>reach your actions?"}
+    M -->|Call a few specific actions directly| D["<b>Direct mode</b><br/>Each action is its own tool"]
+    M -->|Resolve intent across many actions| A["<b>Agent mode</b><br/>Two meta-tools plan, then execute"]
+    D --> L{"Add a layer?"}
+    A --> L
+    L -->|Guide multi-step work| SK["<b>Skills</b><br/>Tested procedures the agent loads"]
+    L -->|Run a process the same way every time| WF["<b>Workflows</b><br/>One tool runs the whole process"]
 ```
 
-## Compare the patterns
+## Compare modes and layers
 
-| | Direct | Agent mode + Skills | Workflows as tools |
-|--|--------|---------------------|--------------------|
-| **Agent decides** | Which tool to call, with what input | How to break down the task and which skill to load | When to call the workflow |
-| **You define** | The exact set of exposed actions | The procedures (skills) the agent can follow | The full process: steps, sequencing, retries, rollback |
-| **Sequencing & error handling** | Agent handles it | Defined in the skill, agent executes | Runs server-side, agent never sees the steps |
-| **Best for** | Simple, single-call operations | Multi-step tasks that need guidance but room to adapt | Business-critical processes that must run the same way every time |
-| **Server toggle** | Default (all toggles off) | **Agent Mode** + **Retrieve Skill** on | Attach a workflow to the server |
+The first two columns are modes, and you pick one. The last two are layers you can add to either mode.
 
-## Direct
+| | Direct mode | Agent mode | Skills | Workflows |
+|--|--------|---------------------|--------|----------|
+| **What the agent sees** | One tool per action or workflow | Two meta-tools: `RESOLVE_ACTIONS` and `EXECUTE_ACTION` | A skill index and loader: `GET_KNOWLEDGE_INDEX` and `LOAD_SKILL` | One tool per attached workflow |
+| **Agent decides** | Which tool to call, with what input | The intent to resolve, then runs each action in the returned plan | Which skill to load, then follows it | When to call the workflow |
+| **You define** | The exact set of exposed actions | The action set the agent resolves over | The procedures (skills) the agent can follow | The full process: steps, sequencing, and error handling |
+| **Best for** | A few single-call operations | Large action sets and intent resolution | Multi-step tasks that need guidance but room to adapt | Processes that must run the same way every time |
+| **Turn it on** | Default (**Agent Mode** off) | **Agent Mode** on | **Retrieve Skill** on, in either mode | Attach a workflow to the server |
 
-Each action and workflow you select becomes its own MCP tool with a fixed input schema. The agent sees the full list and calls a tool directly with the parameters it chooses.
+## Direct mode
 
-Direct is the default and the tightest scope: the agent can only call the specific actions you exposed. Use it for simple CRUD — create a record, query data, update a field — and when the action set is small enough that the agent can reason over the full list.
+In direct mode, each action or workflow you select becomes its own MCP tool with a fixed input schema (named like `salesforce_create_contact_action`). The agent sees the full list and calls a tool directly with the parameters it chooses.
+
+Direct is the default and gives the tightest scope: the agent can only call the specific actions you exposed. Use it for simple CRUD (create a record, query data, update a field) and when the action set is small enough that the agent can reason over the full list.
 
 Direct mode is on whenever the **Agent Mode** toggle is off. See [Server configuration](/v3/mcp/build/server-configuration) for the toggle reference and how to select actions.
 
-## Agent mode + Skills
+## Agent mode
 
-Agent mode replaces per-action tools with two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. The agent resolves a user's natural-language intent into the right actions first, then executes them. This scales past the point where a long flat list of direct tools becomes unwieldy.
+In agent mode, Refold replaces per-action tools with two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. The agent passes a user's natural-language intent to `RESOLVE_ACTIONS`, which returns a plan of the right actions, then calls `EXECUTE_ACTION` to run each one. This scales past the point where a long flat list of direct tools becomes unwieldy.
 
-Pair it with skills to hand the agent tested, step-by-step procedures for multi-step operations — the agent follows your steps but still adapts to the specific request. Turn on the **Agent Mode** and **Retrieve Skill** toggles.
+Agent mode is on when the **Agent Mode** toggle is on. Use it when the server exposes many actions, or when you want the agent to map free-form requests onto your action set instead of choosing from a fixed tool list.
 
-Use this when a task spans several calls and you want to guide the agent without locking the process down. See [Skills](/v3/mcp/build/skills) for how to write the procedures an agent loads and follows.
+<Note>
+The agent always calls `RESOLVE_ACTIONS` first and `EXECUTE_ACTION` second. `RESOLVE_ACTIONS` returns the plan, and `EXECUTE_ACTION` runs an action from it. If nothing matches, `RESOLVE_ACTIONS` returns a short message instead of a plan.
+</Note>
+
+## Skills
+
+Skills give the agent tested, step-by-step procedures for multi-step work. A skill is a markdown document, either a procedure hint or a reference doc, that the agent loads as content and follows while adapting to the specific request. Skills layer onto either mode, not just agent mode.
+
+Turn on the **Retrieve Skill** toggle. It adds two tools: `GET_KNOWLEDGE_INDEX`, which returns the skill index (a compact list of the skills on the server), and `LOAD_SKILL`, which loads the full document for an entry by ID. The agent browses the index, loads the skill it needs, then carries out the steps with the action tools the mode exposes.
+
+Use skills when a task spans several calls and you want to guide the agent without locking the process down. See [Skills](/v3/mcp/build/skills) for how to write the procedures an agent loads and follows.
 
 ## Workflows as tools
 
-A [workflow](/v3/platform/concepts/workflows/overview) you build in Refold attaches to the server and appears as a single tool. The agent calls it once with input; the workflow handles sequencing, retries, and rollback server-side, then returns one result. The agent never touches the intermediate steps.
+A [workflow](/v3/platform/concepts/workflows/overview) you build in Refold attaches to the server and appears as a single tool, in either mode. The agent calls it once with input, the workflow handles sequencing and error handling server-side, then returns one result. The agent never touches the intermediate steps.
 
-Use this for business-critical processes where consistency matters more than flexibility — anything with approvals, compliance checks, or a strict order of operations. See [Workflows as tools](/v3/mcp/build/workflow-as-mcp) for how to attach a workflow and what it guarantees.
+Use workflows for business-critical processes where consistency matters more than flexibility, such as anything with approvals, compliance checks, or a strict order of operations. See [Workflows as tools](/v3/mcp/build/workflow-as-mcp) for how to attach a workflow and what it guarantees.
 
 ## Combine them
 
-The three toggles are independent, so one server can expose all three patterns at once:
+Pick one mode, then add the layers you need:
 
-- **Direct actions** for simple lookups the agent calls ad hoc
-- **Skills** for multi-step procedures where the agent needs guidance
-- **Workflows** for the few processes that must run identically every time
+- **Mode** sets how the agent reaches your actions, by direct calls or resolved intent. Pick one.
+- **Skills** add guided procedures the agent loads and follows. Available in either mode.
+- **Workflows** add fixed processes that run the same way every time. Available in either mode.
 
-A common setup is direct actions plus one or two workflows for the high-stakes operations, with skills added later when you notice the agent struggling with multi-step tasks. Each pattern is governed by its own toggle in [Server configuration](/v3/mcp/build/server-configuration).
+A common setup is direct mode plus one or two workflows for the high-stakes processes, with the **Retrieve Skill** toggle added later when you notice the agent struggling with multi-step tasks. A larger action set tends toward agent mode, with skills layered on for the procedures that need guidance. Mode and skill exposure are toggles in [Server configuration](/v3/mcp/build/server-configuration), and workflows attach to the server there too.
 
 ## Next steps
 
@@ -72,6 +87,6 @@ A common setup is direct actions plus one or two workflows for the high-stakes o
     Run a whole process as one tool call
   </Card>
   <Card title="Server configuration" icon="gear" href="/v3/mcp/build/server-configuration">
-    The toggles that turn each pattern on
+    Set the mode and turn on each layer
   </Card>
 </CardGroup>

@@ -1,15 +1,15 @@
 ---
 title: "Quickstart"
-description: "Create a Refold MCP server and connect it to an AI client in under 5 minutes."
+description: "Create a Refold MCP server and connect it to an MCP client in under 5 minutes."
 ---
 
-An MCP server exposes your customers' connected apps as tools an AI agent can call. This guide walks you through creating a server in the Refold dashboard, connecting an MCP client, and running a first tool call.
+An MCP server exposes your end users' connected apps as tools an AI agent can call. Create one in the Refold dashboard, connect an MCP client, and run your first tool call.
 
 ## Prerequisites
 
 - A Refold account with at least one [linked account](/v3/platform/concepts/linked-account) created
-- At least one connector configured with valid credentials — see [Connector setup](/v3/platform/concepts/connector/supported-apps-actions)
-- An MCP client installed: Claude Desktop, Cursor, or Windsurf
+- At least one connector configured with valid credentials (see [Connector setup](/v3/platform/concepts/connector/supported-apps-actions))
+- An MCP client installed (Claude Desktop, Cursor, or Windsurf), or use the built-in Embed Chat, which needs no client install
 
 <Note>
 Each linked account gets its own Server URL. Create one linked account per end user before proceeding.
@@ -27,7 +27,7 @@ Each linked account gets its own Server URL. Create one linked account per end u
   </Step>
 
   <Step title="Name and describe the server">
-    Set a **Name** and **Description**. The AI agent reads these when it connects, so write for the model — be specific about which apps and actions are available.
+    Set a **Name** and **Description**. The AI agent reads these when it connects, so write for the model. Be specific about which apps and actions are available.
 
     | Field | Good | Avoid |
     |-------|------|-------|
@@ -44,13 +44,20 @@ Each linked account gets its own Server URL. Create one linked account per end u
   </Step>
 
   <Step title="Copy the Server URL">
-    Go back to the **Overview** tab and copy the **Server URL**.
+    Go back to the **Overview** tab and copy the **Server URL**. The token authenticates one linked account, so issue a separate URL for each end user.
 
-    ```
+    Refold accepts the token two ways. Use whichever your MCP client supports. In the examples below, `<domain>` is your Refold host (for example, `app.refold.ai`); the Server URL you copy from the dashboard already has it filled in.
+
+    <CodeGroup>
+    ```bash Path token
     https://<domain>/mcp/v1/<token>/<server_id>
     ```
 
-    The `<token>` is tied to a specific linked account. Issue a separate URL for each end user.
+    ```bash Authorization header
+    https://<domain>/mcp/v1/<server_id>
+    # Send the token as a header: Authorization: Bearer <token>
+    ```
+    </CodeGroup>
 
     <Frame>
       <img src="/images/mcp-server-overview.png" alt="Server Overview tab showing Server URL and toggles" />
@@ -71,15 +78,30 @@ Each linked account gets its own Server URL. Create one linked account per end u
       </Step>
 
       <Step title="Add your server">
-        ```json
+        <CodeGroup>
+        ```json Path token
         {
           "mcpServers": {
             "refold": {
-              "url": "https://<domain>/mcp/v1/<your-token>/<server-id>"
+              "url": "https://<domain>/mcp/v1/<token>/<server_id>"
             }
           }
         }
         ```
+
+        ```json Authorization header
+        {
+          "mcpServers": {
+            "refold": {
+              "url": "https://<domain>/mcp/v1/<server_id>",
+              "headers": {
+                "Authorization": "Bearer <token>"
+              }
+            }
+          }
+        }
+        ```
+        </CodeGroup>
 
         Alternatively, go to **Settings > Connectors > Add custom connector** and paste the Server URL directly.
 
@@ -99,15 +121,30 @@ Each linked account gets its own Server URL. Create one linked account per end u
       <Step title="Add the server">
         Go to **Cursor Settings > MCP** and add a new server, or add it to your project's `.cursor/mcp.json`:
 
-        ```json
+        <CodeGroup>
+        ```json Path token
         {
           "mcpServers": {
             "refold": {
-              "url": "https://<domain>/mcp/v1/<your-token>/<server-id>"
+              "url": "https://<domain>/mcp/v1/<token>/<server_id>"
             }
           }
         }
         ```
+
+        ```json Authorization header
+        {
+          "mcpServers": {
+            "refold": {
+              "url": "https://<domain>/mcp/v1/<server_id>",
+              "headers": {
+                "Authorization": "Bearer <token>"
+              }
+            }
+          }
+        }
+        ```
+        </CodeGroup>
       </Step>
     </Steps>
   </Tab>
@@ -131,7 +168,7 @@ Each linked account gets its own Server URL. Create one linked account per end u
           width="400"
           height="600"
           style="border: none;"
-        />
+        ></iframe>
         ```
       </Step>
     </Steps>
@@ -142,15 +179,23 @@ Each linked account gets its own Server URL. Create one linked account per end u
 
 In your MCP client, run:
 
-```
+```text Prompt
 What tools do you have available?
 ```
 
-The agent lists the integration actions from your connected apps. Then try an actual operation:
+The agent lists the available tools from your connected apps. Then try an actual operation:
 
-```
+```text Prompt
 List all contacts from Salesforce
 ```
+
+Every tool call returns a JSON result. A success looks like this, where `data` holds the app's response:
+
+```json
+{ "success": true, "data": { ... } }
+```
+
+A failure returns `{ "success": false, ... }` with the reason. If the contacts come back under `data`, the connection works end to end.
 
 <Info>
 If an app returns an auth error, the linked account may not have completed the auth flow for that app. Check the linked account's connection status in the dashboard.

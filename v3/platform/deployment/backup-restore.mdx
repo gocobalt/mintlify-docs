@@ -1,3 +1,137 @@
 ---
-title: "Backup Restore"
+title: "Backup & restore"
+description: "Schedule automatic MongoDB backups to your object store and restore from any archive."
 ---
+
+Refold backs up MongoDB with a scheduled, logical `mongodump` uploaded to your object store. Backups run as tiered Kubernetes CronJobs and, by default, reuse the same bucket the platform already uses — no separate backup bucket required. Use this page to enable backups, verify they run, and restore from an archive.
+
+## How backups work
+
+Each backup run takes a compressed logical dump of MongoDB and uploads a single archive to your object store at `<bucket>/<prefix>/<tier>/mongodb-<timestamp>.gz`.
+
+Key characteristics:
+
+- **Logical dumps** — every run executes `mongodump --gzip --archive` and uploads one archive per run.
+- **Tiered schedules** — three tiers run by default, each as its own CronJob with an isolated path and its own retention.
+- **Reuses the app bucket** — if you don't set a backup bucket, backups go to `global.external.gcsBucket` under the `backups/mongodb/` prefix. With S3 + IRSA, the role that already accesses the app bucket also covers backups.
+- **Per-tier retention** — each tier keeps at most its `count` of archives **and** deletes any older than its expiry.
+
+The default tiers:
+
+| Tier | Schedule | Keep (count) | Expire after |
+|---|---|---|---|
+| `hourly` | `@hourly` | 10 | 24h |
+| `sixhourly` | `0 0,6,12,18 * * *` | 10 | 72h |
+| `daily` | `@daily` | 7 | 168h (7 days) |
+
+Change or extend the tiers under `mongodb.backup.schedules`.
+
+## Enable backups
+
+Backups are enabled with Helm values. The destination defaults to `s3` and the bucket defaults to the app bucket, so you typically set only the region (S3) or credentials (GCS). Use the same chart version you installed.
+
+<Tabs>
+  <Tab title="S3">
+    <Steps>
+      <Step title="Enable backups and set the region">
+        ```bash
+        helm upgrade --install refold oci://ghcr.io/gocobalt/charts/refold-release --version <chart-version> -n <ns> \
+          --set mongodb.backup.enabled=true \
+          --set mongodb.backup.destination=s3 \
+          --set mongodb.backup.s3.region=<region> \
+          # bucket defaults to global.external.gcsBucket; override only if you want a dedicated one:
+          # --set mongodb.backup.s3.bucket=<dedicated-backup-bucket> \
+          ...other values...
+        ```
+      </Step>
+      <Step title="Grant access">
+        Pick one:
+        - **IRSA (recommended)** — set `global.external.irsaRoleArn=<role>`. The chart creates a backup ServiceAccount annotated with that role; the role that already accesses the app bucket also covers backups. No keys to store.
+        - **Static keys** — set `mongodb.backup.s3.awsKeysSecret=<secret>`, where the secret holds `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="GCS">
+    <Steps>
+      <Step title="Create the credentials secret">
+        Create a secret holding a service-account key with object-write access on the bucket.
+        ```bash
+        kubectl create secret generic <creds-secret> --from-file=key.json=./sa-key.json -n <ns>
+        ```
+        <Note>
+        On GKE you can skip the key and use Workload Identity — omit `credentialsSecret` and bind the backup ServiceAccount to a GCP service account instead.
+        </Note>
+      </Step>
+      <Step title="Enable backups">
+        ```bash
+        helm upgrade --install refold oci://ghcr.io/gocobalt/charts/refold-release --version <chart-version> -n <ns> \
+          --set mongodb.backup.enabled=true \
+          --set mongodb.backup.destination=gcs \
+          --set mongodb.backup.gcs.credentialsSecret=<creds-secret> \
+          # bucket defaults to global.external.gcsBucket; override only if you want a dedicated one:
+          # --set mongodb.backup.gcs.bucket=<dedicated-backup-bucket> \
+          ...other values...
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Configuration reference
+
+| Setting | Value | Default |
+|---|---|---|
+| **Enable** | `mongodb.backup.enabled` | `false` |
+| **Destination** | `mongodb.backup.destination` | `s3` |
+| **Bucket** | `mongodb.backup.s3.bucket` / `gcs.bucket` | `""` → `global.external.gcsBucket` |
+| **Region (S3)** | `mongodb.backup.s3.region` | `""` (set, e.g. `ap-south-1`) |
+| **Path prefix** | `mongodb.backup.s3.prefix` / `gcs.prefix` | `backups/mongodb` |
+| **Schedules + retention** | `mongodb.backup.schedules[]` | `hourly` / `sixhourly` / `daily` |
+
+## Verify
+
+Confirm the CronJobs exist, run one on demand, and check the archive landed.
+
+```bash
+kubectl get cronjobs -n <ns> | grep mongodb-backup        # mongodb-backup-hourly / -sixhourly / -daily
+kubectl create job --from=cronjob/mongodb-backup-daily test-backup -n <ns>   # run once now
+kubectl logs job/test-backup -n <ns>                       # [dump...] then [s3:daily] upload ...
+aws s3 ls s3://<bucket>/backups/mongodb/daily/             # the archive is there
+```
+
+## Restore from a backup
+
+`mongorestore` ships in the same MongoDB image. Copy an archive down, then restore it.
+
+<Steps>
+  <Step title="Download the archive">
+    ```bash
+    aws s3 cp s3://<bucket>/backups/mongodb/daily/mongodb-<timestamp>.gz ./restore.gz
+    ```
+  </Step>
+  <Step title="Restore into MongoDB">
+    ```bash
+    mongorestore --host=mongodb-mongodb-service --port=27017 \
+      --username=root --password=<root-pw> --authenticationDatabase=admin \
+      --gzip --archive=./restore.gz --drop
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+`--drop` replaces existing collections with the backup's contents. Omit it to merge into the current data instead.
+</Warning>
+
+## See also
+
+<CardGroup cols={2}>
+  <Card title="Helm install" icon="ship" href="/v3/platform/deployment/kubernetes/helm">
+    Install the chart and provision the object-storage bucket backups use.
+  </Card>
+  <Card title="Architecture" icon="diagram-project" href="/v3/platform/deployment/architecture/overview">
+    Where MongoDB and object storage sit in a deployment.
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/v3/platform/deployment/troubleshooting">
+    Diagnose failed backup jobs and image pulls.
+  </Card>
+</CardGroup>
