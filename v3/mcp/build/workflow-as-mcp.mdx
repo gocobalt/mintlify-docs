@@ -1,11 +1,11 @@
 ---
 title: "Workflows as tools"
-description: "Expose a tested workflow as a single MCP tool so the agent calls one tool instead of orchestrating a sequence of API calls"
+description: "Expose a tested workflow as a single MCP tool so the agent calls one tool instead of orchestrating a sequence of separate actions"
 ---
 
-A [platform workflow](/v3/platform/concepts/workflows/overview) can be exposed as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
+You can expose a [platform workflow](/v3/platform/concepts/workflows/overview) as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
 
-Use a workflow when a process needs precise sequencing, error handling, or business logic. Use it instead of [letting the agent orchestrate](/v3/mcp/get-started/choose-your-pattern) the same process step by step, where the order, retries, and rollback are decisions the agent makes at runtime.
+Use a workflow when a process needs precise sequencing, error handling, or business logic. Use it instead of [letting the agent orchestrate](/v3/mcp/get-started/choose-your-pattern) the same process step by step, where sequencing and error handling become decisions the agent makes at runtime.
 
 ## When to use a workflow
 
@@ -15,7 +15,7 @@ Use a workflow when a process needs precise sequencing, error handling, or busin
 | Multi-step process with business logic | Workflow |
 | Process requires approvals or compliance checks | Workflow |
 | Order of operations matters | Workflow |
-| Failure in one step should trigger rollback | Workflow |
+| A failure partway through needs controlled handling | Workflow |
 
 Actions and workflows can coexist on the same server. Expose actions for one-shot operations and workflows for anything that needs sequencing or error handling.
 
@@ -26,32 +26,26 @@ A workflow added to a server shows up as a tool:
 - **Direct mode:** as `<app_slug>_<workflow_name>_workflow`
 - **Agent mode:** reachable through `EXECUTE_ACTION` with `type: "workflow"`
 
-The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and it returns the final result. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/reference/tools) for the exact parameter shape.
+The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and the final result comes back. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/reference/tools) for the exact parameter shape.
 
-## What you get
+## What a workflow guarantees
 
 A workflow moves runtime decisions out of the agent and into a tested, deterministic procedure.
 
 | Property | Agent-orchestrated actions | Workflow as tool |
 |----------|----------------------------|------------------|
 | **Determinism** | Same input may produce different orderings across runs | Same input runs the same steps in the same order every time |
-| **Error handling** | Agent decides what to do on failure | Defined error path per step |
-| **Retries** | Agent decides whether to retry | Retry policy set at design time |
-| **Rollback** | Not available | Compensating actions undo prior successful steps on failure |
+| **Error handling** | Agent decides what to do on failure | Handled server-side inside the workflow |
 | **Business rules** | Enforced only if the agent remembers | Encoded in the workflow definition |
-| **Auditability** | Each tool call logged individually | One execution logged with all steps |
+| **Auditability** | Each tool call logged individually | One audit entry for the whole execution |
 
-Determinism matters where order is load-bearing: approval gates that must run before the action they gate, validation that must succeed before any side effect runs, and compensating actions that must fire on partial failure.
+Determinism matters when the order of steps affects the outcome: approval gates that must run before the action they gate, validation that must succeed before any side effect runs, and error handling that must run when a step fails.
 
 ### Failure model
 
-Each step has an explicit failure path. When a step fails:
+When a step fails, the workflow follows the error handling defined for it and returns a structured error result to the agent instead of a raw failure.
 
-1. The workflow records the failure with the step name, the input it received, and the error from the downstream system.
-2. Any compensating actions defined for prior successful steps run.
-3. The workflow returns a structured error result to the agent — not a half-completed state.
-
-The agent receives one of three outcomes: success with a structured result, a known business error (for example, "vendor blocked"), or a system error. It does not need to reason about which step partially completed.
+The agent receives one of three outcomes: success with a structured result, a known business error (for example, "vendor blocked"), or a system error. It does not need to reason about which step failed internally.
 
 <Note>
 Every workflow invocation is logged in [MCP Logs](/v3/mcp/operate/mcp-logs) with the workflow ID, full input payload, final status, and duration. The individual step executions are recorded by the workflow engine and visible in the workflow execution history.
@@ -61,24 +55,24 @@ Every workflow invocation is logged in [MCP Logs](/v3/mcp/operate/mcp-logs) with
 
 <Steps>
   <Step title="Build and test the workflow">
-    Build the [workflow](/v3/platform/concepts/workflows/overview) in the Refold workflow builder with the steps, error handling, retry logic, and validation it needs. Test it independently of MCP first.
+    Build the [workflow](/v3/platform/concepts/workflows/overview) in the Refold workflow builder with the steps, error handling, and validation it needs. Test it independently of MCP first.
   </Step>
 
   <Step title="Add it to your MCP server">
     Open the MCP server, go to the **Applications** tab, and add the app the workflow belongs to. Select the workflow alongside any actions you want exposed. See [Server configuration](/v3/mcp/build/server-configuration#applications-tab) for the full Applications tab walkthrough.
   </Step>
 
-  <Step title="The workflow appears as a tool">
-    The workflow is now callable by the agent — in direct mode as `<app_slug>_<workflow_name>_workflow`, in agent mode through `EXECUTE_ACTION` with `type: "workflow"`.
+  <Step title="Confirm the workflow is exposed">
+    The workflow is now callable by the agent: in direct mode as `<app_slug>_<workflow_name>_workflow`, in agent mode through `EXECUTE_ACTION` with `type: "workflow"`.
   </Step>
 </Steps>
 
 ## Example: SAP procurement
 
-An agent needs to handle "Buy a laptop from Dell for $1,200" — an eight-step process in SAP.
+An agent needs to handle "Buy a laptop from Dell for $1,200", an eight-step process in SAP.
 
 <Tabs>
-  <Tab title="Agent calling raw APIs">
+  <Tab title="Agent calling actions">
     The agent has to figure out and execute all eight steps:
 
     1. Validate vendor master data and compliance status
@@ -96,9 +90,9 @@ An agent needs to handle "Buy a laptop from Dell for $1,200" — an eight-step p
   <Tab title="Agent calling workflows">
     The same process, split into three workflows exposed as tools:
 
-    - **Vendor and budget validation** — vendor compliance, budget check, pre-approval. Error paths: vendor not found, budget insufficient, compliance issues.
-    - **PO creation and routing** — requisition creation, approval routing, PO generation. Error paths: approval rejection, budget changes, delivery conflicts.
-    - **Goods receipt and exceptions** — three-way matching, invoice verification, quality inspection. Error paths: price variance, quality issues, delivery delays.
+    - **Vendor and budget validation:** vendor compliance, budget check, pre-approval. Error paths: vendor not found, budget insufficient, compliance issues.
+    - **PO creation and routing:** requisition creation, approval routing, PO generation. Error paths: approval rejection, budget changes, delivery conflicts.
+    - **Goods receipt and exceptions:** three-way matching, invoice verification, quality inspection. Error paths: price variance, quality issues, delivery delays.
 
     The agent calls three tools in sequence. Each workflow handles its own complexity internally and returns a structured result, so the agent either continues to the next workflow or surfaces the failure to the user.
   </Tab>

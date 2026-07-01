@@ -1,9 +1,9 @@
 ---
 title: "Tools reference"
-description: "Every MCP tool exposed by a Refold server — parameters, return shapes, and availability conditions."
+description: "Every MCP tool exposed by a Refold server: parameters, return shapes, and availability conditions."
 ---
 
-The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/get-started/architecture). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern).
+The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/build/server-configuration). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp/get-started/choose-your-pattern).
 
 ## Tool availability
 
@@ -12,25 +12,24 @@ The tools an agent sees depend on which toggles are enabled on your [server conf
 | Per-action tools | Agent Mode **OFF** (default) | One tool per app action or workflow |
 | `RESOLVE_ACTIONS` | Agent Mode **ON** | Resolves user intent to a list of specific actions |
 | `EXECUTE_ACTION` | Agent Mode **ON** | Executes one action or workflow from a resolved plan |
-| `SEARCH_INTEGRATION_GRAPH` | Retrieve Skill **ON** | Discovers entities, actions, and skills in the knowledge graph |
+| `GET_KNOWLEDGE_INDEX` | Retrieve Skill **ON** | Returns a server-scoped index of the skills available to load |
 | `LOAD_SKILL` | Retrieve Skill **ON** | Loads the full content of a specific skill |
-| `AUTH` | Auth Tool **ON** | Returns a re-auth link when a connected app's credentials are missing or expired |
 
 ---
 
 ## Direct mode
 
-When Agent Mode is off, each action and workflow on the server becomes its own tool. Names are auto-generated from the app slug and action name.
+When Agent Mode is off, each action and workflow on the server becomes its own tool. Names are auto-generated from the app slug and the action or workflow name.
 
 **Example tool names:**
-```
+```text
 salesforce_create_contact_action
 salesforce_list_deals_action
 sap_get_purchase_order_action
 hubspot_sync_leads_workflow
 ```
 
-Each tool has a fixed schema. The `application_slug`, `action_id`, and `type` fields are pre-bound by Refold — the agent cannot change them. The agent supplies only the `input_payload`.
+Each tool has a fixed schema. The target app, action, and type are pre-bound by Refold, so the agent cannot change them. It supplies only the action's input (`input_payload`).
 
 ---
 
@@ -49,7 +48,7 @@ Takes the user's request and resolves it to a list of specific actions to run.
 **Building `integration_query`:** Break the user's request into individual actions. Each entry should be a short description of the action and the target app.
 
 **Example:**
-```
+```text
 User: "Get all my Salesforce contacts and create a note in HubSpot"
 
 integration_query: [
@@ -85,10 +84,14 @@ integration_query: [
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `slug` | `string` | Application slug (e.g., `salesforce`, `hubspot`) |
+| `slug` | `string` | Application slug (for example, `salesforce` or `hubspot`). Pass this as `application_slug` to `EXECUTE_ACTION`. |
 | `type` | `"action"` \| `"workflow"` | Whether the entity is an action or a workflow |
-| `identifier` | `string` | The action or workflow ID — pass this as `action_id` to `EXECUTE_ACTION` |
+| `identifier` | `string` | The action or workflow ID. Pass this as `action_id` to `EXECUTE_ACTION` |
 | `json_schema` | `object` | JSON Schema for the action's input. Pass through to `input_payload`. May be `{}` if the entity has no inputs. |
+
+<Note>
+When nothing matches the request, `RESOLVE_ACTIONS` returns a plain string (for example, `"Couldn't find any matching actions..."`) instead of a list. Read the response as text before assuming a plan came back.
+</Note>
 
 ### EXECUTE_ACTION
 
@@ -96,9 +99,9 @@ Runs a single action or workflow. Call once per resolved action from the `RESOLV
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `application_slug` | `string` | Yes | The app to run against (e.g., `"salesforce"`) |
+| `application_slug` | `string` | Yes | The app to run against (for example, `"salesforce"`) |
 | `action_id` | `string` | Yes | The action or workflow ID from the resolved plan |
-| `input_payload` | `object` | Yes | Input fields for the action (e.g., `{"email": "user@example.com"}`) |
+| `input_payload` | `object` \| `string` | Yes | Input fields for the action, as a JSON object or a JSON string (for example, `{"email": "user@example.com"}`) |
 | `type` | `"action"` \| `"workflow"` | Yes | Whether this is an action or a workflow |
 
 **Example call:**
@@ -128,7 +131,7 @@ Runs a single action or workflow. Call once per resolved action from the `RESOLV
 }
 ```
 
-The shape of `data` is the third-party app's response passed through — it varies by action. On failure, a generic error is surfaced to the agent. The detailed upstream error is recorded in the audit log's `internal_error` field and is not returned to the agent.
+The shape of `data` is the third-party app's response passed through, so it varies by action. On failure, the agent receives an error message describing what went wrong, and the same detail is recorded in the audit log.
 
 ---
 
@@ -136,25 +139,16 @@ The shape of `data` is the third-party app's response passed through — it vari
 
 Available when Retrieve Skill is enabled. Skill tools can be combined with either direct or agent mode.
 
-### SEARCH_INTEGRATION_GRAPH
+### GET_KNOWLEDGE_INDEX
 
-Queries the integration knowledge graph for entities, actions, and skills.
+Returns a compact index of the skills available on this server. Despite the tool name, the "knowledge index" and the skill index are the same thing. The agent browses the index, then loads the full content of a specific entry with `LOAD_SKILL`.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `entity_name` | `string` | required | What to search for (e.g., `"Contacts"`, `"Purchase Orders"`) |
-| `related_entity_name` | `string` | `null` | Optional second entity. When provided, the search returns how the two entities relate across connected apps. |
-| `apps` | `list[string]` | `null` | Restrict the search to specific app slugs |
-| `limit` | `int` | `25` | Maximum number of results to return |
-| `min_confidence` | `float` | `0.5` | Drop results below this match score (0.0 – 1.0) |
-| `depth` | `int` | `1` | How far to traverse from the starting entity. Higher values surface more distant relationships at the cost of relevance. |
-| `max_response_chars` | `int` | `12000` | Cap on response size in characters |
+| `limit` | `int` | `50` | Maximum number of index entries to return |
+| `offset` | `int` | `0` | Number of entries to skip, for paging through a long index |
 
-<Tip>
-Defaults are tuned for typical use. Most agents only need `entity_name` and optionally `apps`.
-</Tip>
-
-**Returns:** A rendered markdown string (not a structured object). The agent reads the markdown directly to find relevant entities, actions, and skills to call next.
+**Returns:** The index of skills scoped to this server. Each entry carries the skill's ID and a short summary, so the agent can pick one and load it by ID with `LOAD_SKILL`.
 
 ### LOAD_SKILL
 
@@ -162,7 +156,7 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `skill_id` | `string` | The skill's ID (from `SEARCH_INTEGRATION_GRAPH` results or the Skills tab) |
+| `skill_id` | `string` | The skill's ID (from `GET_KNOWLEDGE_INDEX` results or the Skills tab) |
 | `skill_name` | `string` | Look up a skill by name instead of ID |
 
 **Returns:**
@@ -176,8 +170,7 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
       "snippet": "## Goal\nQualify an inbound lead...",
       "skill_name": "Lead Qualification",
       "category": "Sales",
-      "apps": ["salesforce"],
-      "skills_summary": "Score and route inbound leads"
+      "apps": ["salesforce"]
     }
   ]
 }
@@ -186,35 +179,16 @@ Loads the full content of a skill by ID or name. At least one parameter must be 
 The full skill content is in `results[0].snippet`. Content over 100,000 characters is truncated with an explicit marker appended.
 
 <Note>
-`LOAD_SKILL` never raises an exception on failure — it returns `{"success": false, "error": "..."}`. The audit log records `success` for the tool call even when the agent received a logical failure. Inspect the response payload in the audit detail to verify whether the skill actually loaded.
+`LOAD_SKILL` never throws. If a skill can't be loaded, the call still returns cleanly with `{"success": false, "error": "..."}`, so check the `success` field in the response before using the content.
 </Note>
 
 For how skills are surfaced to the agent at session start and the typical discovery flow, see [Skills](/v3/mcp/build/skills).
 
 ---
 
-## AUTH
+## Re-authorization
 
-Available when the **Auth Tool** toggle is on.
-
-The agent calls `AUTH` when a downstream action fails because a linked account's credentials for that app are missing or expired. The tool returns an authentication URL the end user can complete to reconnect the app, after which the agent retries the original action.
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `application_slug` | `string` | Yes | The app the user needs to authenticate (e.g., `"salesforce"`) |
-
-**Returns:** An object with the auth URL and a short message the agent can relay to the user.
-
-**Recover flow:**
-
-1. The agent calls an action (for example, `EXECUTE_ACTION` against Salesforce).
-2. Refold returns an `EXECUTION_ERROR` with a credentials-missing status.
-3. The agent calls `AUTH` with the app's slug.
-4. `AUTH` returns an authentication URL.
-5. The agent surfaces the URL to the end user.
-6. After the user completes authentication, the agent retries the original action.
-
-The failed first call and the eventual successful retry are both recorded in [MCP Logs](/v3/mcp/operate/mcp-logs) under the same Session ID.
+If a connection needs re-authorization (for example, an app's credentials have expired), the end user is prompted to reconnect through Refold's hosted flow. The agent does not handle or store credentials itself.
 
 For the underlying token and access model, see [Authentication](/v3/mcp/connect/authentication).
 
@@ -225,21 +199,21 @@ For the underlying token and access model, see [Authentication](/v3/mcp/connect/
 When both Agent Mode and Retrieve Skill are enabled, call the tools in this order:
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'transparent','secondaryColor':'transparent','tertiaryColor':'transparent','mainBkg':'transparent','clusterBkg':'transparent','edgeLabelBackground':'transparent','primaryBorderColor':'#94a3b8','clusterBorder':'#94a3b8','lineColor':'#94a3b8','actorBkg':'transparent','actorBorder':'#94a3b8','signalColor':'#94a3b8','noteBkgColor':'transparent','noteBorderColor':'#94a3b8'}}}%%
 flowchart LR
-    A["SEARCH_INTEGRATION_GRAPH<br/>Find entities and skills"] --> B["LOAD_SKILL<br/>(if relevant)<br/>Load procedure"]
+    A["GET_KNOWLEDGE_INDEX<br/>Browse available skills"] --> B["LOAD_SKILL<br/>(if relevant)<br/>Load procedure"]
     B --> C["RESOLVE_ACTIONS<br/>Resolve intent<br/>to specific actions"]
     C --> D["EXECUTE_ACTION<br/>Run each action<br/>from the plan"]
 ```
 
 <Note>
-The tool descriptions enforce this ordering. Call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. Agents that skip `RESOLVE_ACTIONS` receive an error-guidance response from the tool description.
+The tool descriptions instruct agents to follow this ordering and to call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. The ordering is guided by these descriptions, not enforced by a runtime check.
 </Note>
 
 ## See also
 
-- [Architecture](/v3/mcp/get-started/architecture) — how tools map to actions, workflows, and skills
-- [Choose your pattern](/v3/mcp/get-started/choose-your-pattern) — when to use direct mode, agent mode, or skill tools
-- [Skills](/v3/mcp/build/skills) — how agents discover and run multi-step procedures
-- [Authentication](/v3/mcp/connect/authentication) — the token model and access toggles
-- [MCP Logs](/v3/mcp/operate/mcp-logs) — per-call audit trail with input and output
+- [Architecture](/v3/mcp/get-started/architecture): how tools map to actions, workflows, and skills
+- [Choose your pattern](/v3/mcp/get-started/choose-your-pattern): when to use direct mode, agent mode, or skill tools
+- [Skills](/v3/mcp/build/skills): how agents discover and run multi-step procedures
+- [Authentication](/v3/mcp/connect/authentication): the token model and access toggles
+- [MCP Logs](/v3/mcp/operate/mcp-logs): per-call audit trail with input and output
