@@ -1,94 +1,154 @@
 ---
 title: "Control Plane"
-description: "What the Refold control plane does, how it relates to the data plane, and when you operate it versus when Refold does."
+description: "Manage your Refold deployment yourself: view clusters, create namespaces, upgrade versions, and configure environment variables and secrets from one dashboard."
 ---
 
-A Refold deployment splits into two planes. The **control plane** is the management layer — it serves the dashboard and API, stores configuration, authenticates requests, and decides what runs where. The **data plane** does the work the control plane tells it to: it executes workflows and runs integration calls against third-party apps. Think of the control plane as the brain and the data plane as the muscle.
+The Refold Control Plane is a self-service management interface for Refold on-premises customers. Use it to manage your deployment and environments directly: view clusters, create namespaces, upgrade Refold versions, and configure environment variables and secrets, without opening a support request.
 
-You choose who operates the control plane based on your data-residency and ops-capacity needs. This page is the architectural reference; the deployment guides linked below cover how to install each option.
+Your DevOps team operates the Control Plane. Refold provisions your access, and everything you see is scoped to the environments your account is authorized for.
 
-## What the control plane does
+## What you can do
 
-The control plane is the system of record and the orchestrator. It:
+- **View clusters** assigned to your project, pulled directly from your environments.
+- **Manage namespaces** — see each environment's version, status, and last update.
+- **Create namespaces** in any assigned cluster to run additional workloads.
+- **Upgrade versions** to newer Refold releases through a guided version picker.
+- **Configure environment variables and secrets** per namespace.
 
-- **Serves the dashboard and REST API** that you and your applications interact with.
-- **Stores configuration** — organizations, linked accounts, connectors, and workflow definitions.
-- **Authenticates and authorizes** every request, validating tokens and applying role-based access.
-- **Schedules and dispatches** workflow runs and integration jobs to the data plane.
-- **Manages credentials** — it stores and resolves the secrets a linked account needs at execution time.
-- **Records audit and telemetry** — execution traces, logs, and metrics flow back here.
-- **Coordinates upgrades** and version rollouts.
+## Sign in
 
-## What the data plane does
+Access is credential-based. Refold provisions three things for each authorized user:
 
-The data plane is where execution happens. It:
+- **Username**
+- **Password**
+- **Control Plane URL**
 
-- **Runs workflows** step by step, including retries and error handling.
-- **Executes integration calls** against third-party SaaS APIs using the linked account's credentials.
-- **Reports status, logs, and results** back to the control plane.
+<Info>
+Your credentials are mapped to specific environments. After you sign in, the clusters and namespaces for your authorized environments appear automatically. No extra configuration is required.
+</Info>
 
-In a self-hosted Helm install, both planes run together in the same Kubernetes cluster. In Refold Managed and Refold Cloud, the control plane is operated by Refold while the data plane runs where your data must live.
+## Dashboard overview
 
-## Control plane options
+After you sign in, the Deployments dashboard lists every resource assigned to your account:
 
-You can run Refold's control plane in one of three modes. Pick the one that matches your data-residency and ops requirements.
+- All **clusters** assigned to your account.
+- The **cloud provider** for each one (AWS, GCP, or another supported platform).
+- The **deployment region**.
 
-| Option | Who runs the control plane | When to pick it |
-|---|---|---|
-| **Refold Cloud** | Refold, in Refold's own infrastructure | Fastest path. No deployment work. The data plane can be Refold-hosted or self-hosted. |
-| **Refold Managed (BYOC)** | Refold, inside your cloud account | Data residency in your own cloud, without operating the control plane yourself. |
-| **Self-Hosted** | You, inside your Kubernetes cluster | Full control over upgrades, networking, and the runtime. Highest ops burden. |
+## Cluster management
 
-The [Helm](/v3/platform/deployment/kubernetes/helm) install deploys both planes in your cluster (Self-Hosted). [Refold Managed (BYOC)](/v3/platform/deployment/kubernetes/refold-cp) splits them, with Refold operating the control plane in your account. [Docker Compose](/v3/platform/deployment/docker-compose) runs everything on a single host for evaluation.
+Select a cluster to open its detail page, where you manage that cluster's namespaces and review its configuration.
 
-## How the planes communicate
+### Cluster metadata
 
-In a **self-hosted** install, the control plane and data plane share a cluster and communicate over in-cluster service calls — gRPC for service-to-service traffic, with asynchronous work passed through queues. No cross-network connection is involved.
+Each cluster shows:
 
-{/* NEEDS INPUT: document the cross-plane wire protocol for Refold Managed /
-    Refold Cloud where the planes are split across networks — direction of
-    connection (does the data plane dial out to the control plane?), ports and
-    protocol (gRPC / HTTPS), how jobs are dispatched, and what credentials
-    authenticate the connection (mTLS / token). This determines the customer's
-    firewall and egress configuration. */}
+| Field | Description |
+|---|---|
+| Cluster name | The cluster's identifier |
+| Deployment region | Where the cluster runs |
+| Cloud provider | AWS, GCP, or another supported platform |
+| Creation date | When the cluster was created |
+| Last updated | The most recent change timestamp |
 
-## Multi-tenancy and isolation
+### Namespace overview
 
-Refold isolates tenants at the organization level. Linked-account credentials are resolved server-side at execution time and are never exposed to callers.
+Namespaces in the selected cluster are listed in a table showing each namespace's name and current operational status.
 
-{/* NEEDS INPUT: confirm how isolation differs across the three options — a
-    shared control plane with per-org namespacing (Refold Cloud) versus a
-    dedicated control plane per customer (Refold Managed / Self-Hosted). */}
+## Create a namespace
 
-## Upgrades
+A namespace is a distinct environment within a cluster, with its own configuration. Create one to run an additional workload in an assigned cluster.
 
-In **Self-Hosted**, you upgrade by re-running Helm with a new chart version — see [Helm upgrade and uninstall](/v3/platform/deployment/kubernetes/helm#upgrade-and-uninstall). In **Refold Cloud** and **Refold Managed**, Refold rolls out upgrades for you.
+<Frame caption="A cluster's namespaces, with the Add Namespace action">
+  ![Control Plane cluster detail page listing namespaces with an Add Namespace button](/images/deployment/control-plane/namespace-creation.png)
+</Frame>
 
-{/* NEEDS INPUT: state the supported version-skew window between control plane
-    and data plane, and the upgrade cadence Refold commits to for the managed
-    options. */}
+<Steps>
+  <Step title="Start a new namespace">
+    From the cluster detail page, select **Add Namespace**.
+  </Step>
+  <Step title="Provide the namespace details">
+    Enter a **Namespace name** (a unique identifier) and a **Release version** (the target Refold version to deploy).
+  </Step>
+  <Step title="Verify environment variables">
+    Review the environment variables for the namespace. These are derived from the parent cluster configuration. Change any namespace-specific values as needed.
+  </Step>
+  <Step title="Provide secret values and submit">
+    Supply a value for every required secret, then submit.
+  </Step>
+</Steps>
 
-## High availability
+<Warning>
+On the environment-variable verification screen, secrets are shown with null values by default. You must set a value for every required secret before creating the namespace, or the deployment will not operate correctly.
+</Warning>
 
-The application services are stateless, so you scale them horizontally and roll instances without downtime. Durability comes from the backing stores — MongoDB, Redis, and Temporal's PostgreSQL.
+Once you submit, the Control Plane provisions the namespace and makes it available for use.
 
-{/* NEEDS INPUT: list HA targets per option — control-plane replica counts,
-    RTO/RPO, and how the data plane behaves when the control plane is briefly
-    unreachable. */}
+## Upgrade a namespace version
 
-## Next steps
+Select a namespace row to see its details:
 
-<CardGroup cols={2}>
-  <Card title="Refold Managed (BYOC)" icon="cloud" href="/v3/platform/deployment/kubernetes/refold-cp">
-    Run Refold in your cluster with Refold operating the control plane.
-  </Card>
-  <Card title="Helm install" icon="ship" href="/v3/platform/deployment/kubernetes/helm">
-    Self-host the entire control plane and data plane on Kubernetes.
-  </Card>
-  <Card title="Architecture" icon="diagram-project" href="/v3/platform/deployment/architecture/overview">
-    The components of a deployment and what you provision.
-  </Card>
-  <Card title="Hardware requirements" icon="server" href="/v3/platform/deployment/architecture/benchmarking">
-    Sizing guidance for the control plane and data plane.
-  </Card>
-</CardGroup>
+- Namespace name
+- Current operational status
+- Current Refold version
+- Creation date
+- Last release trigger timestamp
+
+Available versions are retrieved automatically from Refold's official version streams.
+
+<Frame caption="The Refold Version control on a namespace">
+  ![Namespace Information panel with the Refold Version edit button highlighted](/images/deployment/control-plane/version-upgrade.png)
+</Frame>
+
+<Steps>
+  <Step title="Open the version picker">
+    Under **Refold Version**, select the edit button next to the current version.
+  </Step>
+  <Step title="Choose the target version">
+    Select the version you want to deploy.
+  </Step>
+  <Step title="Trigger the upgrade">
+    Select **Trigger Update**. A confirmation appears once the update request is submitted.
+  </Step>
+</Steps>
+
+<Note>
+This release does not track upgrade status in real time. Real-time health monitoring and upgrade status are planned for a future release. Until then, confirm an upgrade's outcome with your Refold support representative if you need to verify it.
+</Note>
+
+## Manage environment variables and secrets
+
+Environment variables set namespace-level configuration. For a namespace in scope, you can:
+
+- **Update** an existing variable's value.
+- **Clear** a value by setting it to `NA` when it is no longer required.
+
+All changes apply only to the namespace you are editing.
+
+<Frame caption="A namespace's environment variables, with the Bulk Edit action">
+  ![Namespace Environment Variables section with the Bulk Edit action highlighted](/images/deployment/control-plane/secrets-bulk-edit.png)
+</Frame>
+
+### Secrets
+
+Secrets are supported in this release, and they behave differently from plain variables:
+
+- Provide secret values **during namespace creation**.
+- After a successful deployment, secret values are **automatically redacted**.
+- To change a secret later, use **Bulk Edit** on the namespace's environment variables and replace the `[Redacted]` placeholder with the new value.
+
+## Support
+
+For help or to report an issue, contact your designated Refold support representative or your internal DevOps team.
+
+## Capabilities at a glance
+
+| Capability | What it does |
+|---|---|
+| Cluster visibility | View all clusters and environments assigned to your account |
+| Namespace management | View namespace details, including version and status |
+| Namespace creation | Create namespaces within assigned clusters |
+| Version upgrades | Upgrade namespaces to newer Refold versions, self-service |
+| Environment variables | Configure namespace-level environment variables |
+| Secrets management | Manage sensitive values with automatic redaction |
+| Authentication | Credential-based access, scoped to your environments |
