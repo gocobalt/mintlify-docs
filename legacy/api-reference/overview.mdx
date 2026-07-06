@@ -5,8 +5,12 @@ description: Programmatically manage linked accounts, trigger workflows, configu
 
 The Refold API provides RESTful endpoints to manage your integration platform programmatically. You can create and manage linked accounts, trigger workflow executions, configure integrations, handle webhooks, manage persistent data, and interact with MCP servers.
 
+<Card title="Download the OpenAPI spec" icon="download" href="https://raw.githubusercontent.com/gocobalt/mintlify-docs/main/v3/api-reference/openapi.yaml" horizontal>
+  Grab the full OpenAPI 3 specification to generate SDK clients, import into Postman or Insomnia, or explore the API offline.
+</Card>
+
 <Info>
-All API requests use the base URL `https://app.refold.ai`. We've updated our domain to `app.refold.ai` from `app.refold.ai` — existing `app.refold.ai` requests will continue to work until it is decommissioned at a later date.
+All API requests use the base URL `https://app.refold.ai`. We've updated our domain to `app.refold.ai` from `app.gocobalt.io` — existing `app.gocobalt.io` requests will continue to work until it is decommissioned at a later date.
 </Info>
 
 ## Authentication
@@ -61,17 +65,6 @@ Refold supports two authentication methods. Which one applies depends on whether
     Generate a session token with the [Generate Session Token](/legacy/api-reference/session-tokens/generate-session-token) endpoint.
   </Accordion>
 </AccordionGroup>
-
-## Rate Limits
-
-The Refold API enforces rate limits to ensure fair usage across all users.
-
-| Limit Type | Value |
-|------------|-------|
-| Standard Rate | 20 requests per second |
-| Burst Rate | 5 requests in an instant within a second |
-
-When you exceed rate limits, the API returns a `429 Too Many Requests` response. Implement exponential backoff in your retry logic to handle rate limiting gracefully.
 
 ## API Resources
 
