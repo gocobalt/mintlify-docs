@@ -1,28 +1,28 @@
 ---
 title: Display Apps on the Client-side
-description: To diplay the apps to your end-users in the frontend, you can develop your own custom UI or redirect your users to Cobalt Connect, which is securely hosted by Cobalt.
+description: To diplay the apps to your end-users in the frontend, you can develop your own custom UI or redirect your users to Refold Connect, which is securely hosted by Refold.
 ---
 
-Cobalt connect lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf (linked account in Cobalt).
+Refold connect lets your users connect their integration accounts. It stores the credentials securely and lets you make authorized API calls on your users’ behalf (linked account in Refold).
 <img height="200" src="/images/implementation/display_apps_sequence.png" alt="Sequence Diagram for Displaying Apps on Frontend"/>
 
 ## Enable & Configure Apps
 
-To enable the apps that you want to use in Cobalt, go to the Apps page in the Cobalt dashboard. You will see a list of the available apps. Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
-<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Cobalt"/>
+To enable the apps that you want to use in Refold, go to the Apps page in the Refold dashboard. You will see a list of the available apps. Choose one or more apps to enable. The apps that you enable will become available to your users in the Connect flow.
+<img height="200" src="/images/Concepts/app-list.png" alt="Apps in Refold"/>
 
 **Key-based** apps do not require any additional configuration.
 
-**OAuth** apps by default use Cobalt credentials. This makes it easy to get started and connect integrations right away. However, once you’re ready to ship your integrations with Cobalt, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Cobalt when they connect integrations.
+**OAuth** apps by default use Refold credentials. This makes it easy to get started and connect integrations right away. However, once you’re ready to ship your integrations with Refold, you should use your own OAuth app credentials (client ID and client secret). This will make sure that users see your brand instead of Refold when they connect integrations.
 
 <Note>
 You can find the App Setup instructions for some of the popular integrations that we support [here](/legacy/build/connectors/overview).
 </Note>
 
 ## Building Custom UI
-If you want to build a custom UI for your integrations, you can do so by using the Cobalt APIs or the Cobalt Connect SDK available in JavaScript and React. 
+If you want to build a custom UI for your integrations, you can do so by using the Refold APIs or the Refold Connect SDK available in JavaScript and React. 
 <AccordionGroup>
-  <Accordion title="Cobalt API for UI">
+  <Accordion title="Refold API for UI">
 If you want to create your own frontend for the integration and want to fetch information about the various integrations that will be available to the end-users, you can do so by using the [List Applications API](/legacy/api-reference/applications/list-applications).
 
 1. **Request**: This API will list all the apps that were enabled above. Make a GET request to the `/application` endpoint with the `linked_account_id` of the user.
@@ -109,8 +109,8 @@ You can also fetch information about a single application by providing the app s
 
   </Accordion>
 
-  <Accordion title="Cobalt SDK for UI">
-If you prefer to develop using the SDKs provided by Cobalt, then the **.getApp()** method will get you the list of applications enabled in Cobalt. It returns the application details for the specified application, provided the application is enabled in Cobalt. If no application is specified, it returns all the enabled applications.
+  <Accordion title="Refold SDK for UI">
+If you prefer to develop using the SDKs provided by Refold, then the **.getApp()** method will get you the list of applications enabled in Refold. It returns the application details for the specified application, provided the application is enabled in Refold. If no application is specified, it returns all the enabled applications.
 
 1. **Method Call**: Call the **.getapp()** method provided in the SDK and pass the slug of the application for which information needs to be fetched. If no slug is provided, you will get a list of apps.
 ``` JavaScript JS SDK
@@ -118,7 +118,7 @@ cobalt.getApp()  // to get a list of all apps
 cobalt.getApp("slack")  // to get details of a single app, e.g. slack
 ```
 
-2. **Response** : The instance method of Cobalt Returns: `Promise.<Application>` - The application details. 
+2. **Response** : The instance method of Refold Returns: `Promise.<Application>` - The application details. 
 ``` JavaScript Response
 {
 	"name": "Slack",
@@ -139,7 +139,7 @@ cobalt.getApp("slack")  // to get details of a single app, e.g. slack
 }
 ```
 <Note>
-Learn more about the Embedded and Seamless flow of Cobalt Connect [here](/legacy/concepts/auth-flows/auth-flows).
+Learn more about the Embedded and Seamless flow of Refold Connect [here](/legacy/concepts/auth-flows/auth-flows).
 </Note>
   </Accordion>
 </AccordionGroup>

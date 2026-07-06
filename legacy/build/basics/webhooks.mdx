@@ -147,8 +147,8 @@ Following are the sample codes to verify HMAC signature of Refold Webhooks
 ```typescript .TS
 import * as crypto from 'crypto';
 
-// your Cobalt API key based on environment
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '<Cobalt-API-key>';
+// your Refold API key based on environment
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '<Refold-API-key>';
 // payload is the data that you receive from the webhook
 const payload = {
     "linked_account_id": "dev",
@@ -161,7 +161,7 @@ const payload = {
 }
 
 /**
- * Verifies the HMAC signature from a webhook received from Cobalt
+ * Verifies the HMAC signature from a webhook received from Refold
  * @param payload The raw request body as a string (JSON.stringify(payload))
  * @param signature The signature from the webhook header (Header is, 'x-cobalt-signature')
  * @returns boolean indicating if the signature is valid
@@ -196,8 +196,8 @@ import os
 import hmac
 import json
 
-# your Cobalt API key based on environment
-WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "<Cobalt-API-key>")
+# your Refold API key based on environment
+WEBHOOK_SECRET = os.getenv("WEBHOOK_SECRET", "<Refold-API-key>")
 
 # Payload received from the webhook
 payload = {
@@ -212,7 +212,7 @@ payload = {
 
 def verify_webhook_signature(payload: str, signature: str) -> bool:
     """
-    Verifies the HMAC signature from a webhook received from Cobalt.
+    Verifies the HMAC signature from a webhook received from Refold.
     :param payload: The raw request body as a string (json.dumps(payload))
     :param signature: The signature from the webhook header (x-cobalt-signature)
     :return: Boolean indicating if the signature is valid
