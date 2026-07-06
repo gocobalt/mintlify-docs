@@ -1,7 +1,7 @@
 ---
 title: Build Salesforce Integration
 ---
-In this guide, we will walk through the essential steps required to build a Salesforce integration using the Cobalt platform. This process involves three major steps i.e. User Authentication with Salesforce, Creating Workflows and Using workflows for users.
+In this guide, we will walk through the essential steps required to build a Salesforce integration using the Refold platform. This process involves three major steps i.e. User Authentication with Salesforce, Creating Workflows and Using workflows for users.
 
 ## Authenticating with Salesforce integration
 
@@ -12,13 +12,13 @@ To get started, first you need to enable the Salesforce integration in your acco
 <Step title="Enable the Salesforce App">
 ### Step 1: Enable the Salesforce App
 
-After setting up your account, the next step is to enable the Salesforce app in your Cobalt account.
+After setting up your account, the next step is to enable the Salesforce app in your Refold account.
 
 <Note>Apps cannot be enabled using the API. You will need to enable the app through the UI.</Note>
 
 To enable the Salesforce app:
 
-Navigate to `Apps` in Cobalt and search for **Salesforce** and enable the app by clicking on the `Go Live` button in the top right corner.
+Navigate to `Apps` in Refold and search for **Salesforce** and enable the app by clicking on the `Go Live` button in the top right corner.
 <img height="200" src="/images/Examples/salesforce/enable_salesforce.png" alt="Enable Salesforce App"/>
 
 Now, go to `Settings` and provide the **Client ID** and **Client Secret** of your Salesforce OAuth app and click on `Save`.
@@ -32,7 +32,7 @@ Once the app is enabled, you can proceed to create and manage workflows and link
 <Step title="Create a Linked Account">
 ### Step 2: Create a Linked Account
 
-A Linked Account in Cobalt represents the end-users or customers who will use the integration through the platform. Each Linked Account requires a unique linked_account_id, which typically corresponds to an ID from your internal data model (e.g., a user or account ID).
+A Linked Account in Refold represents the end-users or customers who will use the integration through the platform. Each Linked Account requires a unique linked_account_id, which typically corresponds to an ID from your internal data model (e.g., a user or account ID).
 
 <Tip>
 Learn more about Linked Accounts [here](/legacy/build/basics/linked_account).
@@ -57,14 +57,14 @@ curl --request PUT \
 |linked_account_id| Mandatory | String | Unique customer identifier|
 |name| Optional | String | Name of the customer|
 
-You can check the Linked Accounts in your Cobalt account by navigating to the **Linked Accounts** section in the side menu.
+You can check the Linked Accounts in your Refold account by navigating to the **Linked Accounts** section in the side menu.
 
 Once the Linked Account is successfully created or updated, it will be ready for authentication in the next step.
 </Step>
 
 <Step title="Generate Session Token for your Linked Account">
 ### Step 3: Generate Token
-After creating a Linked Account, the next step is to generate a session token. Session tokens help protect your Cobalt API key and manage end-customer tokens more securely.
+After creating a Linked Account, the next step is to generate a session token. Session tokens help protect your Refold API key and manage end-customer tokens more securely.
 
 To create a session token, use the following API call:
 <CodeGroup>
@@ -79,12 +79,12 @@ To create a session token, use the following API call:
 ```
 </CodeGroup>
 
-This session token will be included in subsequent requests to Cobalt APIs to authenticate and authorize the actions.
+This session token will be included in subsequent requests to Refold APIs to authenticate and authorize the actions.
 </Step>
 
 <Step title="Open Hosted Portal Auth Flow">
 ### Step 4: Open Hosted Portal Auth Flow
-Next, you will need to generate a Hosted URL that your users will use to authenticate with Salesforce. Cobalt securely stores the credentials and handles API calls on behalf of your users.
+Next, you will need to generate a Hosted URL that your users will use to authenticate with Salesforce. Refold securely stores the credentials and handles API calls on behalf of your users.
 
 Use the following API call to generate the Hosted URL:
 <CodeGroup>
@@ -102,7 +102,7 @@ curl --request POST \
 </CodeGroup>
 
 The response will return a Hosted URL that your users can visit to authenticate and connect their Salesforce accounts.
-<Info> Hosted Portal is a no-code solution provided by Cobalt that removes the need to build your own UI for handling integration authentication and configuration. </Info>
+<Info> Hosted Portal is a no-code solution provided by Refold that removes the need to build your own UI for handling integration authentication and configuration. </Info>
 </Step>
 <Step title="Authenticate Using Hosted Portal">
 ### Step 5: Perform OAuth Authentication
@@ -220,7 +220,7 @@ const res = params.deals.map(ele=>{
 <Step title="API Proxy in Workflow">
 You have successfully fetched all opportunities and structured the payload. Now to receive it in your server, you need to configure an API Proxy.
 
-In Cobalt Dashboard, navigate to `Developer` > `API Proxies` and click on `New Action`. Configure an API endpoint, where you want to receive the response.
+In Refold Dashboard, navigate to `Developer` > `API Proxies` and click on `New Action`. Configure an API endpoint, where you want to receive the response.
 
 If you want to test, go to [webhook.site](https://webhook.site/) and copy `Your unique URL` and configure this as a POST Request and `Save`.
     <img height="200" src="/images/Examples/salesforce/proxy_salesforce.png" alt="Configuring API Proxy workflow"/>
@@ -358,7 +358,7 @@ To run these workflows for your users or Linked Accounts, you need to do the fol
   <Step title="Create Config for Linked Account">
   Config is a customization that you store for each integration of your end-customers.
   ## Create Config
-You can create config for the Linked Account through the Cobalt Connect SDKs or using the APIs.
+You can create config for the Linked Account through the Refold Connect SDKs or using the APIs.
 
 You can use the **.config()** method or the [Create Config API](/legacy/api-reference/configs/create-config) which returns the specified config or creates one if it doesn't exist for the Linked Account.
 
