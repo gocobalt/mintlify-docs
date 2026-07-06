@@ -12,28 +12,6 @@ Each field's value is either a type string (e.g. `"string"`) or an object `{type
   This route has **no authentication** — no API key or session token is required.
 </Note>
 
-## Path Parameters
-
-<ParamField path="slug" type="string" required>
-  The app slug.
-
-  **Example:** `hubspot`, `netsuite`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    An object keyed by auth type. Each auth type maps to its field definitions, where a value is either a type string or `{type, required}` for optional fields.
-  </Tab>
-
-  <Tab title="500 Schema Not Found">
-    Returned when no app exists for the given slug.
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200 OAuth app
 {

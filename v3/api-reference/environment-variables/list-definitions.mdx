@@ -6,48 +6,6 @@ description: List environment-variable definitions for the org.
 
 List the environment-variable *definitions* for your organization, paginated. A definition describes a variable's name, scope, format, and whether it's encrypted — the actual values are managed separately (see [Set Variable Value](/v3/api-reference/environment-variables/set-value)).
 
-## Authentication
-
-Definitions are org-level, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-
-## Query Parameters
-
-<ParamField query="scope" type="string">Filter by scope: `org`, `linked_account`, or `workflow`.</ParamField>
-<ParamField query="var_format" type="string">Filter by format, e.g. `string`, `number`, `url`.</ParamField>
-<ParamField query="name" type="string">Filter by name (regex).</ParamField>
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope of definitions.
-    <ResponseField name="docs" type="array">
-      Definition objects.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Definition ID.</ResponseField>
-        <ResponseField name="name" type="string">Variable name.</ResponseField>
-        <ResponseField name="scope" type="string">`org`, `linked_account`, or `workflow`.</ResponseField>
-        <ResponseField name="var_format" type="string">Value format.</ResponseField>
-        <ResponseField name="encrypted" type="boolean">Whether values are stored encrypted.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total definitions.</ResponseField>
-    <ResponseField name="page" type="integer">Current page.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

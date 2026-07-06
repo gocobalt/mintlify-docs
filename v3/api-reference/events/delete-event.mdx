@@ -6,35 +6,6 @@ description: Remove a custom event from your org's default app.
 
 Remove a custom event (trigger) from your organization's default custom application. The response is the updated list of remaining events.
 
-## Authentication
-
-Events are defined at the org level, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="event_id" type="string" required>
-  The event ID to delete.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the array of remaining events after deletion.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 [

@@ -11,57 +11,6 @@ List workflows. There are two kinds, and what you get back depends on scope:
 
 In other words: a request authenticated as a linked account with `scope=private` returns that account's **private** workflows; otherwise you get **public** (org/slug-level) workflows.
 
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">Include to list a linked account's public (or, with `scope=private`, private) workflows. Omit for org-level workflows.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Query Parameters
-
-<ParamField query="scope" type="string">Set to `private` (with a linked account) to list that account's private workflows.</ParamField>
-<ParamField query="slug" type="string">Filter by application slug.</ParamField>
-<ParamField query="application_id" type="string">Filter by application ID.</ParamField>
-<ParamField query="name" type="string">Filter by name.</ParamField>
-<ParamField query="published" type="boolean">Filter by published state.</ParamField>
-<ParamField query="start_date" type="string">ISO start of the date range.</ParamField>
-<ParamField query="end_date" type="string">ISO end of the date range.</ParamField>
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope. Includes a `schema` describing the workflow list shape.
-    <ResponseField name="docs" type="array">
-      Workflows.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Workflow ID.</ResponseField>
-        <ResponseField name="name" type="string">Workflow name.</ResponseField>
-        <ResponseField name="published" type="boolean">Whether it's published.</ResponseField>
-        <ResponseField name="slug" type="string">Associated application slug.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total workflows.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

@@ -6,33 +6,6 @@ description: Delete a config installation by config ID.
 
 Delete a config installation for an app and a specific `config_id`. (To delete the default config for a linked account, omit the ID — see [Delete Config](/legacy/api-reference/configs/delete-config-default).)
 
-## Authentication
-
-Configs are scoped to a linked account via the `linked_account_id` header.
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account.</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
-<ParamField path="config_id" type="string" required>The config ID to delete.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="message" type="string">Confirmation message.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

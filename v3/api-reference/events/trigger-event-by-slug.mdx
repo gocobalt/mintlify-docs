@@ -6,61 +6,6 @@ description: Fire a custom event, specifying the app slug in the URL path.
 
 Fire a custom event for a linked account, with the app slug supplied in the URL path instead of a header. This is an alias for [Trigger Event](/v3/api-reference/events/trigger-event) — same body and behavior — and additionally supports multipart uploads.
 
-## Authentication
-
-This endpoint fires for a specific linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">
-  Your Refold API key.
-</ParamField>
-
-<ParamField header="linked_account_id" type="string">
-  The linked account the event fires for.
-</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">
-  Session token for the linked account.
-
-  **Format:** `Bearer YOUR_SESSION_TOKEN`
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>
-  The app slug to fire the event against.
-
-  **Example:** `hubspot`
-</ParamField>
-
-## Body Parameters
-
-<ParamField body="event" type="string" required>
-  The event name to fire. (Either `event` or `trigger` must be provided.)
-</ParamField>
-
-<ParamField body="payload" type="object">
-  Arbitrary JSON payload passed to the workflow.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="message" type="string">Confirmation that the event was queued.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code, e.g. `INVALID_EVENT`.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

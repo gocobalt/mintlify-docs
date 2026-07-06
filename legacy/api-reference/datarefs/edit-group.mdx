@@ -6,36 +6,6 @@ description: Bulk set or clear the group on multiple datarefs.
 
 Set or clear the `group` label on multiple datarefs at once. Passing an empty `group` unsets the field. Groups help organize related datarefs.
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the datarefs.</ParamField>
-
-## Body Parameters
-
-<ParamField body="refNames" type="array" required>
-  Names of the datarefs to update.
-</ParamField>
-
-<ParamField body="group" type="string">
-  Group label to set. An empty string unsets the group.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns `200` with an empty body on success.
-  </Tab>
-
-  <Tab title="400 Bad Request">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 ```

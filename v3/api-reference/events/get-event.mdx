@@ -6,39 +6,6 @@ description: Get a single custom event from your org's default app.
 
 Retrieve a single custom event (trigger) from your organization's default custom application by its ID.
 
-## Authentication
-
-Events are defined at the org level, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="event_id" type="string" required>
-  The event ID.
-
-  **Example:** `6a314123d0aeb8165be4f175`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="_id" type="string">Event ID.</ResponseField>
-    <ResponseField name="name" type="string">Event name.</ResponseField>
-    <ResponseField name="response" type="array">Parsed payload field map (`{key, type}`).</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

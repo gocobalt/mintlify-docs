@@ -6,36 +6,6 @@ description: Rename columns in a persistent table.
 
 Rename one or more columns in a persistent table. Provide `old_name`/`new_name` pairs. Returns the table's columns after renaming.
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
-
-## Path Parameters
-
-<ParamField path="table_id" type="string" required>The table ID.</ParamField>
-
-## Body Parameters
-
-<ParamField body="renames" type="array" required>
-  Rename operations, each `{ "old_name": "...", "new_name": "..." }`.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="columns" type="array">The table's columns after renaming.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

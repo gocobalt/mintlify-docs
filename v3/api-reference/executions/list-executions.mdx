@@ -6,65 +6,6 @@ description: List workflow executions for a linked account.
 
 List workflow executions (instances) for a linked account, paginated and filterable by workflow, app, status, date range, and more. Use it to build a run-history view or monitor recent activity.
 
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-<ParamField query="status" type="string">Filter by status, e.g. `COMPLETED`, `RUNNING`, `FAILED`.</ParamField>
-<ParamField query="slug" type="string">Filter by app slug.</ParamField>
-<ParamField query="workflow_id" type="string">Filter by workflow ID.</ParamField>
-<ParamField query="workflow_name" type="string">Filter by workflow name.</ParamField>
-<ParamField query="execution_id" type="string">Filter to a single execution.</ParamField>
-<ParamField query="start_date" type="string">ISO start of the date range.</ParamField>
-<ParamField query="end_date" type="string">ISO end of the date range.</ParamField>
-<ParamField query="execution_type" type="string">Filter by type, e.g. `ASYNC`.</ParamField>
-<ParamField query="execution_source" type="string">Filter by source.</ParamField>
-<ParamField query="sortAsc" type="boolean">Sort ascending by creation time.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope of execution objects.
-    <ResponseField name="docs" type="array">
-      Executions.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Execution ID.</ResponseField>
-        <ResponseField name="name" type="string">Execution name.</ResponseField>
-        <ResponseField name="status" type="string">`COMPLETED`, `RUNNING`, `FAILED`, etc.</ResponseField>
-        <ResponseField name="associated_workflow" type="object">The workflow `{_id, name, icon}`.</ResponseField>
-        <ResponseField name="associated_application" type="object">The app `{_id, name, icon}`.</ResponseField>
-        <ResponseField name="trigger_application_event" type="string">What triggered the run.</ResponseField>
-        <ResponseField name="type_of_execution" type="string">e.g. `ASYNC`.</ResponseField>
-        <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total executions.</ResponseField>
-    <ResponseField name="page" type="integer">Current page.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

@@ -6,46 +6,6 @@ description: Get the full configuration of an MCP server.
 
 Retrieve the full configuration of an MCP server — its associated apps, chains, suggestions, and notebooks.
 
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">The linked account. Required with API-key auth.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Path Parameters
-
-<ParamField path="mcp_server_id" type="string" required>The MCP server ID.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="_id" type="string">Server ID.</ResponseField>
-    <ResponseField name="name" type="string">Server name.</ResponseField>
-    <ResponseField name="description" type="string">Server description.</ResponseField>
-    <ResponseField name="associated_apps" type="array">Apps exposed by the server.</ResponseField>
-    <ResponseField name="chains" type="array">Configured chains (agents).</ResponseField>
-    <ResponseField name="suggestions" type="array">Prompt suggestions.</ResponseField>
-    <ResponseField name="notebooks" type="array">Associated notebooks.</ResponseField>
-    <ResponseField name="environment" type="string">`test` or `live`.</ResponseField>
-    <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

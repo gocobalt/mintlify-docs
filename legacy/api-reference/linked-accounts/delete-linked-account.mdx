@@ -10,35 +10,6 @@ Permanently delete a linked account. This revokes all of the account's integrati
   This is irreversible. In the `test` environment, deletion of the configured Refold test user is blocked.
 </Warning>
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="linked_account_id" type="string" required>
-  Your unique identifier for the account to delete.
-
-  **Example:** `user_12345`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="message" type="string">Confirmation message.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category, e.g. `NOT_FOUND`.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

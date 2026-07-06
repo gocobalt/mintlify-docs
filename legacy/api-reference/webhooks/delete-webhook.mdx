@@ -6,35 +6,6 @@ description: Delete a webhook subscription.
 
 Delete a webhook subscription. The response is the updated list of the remaining webhooks for your organization.
 
-## Authentication
-
-Webhooks are an org-level resource, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="id" type="string" required>
-  The webhook ID to delete.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the array of remaining webhooks after deletion.
-  </Tab>
-
-  <Tab title="400 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 [

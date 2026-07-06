@@ -10,35 +10,6 @@ description: Get all records from a config datastore.
 
 Return all records stored in a named datastore for an app's config. The record shape depends on what the workflow wrote — each record is an arbitrary object.
 
-## Authentication
-
-Datastores are scoped to a linked account via the `linked_account_id` header.
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account.</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
-<ParamField path="datastore" type="string" required>The datastore name (from [List Datastores](/legacy/api-reference/deprecated/list-config-datastores)).</ParamField>
-
-## Query Parameters
-
-<ParamField query="config_id" type="string">Config to read from. Defaults to the linked account ID.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns an array of record objects. Fields vary by datastore.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="message" type="string">Error message.</ResponseField>
-    <ResponseField name="error" type="string">Error detail, e.g. `Config not found`.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 [

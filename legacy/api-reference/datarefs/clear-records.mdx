@@ -6,30 +6,6 @@ description: Clear all records of a dataref while keeping the dataref.
 
 Reset a dataref's `data` map to `{}`, removing all records while preserving the dataref itself.
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the dataref.</ParamField>
-
-## Path Parameters
-
-<ParamField path="refName" type="string" required>The dataref name to clear. **Example:** `contacts`</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the dataref with its `data` reset to `{}`.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

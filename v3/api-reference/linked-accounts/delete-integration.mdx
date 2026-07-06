@@ -8,55 +8,6 @@ Remove an integration from a linked account. If `auth_type` is supplied, only th
 
 The updated linked account is returned. The call succeeds even if the integration was not present (the account is returned unchanged).
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-<ParamField header="linked_account_id" type="string" required>
-  The linked account to operate on. May also be passed as a query parameter.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>
-  The application slug of the integration to remove.
-
-  **Example:** `hubspot`
-</ParamField>
-
-## Query Parameters
-
-<ParamField query="linked_account_id" type="string" required>
-  The linked account ID (required as header or query parameter).
-</ParamField>
-
-<ParamField query="auth_type" type="string">
-  Remove only a single connection of this auth type (e.g. `oauth2`, `keybased`) instead of the whole integration.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the updated linked account.
-
-    <ResponseField name="_id" type="string">Internal record ID.</ResponseField>
-    <ResponseField name="account_id" type="string">Your unique identifier for the account.</ResponseField>
-    <ResponseField name="environment" type="string">Environment: `test` or `live`.</ResponseField>
-    <ResponseField name="name" type="string">Display name.</ResponseField>
-    <ResponseField name="integrations" type="array">Remaining integrations after removal.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

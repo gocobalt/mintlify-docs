@@ -6,30 +6,6 @@ description: Revoke the current linked-account session token.
 
 Revoke the session token presented in the `Authorization` header. The token (and its refresh token, if present) is blacklisted and removed from the access-token store. The request body is unused. Use this when a hosted session ends or a token is compromised.
 
-## Authentication
-
-<ParamField header="Authorization" type="string" required>
-  The session token to revoke.
-
-  **Format:** `Bearer YOUR_SESSION_TOKEN`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="success" type="boolean">Whether the revocation succeeded.</ResponseField>
-    <ResponseField name="revoked_count" type="integer">Number of tokens revoked (`0` or `1`).</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category, e.g. `UNAUTHORIZED`.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code, e.g. `INVALID_TOKEN`.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

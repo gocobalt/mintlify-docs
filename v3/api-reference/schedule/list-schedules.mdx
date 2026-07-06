@@ -10,48 +10,6 @@ List the scheduled triggers registered for a linked account, paginated. Each ent
   Schedules are part of the v1 workflow service (`/api/v1/workflow/public/scheduled`).
 </Note>
 
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account whose schedules to list.</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope.
-    <ResponseField name="docs" type="array">
-      Schedules.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Schedule ID.</ResponseField>
-        <ResponseField name="event_id" type="string">The event fired.</ResponseField>
-        <ResponseField name="workflow" type="object">The scheduled workflow `{_id, name, associated_application}`.</ResponseField>
-        <ResponseField name="config_id" type="string">The config it runs under.</ResponseField>
-        <ResponseField name="trigger_type" type="string">`cron` or `interval`.</ResponseField>
-        <ResponseField name="cron_patten" type="string">Cron expression (cron schedules).</ResponseField>
-        <ResponseField name="trigger_interval" type="array">Interval dates (interval schedules).</ResponseField>
-        <ResponseField name="status" type="string">`running` or `paused`.</ResponseField>
-        <ResponseField name="inactive" type="boolean">`true` when paused.</ResponseField>
-        <ResponseField name="registered_by_api" type="boolean">Whether it was created via the API.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total schedules.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {

@@ -14,50 +14,6 @@ Publish or unpublish a workflow. Publishing registers the workflow's triggers an
   - Calling unpublish with the draft ID fails with `400 INVALID_WORKFLOW_ID` ("Only public and published workflows can be unpublished").
 </Note>
 
-## Authentication
-
-This endpoint requires a **session token** (issue one with [Generate Session Token](/v3/api-reference/session-tokens/generate-session-token)); it operates on the linked account's private workflow.
-
-<ParamField header="Authorization" type="string" required>
-  Session token for the linked account.
-
-  **Format:** `Bearer YOUR_SESSION_TOKEN`
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="workflow_id" type="string" required>
-  When **publishing** (`published: true`), the **draft** workflow ID. When **unpublishing** (`published: false`), the **published** workflow ID returned by the publish call. See the note above.
-</ParamField>
-
-## Body Parameters
-
-<ParamField body="published" type="boolean" required>`true` to publish (registers triggers), `false` to unpublish.</ParamField>
-<ParamField body="version" type="integer">When publishing, publish the draft as this version number.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the published (or unpublished) workflow. On publish, the `_id` here is the **published workflow ID** — different from the draft ID you passed in.
-  </Tab>
-
-  <Tab title="400 Bad Request">
-    Returned, for example, when unpublishing with a draft ID.
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code, e.g. `INVALID_WORKFLOW_ID`.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
-
 <ResponseExample>
 ```json 200
 {
