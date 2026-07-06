@@ -1,0 +1,99 @@
+---
+title: List Variable Values
+api: get /api/v2/public/env/values/:scope
+description: List environment-variable values for a scope.
+---
+
+List the variable values for a given scope, paginated. Linked-account auth is restricted to its own scope; workflow scope requires a `workflow_id`. Encrypted values are redacted.
+
+## Authentication
+
+This endpoint reads scoped values, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">Required (header or query) for the `linked_account` scope.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token (restricted to the account's own scope). **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Path Parameters
+
+<ParamField path="scope" type="string" required>The scope to list: `org`, `linked_account`, or `workflow`.</ParamField>
+
+## Query Parameters
+
+<ParamField query="variable_definition_id" type="string">Filter to one definition.</ParamField>
+<ParamField query="linked_account_id" type="string">Required for `linked_account` scope.</ParamField>
+<ParamField query="workflow_id" type="string">Required for `workflow` scope.</ParamField>
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="status" type="string">`success`.</ResponseField>
+    <ResponseField name="docs" type="array">
+      Value documents. The `variable_definition_id` is populated with the definition.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">Value document ID.</ResponseField>
+        <ResponseField name="variable_definition_id" type="object">The populated definition.</ResponseField>
+        <ResponseField name="value" type="string">Value, or `[REDACTED]` if encrypted.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total values in scope.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "status": "success",
+  "docs": [
+    {
+      "_id": "6a314b06d396207fd24fb16b",
+      "variable_definition_id": {
+        "_id": "6a1401de41e63efd08fb3e54",
+        "name": "API_SECRET",
+        "scope": "linked_account",
+        "encrypted": true
+      },
+      "value": "[REDACTED]",
+      "updatedAt": "2026-06-16T13:09:26.023Z"
+    }
+  ],
+  "totalDocs": 1,
+  "limit": 10,
+  "page": 1
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "workflow_id is required for workflow scope"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/env/values/linked_account?linked_account_id=YOUR_LINKED_ACCOUNT_ID" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/env/values/linked_account" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

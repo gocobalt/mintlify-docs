@@ -1,0 +1,82 @@
+---
+title: List Tables
+api: get /api/v2/public/tables
+description: List persistent tables for the org.
+---
+
+List the persistent tables in your organization and environment, paginated. Persistent tables are API-managed data tables (unlike datastores, which are written by workflow executions). Each table carries the `linked_account_id` it belongs to.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">Optional — filter to a single linked account's tables.</ParamField>
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a paginated envelope.
+    <ResponseField name="docs" type="array">
+      Table objects.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">Table ID.</ResponseField>
+        <ResponseField name="name" type="string">Table name.</ResponseField>
+        <ResponseField name="linked_account_id" type="string">Owning linked account.</ResponseField>
+        <ResponseField name="table_type" type="string">e.g. `persistent`.</ResponseField>
+        <ResponseField name="is_deleted" type="boolean">Whether the table is soft-deleted.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total tables.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a26a509ca55ea91ae063313",
+      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+      "linked_account_id": "user_12345",
+      "name": "leads",
+      "environment": "test",
+      "table_type": "persistent",
+      "is_deleted": false
+    }
+  ],
+  "totalDocs": 12,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 2,
+  "hasNextPage": true
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/tables?limit=10" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

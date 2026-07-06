@@ -1,0 +1,114 @@
+---
+title: "Datasource fields"
+description: "Populate a field's options live from each customer's connected account, so every customer picks from their own pipelines, vendors, or stages."
+---
+
+A **datasource field** is a [Select](/v3/native/configure/integration/field-types/overview#basic-inputs) (or a [Map v2](/v3/native/configure/integration/field-types/mapping) column) whose options are loaded live from a customer's connected account instead of from a fixed list you type yourself. You back the field with a published workflow that fetches the data, so each [linked account](/v3/platform/concepts/linked-account) sees options drawn from *their* account.
+
+Use a datasource for any list that is account-specific and changes over time: a customer's HubSpot pipelines, their QuickBooks vendors, their Salesforce record types. Hardcoding those options would be wrong for every customer but you, and stale the moment the customer adds one.
+
+<Note>
+Refold ships ready-made **Dynamic Dataslots** for many connectors (for example, **List Deal Pipelines** or **List Pipeline Stages** on HubSpot). When the slot you need already exists, add it directly. Build a datasource workflow yourself only when no Dynamic Dataslot covers your case. See [Dynamic Dataslots](/v3/native/configure/integration/dataslots#dynamic-dataslots).
+</Note>
+
+## How it works
+
+A datasource field has two parts: a **Select** field that the customer sees, and a published **datasource workflow** that supplies its options.
+
+1. The customer opens your config and focuses the field.
+2. Refold runs the field's datasource workflow against the customer's [linked account](/v3/platform/concepts/linked-account).
+3. The workflow fetches records from the connected app and returns them as `name`/`value` pairs.
+4. The customer picks an option; Refold saves the `value`, while the `name` is only what they see.
+
+The workflow runs per customer, so the options always reflect the account they connected.
+
+## Build a datasource
+
+Building a datasource is two tasks: create the workflow that returns the options, then point a field at it.
+
+### Create the datasource workflow
+
+<Steps>
+  <Step title="Add a workflow to the connector">
+    In the connector, add an [Application Workflow](/v3/native/configure/integration/workflow) and name it for what it returns, such as `Get Vendors`, so it's easy to find later. A datasource workflow needs no trigger, it's run on demand when the field loads.
+  </Step>
+  <Step title="Fetch the records">
+    Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/platform/concepts/connector/custom-actions), or an [HTTP Request](/v3/platform/concepts/workflows/nodes/http) node against the connected app.
+  </Step>
+  <Step title="Transform into name/value pairs">
+    Add a [Transform](/v3/platform/concepts/workflows/nodes/transform) or [Custom Code](/v3/platform/concepts/workflows/nodes/custom-code) node that reshapes each record into an object with exactly `name` (the label the customer sees) and `value` (the ID you use in your workflow).
+
+    ```javascript Transform query
+    {
+      "options": $map(records, function($r) {
+        { "name": $r.DisplayName, "value": $r.Id }
+      })
+    }
+    ```
+
+    <Warning>
+    Each option must be a `name`/`value` pair and nothing else. Extra keys cause the options to render incorrectly.
+    </Warning>
+  </Step>
+  <Step title="Return the options">
+    End the workflow with a [Response](/v3/platform/concepts/workflows/nodes/response) node containing the transformed list. Nothing connects after the Response node, it's the last step.
+  </Step>
+  <Step title="Publish the workflow">
+    **Publish** the workflow. An unpublished datasource workflow doesn't appear in the field's picker and won't run for customers.
+  </Step>
+</Steps>
+
+### Point a field at the datasource
+
+<Steps>
+  <Step title="Add or edit the field">
+    In **Connect Portal → Fields**, add a **Select** field (or open a **Map v2** column), then edit it.
+  </Step>
+  <Step title="Turn on Use Data Source">
+    Check **Use Data Source**, then under **Select Data Source** pick the workflow you published.
+  </Step>
+  <Step title="Save the field">
+    Save the field. Each customer now loads their own options when they open it.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: a Select field's editor with Use Data Source checked and a published datasource workflow selected -> /images/embedded/field-types/datasource.png */}</Frame>
+
+## Common use cases
+
+| Connected app | Datasource returns | Saved value |
+| --- | --- | --- |
+| QuickBooks | The customer's vendors | Vendor ID |
+| HubSpot | The customer's deal pipelines | Pipeline ID |
+| Salesforce | The customer's record types | Record type ID |
+| Google Sheets | The customer's spreadsheets | Spreadsheet ID |
+
+## Best practices
+
+<Tip>
+- **Prefer a built-in Dynamic Dataslot** when one exists, it needs no workflow to maintain.
+- **Return only `name` and `value`**, no other keys, or the dropdown won't render.
+- **Cache options that rarely change** with the **Cache** [field setting](/v3/native/configure/integration/dataslots#field-settings) so Refold doesn't refetch on every run.
+- **Chain datasources** with [dependent fields](/v3/native/configure/integration/field-types/dependent) when one list narrows the next, such as picking a worksheet only after a sheet.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The field shows no options">
+    Confirm the customer's [linked account](/v3/platform/concepts/linked-account) is connected, the datasource workflow is **published**, and it ends in a [Response](/v3/platform/concepts/workflows/nodes/response) node returning `name`/`value` pairs. Re-open the field after the connection completes.
+  </Accordion>
+  <Accordion title="Options render incorrectly">
+    Each option must be an object with exactly `name` and `value`, no extra keys. Re-check the Transform query in your datasource workflow.
+  </Accordion>
+  <Accordion title="The workflow doesn't appear in the picker">
+    An unpublished workflow is hidden from **Use Data Source**. Publish it, then re-open the field editor.
+  </Accordion>
+</AccordionGroup>
+
+## See also
+
+- [Dataslots](/v3/native/configure/integration/dataslots#use-a-datasource): the full Use Data Source flow and field palette.
+- [Mapping fields](/v3/native/configure/integration/field-types/mapping): back a mapping column with a datasource.
+- [Dependent fields](/v3/native/configure/integration/field-types/dependent): chain datasource-backed fields so each selection narrows the next.
+- [Config fields](/v3/native/configure/integration/config-fields): read and write field values from code.

@@ -1,0 +1,61 @@
+---
+title: "API trigger"
+description: "Run a workflow programmatically with a direct API call."
+---
+
+The **API trigger** lets you execute a workflow directly through an API call,
+instead of relying on an event. Use it when your application needs to run a
+workflow on demand.
+
+## Set up the trigger
+
+<Steps>
+  <Step title="Open the Start node">
+    Navigate to the workflow's **Start node**.
+  </Step>
+  <Step title="Choose API Call">
+    Select **API Call** as the trigger method, then configure it and click
+    **Save**.
+
+    - **Workflow Alias** *(optional)* — a unique identifier you can use in
+      place of the workflow ID in the execution endpoint.
+    - **URL** — the endpoint used to trigger the workflow. If you set an
+      alias, it can replace the workflow ID in the URL.
+    - **Payload** — a sample JSON body for the data you'll send. These fields
+      are available as data variables inside the workflow, just like an event
+      payload. Leave it as `{}` if no data is needed.
+  </Step>
+</Steps>
+
+## Execute the workflow
+
+Make a `POST` request to the execution endpoint. Send the data in the request
+body (or `{}` if there's none).
+
+```bash
+curl --request POST \
+  --url 'https://app.refold.ai/api/v1/workflow/{workflow_id_or_alias}/execute' \
+  --header 'content-type: application/json' \
+  --header 'linked_account_id: john@acme.io' \
+  --header 'slug: salesforce' \
+  --header 'x-api-key: <x-api-key>' \
+  --data '{ "Task Name": "Sample task", "Assigned_to": "John Doe" }'
+```
+
+**Headers**
+
+| Header | Description |
+|---|---|
+| `linked_account_id` | The linked account to run the workflow for. The workflow runs even for accounts that haven't enabled it. |
+| `slug` | The slug of the integration the workflow belongs to. |
+| `x-api-key` | Your Refold API key. |
+| `sync_execution` | `false` by default (response returns only the `execution_id`). Set to `true` to also return the `return_value` from the workflow's Response node. |
+
+<Note>
+  `sync_execution: true` isn't allowed when the workflow contains a Group node.
+</Note>
+
+To fetch the result of a workflow that ran asynchronously, use the execution
+response endpoint:
+
+<Card title="Get an execution (API reference)" href="/v3/api-reference/executions/get-execution" />

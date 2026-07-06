@@ -1,0 +1,79 @@
+---
+title: Auth flows options
+description: Refold's auth flows provides a seamless environment for your users to grant authorization to their third party application data.
+---
+
+When creating application integrations, accessing customer's data is a required step. Using Refold's auth flows this process becomes both
+quick and heavily customizable.
+
+## Pre-requisites
+Below are a few pre-requisites that you need to do before choosing an Auth Flow:
+
+**1. Create Linked Account**
+
+In order to enable your customer to connect to third party app, you first need to create a Linked account for them using a unique identifier.
+<Note>
+Know more about Linked Accounts and how you can create one in the guide [here](/legacy/build/basics/linked_account).
+</Note>
+
+<Tip>
+We recommend you create a linked account at the same time as your customer signs up within your app.
+</Tip>
+
+**2. Generate Session Token**
+
+  [Generate a Session Token](/legacy/api-reference/session-tokens/generate-session-token) for your Linked Account.
+
+  <Warning>
+  The session token gets expired in 24 hours. Please make sure you generate a new token in every new session or within 24 hours.
+  </Warning>
+
+## Auth flow integration options
+Refold provides 3 different ways for Auth flow of integrations
+
+#### Hosted Flow
+<Accordion title="Hosted flow" icon="cloud" description="Redirects user to Hosted Portal hosted on `https://app.refold.ai/connect`.">
+Hosted flow  is a no-code solution, so you don't need to build your own UI to handle the integration authentication. It handles the following features:
+
+- List all enabled applications
+- Handle the Auth flow
+- Manage integration configuration for your end user.
+
+
+<Tip>To get started, follow the steps [here](/legacy/ship/auth_flows/hosted).</Tip>
+</Accordion>
+
+#### Refold Modals (Embedded Flow)
+
+<Accordion title="Refold Modals (Embedded Flow)" icon="pen-to-square" description="Utilize the React SDK and embed it seamlessly within your React application.">
+Refold Embedded flow is a frontend SDK that allows you to embed Refold auth flow into your React application.
+
+It's a simple process involving steps like `Generate Session Token` > `Install and Initialise Frontend SDK` and `Render the Component`.
+
+  <Info>
+  Learn more about Refold's Modal flow and how to implement it [here](/legacy/ship/auth_flows/embedded).
+  </Info>
+
+For example implementation, you can check out the [App.js](https://github.com/gocobalt/react-cobalt-js/blob/main/example/src/App.js) file in the [example](https://github.com/gocobalt/react-cobalt-js/tree/main/example) directory.
+</Accordion>
+
+#### Build your own Frontend (Seamless Flow)
+
+<Accordion title="Build your own Frontend (Seamless Flow)" icon="code" description="Utilize our REST APIs and NodeJs SDK methods to implement and customize the authentication experience.">
+Refold provides APIs and SDK functions that allow you to build your own frontend experience for your customers to connect with the third party applications.
+
+<Tip>
+Learn in depth about how to build your own frontend [here](/legacy/ship/auth_flows/build_your_own).
+</Tip>
+
+</Accordion>
+
+
+
+### Authorization journey
+Refold lets you take the authorization for customer's data in 3 simple steps:
+1. Open the auth flow portal for the customer using any of the above mentioned integration options.
+2. Customer provides consent or API Credentials for the respective app.
+3. Customer configures the data required for the connection, such as selecting specific integration settings. 
+
+<Check>And done! Customer has now successfully connected the application(s) and can now make use of the published orchestrations.</Check>

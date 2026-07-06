@@ -1,0 +1,76 @@
+---
+title: Update Config
+api: put /api/v2/public/config
+description: Update an installed config for a linked account.
+---
+
+Update an installed config — field values, enabled workflows, labels, and other installation settings. The config is identified by `config_id` (defaults to the linked account ID).
+
+## Authentication
+
+Configs are scoped to a linked account via the `linked_account_id` header.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The linked account whose config to update.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
+<ParamField body="config_id" type="string">The config to update. Defaults to the linked account ID.</ParamField>
+<ParamField body="fields" type="array">Field values to set.</ParamField>
+<ParamField body="workflows" type="array">Workflows to enable/disable.</ParamField>
+<ParamField body="labels" type="object">Key/value labels for the config.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated config (`{slug, config_id, fields, workflows, field_errors}`).
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+{
+  "slug": "hubspot",
+  "config_id": "user_12345",
+  "field_errors": [],
+  "fields": [
+    { "id": "699fec7a5bd27ed2af7243ad", "name": "Select", "field_type": "select" }
+  ],
+  "workflows": [
+    { "id": "699d8648a81ba363578cc2f4", "name": "Sync Contacts", "enabled": true }
+  ]
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Config with config id user_12345 not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/config" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "slug": "{slug}", "labels": { "env": "production" } }'
+```
+</RequestExample>

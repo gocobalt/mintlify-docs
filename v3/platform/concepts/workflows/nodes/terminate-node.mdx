@@ -1,0 +1,297 @@
+---
+title: "Terminate node"
+description: "End workflow execution early with a success or error status and optional message"
+sidebarTitle: "Terminate"
+---
+
+The Terminate node stops workflow execution at any point with a defined status. Use it to exit workflows early when conditions are met, such as when validation fails, a record already exists, or processing should not continue. It can terminate the whole instance, a single loop iteration, or an entire loop — each with a selected status — allowing you to communicate the reason for stopping and return appropriate status codes.
+
+## When to use
+
+- Exit early when input validation fails before processing begins
+- Stop processing when a duplicate record is detected
+- End a branch when a condition makes further processing unnecessary
+- Return meaningful error messages when business rules are violated
+- Skip remaining steps when an optional process completes early
+
+<Info>The Terminate node stops execution of the current branch only. Other parallel branches in the workflow continue to execute. When used inside a Sub Flow, it terminates only the sub flow while the parent workflow continues.</Info>
+
+## Actions
+
+<Info>Going forward, use **Terminate**, **Terminate Iteration**, or **Terminate Loop**. The older **Terminate with Error** and **Terminate with Success** actions still work but are **deprecated**.</Info>
+
+<AccordionGroup>
+  <Accordion title="Terminate">
+    Terminates the workflow instance with a selected status. By default the instance is marked as **terminated**; enable the error or success toggle to mark it accordingly instead.
+
+    | Parameter | Type | Required | Default | Description |
+    |-----------|------|----------|---------|-------------|
+    | Termination Message | Text | No | — | Message to include with the termination. Supports templating. |
+    | Status Code | Number | No | `200` | HTTP status code for the termination response. |
+    | Status toggles | Toggle | No | Terminated | Toggle **error** or **success** to mark the instance with that status instead of the default terminated status. |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "29",
+      "node_name": "Terminate",
+      "body": {
+        "message": "Workflow terminated",
+        "statusCode": 200,
+        "action": "terminate"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Terminate Iteration">
+    Terminates only the current iteration when running inside a Loop (or Pagination). Sibling iterations and the parent workflow continue. The iteration is marked as **error** by default; enable **Terminate Iteration With Success** to end it cleanly instead.
+
+    | Parameter | Type | Required | Default | Description |
+    |-----------|------|----------|---------|-------------|
+    | Termination Message | Text | No | — | Message to include with the iteration termination. Supports templating. |
+    | Terminate Iteration With Success | Toggle | No | `false` (error) | When enabled, the iteration ends with a success status instead of error. |
+  </Accordion>
+
+  <Accordion title="Terminate Loop">
+    Terminates the entire loop. The loop is marked as **error** by default; enable the success toggle to end it cleanly instead.
+
+    | Parameter | Type | Required | Default | Description |
+    |-----------|------|----------|---------|-------------|
+    | Termination Message | Text | No | — | Message to include with the loop termination. Supports templating. |
+    | Terminate Loop With Success | Toggle | No | `false` (error) | When enabled, the loop ends with a success status instead of error. |
+  </Accordion>
+
+  <Accordion title="Terminate with Error (deprecated)">
+    <Warning>Deprecated — use **Terminate** with the error toggle instead. This action continues to work as before: it stops the workflow instance and marks it as errored.</Warning>
+
+    | Parameter | Type | Required | Default | Description |
+    |-----------|------|----------|---------|-------------|
+    | Error Message | Text | No | — | Error description to include with the termination. Supports templating. |
+    | Status Code | Number | No | `500` | HTTP status code representing the error type (e.g., 400, 404, 500). |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "29",
+      "node_name": "Terminate",
+      "body": {
+        "message": "Validation failed: Contact email is invalid",
+        "statusCode": 400,
+        "action": "terminate_with_error"
+      }
+    }
+```
+  </Accordion>
+
+  <Accordion title="Terminate with Success (deprecated)">
+    <Warning>Deprecated — use **Terminate** with the success toggle instead. This action continues to work as before: it stops the workflow instance and marks it as completed successfully.</Warning>
+
+    | Parameter | Type | Required | Default | Description |
+    |-----------|------|----------|---------|-------------|
+    | Success Message | Text | No | — | Success message to include with the termination. Supports templating. |
+    | Status Code | Number | No | `200` | HTTP status code representing success (e.g., 200, 201). |
+
+    **Output:**
+```json
+    {
+      "status": "Success",
+      "node_id": "29",
+      "node_name": "Terminate",
+      "body": {
+        "message": "Contact already exists - no action required",
+        "statusCode": 200,
+        "action": "terminate_with_success"
+      }
+    }
+```
+  </Accordion>
+</AccordionGroup>
+
+<Warning>The Terminate node skips all downstream nodes in the current branch. Ensure any critical cleanup or logging happens before the Terminate node executes.</Warning>
+
+## Adding to your workflow
+
+<Steps>
+  <Step title="Add the Terminate node">
+    In the workflow editor, click **Add Node** and select **Terminate** from the utility nodes section.
+  </Step>
+  
+  <Step title="Select the action">
+    Choose **Terminate** to stop the instance (toggle error or success as needed), or **Terminate Iteration** / **Terminate Loop** when inside a loop. The legacy **Terminate with Error** and **Terminate with Success** actions are deprecated.
+  </Step>
+  
+  <Step title="Configure the message">
+    Enter a descriptive message explaining why the workflow is terminating. Use templating to include dynamic values like `{{rule_node.body.validation_error}}`.
+  </Step>
+  
+  <Step title="Set the status code">
+    Enter an appropriate HTTP status code. Use 4xx codes for client errors (validation failures, not found) and 5xx for server errors. Use 2xx for successful early exits.
+  </Step>
+  
+  <Step title="Connect to your workflow">
+    Place the Terminate node at the end of conditional branches where execution should stop. Typically used after a Rule node's false branch or after validation checks.
+  </Step>
+</Steps>
+
+## Examples
+
+<AccordionGroup>
+  <Accordion title="Input Validation for SAP Vendor Creation">
+    Validate required fields before creating a vendor in SAP. Terminate with a clear error if validation fails.
+
+    **Workflow Structure:**
+    1. **Start node** - Receives vendor data
+    2. **Rule node** - Check if required fields exist
+    3. **Terminate node** (false branch) - Exit with validation error
+    4. **SAP node** (true branch) - Create vendor
+
+    **Rule node Condition:**
+```
+    {{start.body.vendor_name}} is not empty
+    AND {{start.body.tax_id}} is not empty
+    AND {{start.body.country}} is not empty
+```
+
+    **Terminate node Configuration (False Branch):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Terminate (error) |
+    | Termination Message | `Missing required fields for vendor creation. Vendor name, tax ID, and country are required.` |
+    | Status Code | `400` |
+
+    **Use Case:** Prevents API calls to SAP with incomplete data, providing clear feedback about what's missing.
+  </Accordion>
+
+  <Accordion title="Duplicate Detection for NetSuite Contacts">
+    Check if a contact already exists before creating a new one. Terminate successfully if duplicate found.
+
+    **Workflow Structure:**
+    1. **Start node** - Receives contact data
+    2. **NetSuite node** - Search for existing contact by email
+    3. **Rule node** - Check if contact exists
+    4. **Terminate node** (true branch) - Exit successfully, contact exists
+    5. **NetSuite node** (false branch) - Create new contact
+
+    **Rule node Condition:**
+```
+    {{netsuite_search.body.records.length}} greater than 0
+```
+
+    **Terminate node Configuration (True Branch):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Terminate (success) |
+    | Termination Message | `Contact {{start.body.email}} already exists with ID {{netsuite_search.body.records[0].id}}. No action taken.` |
+    | Status Code | `200` |
+
+    **Use Case:** Idempotent workflow that gracefully handles duplicates without creating errors in logs.
+  </Accordion>
+
+  <Accordion title="Tipalti Payment Authorization Check">
+    Verify payment amount is within authorized limits before processing. Terminate with error if limit exceeded.
+
+    **Workflow Structure:**
+    1. **Start node** - Receives payment request
+    2. **Tables node** - Look up authorization limit for vendor
+    3. **Rule node** - Check if amount exceeds limit
+    4. **Terminate node** (true branch) - Exit with authorization error
+    5. **Tipalti node** (false branch) - Process payment
+
+    **Rule node Condition:**
+```
+    {{start.body.amount}} greater than {{tables_node.body.records[0].max_amount}}
+```
+
+    **Terminate node Configuration (True Branch):**
+    | Field | Value |
+    |-------|-------|
+    | Action | Terminate (error) |
+    | Termination Message | `Payment of ${{start.body.amount}} exceeds authorization limit of ${{tables_node.body.records[0].max_amount}} for vendor {{start.body.vendor_id}}. Manual approval required.` |
+    | Status Code | `403` |
+
+    **Use Case:** Enforces business rules at the workflow level, preventing unauthorized transactions.
+  </Accordion>
+
+  <Accordion title="Sub Flow Early Exit Pattern">
+    Use Terminate within a sub flow to exit early without affecting the parent workflow.
+
+    **Sub Flow Structure (Validation Sub Flow):**
+    1. **Start node** - Receives data to validate
+    2. **Custom Code node** - Run validation logic
+    3. **Rule node** - Check validation result
+    4. **Terminate node** (false branch) - Exit sub flow with error
+    5. **Response node** (true branch) - Return validated data
+
+    **Terminate node Configuration:**
+    | Field | Value |
+    |-------|-------|
+    | Action | Terminate (error) |
+    | Termination Message | `{{custom_code.body.validation_errors}}` |
+    | Status Code | `422` |
+
+    **Parent Workflow Handling:**
+    The parent workflow receives the sub flow's termination status and can handle it with a Rule node:
+```
+    {{sub_flow.body.statusCode}} equals 422
+```
+    - **True branch:** Log error and notify operations
+    - **False branch:** Continue processing with validated data
+
+    **Use Case:** Reusable validation logic that can exit early while allowing parent workflows to handle the outcome appropriately.
+  </Accordion>
+</AccordionGroup>
+
+## Behavior details
+
+| Scenario | Behavior |
+|----------|----------|
+| Downstream nodes | All nodes after Terminate in the current branch are skipped |
+| Parallel branches | Other branches continue execution normally |
+| Inside Sub Flow | Only the sub flow terminates; parent workflow continues |
+| Inside Loop | Use **Terminate Iteration** to stop a single iteration or **Terminate Loop** to stop the whole loop. A plain **Terminate** stops the entire instance. |
+| Workflow status | Both actions result in workflow execution status `Success` |
+
+<Tip>Use **Terminate** with the success toggle for expected early exits (duplicates, already processed) and the error toggle for validation failures or business rule violations. Inside loops, use **Terminate Iteration** or **Terminate Loop**. This makes log analysis and monitoring more meaningful.</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Terminate Not Stopping Workflow">
+    | Problem | Solution |
+    |---------|----------|
+    | Other branches still executing | Terminate only stops the current branch. Use Merge node before Terminate if you need to stop all branches. |
+    | Nodes after Terminate still running | Verify the Terminate node is correctly connected. Check that the node showing in logs is actually after the Terminate node in the flow. |
+    | Parent workflow continues after sub flow Terminate | This is expected behavior. Handle the sub flow's termination status in the parent workflow with a Rule node. |
+  </Accordion>
+
+  <Accordion title="Message Not Appearing">
+    | Problem | Solution |
+    |---------|----------|
+    | Default message shown instead of custom | Verify the message field is saved. Check for templating syntax errors that might cause the field to be ignored. |
+    | Templating not resolving | Ensure referenced nodes have executed before Terminate. Use the correct syntax: `{{node_name.body.field}}`. |
+  </Accordion>
+
+  <Accordion title="Status Code Issues">
+    | Problem | Solution |
+    |---------|----------|
+    | Status code not reflecting in API response | The status code is stored in the node output but may not affect the Workflow API HTTP response status. Use Response node if you need to control API response status. |
+    | Wrong default status code | Verify the selected status. The **Terminate** action defaults to 200; the deprecated **Terminate with Error** defaults to 500 and **Terminate with Success** to 200. |
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Rule node" icon="bolt" href="/v3/platform/concepts/workflows/nodes/rule">
+    Create conditional branches that lead to Terminate.
+  </Card>
+  <Card title="Response node" icon="reply" href="/v3/platform/concepts/workflows/nodes/response">
+    Return data before terminating via Workflow API.
+  </Card>
+  <Card title="Sub Flows node" icon="diagram-project" href="/v3/platform/concepts/workflows/nodes/sub-flows">
+    Use Terminate for early exit in reusable workflows.
+  </Card>
+</CardGroup>

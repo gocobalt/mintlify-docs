@@ -1,0 +1,56 @@
+---
+title: "Certificates"
+description: "Manage the TLS certificates integrations use for certificate-based authentication."
+---
+
+The **Certificates** page holds the custom mTLS and inbound certificates
+used by integrations that require certificate-based authentication. Upload
+your certificates here so connectors can present and validate them when they
+connect.
+
+Open it from **Settings > Configuration > Certificates**.
+
+## Certificate stores
+
+Certificates are organized into three tabs, each for a different part of a
+TLS handshake:
+
+- **mTLS Trust Store** — the certificates Refold trusts when verifying a
+  partner's server during mutual TLS.
+- **mTLS Certificate Store** — the client certificates Refold presents to a
+  partner during mutual TLS.
+- **Server Trust Store** — additional certificate authorities Refold trusts
+  for server TLS connections.
+
+Each store lists its certificates with the **Common Name (CN)**, the date it
+was **uploaded**, and the **expiry** dates so you can track upcoming renewals.
+
+{/* NEEDS INPUT: confirm the exact role of each store and which certificate
+    types belong in each, so the one-line descriptions above are accurate. */}
+
+## Add a certificate
+
+Click **+ Certificate** in the top-right and upload your certificate to the
+relevant store. New certificates appear in the list with their CN and expiry.
+
+## Download a CSR
+
+Click **CSR** to download a certificate signing request. Have it signed by
+your certificate authority, then upload the signed certificate back here.
+
+<Warning>
+  Refold doesn't auto-renew certificates. Track the expiry dates shown in
+  each store and replace certificates before they lapse to avoid failed
+  connections.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Credentials" href="/v3/platform/platform-settings/workspace-settings/credentials">
+    Store API keys and OAuth secrets used by connectors.
+  </Card>
+  <Card title="Policy" href="/v3/platform/platform-settings/workspace-settings/policy">
+    Set the workspace-level security policies for your organization.
+  </Card>
+</CardGroup>

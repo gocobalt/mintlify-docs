@@ -1,0 +1,85 @@
+---
+title: Update Event
+api: put /api/v2/public/application/event/:event_id
+description: Update a custom event on your org's default app.
+---
+
+Edit an existing custom event (trigger) on your organization's default custom application. The response is the full, updated list of events.
+
+## Authentication
+
+Events are defined at the org level, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="event_id" type="string" required>
+  The event ID to update.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>
+  Event name.
+</ParamField>
+
+<ParamField body="response" type="string" required>
+  Sample payload (as a string) describing the event's data shape.
+</ParamField>
+
+<ParamField body="json_schema" type="object">
+  Optional JSON schema describing the payload.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the full updated array of events for the default app.
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "6a314123d0aeb8165be4f175",
+    "name": "candidate_created",
+    "response": [
+      { "key": "event", "type": "text" },
+      { "key": "payload", "type": "object" }
+    ]
+  }
+]
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error": "RESOURCE_NOT_FOUND",
+  "message": "Event not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/application/event/{event_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "candidate_created",
+    "response": "{ \"event\": \"candidate_created\", \"payload\": { \"email\": \"jane@example.com\" } }"
+  }'
+```
+</RequestExample>

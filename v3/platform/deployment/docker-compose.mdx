@@ -1,0 +1,366 @@
+---
+title: "Docker Compose"
+description: "Install, configure, back up, upgrade, and maintain the Refold platform on a single host with Docker Compose."
+---
+
+Docker Compose is the quickest way to run the full Refold platform on one
+host. It's cloud-agnostic — deploy it on any provider (AWS, GCP, Azure, or
+bare metal) — and brings up a fully functional environment with a single
+command.
+
+<Info>
+  The deployment package (the compose files and a GitHub access token for
+  pulling images) is provided by the Refold team. Reach out to your Refold
+  contact to get it before you start.
+</Info>
+
+{/* NEEDS UPDATE: This page tracks the stable Installation Guide, which is
+    accurate for the install *procedure* but predates the current full stack.
+    The current standard deployment (QUANTA-style, 2025) also runs Nginx
+    (HTTP 3000 / HTTPS 3443), Mongo as a single-node replica set, Postgres,
+    MinIO, the Control Plane, Lambdas, and the Audit service. Before
+    publishing, confirm with the team and update the Ports table, the
+    Installing steps, the Configuration section, and the Upgrading section
+    (each spot is flagged inline). */}
+
+## Overview
+
+A Docker Compose install runs the entire platform on one host: the Refold
+application services and background workers, plus — by default — their backing
+databases and object storage, all behind a single web entry point on port
+3000.
+
+The bundled infrastructure is **pluggable**, so you can keep the default
+all-in-one setup for evaluation or offload state to managed services in
+production:
+
+- **Object storage** — the bundled **MinIO** container by default, or external
+  **Amazon S3** / **Google Cloud Storage**. MinIO is optional.
+- **Databases** — bundled **MongoDB** and **Redis** by default, or managed
+  services such as **MongoDB Atlas** and a hosted **Redis**.
+
+You configure these in the env files — see [Configuration](#configuration).
+
+## Prerequisites
+
+| Requirement | Minimum |
+|---|---|
+| Docker Engine | 20.10.0 or higher |
+| Docker Compose | 2.0.0 or higher |
+| GitHub Personal Access Token (PAT) | with `read:packages` scope — provided by Refold |
+
+Install [Docker Engine](https://docs.docker.com/engine/install/) and
+[Docker Compose](https://docs.docker.com/compose/install/) first if you don't
+already have them.
+
+<Warning>
+  Use **Docker Compose v2** (`docker compose`, with a space). The older
+  `docker-compose` (with a hyphen) is deprecated and may not work correctly.
+</Warning>
+
+### System requirements
+
+- **Operating system:** Linux (recommended), macOS, or Windows with WSL2
+- **Architecture:** `x86_64` / `amd64`
+- **Memory:** 16 GB RAM minimum
+- **Disk:** 100 GB free
+
+<Note>
+  If your user can't run Docker commands directly, prepend `sudo` to each one —
+  for example, `sudo docker compose up -d`.
+</Note>
+
+### Ports
+
+The platform runs several containers, but only these ports need to be open on
+the host:
+
+| Service | Port |
+|---|---|
+| Web application (main entry point) | 3000 |
+| MongoDB | 27017 |
+| Redis | 6379 |
+
+{/* NEEDS UPDATE: The current full stack exposes more ports than the three
+    above. Confirm and add as applicable: Nginx HTTPS 3443, Postgres 5432,
+    MinIO 9000, MinIO console 9001. Verify which the package publishes to the
+    host vs. keeps internal to the Docker network. */}
+
+## Authenticate to GHCR
+
+Images are pulled from the GitHub Container Registry (`ghcr.io`). Log in once
+using the token Refold gave you:
+
+```bash
+echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+```
+
+Replace `$CR_PAT` with your Personal Access Token and `USERNAME` with the
+username Refold provided. The token needs the `read:packages` scope.
+
+<Tip>
+  The MongoDB and Redis images come from Docker Hub and are pulled
+  automatically — no extra authentication needed for those.
+</Tip>
+
+## Install
+
+<Steps>
+  <Step title="Extract the package">
+    Unzip the deployment package Refold shared with you:
+
+    ```bash
+    unzip refold-docker-compose.zip
+    ```
+
+    This creates a project folder that contains the Docker Compose files under
+    `devops/docker`.
+
+    {/* NEEDS UPDATE: Confirm the actual package filename. The unzip name
+        `refold-docker-compose.zip` is a placeholder — adjust to match the
+        package the team currently ships. */}
+  </Step>
+
+  <Step title="Go to the deployment directory">
+    Move into the folder that holds `docker-compose.yaml`:
+
+    ```bash
+    cd devops/docker
+    ```
+  </Step>
+
+  <Step title="Start the services">
+    ```bash
+    docker compose up -d
+    ```
+
+    The `-d` flag runs the containers in detached mode (in the background).
+    Compose pulls every image from its registry before starting the
+    containers, so the first run takes a few minutes.
+  </Step>
+
+  <Step title="Verify the services">
+    ```bash
+    docker compose ps
+    ```
+
+    Confirm every service is listed and running. Once they're up, open
+    **`http://localhost:3000`** to reach the web application.
+  </Step>
+
+  {/* NEEDS UPDATE: The current full stack may need a post-install step the
+      stable guide omits — creating the audit service's Postgres database,
+      because the compose file only creates `cobalt_postgres`:
+        docker exec postgres_container psql -U postgres \
+          -c 'CREATE DATABASE "cobalt-pg";'
+      Confirm and add as a step if still required. */}
+</Steps>
+
+## Configuration
+
+A fresh install works out of the box for evaluation. Before production, review
+the settings below.
+
+**Change default credentials** for MongoDB and Redis.
+
+<Warning>
+  If a password contains special characters such as `)`, `"`, or `!`, wrap it
+  in **single quotes** in the env file so the shell doesn't mangle it:
+
+  ```bash
+  REDIS_PASSWORD='your)redis"password!'
+  ```
+</Warning>
+
+**Set your public URL** — point the platform at the domain where users reach it
+(for example `https://app.yourcompany.com`) so the dashboard, webhooks, and
+file links resolve correctly from outside the host.
+
+**Use managed databases (optional)** — for better scalability and managed
+backups, point the stack at MongoDB Atlas (or any MongoDB-compatible service)
+and a hosted Redis instead of the bundled containers. Update the connection
+settings in the env files, then recreate the affected services with
+`docker compose up -d`.
+
+**Choose your object storage (optional)** — files are stored in the bundled
+**MinIO** container by default. MinIO is optional: you can instead point the
+platform at **Amazon S3** or **Google Cloud Storage** by setting the storage
+provider and bucket credentials in the env files. Using an external bucket
+offloads file storage (and its backups) to the cloud provider.
+
+{/* NEEDS UPDATE: Enumerate the exact env files and variables for the current
+    package (APP_URL, BASE_APP_URL, HUMAN_TASK_PUBLIC_URL, APP_BASE_URL,
+    MINIO_PUBLIC_URL, Redis/Mongo credentials, Control Plane login) and turn
+    this into a table. */}
+
+## Backups
+
+For a single-host deployment, the simplest reliable backup is an
+**instance-level snapshot** — a point-in-time image of the host's disk. One
+snapshot captures every Docker volume along with your compose and env files,
+so there's nothing to coordinate across services.
+
+### What's captured
+
+A single snapshot covers everything the deployment needs to come back online:
+
+| Volume | What it holds |
+|---|---|
+| MongoDB | Orgs, users, integrations, workflows, and run history |
+| Redis | Job queues and scheduled workflows (BullMQ) |
+| Postgres | Audit logs |
+| MinIO | Uploaded files and generated artifacts |
+| `devops/docker` | Your compose file and env configuration |
+
+<Note>
+  If you use **external object storage** (Amazon S3 or Google Cloud Storage)
+  instead of the bundled MinIO, those files live in your bucket — backed up by
+  the cloud provider — and are **not** on the host disk, so a disk snapshot
+  won't include them. The rest of the table still applies.
+</Note>
+
+### Take a snapshot
+
+Disk snapshots — such as Amazon EBS snapshots — run against the live, attached
+volume. **You don't need to stop the stack, and there's no downtime.** The
+snapshot is a point-in-time, crash-consistent copy that the databases recover
+from the same way they would after a reboot.
+
+Snapshot the host's disk with your cloud provider:
+
+<Tabs>
+  <Tab title="AWS">
+    ```bash
+    aws ec2 create-snapshot \
+      --volume-id <volume-id> \
+      --description "refold-backup-$(date +%F)"
+    ```
+  </Tab>
+  <Tab title="GCP">
+    ```bash
+    gcloud compute disks snapshot <disk-name> \
+      --snapshot-names="refold-backup-$(date +%F)" \
+      --zone=<zone>
+    ```
+  </Tab>
+  <Tab title="Azure">
+    ```bash
+    az snapshot create \
+      --resource-group <resource-group> \
+      --source <disk-id> \
+      --name "refold-backup-$(date +%F)"
+    ```
+  </Tab>
+</Tabs>
+
+<Tip>
+  For a *fully application-consistent* snapshot you can briefly stop the stack
+  with `docker compose stop` before snapshotting and `docker compose start`
+  after — but for routine backups the live snapshot is enough.
+</Tip>
+
+<Note>
+  Redis holds BullMQ scheduled-job state. A disk snapshot captures the Redis
+  volume along with everything else, so scheduled workflows survive a full
+  restore. (Restoring MongoDB alone from a separate dump would not.)
+</Note>
+
+### Schedule and retention
+
+- **Automate** snapshots with your cloud provider's scheduler — daily is a
+  common baseline.
+- **Retain** enough history to cover your recovery window, and expire old
+  snapshots to keep storage costs down.
+- **Replicate** snapshots to a separate region or account for disaster
+  recovery.
+
+### Restore
+
+To recover, create a new disk or instance from a snapshot and bring the stack
+up on it.
+
+{/* NEEDS UPDATE: A scripted restore procedure (restoring specific data via a
+    provided script, rather than rolling back the whole instance) will be
+    documented here. Add the script, prerequisites, and usage when ready. */}
+
+## Upgrading
+
+<Warning>
+  Take an instance-level backup (above) before upgrading.
+</Warning>
+
+From the deployment directory (`devops/docker`):
+
+```bash
+docker compose pull        # pull the latest images
+docker compose up -d        # recreate services with the new images
+docker compose ps           # confirm everything came back healthy
+```
+
+{/* NEEDS UPDATE: For the current stack, upgrades are NOT just pull + up -d.
+    They require idempotent DB migrations with app services stopped — auth
+    `migration.js` is MANDATORY (login breaks without it) plus several
+    workflow-service migrations. Take a mongodump first. Expand with the full
+    stop → migrate → restart procedure once the migration set is confirmed. */}
+
+## Maintenance
+
+Everyday operations, run from the deployment directory (`devops/docker`):
+
+| Task | Command |
+|---|---|
+| View logs (all containers) | `docker compose logs` |
+| View logs (one container) | `docker logs <container_name>` |
+| Follow logs live | `docker compose logs -f` |
+| Restart a service | `docker compose restart <service_name>` |
+| Stop the stack (keeps data) | `docker compose down` |
+| Start the stack again | `docker compose up -d` |
+
+<Note>
+  `docker compose down` removes the containers but **preserves your data
+  volumes**. Find a container's exact name with `docker compose ps`.
+</Note>
+
+## Troubleshooting
+
+If a service won't start, check its logs first (`docker compose logs`), then
+verify the database containers directly.
+
+<AccordionGroup>
+  <Accordion title="MongoDB connection issues">
+    ```bash
+    # Check MongoDB logs
+    docker logs <mongo_container>
+
+    # Verify MongoDB is responding
+    docker exec <mongo_container> mongosh --eval "db.runCommand({ping: 1})"
+    ```
+
+    Replace `<mongo_container>` with the name of your MongoDB container.
+  </Accordion>
+
+  <Accordion title="Redis connection issues">
+    ```bash
+    # Check Redis logs
+    docker logs <redis_container>
+
+    # Verify Redis is responding
+    docker exec <redis_container> redis-cli ping
+    ```
+
+    Replace `<redis_container>` with the name of your Redis container.
+  </Accordion>
+</AccordionGroup>
+
+## Uninstalling
+
+To remove unused images and reclaim disk space after stopping services:
+
+```bash
+docker image prune -a
+```
+
+<Warning>
+  `docker image prune -a` removes **all** unused images. Run it only when
+  you're sure the affected services are stopped.
+</Warning>

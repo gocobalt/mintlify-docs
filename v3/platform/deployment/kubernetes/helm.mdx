@@ -1,0 +1,167 @@
+---
+title: "Helm"
+description: "Self-host Refold on your own Kubernetes cluster with the Refold Helm chart — you provision the cluster, bucket, and domain, and operate the platform end-to-end."
+---
+
+**Helm** is the self-hosted, self-operated option: you run Refold on a Kubernetes cluster you provision, in a connected environment, and operate it end-to-end. Refold publishes the chart as an OCI artifact; you create the secrets, install the chart, and own upgrades and monitoring.
+
+<Info>
+  **Which Kubernetes option?**
+  - **Helm** *(this page)* — self-host and operate everything yourself in a connected cluster.
+  - [**Refold Managed (BYOC)**](/v3/platform/deployment/kubernetes/refold-managed) — Refold provisions and manages everything in your cloud account.
+</Info>
+
+## What the chart deploys
+
+The chart is published as a single OCI artifact, `oci://ghcr.io/gocobalt/charts/refold-release`. Installing it brings up the whole platform in one namespace:
+
+- **Application services** — the dashboard, API, workflow engine, integration runtime, and workers.
+- **Bundled data services** — MongoDB and Redis run in-cluster as StatefulSets.
+- **Bundled Temporal** — the workflow orchestration engine and its PostgreSQL database.
+- **Ingress (optional)** — an in-namespace NGINX controller and a cloud LoadBalancer, enabled with `ingress-nginx.enabled=true`.
+
+You provision the cluster, an object-storage bucket, and a domain. Refold issues you a license key and short-lived registry credentials.
+
+## Prerequisites
+
+Provision the following before you install:
+
+- **A Kubernetes cluster** — GKE or EKS, version 1.27 or later. Plan for roughly 3 nodes at 8 vCPU / 32 GiB each for a production install.
+- **A default StorageClass** with `allowVolumeExpansion: true`. The bundled MongoDB, Redis, and Temporal PostgreSQL request persistent volumes.
+- **An object-storage bucket** (GCS or S3) and a credential scoped to it (a GCP service account, or an AWS access key pair).
+- **A domain** and a DNS record you can point at the LoadBalancer after install.
+- **`kubectl` and `helm` 3.12+**, with access to `ghcr.io`.
+
+You also need three things from Refold, delivered over a secure channel — request them through your Refold contact:
+
+| From Refold | Used for |
+|---|---|
+| **`LICENSE_KEY`** | Activates the platform. |
+| **A short-lived GHCR token** | Pulls the container images at install time. |
+| **An image registry username** | Authenticates to `ghcr.io` alongside the token. |
+
+<Warning>
+Refold never ships filled secrets. You receive only the secret *template* and generate your own encryption keys and passwords. Never reuse another environment's credentials.
+</Warning>
+
+## Install
+
+<Steps>
+  <Step title="Create the namespace">
+    ```bash
+    kubectl create namespace refold
+    ```
+  </Step>
+
+  <Step title="Create the Kubernetes Secrets">
+    The chart sets `global.createSecrets: false` and references secrets by name — you create them. Pull the chart to get the template, fill in every `CHANGE_ME`, and apply it.
+
+    ```bash
+    helm pull oci://ghcr.io/gocobalt/charts/refold-release --version 1.0.0 --untar
+    cp refold-release/secrets.example.yaml secrets.local.yaml   # git-ignore this file
+    $EDITOR secrets.local.yaml
+    kubectl apply -n refold -f secrets.local.yaml
+    ```
+
+    The template pre-fills non-secret config. The values you must set fall into four groups:
+
+    | Group | Examples | What to provide |
+    |---|---|---|
+    | **Generate** (unique per install) | Encryption keys, JWT signing key, MongoDB root password and replica-set key | `openssl rand -base64 32` (use `-hex 32` for the MongoDB replica-set key) |
+    | **From Refold** | `LICENSE_KEY` | The value Refold issues you |
+    | **Your infra** | Object-storage credentials, SMTP host and password | Your own values |
+    | **Optional** | `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, OpenRouter keys, `SLACK_BOT_TOKEN` | Your key, or leave empty to disable that feature |
+
+    <Tip>
+    Using GitOps? Produce the same named secrets with **Sealed Secrets** (commit the encrypted form) or the **External Secrets Operator** (pull from your secret manager). The chart only reads them by name.
+    </Tip>
+  </Step>
+
+  <Step title="Log in to the registry">
+    ```bash
+    helm registry login ghcr.io -u <image-username>
+    ```
+    Use the username Refold gave you. When prompted for a password, paste the short-lived GHCR token.
+  </Step>
+
+  <Step title="Install the chart">
+    ```bash
+    helm install refold oci://ghcr.io/gocobalt/charts/refold-release --version 1.0.0 \
+      --namespace refold \
+      --set global.external.appUrl=https://<your-domain> \
+      --set global.external.gcsBucket=<your-bucket> \
+      --set global.external.archiveBucket=<your-archive-bucket> \
+      --set ingress.enabled=true \
+      --set ingress.hosts[0]=<your-domain> \
+      --set ingress-nginx.enabled=true \
+      --set ingress.temporalAuth.password=<temporal-ui-password> \
+      --set imageCredentials.registry=ghcr.io \
+      --set imageCredentials.username=<image-username> \
+      --set imageCredentials.password=<short-lived-ghcr-token>
+    ```
+
+    Keep `global.createSecrets` at its default of `false` so the platform reads the secrets you created. The GHCR token is passed only at install — it is never baked into the release.
+  </Step>
+
+  <Step title="Point DNS and verify">
+    Point your DNS record at the LoadBalancer's external IP, then confirm the pods are healthy and the app is reachable.
+
+    ```bash
+    kubectl get pods -n refold
+    kubectl get svc -n refold        # find the LoadBalancer external IP
+    ```
+
+    Open `https://<your-domain>` for the dashboard. The Temporal UI is at `https://<your-domain>/temporal`, protected by the basic-auth password you set above.
+  </Step>
+</Steps>
+
+## Key values
+
+| Value | Purpose |
+|---|---|
+| `global.createSecrets` | Leave `false` (default) — you pre-create the secrets. |
+| `global.external.appUrl` | Public URL of your deployment. |
+| `global.external.gcsBucket` / `archiveBucket` | Object-storage bucket and archive bucket. |
+| `ingress.enabled` / `ingress.hosts` | Create the Ingress and the hostnames it serves. |
+| `ingress-nginx.enabled` | Deploy the bundled NGINX controller and LoadBalancer. |
+| `ingress.temporalAuth.password` | Basic-auth password for the Temporal UI. |
+| `imageCredentials.*` | GHCR registry, username, and short-lived token. |
+
+{/* NEEDS INPUT: confirm whether self-hosters point the chart at managed
+    MongoDB / Redis / PostgreSQL by disabling the bundled subcharts
+    (mongodb.enabled / redis.enabled / temporal.postgres) and supplying
+    connection strings — and document those values if so. */}
+
+## Upgrade and uninstall
+
+Upgrade by re-running with a new chart version. `--reuse-values` keeps your existing settings.
+
+```bash
+helm upgrade refold oci://ghcr.io/gocobalt/charts/refold-release --version <new-version> \
+  -n refold --reuse-values
+```
+
+To remove the release:
+
+```bash
+helm uninstall refold -n refold
+kubectl delete pvc --all -n refold   # StatefulSet volumes are retained otherwise
+```
+
+<Warning>
+Deleting the PVCs permanently removes the MongoDB, Redis, and Temporal data. Back up first — see [Backup & restore](/v3/platform/deployment/backup-restore).
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Set up HTTPS" icon="lock" href="/v3/platform/deployment/how-tos/setup-https">
+    Terminate TLS at the ingress with a managed certificate.
+  </Card>
+  <Card title="Object storage (MinIO)" icon="database" href="/v3/platform/deployment/how-tos/storage-minio">
+    Configure the bucket the platform writes files and exports to.
+  </Card>
+  <Card title="Control Plane" icon="grid-2" href="/v3/platform/deployment/control-plane">
+    Manage namespaces, versions, and configuration from the dashboard.
+  </Card>
+</CardGroup>

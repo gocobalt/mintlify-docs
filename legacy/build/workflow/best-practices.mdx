@@ -1,0 +1,837 @@
+---
+title: "Workflow Best Practices"
+description: "Design principles, security standards, and operational patterns for building reliable, maintainable workflows in Refold."
+---
+
+This guide covers the conventions, patterns, and settings that go into well-built Refold workflows — from how you name things on the canvas to how you handle security, errors, and performance at scale. Following these practices produces workflows that are easier to read, debug, and maintain over time.
+
+---
+
+## Naming Conventions
+
+Good names are the cheapest documentation you can add to a workflow. Apply them consistently from the start.
+
+### Workflow Names
+
+A consistent naming scheme makes it immediately clear what a workflow does, which environment it belongs to, and which system it integrates with — without opening it. Apply the same pattern across every workflow in your account.
+
+**Recommended pattern:**
+
+```
+[env]-[system]-[entity]-[action]
+```
+
+All lowercase, words separated by hyphens. This keeps names readable in lists, URL-safe, and consistent regardless of the integration.
+
+| Segment | Description | Examples |
+|---|---|---|
+| `env` | Deployment environment | `prod`, `uat`, `dev`, `staging` |
+| `system` | The integrated system or platform | `crm`, `sftp`, `billing`, `email` |
+| `entity` | The primary object being processed | `contact`, `invoice`, `campaign`, `order` |
+| `action` | What the workflow does to that entity | `sync`, `publish`, `create`, `notify`, `validate` |
+
+**Examples:**
+- `prod-crm-contact-sync`
+- `uat-billing-invoice-dispatch`
+- `dev-email-campaign-publish`
+- `staging-inventory-order-validate`
+
+Use the same vocabulary for actions across all workflows: pick `sync` or `update`, not both. Consistent verb choices make workflow lists scannable at a glance.
+
+<Warning>
+  Always confirm the environment prefix is correct before deploying. A `uat` or `dev` prefix on a live production workflow is a silent source of confusion during incident response.
+</Warning>
+
+### Node Names
+
+Every node should describe **what it does**, not what type it is.
+
+| ❌ Avoid | ✅ Prefer |
+|---|---|
+| `Step 12` | `Extract campaign metadata` |
+| `Loop` | `Loop over invoice records` |
+| `HTTP` | `Fetch resource from external API` |
+| `Code` | `Build update payload` |
+| `Copy - Step 5` | `Write record to downstream system` |
+
+In complex workflows with dozens of nodes, descriptive names eliminate the need to open every node to understand what the workflow does. During debugging they are the difference between a 2-minute fix and a 30-minute archaeology session.
+
+---
+
+## Workflow Triggers
+
+All workflows begin with a trigger defined in the Start node. Choose the right type for your use case.
+
+| Trigger | When to Use |
+|---|---|
+| **API Call** | On-demand execution initiated by your application or an external system. Best when the calling system controls timing and passes the payload directly. |
+| **App Event** | When a specific event in your application should fire the workflow. One App Event can trigger multiple workflows simultaneously. |
+| **Schedule** | Recurring jobs — syncs, polling, reports. Note: the minimum interval is 5 minutes, and scheduled workflows run for all linked accounts simultaneously. |
+| **Workflow API** | Programmatic invocation without a pre-defined event. Useful for batch orchestration and workflows called from other workflows via the [Sub Flows node](/legacy/build/workflow/sub_flows). |
+
+<Tip>
+  For high-volume integrations, prefer API Call or App Event triggers over Schedule. Schedule triggers fire for every linked account at once, which can create significant load spikes if the workflow performs heavy API work.
+</Tip>
+
+### Extract and Validate the Payload Early
+
+Always extract and validate the trigger payload at the start of the workflow using a dedicated Custom Code node. Referencing raw `event_payload` fields deep inside loops or branches makes the workflow fragile to payload structure changes.
+
+```javascript
+// Node: "Extract and validate trigger payload"
+async function yourFunction(params) {
+  const { event_payload } = params;
+
+  if (!event_payload?.recordId) {
+    throw new Error("Missing required field: recordId");
+  }
+
+  return {
+    recordId: event_payload.recordId,
+    records: event_payload.records || [],
+    operation: event_payload.operation || "upsert"
+  };
+}
+```
+
+---
+
+## Custom Code Node
+
+The Custom Code node executes JavaScript within a workflow. It is the right tool for data transformation, filtering, validation, and any logic that cannot be expressed through a native node's configuration.
+
+### Always Destructure `params` Explicitly
+
+```javascript
+async function yourFunction(params) {
+  const { nodes, linkedAccIdentifierObj, server_url, event_payload } = params;
+  // ...
+}
+```
+
+### Null-Check Before Accessing Nested Data
+
+Node responses may be empty, null, or structured differently than expected, especially on first execution or after an upstream error.
+
+```javascript
+// ❌ Fragile — throws if items is null or empty
+const fields = nodes[5].response.items[0].fields;
+
+// ✅ Resilient — graceful fallback
+const items = nodes[5].response?.items;
+if (!items || items.length === 0) return [];
+const fields = items[0].fields;
+```
+
+### Return Clean, Predictable Shapes
+
+Downstream nodes are easier to configure when each Custom Code node returns a consistent, well-shaped object rather than raw nested data.
+
+```javascript
+// ✅ Clean output that downstream nodes can reference predictably
+return {
+  recordId: item.id,
+  targetUrl: item.path,
+  patchPayload: buildPatch(fields, updates)
+};
+```
+
+### Remove Dead Code
+
+Before saving, remove any code that can never be reached — `return` statements followed by unreachable lines, commented-out logic, and test scaffolding. Dead code creates confusion and false signals when debugging.
+
+```javascript
+// ❌ Unreachable code after return
+return result;
+const encoded = encodeURIComponent(JSON.stringify(result)); // never executes
+return encoded;
+```
+
+### Use Consistent Function Style
+
+Pick either `async function` or synchronous `function` and apply it consistently within a workflow. Mixing them creates ambiguity about whether `await` is expected at the call site.
+
+### Prefer Internal Functions for Shared Logic
+
+If the same logic is needed in multiple workflows, create a reusable [Internal Function](/legacy/build/workflow/internal_functions) rather than duplicating Custom Code nodes. Internal Functions are defined globally in `Advanced → Functions` and can be called from the Functions node in any workflow.
+
+---
+
+## HTTP Node
+
+The HTTP node makes arbitrary API requests to any external endpoint. It is a flexible, general-purpose tool — but it should be a last resort, not a first choice. Before using an HTTP node, check whether a native connector or Custom App already exists for the target system. These provide managed authentication, reusable actions, and built-in credential safety that the HTTP node does not.
+
+**Use the HTTP node only when no native connector or Custom App is available for the target API.**
+
+### Credentials in HTTP Nodes and Execution Logs
+
+When a workflow executes, Refold logs the full request and response for every node by default. If an HTTP node's headers, body, or query parameters contain credentials — whether hardcoded or injected from an environment variable — those values will be visible in the execution log to anyone with log access.
+
+This does not mean HTTP nodes cannot be used with authenticated APIs. It means you must take deliberate steps to prevent credentials from being stored in logs in plaintext.
+
+### Best Practices for HTTP Nodes with Credentials
+
+Apply all of the following that are available in your deployment:
+
+**1. Always use encrypted environment variables for credential values.**
+Never embed a credential as a literal string in an HTTP node field. Store it in an encrypted environment variable and inject it via the variable selector. This prevents the credential from appearing in the workflow definition and in the dashboard UI.
+
+<Note>
+  Encrypted environment variables protect credentials at rest and keep them out of the workflow definition. To prevent injected credential values from appearing in execution logs, pair encrypted variables with `Hide Node Request` or configure Encrypted Output Fields on the relevant response fields.
+</Note>
+
+**2. Enable Hide Node Request on nodes that handle credentials.**
+In Node Settings, enable the `Hide Node Request` toggle on any HTTP node whose request or response contains sensitive values. When enabled, Refold does not persist the request payload or response in execution logs at all — the node's log entry is suppressed rather than redacted.
+
+**3. Configure Encrypted Output Fields on sensitive response fields.**
+[Encrypted Output Fields](/legacy/build/workflow/encrypted-output-fields) — Refold's implementation of output-level PII masking — let you mark individual output fields on a node so their values are stored securely and shown as `[REDACTED]` in the Run tab and execution logs, without affecting how values flow to downstream nodes. Apply this to any field that returns a credential, token, or sensitive identifier.
+
+**4. Prefer Custom Apps for any API you use more than once.**
+If you find yourself configuring the same authentication logic across multiple HTTP nodes or multiple workflows, that is a signal to create a Custom App instead. Custom Apps manage credentials entirely outside the workflow definition — they never appear in node configurations or logs. See the **Authentication & Security** section.
+
+### HTTP Node vs. a Connector's HTTP Action
+
+It is important to understand the distinction between the HTTP node and the HTTP action available inside a Custom App or native connector.
+
+The **HTTP node** is a standalone canvas node. Any credentials it uses must be explicitly provided — via an environment variable, a hardcoded value, or a value templated from a prior node. All of these surface in execution logs unless `Hide Node Request` is enabled or Encrypted Output Fields are configured on the relevant response fields.
+
+A **connector's HTTP action** (configured within a Custom App or native connector) is a different entity. When a user connects a Custom App or native connector, the credentials are stored securely within Refold on the server side. When a connector action executes — including an HTTP action defined within the connector — the credentials are injected internally at the server level. They are never accessible via templating, never appear in the workflow definition, and are not written to execution logs.
+
+This is why Custom Apps and native connectors are the preferred approach for any authenticated API. The HTTP node does not have access to credentials stored this way, and credentials cannot be "passed forward" from a connector into an HTTP node via templating.
+
+### When the HTTP Node Is the Right Choice
+
+The HTTP node is appropriate when:
+- No native connector or Custom App exists for the target API.
+- The API is fully public and unauthenticated.
+- The endpoint is internal and authentication is handled entirely by the calling system, with no credentials present in the request.
+- The node handles sensitive data but `Hide Node Request` is enabled **and/or** Encrypted Output Fields are configured on the relevant response fields, ensuring no sensitive values are persisted in execution logs.
+
+### Use Query Params for Resource Lookup
+
+For resource-addressed APIs, use query params rather than constructing dynamic URL strings. This keeps the base URL static and makes node configuration more readable.
+
+```
+Method: GET
+Base URL: https://api.example.com/v1/resources
+Query Params:
+  id: {{node.8.body.result}}
+  status: active
+```
+
+---
+
+## Conditional Logic: Rule Node, Switch Case, and Custom Code
+
+Refold provides three distinct mechanisms for conditional logic. They serve different purposes and are not interchangeable.
+
+### Rule Node
+
+The Rule node evaluates one or more conditions against the workflow data and produces a **boolean output** — `true` or `false`. It is used to gate execution: the downstream path is followed only if the condition passes.
+
+Use the Rule node when you have a single binary check:
+- "Does this record have a non-null value for field X?"
+- "Is the response status code 200?"
+- "Is the array length greater than 0?"
+
+The Rule node does not route to multiple branches. It either passes or stops the current path. Use it as a guard before expensive operations, write steps, or any node that should only execute when a precondition is met.
+
+### Switch Case Node
+
+The Switch Case node evaluates a field value and routes execution to **one of several named branches** based on what that value matches. It is the right tool when a single field determines which of multiple distinct processing paths should run.
+
+```
+Switch Case: "Route by record type"
+  → "type_a"     →  [handler for Type A]
+  → "type_b"     →  [handler for Type B]
+  → "type_c"     →  [handler for Type C]
+  → DEFAULT      →  [log unrecognised type, skip gracefully]
+```
+
+**Always define a default branch.** Without one, records that match no configured case are silently dropped — a difficult class of bug to detect.
+
+Keep each branch focused on one thing. If a branch requires complex multi-step processing, route it into a Custom Code node that handles the transformation and returns a clean result, rather than building the logic directly on the branch.
+
+Document the field being switched on — especially when the value is computed rather than taken directly from the trigger payload.
+
+### Custom Code for Complex Conditions
+
+Use a Custom Code node when the conditional logic is too complex for a Rule or Switch Case node: multiple fields evaluated together, nested conditions, fuzzy or range-based matching, or conditions derived from external data fetched earlier in the workflow.
+
+Return a clear, named result from the Custom Code node that downstream Rule or Switch Case nodes can act on cleanly, rather than embedding all branching logic in a single large code block.
+
+**Decision summary:**
+
+| Node | Use When |
+|---|---|
+| **Rule Node** | Binary check — execute the next step only if a condition is true |
+| **Switch Case Node** | One value maps to one of several distinct execution paths |
+| **Custom Code** | Conditions involving multiple fields, nested logic, or computed values |
+
+---
+
+## Loop Node
+
+The Loop node iterates over an array or executes a block for a fixed number of iterations. It is the core primitive for processing collections of records, items, or results.
+
+### Set `concurrent_batches` Deliberately
+
+This is the most impactful setting in any Loop node.
+
+| Setting | Behaviour | When to Use |
+|---|---|---|
+| `"1"` | Sequential | Write operations, ordered processing, APIs with strict rate limits |
+| `> 1` | Parallel batches | Read-only operations where order does not matter |
+
+<Warning>
+  Always set `concurrent_batches` explicitly on loops that perform write operations. When the field is omitted, the platform may default to parallel execution, which can cause race conditions and data corruption for writes.
+</Warning>
+
+### Concurrency Trade-offs: 1 vs. Higher
+
+Setting `concurrent_batches` to `1` and setting it higher are not simply "slow vs. fast" — each involves real trade-offs that affect correctness, reliability, and resource consumption.
+
+**`concurrent_batches: "1"` (sequential)**
+
+All iterations run one after another. Each iteration completes fully before the next begins.
+
+- ✅ Safe for write operations — no risk of two iterations modifying the same resource simultaneously.
+- ✅ Predictable order — useful when later iterations depend on the output of earlier ones.
+- ✅ Minimal load — one in-flight request at a time to the downstream system.
+- ⚠️ Slower for large datasets — total time is proportional to `N × per-item time`.
+
+**`concurrent_batches > 1` (parallel batches)**
+
+Multiple iterations run simultaneously. The number of active iterations at any point equals the `concurrent_batches` value.
+
+- ✅ Significantly faster for large read-only workloads.
+- ✅ Better utilises available I/O concurrency when downstream APIs support it.
+- ⚠️ Increases load on the downstream system — high values across large arrays can trigger rate limiting or temporary bans.
+- ⚠️ Unsafe for write operations unless the downstream API explicitly guarantees concurrent write safety and you have verified this.
+- ⚠️ No guaranteed ordering — if iteration order matters for correctness, use `"1"`.
+
+**Choosing the right value**
+
+Start conservative. Use `"1"` as the default. Increase only for read-only loops after checking the downstream API's rate limit documentation. Test at realistic scale — a setting that works fine for 20 items may cause failures at 2,000.
+
+| Scenario | Suggested `concurrent_batches` |
+|---|---|
+| Write operations (create / update / delete) | `1` |
+| Read-only, small arrays (< 50 items) | `5` |
+| Read-only, large arrays (> 200 items) | `2–3` — test and observe |
+| Nested loops (inner) | `1` — test the outer loop separately |
+
+### Shape the Array Before the Loop
+
+Before feeding an array into a Loop node, use a Custom Code node to clean and shape it. This makes the `fanout_array` reference unambiguous and makes it easy to add fields to each item later without touching the loop itself.
+
+```javascript
+// Node: "Flatten records for loop"
+function yourFunction(params) {
+  const { records } = params;
+  return records.flatMap(r =>
+    r.urls.map(url => ({ recordId: r.id, url }))
+  );
+}
+// Loop node: fanout_array = {{node.N.body}}
+```
+
+### Keep Loops Focused
+
+Each Loop node should iterate over one well-defined array for one purpose. If you find a loop doing two unrelated things, split it into two sequential loops connected by an intermediate Custom Code node.
+
+### Nested Loops
+
+Refold supports loops inside loops. Two levels of nesting is a practical maximum — deeper nesting produces canvases that are very difficult to follow. Always set `concurrent_batches: "1"` on inner loops when the operation is write-heavy.
+
+---
+
+## Try & Catch Node
+
+The Try & Catch node wraps a block of nodes in a structured error boundary. If any node inside the Try block fails after exhausting its configured retries, execution transfers to the Catch block rather than halting the workflow.
+
+### When to Use Try & Catch
+
+- When a section of the workflow calls an external system that may be temporarily unavailable and the rest of the execution should continue.
+- When you want to capture, log, and respond to a failure without stopping the overall flow.
+- When processing records in a loop and you want per-record error isolation. Place Try & Catch **inside** the loop so that one failing record does not abort the rest.
+
+### Anatomy of a Well-Structured Catch Block
+
+```
+[Catch Block]
+  → Logger Node: log error with record identifier + error message
+  → (Optional) Tables node: write failed record to persistent table for reprocessing
+  → (Optional) Email / webhook: alert the relevant team
+```
+
+The Catch block must, at minimum, log the failure with enough context to diagnose it: which operation failed, which record was involved, and the error message (`{{node.N.body.error}}`).
+
+<Warning>
+  Never leave a Catch block empty. An empty Catch silently swallows errors — executions will appear to succeed while data discrepancies accumulate downstream.
+</Warning>
+
+<Note>
+  For per-record error isolation inside a loop, place Try & Catch inside the loop. Wrapping the loop from the outside catches the first iteration failure and stops all remaining iterations.
+</Note>
+
+---
+
+## Logger Node
+
+The Logger node writes structured, labelled entries to the execution log at points you define. It supplements the automatic node-level request/response log with semantic messages you control.
+
+### When to Use the Logger Node
+
+- After a Switch Case node branch — log which path was taken and the value that determined it.
+- At loop start — log the incoming array size; at loop end — log completion count.
+- When a validation check fails but execution continues — log the failure explicitly rather than relying on the execution log to surface it.
+- In every Catch block — log the error with a record identifier and context.
+- As checkpoints in long-running workflows — make progress visible without opening every node.
+
+### Log Levels
+
+| Level | Use For |
+|---|---|
+| **Info** | Normal flow events: "Processing N records", "Branch: TypeA", "Token refreshed" |
+| **Warning** | Non-fatal anomalies: "Empty response — skipping record", "Field missing, using default" |
+| **Error** | Failures captured in a Catch block that represent unexpected conditions |
+
+### Logger Guidelines
+
+- Always include a record identifier in the message so log lines can be correlated to specific data.
+- Use structured key-value pairs where the Logger node supports them — this enables filtering in the log view.
+- Never log sensitive values. Log identifiers and operational status only.
+
+```
+✅  Logger Info: "Processing record {recordId} — type: {type} — items: {count}"
+❌  Logger Info: "Access token: {access_token}"
+```
+
+---
+
+## Data Referencing and Templating
+
+### Use Full Reference Paths
+
+Always use complete node reference paths in templating expressions. Do not rely on shorthand that may break if node IDs shift.
+
+```
+✅  {{node.12.body.result}}
+✅  {{node.3.body.access_token}}
+✅  {{node.7.body.result.baseUrl}}
+```
+
+### Extract Computed Values Before Reusing
+
+If the same computed value is referenced in multiple places, extract it once in a Custom Code node and reference the output of that node downstream. This avoids duplication and ensures all references stay consistent if the logic changes.
+
+### Avoid Deep Chaining Without Validation
+
+Long reference chains like `{{node.N.body.items[0].fields[2].values}}` are fragile. If the array is empty or the structure changes, the reference silently resolves to `undefined`. Use a Custom Code node to extract and validate the value, then pass a clean output forward.
+
+---
+
+## Environment Variables
+
+Environment variables inject configuration and credentials into workflows without embedding them in node configurations.
+
+### Non-Encrypted Variables
+
+Use for non-sensitive configuration that varies per environment: base URLs, endpoint paths, namespace identifiers, feature flags. These are visible in the dashboard and safe to use anywhere in a workflow.
+
+### Encrypted Variables
+
+Use for all sensitive values: API keys, client secrets, tokens, passwords, PEM keys.
+
+- Stored encrypted at rest.
+- Values are not shown in the dashboard UI after saving.
+- Injected securely into workflow execution at runtime.
+
+### Best Practices
+
+- Define environment variables at the namespace or account level — not inside individual workflows.
+- Use a consistent naming convention that signals the sensitivity level: `ENV_SFTP_PASSWORD` for encrypted values, `ENV_API_BASE_URL` for plain config.
+- Keep a single canonical variable per credential. Duplicating the same secret across multiple variables complicates rotation and audit.
+- Rotate encrypted variables on a regular cadence. Key rotation is available under Admin Settings.
+
+<Warning>
+  Encrypted variables protect credentials from dashboard exposure and storage breaches. They do not automatically prevent those values from appearing in execution logs if they are passed into an HTTP node body or returned in a node response. Pair encrypted variables with Encrypted Output Fields for full log protection.
+</Warning>
+
+---
+
+## Tables
+
+The [Tables node](/legacy/build/workflow/tables) provides structured, row-and-column storage within workflows. Two types are available.
+
+### Non-Persistent Tables
+
+Exist only for the duration of a single workflow execution. Deleted automatically when execution completes.
+
+**Use when:** you need a temporary accumulator during a run — collecting loop results before a batch write, staging records for deduplication within one execution.
+
+**Do not use when:** the data needs to be read by another workflow, survive a failure and retry, or be visible from the dashboard.
+
+### Persistent Tables
+
+Survive across executions and are accessible from any workflow in your account.
+
+**Use when:** you need to share state between workflows, maintain a cross-execution audit log or deduplication registry, or manage records that need to be viewed and edited from the dashboard.
+
+**Limits:**
+
+| Constraint | Value |
+|---|---|
+| Maximum columns | 10 |
+| Maximum rows | 50,000 |
+
+<Tip>
+  Create persistent tables from the dashboard under `Settings → Tables` rather than via the "Create Table" action inside a workflow. This gives the table a stable ID before any execution runs and keeps table management separate from workflow logic.
+</Tip>
+
+<Warning>
+  Persistent tables are shared across all linked accounts in your application. Always include a column to identify the linked account and filter by it on every read if the table stores per-account data.
+</Warning>
+
+---
+
+## Authentication & Security
+
+### Never Hardcode Credentials in Workflow Nodes
+
+Credentials embedded as literal strings in node bodies, URLs, headers, or query parameters are visible in execution logs. This applies to: OAuth client IDs and secrets, API keys, bearer tokens, SFTP credentials, and passwords.
+
+**The rule:** if a value is a credential, it belongs in an encrypted environment variable or a Custom App — never in a node configuration field.
+
+When a workflow executes, Refold logs the full request and response for every node. Any credential present in a node body appears in plaintext in that log, accessible to anyone with log access. The remediation — rotating every affected credential — is significantly more costly than following this rule from the start.
+
+### Use Custom Apps for OAuth and Managed-Credential APIs
+
+The [HTTP node](/legacy/build/workflow/httpnode) is the right tool for public APIs and simple calls where auth is handled externally. It is not the right tool for APIs requiring OAuth flows, managed API keys, or automatic token refresh.
+
+For these APIs, use a [Custom App](/legacy/custom_app/custom_app). Custom Apps provide:
+
+- Fully managed token generation, injection, and refresh
+- Credential storage completely separate from workflow definitions
+- Reusable [Custom Actions](#custom-apps-and-custom-actions) that can be called from any workflow
+
+Credentials managed by a Custom App never appear in node configurations or execution logs.
+
+**Decision guide:**
+
+| Use HTTP Node | Use Custom App |
+|---|---|
+| Public APIs, no auth | OAuth 2.0 (any flow) |
+| Token already available from prior auth step | API key / secret as a managed credential |
+| Internal endpoint, auth handled by calling system | Any API called across multiple workflows |
+
+### Custom Apps and Custom Actions
+
+A Custom App can be created three ways:
+
+| Method | Best For |
+|---|---|
+| **From Scratch** | Full control over auth method and endpoint definitions |
+| **Refold AI** | Provide an API documentation URL; AI builds the app structure |
+| **OpenAPI Spec** | Import a JSON or YAML spec to generate all actions automatically |
+
+Once a Custom App is set up, define **Custom Actions** for the API endpoints you use most. Each action appears as a selectable operation in the Custom App's native workflow node — with auth injected automatically — rather than requiring repeated HTTP node configuration across workflows.
+
+### Encrypted Output Fields
+
+**[Encrypted Output Fields](/legacy/build/workflow/encrypted-output-fields)** are Refold's implementation of output-level PII masking. They let you mark individual output fields on any node so their values are stored securely and shown as `[REDACTED]` in the Run tab and execution logs — without affecting how values flow to downstream nodes at runtime.
+
+Configure encrypted output fields for any node that returns:
+- Auth tokens and credentials from API calls
+- Personal data: names, emails, phone numbers, national identifiers
+- Financial data: account numbers, card numbers, transaction codes
+- Any internally sensitive identifier
+
+To configure, open the node, go to the **Fields** tab, and enable the **Encrypted** toggle on the relevant keys in the **Custom Output** section. The `*` wildcard is supported for array fields — `result.*.token` encrypts the `token` field across all items in the `result` array.
+
+See the [Encrypted Output Fields](/legacy/build/workflow/encrypted-output-fields) page for full configuration details and field path syntax.
+
+**Complementary controls for nodes that handle credentials:**
+1. Enable the `Hide Node Request` toggle (in Node Settings) on any node that handles credentials in its request. This removes the entire request/response from the log — useful when the sensitive value is in the input rather than the output.
+2. Use Custom Apps for authentication so tokens are platform-managed and do not appear in node bodies.
+3. Avoid returning raw credential values from Custom Code nodes — reference them via templating (`{{node.N.body.access_token}}`) rather than including them in return objects.
+
+<Warning>
+  Hiding node request/response is a visibility mitigation, not a security control. The underlying log data is still written internally. The durable fix is removing credential exposure at source via Custom Apps and Encrypted Output Fields.
+</Warning>
+
+---
+
+## Workflow Timeouts and Node-Level Retry
+
+### Workflow Timeout
+
+Set a maximum execution time on every workflow. If execution exceeds this limit, the workflow is terminated and marked as **timed out**. If a retry mechanism is configured at the workflow level, it can pick up from there — making the timeout a recovery trigger rather than a terminal failure.
+
+Set the timeout to the realistic upper bound of a healthy execution — not the maximum you can tolerate. An overly generous timeout masks workflows that are hanging or caught in slow retry loops, delaying detection of real problems.
+
+**Guidelines:**
+- Synchronous on-demand workflows: 30 seconds to 2 minutes.
+- Batch workflows over large datasets: `(array size × per-item time) + 30% buffer`.
+- Workflows with Wait for Webhook or polling nodes: set the timeout beyond the maximum expected wait time.
+
+### Node-Level Retry
+
+Transient failures — network blips, upstream API timeouts, brief rate-limit windows — often resolve on a subsequent attempt. Configure retry on nodes that make external calls rather than letting a single transient failure surface as a workflow error.
+
+**Key settings:**
+- **Maximum attempts**: 3–5 is a reasonable default for network-bound nodes.
+- **Retry backoff**: use exponential backoff for external API calls — a short initial delay that grows with each attempt avoids compounding pressure on a struggling downstream service.
+
+**Nodes where retry is most valuable:**
+- HTTP nodes calling external APIs, especially those with known rate limits
+- File Handler nodes performing SFTP operations
+- Custom Code nodes making network calls via libraries like `axios`
+
+<Tip>
+  Retry and Try & Catch are complementary. Retry handles transient failures silently. Try & Catch handles persistent failures that exhaust all retries and require deliberate recovery logic.
+</Tip>
+
+---
+
+## Error Handling
+
+### `skip_on_error` Default
+
+The `skip_on_error` node setting defaults to `false`, meaning the workflow halts on a node failure. Keep this default for write operations and any step where a failure indicates a real problem. The only appropriate use of `skip_on_error: true` is for non-critical enrichment steps where skipping one item does not compromise the integrity of the overall result.
+
+### Validate Before Writing
+
+For workflows that update external systems, add a validation step before any write node to confirm the payload is non-empty and structurally correct.
+
+```javascript
+// Node: "Validate payload before write"
+async function yourFunction(params) {
+  const payload = params.nodes[8].response;
+  if (!payload || payload.length === 0) {
+    // Return a skip signal rather than proceeding with an empty write
+    return { skip: true, reason: "No changes to apply" };
+  }
+  return { skip: false, payload };
+}
+```
+
+### Write Idempotent Operations
+
+Design write operations to be safe to run more than once. For add operations, check whether the value already exists before adding. For delete operations, verify the value is present before computing its index.
+
+```javascript
+// Idempotent add
+if (!existingValues.includes(newValue)) {
+  payload.push({ op: "add", path: `/fields/${i}/values/-`, value: newValue });
+}
+
+// Idempotent remove
+const idx = existingValues.indexOf(valueToRemove);
+if (idx !== -1) {
+  payload.push({ op: "remove", path: `/fields/${i}/values/${idx}` });
+}
+```
+
+### Surface Errors Meaningfully
+
+When throwing from a Custom Code node, include context that is actionable during debugging.
+
+```javascript
+// ❌ Opaque
+throw new Error("Failed");
+
+// ✅ Actionable
+throw new Error(`Field "otc" not found for record ${recordId} in resource ${resourcePath}`);
+```
+
+---
+
+## Testing and Validation
+
+### Test Nodes While Building
+
+Test individual nodes as you build rather than waiting until the workflow is complete. Every node in Refold has an **Input/Output tester** accessible directly from the node panel. Use it after adding each node to confirm inputs resolve correctly and outputs are shaped as expected.
+
+For Custom Code nodes in particular, test with realistic sample data — including edge cases like empty arrays, null fields, and unexpected types — before wiring the node into the rest of the flow. Catching a null-handling bug at the node level takes seconds; catching it after 40 iterations have run takes considerably longer.
+
+### Check Prerequisites in Workflow Settings
+
+Before running the workflow-level test, open the **Testing** section of the workflow settings page and verify that all prerequisites are in place:
+
+- Required environment variables are defined and have values in the current environment.
+- Linked accounts exist in the namespace and have the expected configuration.
+- Any persistent tables the workflow reads from exist and contain the expected schema.
+- External systems (auth endpoints, target APIs) are reachable from the current namespace.
+
+Running a test without meeting prerequisites produces failures that mask real logic bugs. Resolve configuration gaps first.
+
+### Use Workflow-Level Testing Before Activating
+
+Once individual nodes are validated, use Refold's built-in [Workflow Testing](/legacy/build/workflow/workflow_testing) to run the full workflow against a sample payload. This surfaces integration-level issues — missing references between nodes, auth failures, and unexpected response shapes from external systems.
+
+For complex workflows, test each logical phase independently by temporarily disabling downstream nodes and verifying intermediate outputs before testing the full end-to-end path.
+
+### Test with Production-Like Payloads
+
+Use a real payload from a prior execution (sanitised if necessary) rather than a minimal synthetic one. Many bugs only appear with the full complexity of a real payload: nested arrays, null optional fields, and edge-case values that synthetic data rarely includes.
+
+### Verify in Lower Environments First
+
+Always validate in a development or staging namespace before deploying to production. For workflows with irreversible side effects — financial transactions, published content, external notifications — a staged rollout through lower environments is essential.
+
+---
+
+## Workflow Versions and Environment Migration
+
+### Workflow Versions
+
+Every time you publish changes to a workflow, Refold creates a new **version**. Previous versions are retained and can be restored at any time, making versions the primary safety net for workflow changes.
+
+**Publishing a new version:**
+
+When you publish, always write a clear version description that answers three questions: what changed, why it changed, and whether any linked configuration (environment variables, linked accounts, external endpoints) needs to be updated alongside it.
+
+Good version descriptions:
+```
+✅  "Added null check on contact array before loop — fixes empty-payload failures"
+✅  "Switched auth from HTTP node to Custom App — credentials no longer in execution logs"
+✅  "Increased retry attempts on write node from 3 to 5 — addresses intermittent 429s"
+```
+
+Poor version descriptions:
+```
+❌  "Updated"
+❌  "Fix"
+❌  "v2"
+```
+
+Descriptions are the only context available when deciding whether to roll back under pressure. Write them as if you will need to read them at 2 AM during an incident.
+
+**Rolling back:**
+
+If a published version causes unexpected behaviour, restore a previous version from the Versions panel. The rollback is immediate. After rolling back, investigate the issue in a lower environment before re-publishing.
+
+<Warning>
+  If a new version includes database schema changes or changes to persistent table structure, rolling back the workflow code alone may not be sufficient — the data layer may already reflect the newer schema. Review migration dependencies before publishing changes that alter how data is stored or read.
+</Warning>
+
+### Importing and Exporting Workflows
+
+Workflows can be exported as a portable file and imported into any workspace or namespace. This is the primary mechanism for promoting workflows across environments.
+
+**Exporting a workflow:**
+
+Export from the workflow's settings panel. The export captures the full workflow definition — all nodes, their configuration, and their connections. It does not include environment variable values or linked account credentials, which must be configured separately in the target environment.
+
+**Importing into a new environment:**
+
+When importing a workflow into a namespace where it does not yet exist, it is created as a new workflow. When importing into a namespace where a workflow with the same identifier **already exists**, the import is treated as a **new version** of that existing workflow — preserving the version history and allowing rollback if the import introduces regressions.
+
+This behaviour makes the import/export mechanism safe for iterative promotion:
+
+```
+dev namespace  →  export  →  import into staging  →  validate  →  export  →  import into prod
+```
+
+Each import at each stage adds a version entry to the workflow's history in that environment.
+
+**Before importing to production:**
+
+- Confirm all environment variables referenced by the workflow are defined in the target namespace.
+- Confirm any Custom Apps or linked accounts the workflow depends on exist and are correctly configured.
+- Confirm persistent tables the workflow reads from or writes to exist in the target namespace with the expected schema.
+- Run the workflow in testing mode against a real payload before activating.
+
+<Tip>
+  Treat the export file as a deployable artefact. Store it in version control alongside any associated configuration documentation so that the full history of what was deployed — and when — is traceable outside the Refold platform.
+</Tip>
+
+---
+
+## Reusability and Sub Flows
+
+### Internal Functions
+
+For custom JavaScript logic used across multiple workflows, create a global [Internal Function](/legacy/build/workflow/internal_functions) (`Advanced → Functions`) rather than duplicating a Custom Code node. Changes to the function automatically apply everywhere it is used.
+
+Refold also provides a library of pre-defined functions — including array search, string encryption, and date utilities — that are available in the Functions node without any setup.
+
+### Sub Flows
+
+Use the [Sub Flows node](/legacy/build/workflow/sub_flows) to call one workflow from within another. This is effective for:
+
+- Standardising a repeated multi-step process (e.g. a shared error notification policy)
+- Breaking a complex workflow into testable, independently deployable segments
+- Recursive processing patterns with a defined break condition
+
+Sub Flows execute via a Workflow API call. Use synchronous execution when the parent workflow needs the sub flow's output to continue; use asynchronous execution for fire-and-forget patterns.
+
+---
+
+## Automation Agent Node
+
+The Automation Agent node is a legacy node that used AI to generate JavaScript from natural language prompts during workflow construction. It is no longer available for use in new workflows. Existing workflows containing it will continue to execute, but the node does not receive platform improvements and its code editor is difficult to read and maintain.
+
+**All Automation Agent nodes should be migrated to [Custom Code nodes](/legacy/build/workflow/custom-code).**
+
+### Migration Steps
+
+<Steps>
+  <Step title="Copy the existing code">
+    Open the Automation Agent node and copy all of its code.
+  </Step>
+  <Step title="Add a Custom Code node">
+    Insert a new Custom Code node in the same canvas position.
+  </Step>
+  <Step title="Paste and correct the function signature">
+    Paste the code. Confirm the signature is `async function yourFunction(params)` and that `params` is destructured correctly.
+  </Step>
+  <Step title="Verify node ID references">
+    Check all `nodes[N].response` references against the current node layout — IDs may have shifted.
+  </Step>
+  <Step title="Test before removing the original">
+    Run the Custom Code node using the Input/Output tester and confirm output matches expectations before deleting the Automation Agent node and rewiring edges.
+  </Step>
+</Steps>
+
+<Note>
+  Carry out migrations during a planned maintenance window, not while the workflow is actively being tested by connected systems.
+</Note>
+
+---
+
+## Performance
+
+- **Batch reads before loops.** Fetch all the data you need before entering a loop rather than making individual API calls per iteration. One up-front fetch followed by in-memory processing is almost always faster than N calls inside the loop.
+- **Sequential writes, parallel reads.** Use `concurrent_batches: "1"` for write loops. Allow higher concurrency only for read-only loops where rate limits and server capacity have been verified.
+- **Authenticate once.** Place the auth node before any Loop nodes so the token is fetched once per workflow execution, not once per iteration.
+- **Return minimal payloads from Custom Code nodes.** Only return the fields downstream nodes actually need. Large intermediate payloads slow execution and make debugging harder.
+- **Use the Loop node's Output Data field** to accumulate results from all iterations rather than writing to a table mid-loop and reading it back after. This keeps intermediate data in memory and avoids unnecessary database round-trips.
+
+---
+
+## Pre-Activation Checklist
+
+Before activating any workflow, verify:
+
+- Workflow name includes the correct environment prefix
+- All nodes have descriptive names — no `Step N` or generic type names
+- Auth is handled in a single node before any loops
+- No credentials are hardcoded in any node field
+- Encrypted environment variables are used for all sensitive values
+- Custom Apps are used for all OAuth and managed-credential APIs
+- All Loop nodes have `concurrent_batches` set explicitly
+- All Switch Case nodes have a default branch configured
+- Custom Code nodes contain no dead code after `return` statements
+- Write operations are idempotent
+- Node-level retry is configured on all HTTP and external-call nodes
+- A workflow timeout is set
+- Try & Catch is in place around external system calls; no Catch block is empty
+- Logger nodes are placed at key decision points and loop boundaries
+- The workflow has been tested with a production-like payload in a lower environment
+
+---
+
+*For node-specific documentation, see the [Workflows section](/legacy/build/workflow/overview). For authentication and Custom App setup, see [Custom Apps](/legacy/custom_app/custom_app). For platform updates, see the [Changelog](/legacy/changelog/overview).*

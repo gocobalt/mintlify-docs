@@ -1,0 +1,68 @@
+---
+title: "Polling"
+description: "Run a workflow when records change in a connected app that doesn't support webhooks."
+---
+
+Some apps — legacy CRMs, ERPs, and on-prem tools — don't push events. The
+**Polling** trigger fills that gap: Refold periodically checks the connected
+app for new or updated records and runs your workflow when it finds them.
+
+To you, a polling trigger looks just like a real-time one — "when a contact
+is created, run this workflow." Refold handles the scheduling and keeps track
+of what it has already seen behind the scenes.
+
+## Set up a polling trigger
+
+<Steps>
+  <Step title="Open the Start node">
+    On the workflow canvas, open the **Start node** and choose an **app
+    trigger** (for example, HubSpot).
+  </Step>
+  <Step title="Pick an event">
+    The trigger list shows the app's available events. Polling-backed events
+    appear alongside webhook-backed ones, so you just pick the event you want
+    — such as **Contact Created**.
+  </Step>
+  <Step title="Set the polling frequency">
+    A polling trigger looks the same as a webhook trigger, with one extra
+    field: how often Refold should check (for example, every 1, 5, 15, or 60
+    minutes). The available intervals depend on your plan and the connector.
+  </Step>
+  <Step title="Enable the workflow">
+    Polling starts as soon as the workflow is enabled.
+  </Step>
+</Steps>
+
+Refold shows the trigger's status in plain language, such as "Last checked 2
+minutes ago," so you can see it's running.
+
+<Note>
+  Refold automatically de-duplicates results, so overlapping checks or
+  retroactive updates won't run your workflow twice for the same record.
+</Note>
+
+## Custom polling triggers
+
+If the event you need isn't in the app's trigger list, you can build your own
+polling trigger from any of the app's endpoints.
+
+<Steps>
+  <Step title="Open the app page">
+    Navigate to the app you want and click **Create Trigger**.
+  </Step>
+  <Step title="Choose an endpoint">
+    Select any endpoint of the app to poll for new or updated records.
+  </Step>
+  <Step title="Set up the trigger">
+    Fill in the required values, then save. The custom polling trigger then
+    appears in the app's trigger list for use in your workflows.
+  </Step>
+</Steps>
+
+## When to use polling
+
+- Use **Polling** for apps or events that don't support webhooks. It checks
+  on an interval, so it isn't real-time.
+- If the connected app does support the event through a webhook, use an
+  [App event](/v3/platform/concepts/workflows/triggers/app-events)
+  trigger instead — it runs the workflow in real time.

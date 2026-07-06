@@ -1,0 +1,108 @@
+---
+title: Setup
+description: Connect to your Box app for OAuth
+---
+To setup your Box app in Refold for OAuth, you will need the following credentials from your [Box Developer account](https://developer.box.com/):
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Box Developer account.
+
+<Info>If you haven't already created an app in Box, you'd need to create one.</Info>
+
+### Creating an app in Box
+
+To create a Box app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Box Developer account](https://developer.box.com/).
+2. Click on the `My Apps` in the top nav bar.
+<img height="200" src="/images/Box/box_navigation.png" alt="Navigation for App setup"/>
+3. Click on `Create New App` button in the right and choose `Custom App`.
+4. Enter the App Name for your application, select **Integration** in `Purpose`, select **Workflow** as `Categories`, `Enter system name` as **Refold** and click on `Next`.
+5. Select `Authentication Method` as **User Authentication(OAuth 2.0)** and click on `Create App`.
+6. Go to your [`Apps catalog`](https://app.refold.ai/applications) in **Refold** > Search for `Box` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+7. Navigate to `Configuration` tab in the OAuth app > Scroll down to `OAuth 2.0 Redirect URI` section > Paste the Callback Url > Click on `Save Changes`.
+<img height="200" src="/images/Box/box_config.png" alt="Setting up Box Developer app"/>
+
+8. Scroll to the **OAuth 2.0 Credentials** section and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Box/box_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Refold
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Box/box_cobalt.png" alt="Setting up application client credentials"/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Box/box_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Refold, go to your [Box Developer account](https://developer.box.com/) and update the scopes as added on Refold.
+
+Select the OAuth App created for Refold > Scroll down to `Application Scopes` under `Configuration` tab > Add the scopes as added in Refold > Click on `Save Changes`. 
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are
+identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Box actions and triggers. Following are the set of Box actions and triggers
+supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+   <AccordionGroup>
+    <Accordion title="Collections">
+     1. **Get All Collections** - Get all collections for the current user in Box.
+     2. **Get Collection By Id** - Get a collection by ID in Box.
+     3. **List Collection Items** - Get all items in a collection in Box.
+    </Accordion>
+    <Accordion title="Comments">
+     4. **List File Comments** - Get all comments for a file in Box.
+     5. **Create Comment** - Create a comment in Box.
+     6. **Update Comment** - Update a comment in Box.
+    </Accordion>
+    <Accordion title="Files">
+     7. **Delete File** - Delete a file in Box.
+     8. **Get Shared Link For A File** - Get shared link for a file in Box.
+     9. **Add Shared Link To A File** - Add shared link to a file in Box.
+    </Accordion>
+    <Accordion title="Folders">
+     10. **Create Folder** - Create a new folder in Box.
+     11. **Get All Items In A Folder** - Get all items in a folder in Box.
+     12. **Update Folder** - Update a folder in Box.
+     13. **Delete Folder** - Delete a folder in Box.
+    </Accordion>
+    <Accordion title="Groups">
+     14. **Create Group** - Create a new group in Box.
+     15. **List Groups For Enterprise** - List all groups in the enterprise in Box.
+     16. **Update Group** - Update a group in Box.
+     17. **Delete Group** - Delete a group in Box.
+    </Accordion>
+    <Accordion title="Tasks">
+     18. **List Tasks On File** - Get all tasks for a file in Box.
+     19. **Create Task** - Create new task in Box.
+     20. **Update Task** - Update a task in Box.
+    </Accordion>
+    <Accordion title="Others">
+     21. **HTTP Request** - Make HTTP API calls to any Box documented REST APIs.
+    </Accordion>
+</AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+         1. **Folder is updated** - Triggers when a file is uploaded or a folder is created on Box.
+         2. **Folder is downloaded** - Triggers when a folder is downloaded on Box.
+         3. **Shared link is created** - Triggers when a shared link is created on Box.
+  </Tab>
+</Tabs>

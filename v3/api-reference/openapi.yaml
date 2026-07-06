@@ -1,0 +1,5319 @@
+# Refold Public API — OpenAPI 3.1 specification.
+# Generated: rebranded + merged from documented endpoints; contains only documented, customer-facing operations.
+openapi: 3.1.0
+info:
+  title: Refold Public API
+  version: 1.0.0
+  description: The Refold public REST API. Manage linked accounts, generate hosted Connect and OAuth URLs,
+    issue session tokens, subscribe to webhooks, discover and execute application actions, build and run
+    workflows, and work with configs, tables, datarefs, environment variables, events, and MCP servers.
+    Authenticate with your organization API key or a linked-account session token.
+  contact:
+    name: Refold
+    url: https://www.refold.ai
+servers:
+- url: https://app.refold.ai
+  description: Refold API
+tags:
+- name: Applications
+  description: Discover the applications enabled for your organization and a linked account's connection
+    status.
+- name: Auth Structure
+  description: Inspect an application's authentication fields.
+- name: Hosted Connect
+  description: Generate hosted Connect URLs for end-user authentication.
+- name: Credentials
+  description: Read and write integration credentials and tokens.
+- name: Hosted Properties
+  description: Properties stored for hosted Connect pages.
+- name: Linked Accounts
+  description: Manage linked accounts (your customers) and their integrations.
+- name: OAuth
+  description: Generate OAuth authorization URLs for linked-account integrations.
+- name: Session Tokens
+  description: Generate and revoke session tokens for a linked account.
+- name: Webhooks
+  description: Subscribe to organization-level event notifications.
+- name: Events
+  description: Define custom events and fire them to start workflows.
+- name: Config Fields
+  description: Read and set config field values.
+- name: Configs
+  description: Install and configure applications per linked account.
+- name: Datarefs
+  description: Manage reference-data tables for a linked account.
+- name: Datastores
+  description: Read and search per-config datastores.
+- name: Environment Variables
+  description: Manage variable definitions and scoped values.
+- name: Executions
+  description: Retrieve, stop, and rerun workflow executions.
+- name: Human Tasks
+  description: Retrieve and submit human-in-the-loop forms.
+- name: MCP Servers
+  description: Manage MCP servers.
+- name: Persistent Tables
+  description: Create and manage API-managed tables, columns, and records.
+- name: Workflows
+  description: Manage, publish, and execute workflows.
+- name: Schedules
+  description: Run workflows on cron or interval triggers.
+- name: Actions
+  description: Discover and execute application actions on a connected account.
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Organization API key, sent in the `x-api-key` header. Production keys start with `pk`,
+        test keys with `tk`.
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT bearer token. Use for linked-account-scoped requests; linked-account session tokens
+        are issued by `POST /session-token`.
+    workflowApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Organization API key, sent in the `x-api-key` header. Linked-account-scoped endpoints
+        also require a `linked_account_id` header.
+    workflowBearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT bearer token — an organization token, or a linked-account session token issued
+        by `POST /session-token`.
+  parameters:
+    LinkedAccountIdHeader:
+      name: linked_account_id
+      in: header
+      required: false
+      description: 'Linked-account id. Required when authenticating via `x-api-key` for routes
+
+        that are scoped to a single linked account. Ignored if the route is path-scoped
+
+        or a Bearer JWT already carries the linked-account id.
+
+        '
+      schema:
+        type: string
+    WorkflowLinkedAccountIdHeader:
+      name: linked_account_id
+      in: header
+      required: false
+      description: 'Linked-account id. Required when authenticating via `x-api-key` for routes
+
+        scoped to a single linked account. When a Bearer JWT carries the id, this
+
+        header is optional.
+
+        '
+      schema:
+        type: string
+    SlugHeader:
+      name: slug
+      in: header
+      required: true
+      description: Application slug, passed as a header (not in the URL).
+      schema:
+        type: string
+    ConfigIdHeader:
+      name: config_id
+      in: header
+      required: false
+      description: Config id (used by some event-fire and workflow-execute routes).
+      schema:
+        type: string
+    PageQuery:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 1
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 10
+  schemas:
+    GenericSuccess:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    PaginationMetadata:
+      type: object
+      properties:
+        totalDocs:
+          type: integer
+        limit:
+          type: integer
+        page:
+          type: integer
+        totalPages:
+          type: integer
+        hasNextPage:
+          type: boolean
+        hasPrevPage:
+          type: boolean
+        nextPage:
+          type: integer
+          nullable: true
+        prevPage:
+          type: integer
+          nullable: true
+        pagingCounter:
+          type: integer
+    UDFEntry:
+      type: object
+      properties:
+        key_name:
+          type: string
+        key_value:
+          type: string
+    OauthCredentials:
+      type: object
+      additionalProperties: true
+      description: 'Optional OAuth metadata for an integration. Concrete fields are app-specific
+
+        but commonly include `client_id`, `client_secret`, `callback_url`, `environment`,
+
+        `api_account_id`, `account_base_uri`, `token_base_uri`, `api_base_url`,
+
+        `auth_base_url`, `app_id`, `tenant_id`.
+
+        '
+    IntegrationBase:
+      type: object
+      description: 'A connected integration on a linked account. `credentials`, `authTokens`, and
+
+        `connections` are stripped from most read responses; raw tokens are only
+
+        available via `GET /linked-account/credentials/...` or `GET /token/...`.
+
+        '
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+          description: Integration type (slug, IntegrationsEnum value)
+        name:
+          type: string
+        icon:
+          type: string
+          nullable: true
+        identifier: {}
+        app_id:
+          type: string
+          nullable: true
+        credentials:
+          $ref: '#/components/schemas/OauthCredentials'
+        authTokens:
+          description: Encrypted token map. Absent in most public reads.
+        refresh_token_expired:
+          type: boolean
+        reauth_required:
+          type: boolean
+        connections:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    LinkedAccount:
+      type: object
+      properties:
+        _id:
+          type: string
+        associated_org:
+          type: string
+        account_id:
+          type: string
+        name:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        udf:
+          type: array
+          items:
+            $ref: '#/components/schemas/UDFEntry'
+        is_seed:
+          type: boolean
+        tenant_account_id:
+          type: string
+          nullable: true
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationBase'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedLinkedAccounts:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/LinkedAccount'
+    CreateLinkedAccountRequest:
+      type: object
+      description: Provide either `account_id` or `linked_account_id`. Use `your_app.auth_credentials`
+        to seed the default custom-app integration, and `udf` for custom key/value fields.
+      properties:
+        account_id:
+          type: string
+        linked_account_id:
+          type: string
+          description: Alias for `account_id`
+        name:
+          type: string
+        your_app:
+          type: object
+          properties:
+            auth_credentials:
+              type: object
+              additionalProperties:
+                type: string
+          required:
+          - auth_credentials
+        udf:
+          type: object
+          additionalProperties:
+            type: string
+    UpsertLinkedAccountRequest:
+      type: object
+      description: 'Upsert payload. Fields may either be nested under `payload` or supplied flat.
+
+        If `payload` is present it takes precedence over flat fields.
+
+        '
+      properties:
+        account_id:
+          type: string
+        linked_account_id:
+          type: string
+        payload:
+          type: object
+          properties:
+            name:
+              type: string
+            your_app:
+              type: object
+              properties:
+                auth_credentials:
+                  type: object
+                  additionalProperties:
+                    type: string
+            udf:
+              type: object
+              additionalProperties:
+                type: string
+        name:
+          type: string
+        your_app:
+          type: object
+          properties:
+            auth_credentials:
+              type: object
+              additionalProperties:
+                type: string
+        udf:
+          type: object
+          additionalProperties:
+            type: string
+    RefoldWebhook:
+      type: object
+      properties:
+        _id:
+          type: string
+        org_id:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        is_enabled:
+          type: boolean
+        webhook_events:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        description:
+          type: string
+        workflow_ids:
+          type: array
+          items:
+            type: string
+        webhook_url:
+          type: string
+          format: uri
+        webhook_description:
+          type: string
+        webhook_body: {}
+        webhook_headers:
+          type: object
+          additionalProperties: true
+        method:
+          type: string
+          enum:
+          - POST
+          - PUT
+          - PATCH
+        group:
+          type: string
+        webhook_type:
+          type: string
+          description: Computed at read time — one of `default`, `slack`, `custom`.
+          enum:
+          - default
+          - slack
+          - custom
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    RegisterWebhookRequest:
+      type: object
+      required:
+      - webhook_url
+      - webhook_events
+      properties:
+        webhook_url:
+          type: string
+          format: uri
+          pattern: ^https?://
+        webhook_events:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        webhook_headers:
+          type: object
+          additionalProperties: true
+        webhook_body: {}
+        webhook_description:
+          type: string
+        description:
+          type: string
+        method:
+          type: string
+          enum:
+          - POST
+          - PUT
+          - PATCH
+          default: POST
+        slug:
+          type: string
+          description: If set, only workflow-type events are allowed.
+        workflow_ids:
+          type: array
+          items:
+            type: string
+        webhook_type:
+          type: string
+          enum:
+          - default
+          - slack
+          - custom
+        is_enabled:
+          type: boolean
+          default: true
+        group:
+          type: string
+    UpdateWebhookRequest:
+      type: object
+      properties:
+        webhook_events:
+          type: array
+          items:
+            type: string
+        webhook_url:
+          type: string
+          format: uri
+          pattern: ^https?://
+        is_enabled:
+          type: boolean
+        webhook_type:
+          type: string
+          enum:
+          - default
+          - slack
+          - custom
+        webhook_headers:
+          type: object
+          additionalProperties: true
+        webhook_body: {}
+        slug:
+          type: string
+        description:
+          type: string
+        workflow_ids:
+          type: array
+          items:
+            type: string
+        method:
+          type: string
+          enum:
+          - POST
+          - PUT
+          - PATCH
+    UpdateWebhooksGroupRequest:
+      type: object
+      required:
+      - webhookIds
+      properties:
+        webhookIds:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        group:
+          type: string
+          description: Empty string / falsy unsets the group.
+    SessionTokenRequest:
+      type: object
+      required:
+      - linked_account_id
+      properties:
+        linked_account_id:
+          type: string
+    SessionTokenResponse:
+      type: object
+      description: 'Returned shape varies. Standard issuance returns `token`/`refresh_token`/expiries.
+
+        API-token issuance (not exposed via this public route) returns `{token, is_api_token: true}`.
+
+        '
+      properties:
+        token:
+          type: string
+        refresh_token:
+          type: string
+        expires_in:
+          type: integer
+        refresh_expires_in:
+          type: integer
+        is_api_token:
+          type: boolean
+    RevokeSessionTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        revoked_count:
+          type: integer
+          enum:
+          - 0
+          - 1
+    ConnectUrlResponse:
+      type: object
+      properties:
+        hosted_url:
+          type: string
+          format: uri
+    OAuthUrlResponse:
+      type: object
+      properties:
+        auth_url:
+          type: string
+          format: uri
+    ApplicationItem:
+      type: object
+      description: 'Application as seen by a linked account. Augmented with `connected`/`connected_accounts`.
+
+        Upstream fields (from the workflow-service application document) are passed through.
+
+        '
+      properties:
+        _id:
+          type: string
+        type:
+          type: string
+        slug:
+          type: string
+        app_id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        auth_type:
+          type: string
+        connected:
+          type: boolean
+        connected_accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              identifier:
+                type: string
+              defaultCredentials: {}
+              auth_type:
+                type: string
+              connectedAt:
+                type: string
+                format: date-time
+              status:
+                type: string
+        reauth_required:
+          type: boolean
+        webhook_url:
+          type: string
+          format: uri
+          description: Only populated for greenhouse / freshdesk / helpscout.
+      additionalProperties: true
+    UpsertDefaultAppCredentialRequest:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          description: Credential value; coerced to string before encryption.
+    DefaultAppCredentialActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        action:
+          type: string
+          enum:
+          - added
+          - updated
+    MigrateTokenRequest:
+      type: object
+      required:
+      - slug
+      - auth_object
+      properties:
+        slug:
+          type: string
+          description: App slug being migrated.
+        auth_object:
+          type: object
+          additionalProperties: true
+          description: 'Object with exactly one top-level key naming the auth type (`oauth2`, `keybased`,
+            ...).
+
+            Value is an object whose fields match the app''s auth-type schema (verified at runtime).
+
+            '
+    MigrateTokenResponse:
+      type: object
+      description: On success returns `{success, message}`. Some validation failures return `{error}`
+        with an HTTP 200 status.
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+    AuthStructureResponse:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties: true
+      description: 'Map from auth-type (`oauth2`, `keybased`, ...) to a field-shape map. Each field''s
+
+        value is either the type string (e.g. `"string"`) or `{type, required: false}`
+
+        when the field is optional. Custom apps return `{}`.
+
+        '
+    DeleteLinkedAccountResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: User deleted successfully
+    MessageOnly:
+      type: object
+      properties:
+        message:
+          type: string
+    WorkflowNode:
+      type: object
+      additionalProperties: true
+      description: 'A workflow node. Concrete shape depends on `node_type` and includes fields
+
+        like `id`, `data`, `position`, plus runtime-stripped status fields.
+
+        '
+    WorkflowEdge:
+      type: object
+      additionalProperties: true
+    WorkflowSettings:
+      type: object
+      additionalProperties: true
+      properties:
+        caching:
+          type: object
+          additionalProperties: true
+        workflow_response:
+          type: object
+          additionalProperties: true
+        timeout:
+          type: integer
+        incremental_sync_settings:
+          type: object
+          additionalProperties: true
+    Workflow:
+      type: object
+      description: 'Workflow document. Many fields are populated lazily and some are stripped
+
+        from public reads (e.g. `linked_account_id` is removed from `getWorkflowById`).
+
+        '
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        slug:
+          type: string
+        org_id:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        linked_account_id:
+          type: string
+        published:
+          type: boolean
+        autoEnable:
+          type: boolean
+        hide_in_config:
+          type: boolean
+        workflow_alias:
+          type: string
+        public_access_workflow:
+          type: boolean
+        associated_application:
+          type: string
+        associated_project:
+          type: string
+        is_v2:
+          type: boolean
+        settings:
+          $ref: '#/components/schemas/WorkflowSettings'
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowNode'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowEdge'
+        json_schema:
+          type: object
+          additionalProperties: true
+        manual_execution_payload: {}
+        group:
+          type: string
+        version:
+          type: integer
+        current_version:
+          type: integer
+        expose_as_node:
+          type: boolean
+        data_slots:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        udf_filter:
+          type: string
+        udf_filter_operator:
+          type: string
+        created_by_ai:
+          type: boolean
+        index_order:
+          type: integer
+        workflow_builder_version:
+          type: string
+        when_to_use:
+          type: string
+        test_instance_meta_data:
+          type: object
+          additionalProperties: true
+        event_schema_guidelines:
+          type: string
+        is_agentic_flow:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedWorkflows:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/Workflow'
+          schema:
+            type: object
+            additionalProperties: true
+            description: Merged JSON schema generated at response time across docs.
+    EnabledWorkflowSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        config_id:
+          type: string
+        application:
+          type: object
+          additionalProperties: true
+    Instance:
+      type: object
+      additionalProperties: true
+      description: 'Execution instance. Populated nodes/edges/status; runtime structure varies.
+
+        '
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        associated_event_id:
+          type: string
+        associated_workflow:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            icon:
+              type: string
+        associated_trigger_application:
+          type: object
+          additionalProperties: true
+        trigger_application_event:
+          type: string
+        custom_application_id:
+          type: string
+        custom_trigger_id:
+          type: string
+        linked_account_id:
+          type: string
+        config_id:
+          type: string
+        store_variables:
+          type: object
+          additionalProperties: true
+        linked_account_data:
+          type: object
+          additionalProperties: true
+        completion_time:
+          type: string
+          format: date-time
+        is_child_instance:
+          type: boolean
+        custom_field_values:
+          type: object
+          additionalProperties: true
+        is_seed:
+          type: boolean
+        executed_by_thanos:
+          type: boolean
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        org_id:
+          type: string
+        type_of_execution:
+          type: string
+        instance_execution_time:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedInstances:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/Instance'
+    InstanceBatch:
+      type: object
+      additionalProperties: true
+      description: Batch sub-execution within a fan-out node.
+    PaginatedInstanceBatches:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/InstanceBatch'
+    InstanceExecutionResult:
+      type: object
+      description: Result returned by `POST /workflow/{workflowId}/execute`.
+      properties:
+        execution_id:
+          type: string
+        return_value:
+          description: Workflow-author-defined payload.
+        errored:
+          type: boolean
+        status_code:
+          type: integer
+        executed_by_thanos:
+          type: boolean
+        execution_error:
+          type: object
+          additionalProperties: true
+    MCPCrud:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        agent_name:
+          type: string
+        primary_color:
+          type: string
+        secondary_color:
+          type: string
+        base_prompt:
+          type: string
+        safe_mode:
+          type: boolean
+        suggestions:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              prompt:
+                type: string
+        description:
+          type: string
+        associated_org_id:
+          type: string
+        associated_apps:
+          type: array
+          items:
+            type: object
+            properties:
+              slug:
+                type: string
+              workflows:
+                type: array
+                items:
+                  type: string
+              actions:
+                type: array
+                items:
+                  type: string
+        chains:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        notebooks:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedMcpServers:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/MCPCrud'
+    CreateMcpServerRequest:
+      type: object
+      required:
+      - name
+      - description
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    UpdateMcpServerRequest:
+      type: object
+      description: 'Patch-style. Only the supplied fields are written.
+
+        '
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        associated_apps:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        suggestions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        agent_name:
+          type: string
+        primary_color:
+          type: string
+        secondary_color:
+          type: string
+        chains:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        base_prompt:
+          type: string
+        safe_mode:
+          type: boolean
+    McpServerCreatedResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    IFieldInConfig:
+      type: object
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        help_text:
+          type: string
+        parent:
+          type: string
+        value: {}
+        required:
+          type: boolean
+        field_type:
+          type: string
+        options:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        dynamic_slot_identifier:
+          type: string
+        labels:
+          type: object
+          additionalProperties: true
+        data_source:
+          type: object
+          additionalProperties: true
+        rule_columns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        mapping:
+          type: object
+          additionalProperties: true
+        associated_page:
+          type: string
+        multiple:
+          type: boolean
+        hidden:
+          type: boolean
+        defaultValue: {}
+    GetApplicationConfigDTO:
+      type: object
+      properties:
+        slug:
+          type: string
+        config_id:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/IFieldInConfig'
+        workflows:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              icon:
+                type: string
+              enabled:
+                type: boolean
+              fields:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IFieldInConfig'
+              description:
+                type: string
+              associated_page:
+                type: string
+        field_errors:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    InstallApplicationConfigRequest:
+      type: object
+      required:
+      - slug
+      description: 'Install or upsert a config. Backward-compatibility note: `fields` and
+
+        `application_data_slots` are accepted as synonyms; per-workflow `fields` and
+
+        `data_slots` are also synonyms.
+
+        '
+      properties:
+        slug:
+          type: string
+        config_id:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/IFieldInConfig'
+        application_data_slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/IFieldInConfig'
+        workflows:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              data_slots:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IFieldInConfig'
+              fields:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IFieldInConfig'
+              enabled:
+                type: boolean
+        labels:
+          type: object
+          additionalProperties: true
+        map_fields_object:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    ToggleWorkflowRequest:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+    ToggleWorkflowResponse:
+      type: object
+      properties:
+        workflows:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              enabled:
+                type: boolean
+              data_slots:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+    GetConfigViaBodyRequest:
+      type: object
+      properties:
+        tenant_config:
+          type: boolean
+      description: Optional request body for `GET /slug/{slug}/config(/{configId})`. Only `tenant_config`
+        is used.
+    ConfigFieldValueRequest:
+      type: object
+      description: Value payload for a single config field (datasource-resolved).
+      properties:
+        value: {}
+    RuleEngineRequest:
+      type: object
+      required:
+      - rule_column
+      properties:
+        rule_column:
+          type: object
+          additionalProperties: true
+          description: Field-shaped object describing the rule column.
+    CustomTrigger:
+      type: object
+      additionalProperties: true
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        response:
+          type: string
+        json_schema:
+          type: object
+          additionalProperties: true
+    CreateOrUpdateEventRequest:
+      type: object
+      required:
+      - name
+      - response
+      properties:
+        name:
+          type: string
+        response:
+          type: string
+        json_schema:
+          type: object
+          additionalProperties: true
+    TriggerEventJsonRequest:
+      type: object
+      description: 'Triggers the named event. One of `event`/`trigger` must be provided.
+
+        '
+      properties:
+        event:
+          type: string
+        trigger:
+          type: string
+        payload:
+          description: Arbitrary JSON payload passed to the workflow.
+    WebhookFiredResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Webhook Fired Success
+    ConfigDatastoreSearchRequest:
+      type: object
+      additionalProperties: true
+      description: 'Arbitrary `{column_name: value}` map; values are regex-matched.'
+    Table:
+      type: object
+      properties:
+        _id:
+          type: string
+        org_id:
+          type: string
+        name:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        table_type:
+          type: string
+        is_deleted:
+          type: boolean
+        associated_instance:
+          type: string
+        record_count:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        group:
+          type: string
+    PaginatedTables:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/Table'
+    CreateTableRequest:
+      type: object
+      required:
+      - table_name
+      - columns
+      properties:
+        table_name:
+          type: string
+        columns:
+          type: array
+          maxItems: 20
+          items:
+            type: object
+            required:
+            - column_name
+            properties:
+              column_name:
+                type: string
+    CreateTableResponse:
+      type: object
+      properties:
+        table_id:
+          type: string
+        already_exists:
+          type: boolean
+    AddRecordsRequest:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          oneOf:
+          - type: object
+            additionalProperties: true
+          - type: array
+            items:
+              type: object
+              additionalProperties: true
+    AddRecordsResponse:
+      type: object
+      properties:
+        add_record_result:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        transformed_add_data:
+          description: Unchanged copy of the inserted data, post-transform.
+    TableSearchResponse:
+      type: array
+      items:
+        type: object
+        additionalProperties: true
+    PersistentTableRecordsResponse:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+        docs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalDocs:
+          type: integer
+        totalPages:
+          type: integer
+        hasNextPage:
+          type: boolean
+    ColumnsArrayRequest:
+      type: object
+      required:
+      - columns
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+    ColumnsArrayResponse:
+      type: object
+      properties:
+        columns:
+          type: array
+          items:
+            type: string
+    RenameColumnsRequest:
+      type: object
+      required:
+      - renames
+      properties:
+        renames:
+          type: array
+          items:
+            type: object
+            required:
+            - old_name
+            - new_name
+            properties:
+              old_name:
+                type: string
+              new_name:
+                type: string
+    EditTablesGroupRequest:
+      type: object
+      required:
+      - tableIds
+      properties:
+        tableIds:
+          type: array
+          items:
+            type: string
+        group:
+          type: string
+          description: Empty / falsy unsets the field.
+    Dataref:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        linked_account_id:
+          type: string
+        org_id:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        data:
+          type: object
+          additionalProperties: true
+          description: '{ [record_id]: DataRefRow[] }'
+        group:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedDatarefs:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/Dataref'
+    DatarefAsTableResponse:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalDocs:
+          type: integer
+        totalPages:
+          type: integer
+        hasNextPage:
+          type: boolean
+    CreateDatarefRequest:
+      type: object
+      required:
+      - refName
+      properties:
+        refName:
+          type: string
+    EditDatarefGroupRequest:
+      type: object
+      required:
+      - refNames
+      properties:
+        refNames:
+          type: array
+          items:
+            type: string
+        group:
+          type: string
+    DeleteOneResult:
+      type: object
+      properties:
+        acknowledged:
+          type: boolean
+        deletedCount:
+          type: integer
+    HumanTaskPublic:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        form_structure:
+          type: object
+          additionalProperties: true
+        ui_structure:
+          type: object
+          additionalProperties: true
+        group:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+        expire_in:
+          type: string
+          format: date-time
+        receiver_emails:
+          type: array
+          items:
+            type: string
+            format: email
+        status:
+          type: string
+          enum:
+          - WAITING
+          - SUBMITTED
+          - TIMEOUT
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SubmitHumanTaskRequest:
+      type: object
+      required:
+      - data
+      properties:
+        data:
+          type: object
+          additionalProperties: true
+    VariableDefinition:
+      type: object
+      properties:
+        _id:
+          type: string
+        org_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        scope:
+          type: string
+          enum:
+          - org
+          - workspace
+          - linked_account
+          - workflow
+        var_format:
+          type: string
+          enum:
+          - string
+          - number
+          - url
+        encrypted:
+          type: boolean
+        created_by:
+          type: string
+        updated_by:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedVariableDefinitions:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/VariableDefinition'
+    VariableDefinitionWrapped:
+      type: object
+      properties:
+        definition:
+          $ref: '#/components/schemas/VariableDefinition'
+    EnvVariableValue:
+      type: object
+      properties:
+        _id:
+          type: string
+        variable_definition_id:
+          type: string
+        org_id:
+          type: string
+        environment:
+          type: string
+          enum:
+          - test
+          - production
+        linked_account_id:
+          type: string
+        workflow_id:
+          type: string
+        value:
+          type: string
+          description: Returned as `[REDACTED]` when the definition is encrypted.
+        created_by:
+          type: string
+        updated_by:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginatedEnvVariableValues:
+      allOf:
+      - $ref: '#/components/schemas/PaginationMetadata'
+      - type: object
+        properties:
+          status:
+            type: string
+            enum:
+            - success
+          docs:
+            type: array
+            items:
+              $ref: '#/components/schemas/EnvVariableValue'
+    SetEnvVariableValueRequest:
+      type: object
+      required:
+      - variable_definition_id
+      - value
+      properties:
+        variable_definition_id:
+          type: string
+        value:
+          type: string
+        linked_account_id:
+          type: string
+        workflow_id:
+          type: string
+    GetEnvValueResponse:
+      type: object
+      properties:
+        value:
+          type: string
+        encrypted:
+          type: boolean
+        name:
+          type: string
+        scope:
+          type: string
+          enum:
+          - org
+          - workspace
+          - linked_account
+          - workflow
+        variable_definition_id:
+          type: string
+    DeleteEnvValueResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+        message:
+          type: string
+    CreateWorkflowRequest:
+      type: object
+      additionalProperties: true
+      description: Workflow document. Any `Workflow` field may be supplied; Refold sets ownership and
+        environment fields automatically.
+    CreateWorkflowResponse:
+      type: object
+      properties:
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+    PublishWorkflowRequest:
+      type: object
+      required:
+      - published
+      description: '`published=true` + `version=N` publishes the *draft* as version N.
+
+        `published=false` unpublishes. `published=true` without `version` is a normal publish.
+
+        '
+      properties:
+        published:
+          type: boolean
+        version:
+          type: integer
+    DeleteWorkflowResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        successfullyDeletedTriggers:
+          type: boolean
+    GetWorkflowRequestStructureResponse:
+      type: object
+      properties:
+        payload:
+          description: Derived from `manual_execution_payload`.
+        schema:
+          nullable: true
+          description: Workflow JSON schema if present.
+        schema_interpreted:
+          description: Converted/inferred shape from schema.
+    Schedule:
+      type: object
+      description: A scheduled workflow trigger.
+      properties:
+        _id:
+          type: string
+          description: Schedule ID.
+        event_id:
+          type: string
+          description: The event the schedule fires.
+        workflow:
+          description: Scheduled workflow — an ID string, or `{_id, name, associated_application}` when
+            expanded.
+        config_id:
+          type: string
+          description: The config it runs under.
+        linked_account_id:
+          type: string
+          description: The owning linked account.
+        trigger_type:
+          type: string
+          enum:
+          - cron
+          - interval
+        cron_patten:
+          type: string
+          description: Cron expression (cron schedules).
+        trigger_interval:
+          type: array
+          items:
+            type: object
+          description: Interval date objects (interval schedules).
+        status:
+          type: string
+          enum:
+          - running
+          - paused
+        inactive:
+          type: boolean
+          description: '`true` when paused.'
+        registered_by_api:
+          type: boolean
+        options:
+          type: object
+          additionalProperties: true
+        payload:
+          type: object
+          additionalProperties: true
+    DocumentedError:
+      type: object
+      description: Standard error envelope.
+      properties:
+        status_code:
+          type: integer
+        http_error_type:
+          type: string
+        error_code:
+          type: string
+        error:
+          type: string
+        message:
+          type: string
+paths:
+  /api/v2/public/application:
+    get:
+      operationId: listApplicationsForLinkedAccount
+      tags:
+      - Applications
+      summary: List applications for a linked account
+      description: 'Returns all enabled applications for the org+environment (delegated to the workflow
+
+        backend), enriched with `connected` and `connected_accounts` derived from the linked
+
+        account''s integrations. Excludes the org''s default custom application.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Required (header or query). Headers take precedence.
+      - name: slug
+        in: query
+        schema:
+          type: string
+      - name: tags
+        in: query
+        schema:
+          type: string
+      - name: ecosystem
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: auth_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationItem'
+  /api/v2/public/application/{slug}:
+    get:
+      operationId: getApplicationBySlug
+      tags:
+      - Applications
+      summary: Get a single application by slug
+      description: 'Same handler as `GET /application`, but returns only the first match when filtering
+
+        by slug — i.e. a single application object, not an array.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tags
+        in: query
+        schema:
+          type: string
+      - name: ecosystem
+        in: query
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: auth_type
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationItem'
+  /api/v2/public/auth-structure/{slug}:
+    get:
+      operationId: getAuthStructureForApp
+      tags:
+      - Auth Structure
+      summary: Get the auth schema structure for an app
+      description: 'Returns a flat description of the auth fields required for each `app_auth_type`
+
+        (e.g. `oauth2`, `keybased`) for the given app slug. Each entry''s value is either
+
+        the type string or `{type, required: false}` for optional fields. **This route
+
+        has no authentication middleware.**
+
+        '
+      security: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthStructureResponse'
+  /api/v2/public/connect-url:
+    post:
+      operationId: createConnectUrl
+      tags:
+      - Hosted Connect
+      summary: Create a hosted Connect URL
+      description: Creates a hosted Connect URL of the form `{base_app_url}/connect/{token}` (optionally
+        with `?config_id=...`). Any properties in the request body are stored with the session and returned
+        to the hosted page via `GET /hosted-properties`.
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: linked_account_id
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: Optional properties stored with the Connect session and returned by `GET /hosted-properties`.
+                Common keys used by hosted pages include `base_color`, `button_color`, and `redirect_url`;
+                none are required.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectUrlResponse'
+  /api/v2/public/linked-account/default-app/auth-credentials/{key}:
+    put:
+      operationId: upsertDefaultAppAuthCredential
+      tags:
+      - Credentials
+      summary: Upsert one auth credential on the org's default app
+      description: 'Adds or updates a single `{key_name, key_value}` auth credential on the org''s
+
+        default-app integration for the linked account. The value is encrypted before
+
+        being stored.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Used when authenticating via API key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertDefaultAppCredentialRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultAppCredentialActionResponse'
+    delete:
+      operationId: deleteDefaultAppAuthCredential
+      tags:
+      - Credentials
+      summary: Delete one auth credential on the org's default app
+      description: Removes the named credential key from the linked account's default-app credentials.
+        Returns 404 if the key does not exist.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericSuccess'
+  /api/v2/public/linked-account/integration/save-key-credentials/{slug}:
+    put:
+      operationId: saveKeyBasedAppCredentials
+      tags:
+      - Credentials
+      summary: Save key-based credentials for an app
+      description: Save key-based credentials for the app on this linked account. The app must support
+        key-based authentication. The request body holds the credential fields defined by the app's authentication
+        schema.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: auth_type
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Override the app's default auth_type.
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: Free-form auth_data; shape determined by the target app.
+      responses:
+        '200':
+          description: OK — response shape varies per app.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v2/public/migrate-token:
+    put:
+      operationId: migrateTokenForLinkedAccount
+      tags:
+      - Credentials
+      summary: Migrate an auth_object onto a linked account's integration
+      description: 'Validates `auth_object` against the named app''s auth schema, encrypts each value,
+
+        and either creates a new integration or updates the existing one on the linked
+
+        account (identified by the `linked_account_id` header). Only non-custom apps
+
+        are supported.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MigrateTokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigrateTokenResponse'
+  /api/v2/public/hosted-properties:
+    get:
+      operationId: getHostedProperties
+      tags:
+      - Hosted Properties
+      summary: Read hosted properties stashed by `/connect-url`
+      description: Returns the properties stored for the current Connect session by `POST /connect-url`.
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK — the properties stored by `POST /connect-url`.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v2/public/linked-account:
+    get:
+      operationId: listLinkedAccounts
+      tags:
+      - Linked Accounts
+      summary: List linked accounts for the org
+      description: 'Returns a paginated list of linked accounts for the org+environment derived from
+
+        the API key. `integrations[*].credentials`, `authTokens`, and `connections` are
+
+        stripped from each document.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 10
+      - name: env_variable_name
+        in: query
+        schema:
+          type: string
+      - name: env_variable_value
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLinkedAccounts'
+    post:
+      operationId: createLinkedAccount
+      tags:
+      - Linked Accounts
+      summary: Create a linked account
+      description: 'Creates a linked account under the org+environment derived from the API key.
+
+        Optionally seeds a custom default-app integration via `your_app.auth_credentials`
+
+        and UDF key/values. Distributed Redlock is taken around the create.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLinkedAccountRequest'
+      responses:
+        '200':
+          description: OK — returns the linked account (without `integrations`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedAccount'
+    put:
+      operationId: upsertLinkedAccount
+      tags:
+      - Linked Accounts
+      summary: Update or create a linked account
+      description: 'Upserts a linked account. If authenticated via session JWT, the linked-account id
+
+        comes from the token; otherwise from the body''s `account_id` / `linked_account_id`.
+
+        Body fields may be flat or nested under `payload`.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertLinkedAccountRequest'
+      responses:
+        '200':
+          description: OK — returns the linked account (without `integrations`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedAccount'
+  /api/v2/public/linked-account/{linked_account_id}:
+    get:
+      operationId: getLinkedAccountById
+      tags:
+      - Linked Accounts
+      summary: Get a linked account by id
+      description: 'Returns the linked account matching the path id. `integrations[*].credentials`,
+
+        `authTokens`, and `connections` are stripped from the response.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: linked_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedAccount'
+    delete:
+      operationId: deleteLinkedAccount
+      tags:
+      - Linked Accounts
+      summary: Delete a linked account
+      description: 'Deletes the linked account: revokes all of its integration tokens, removes the associated
+        workflow installations, and invalidates any access tokens issued to it. The configured test user
+        cannot be deleted in the `test` environment.'
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteLinkedAccountResponse'
+  /api/v2/public/linked-account/integration/{slug}:
+    delete:
+      operationId: deleteIntegration
+      tags:
+      - Linked Accounts
+      summary: Delete an integration on a linked account
+      description: Removes the integration from the linked account — or a single connection within it
+        when `auth_type` is supplied. Revokes the token when the app supports it and emits a webhook event.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: linked_account_id
+        in: query
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      - name: auth_type
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK — returns the linked account after the integration was spliced out.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedAccount'
+  /api/v2/public/session/active-linked-account:
+    get:
+      operationId: getLinkedAccountBySessionToken
+      tags:
+      - Linked Accounts
+      summary: Get the linked account for the current session token
+      description: 'Decodes the session JWT and returns the corresponding linked account. Useful for
+
+        hosted/connect frontends that hold only a session token.
+
+        '
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedAccount'
+  /api/v2/public/linked-account/integration/oauth-url/{slug}:
+    get:
+      operationId: getOAuthUrlForLinkedAccount
+      tags:
+      - OAuth
+      summary: Get the OAuth authorization URL for an app
+      description: Builds the OAuth authorization URL for the given app slug. The app must support OAuth2.
+        Some apps require additional fields supplied as query parameters; these vary per integration.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthUrlResponse'
+  /api/v2/public/session-token:
+    post:
+      operationId: generateSessionTokenForLinkedAccount
+      tags:
+      - Session Tokens
+      summary: Generate a session token for a linked account
+      description: Issues a JWT session token (and refresh token) for the named linked account. Reuses
+        an existing valid token unless `force_refresh=true`.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: force_refresh
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          default: 'false'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionTokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionTokenResponse'
+  /api/v2/public/session-token/revoke:
+    post:
+      operationId: revokeLinkedAccountSessionToken
+      tags:
+      - Session Tokens
+      summary: Revoke the current linked-account session token
+      description: 'Blacklists the Bearer token (and its refresh token if present) and deletes it
+
+        from the AccessToken store. The token is read from the `Authorization` header;
+
+        the request body is unused.
+
+        '
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevokeSessionTokenResponse'
+  /api/v2/public/webhook:
+    get:
+      operationId: listWebhooks
+      tags:
+      - Webhooks
+      summary: List webhooks for the org/environment
+      description: 'Returns all `RefoldWebhook` records for the org and environment, each enriched
+
+        with an inferred `webhook_type` (`default` / `slack` / `custom`) computed from
+
+        the body template.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RefoldWebhook'
+    post:
+      operationId: registerWebhook
+      tags:
+      - Webhooks
+      summary: Register a webhook
+      description: 'Creates a new `RefoldWebhook` for the org+environment. Validates the URL scheme,
+
+        events, and headers, and that the events are present in the integration / workflow
+
+        webhook-event taxonomies. Emits an audit event when the request is authenticated
+
+        via an org token.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterWebhookRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefoldWebhook'
+  /api/v2/public/webhook/{id}:
+    get:
+      operationId: getWebhookById
+      tags:
+      - Webhooks
+      summary: Get a webhook by id
+      description: Returns one webhook by id, enriched with the inferred `webhook_type`.
+      security:
+      - ApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefoldWebhook'
+    put:
+      operationId: updateWebhook
+      tags:
+      - Webhooks
+      summary: Update a webhook
+      description: 'Patches a webhook by id with the supplied fields. Emits an audit event when the
+
+        request is authenticated via an org token. `webhook_body` is only honored when
+
+        `webhook_type` is `custom`.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefoldWebhook'
+    delete:
+      operationId: deleteWebhook
+      tags:
+      - Webhooks
+      summary: Delete a webhook
+      description: 'Deletes a single webhook by id and returns the list of remaining webhooks for
+
+        the org/environment.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RefoldWebhook'
+  /api/v2/public/webhooks/group/edit:
+    put:
+      operationId: updateWebhooksGroup
+      tags:
+      - Webhooks
+      summary: Bulk update webhook group membership
+      description: 'Sets (or unsets, when empty) the `group` field on every webhook whose id is in
+
+        `webhookIds`. Returns the updated webhooks.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhooksGroupRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RefoldWebhook'
+  /api/v2/public/application/event:
+    get:
+      operationId: listEvents
+      tags:
+      - Events
+      summary: List events for the default custom application
+      description: Returns the `triggers` array from the org's default custom application.
+      security:
+      - workflowApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomTrigger'
+    post:
+      operationId: createEvent
+      tags:
+      - Events
+      summary: Create a custom event for the default app
+      description: 'Adds a custom trigger to the org''s default custom application and returns the
+
+        full updated triggers array.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateEventRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomTrigger'
+  /api/v2/public/application/event/{event_id}:
+    get:
+      operationId: getEvent
+      tags:
+      - Events
+      summary: Get a custom event by id
+      description: Returns one trigger from the org's default custom application.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTrigger'
+    put:
+      operationId: updateEvent
+      tags:
+      - Events
+      summary: Update a custom event
+      description: Edits an existing trigger on the default app and returns the updated triggers list.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrUpdateEventRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomTrigger'
+    delete:
+      operationId: deleteEvent
+      tags:
+      - Events
+      summary: Delete a custom event
+      description: Removes a trigger from the default custom application.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: event_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomTrigger'
+  /api/v2/public/event/{slug}:
+    post:
+      operationId: triggerEventBySlug
+      tags:
+      - Events
+      summary: Fire a custom-app trigger (slug variant)
+      description: 'Aliased to `POST /event/trigger`. Same body, but the app slug is provided via the
+
+        URL path instead of a header. Multipart uploads are supported.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/ConfigIdHeader'
+      - name: instance_tag
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerEventJsonRequest'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                trigger:
+                  type: string
+                payload:
+                  type: string
+                  description: JSON-stringified payload. File fields (any names) merge into the payload.
+              additionalProperties:
+                type: string
+                format: binary
+                description: Any file field name is accepted; uploads merge into payload under their field
+                  names.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookFiredResponse'
+  /api/v2/public/event/trigger:
+    post:
+      operationId: triggerEvent
+      tags:
+      - Events
+      summary: Fire a custom-app trigger
+      description: Fires the named event trigger to start its associated workflow. Returns immediately
+        while the workflow runs in the background.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/ConfigIdHeader'
+      - name: slug
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: instance_tag
+        in: header
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerEventJsonRequest'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                trigger:
+                  type: string
+                payload:
+                  type: string
+                  description: JSON-stringified payload.
+              additionalProperties:
+                type: string
+                format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookFiredResponse'
+  /api/v2/public/config/field:
+    post:
+      operationId: getConfigFields
+      tags:
+      - Config Fields
+      summary: Get all fields for a config
+      description: 'POST because datasource handlers may accept a payload. Returns the configured
+
+        fields and workflows for the app specified by the `slug` header.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/SlugHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationConfigDTO'
+  /api/v2/public/config/field/{fieldId}:
+    post:
+      operationId: getConfigFieldOptions
+      tags:
+      - Config Fields
+      summary: Get options for a single config field
+      description: 'Resolves a field''s options via its datasource. The datasource may consume the
+
+        optional `value` payload (e.g. callable-workflow data sources).
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: fieldId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/SlugHeader'
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigFieldValueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IFieldInConfig'
+    put:
+      operationId: updateConfigField
+      tags:
+      - Config Fields
+      summary: Update a config field value
+      description: Sets the value for a single field, optionally scoped to a workflow.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: fieldId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/SlugHeader'
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigFieldValueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IFieldInConfig'
+    delete:
+      operationId: deleteConfigField
+      tags:
+      - Config Fields
+      summary: Clear a config field value
+      description: Clears the value of the specified field, optionally scoped to a workflow.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: fieldId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/SlugHeader'
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IFieldInConfig'
+  /api/v2/public/config/rule-engine/{fieldId}:
+    post:
+      operationId: getRuleEngineOptions
+      tags:
+      - Config Fields
+      summary: Get options for a rule-engine field
+      description: Resolves rule-engine column options for a config field.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: fieldId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/SlugHeader'
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleEngineRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v2/public/config:
+    post:
+      operationId: getOrCreateConfig
+      tags:
+      - Configs
+      summary: Get or create an application config
+      description: 'Finds the config by id and creates it if missing. Supports `labels` →
+
+        `map_fields_object` migration nomenclature. Emits `CONFIG_CREATED` audit when
+
+        the config is newly created.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallApplicationConfigRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationConfigDTO'
+    put:
+      operationId: updateConfig
+      tags:
+      - Configs
+      summary: Update an installed config
+      description: 'Replaces fields and workflows on the installation. Maintains backward
+
+        compatibility: `fields`→`application_data_slots`, workflow `fields`→`data_slots`.
+
+        Releases distributed lock in `finally`. Emits `CONFIG_UPDATED` audit.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallApplicationConfigRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationConfigDTO'
+  /api/v2/public/slug/{slug}/config:
+    get:
+      operationId: getInstalledConfigDefault
+      tags:
+      - Configs
+      summary: Get installed config (configId defaulted)
+      description: Returns the installed config for the app slug when no `configId` is supplied — defaults
+        to the linked account. Accepts an optional `tenant_config` in the request body.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetConfigViaBodyRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationConfigDTO'
+    delete:
+      operationId: deleteConfigDefault
+      tags:
+      - Configs
+      summary: Delete config installation (configId defaulted)
+      description: 'Variant of `deleteConfig` when no `configId` is supplied — uses
+
+        `linked_account_id` as the config id.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageOnly'
+  /api/v2/public/slug/{slug}/config/{configId}:
+    get:
+      operationId: getInstalledConfig
+      tags:
+      - Configs
+      summary: Get installed config for an app + configId
+      description: Returns the installed config for the given app slug and config id, with fields exposed
+        under `fields`. Accepts an optional `tenant_config` in the request body.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: configId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: disable_field_options
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetConfigViaBodyRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApplicationConfigDTO'
+    delete:
+      operationId: deleteConfig
+      tags:
+      - Configs
+      summary: Delete config installation
+      description: 'Deletes the installation by config id. Emits `CONFIG_DELETED` audit.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: configId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageOnly'
+  /api/v2/public/slug/{slug}/config/{configId}/workflows/{workflowId}:
+    patch:
+      operationId: toggleConfigWorkflow
+      tags:
+      - Configs
+      summary: Enable or disable a workflow in a config
+      description: 'Toggles a single workflow''s `enabled` flag in a config without re-installing.
+
+        Emits `WORKFLOW_ENABLED` / `WORKFLOW_DISABLED` audit events.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: configId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleWorkflowRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToggleWorkflowResponse'
+  /api/v2/public/slug/{slug}/configs:
+    get:
+      operationId: listConfigsForApplication
+      tags:
+      - Configs
+      summary: List config ids for an app and linked account
+      description: 'Returns config_id entries (with optional `tenant_config: true` marker) for the
+
+        linked account installations of the given app.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    config_id:
+                      type: string
+                    tenant_config:
+                      type: boolean
+  /api/v2/public/dataref:
+    get:
+      operationId: listDatarefs
+      tags:
+      - Datarefs
+      summary: List datarefs for the org / linked account
+      description: 'Paginated list of datarefs scoped to org/environment, optionally filtered to
+
+        unique names with their linked accounts.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: unique
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDatarefs'
+    post:
+      operationId: createDataref
+      tags:
+      - Datarefs
+      summary: Create a new dataref
+      description: Creates an empty dataref for the linked account.
+      security:
+      - workflowApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDatarefRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataref'
+  /api/v2/public/dataref/{refName}:
+    get:
+      operationId: getDatarefAsTable
+      tags:
+      - Datarefs
+      summary: Get a dataref as a table
+      description: 'Returns the dataref''s records reshaped as a tabular structure (headers + rows),
+
+        paginated by record id.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: refName
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageQuery'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatarefAsTableResponse'
+    delete:
+      operationId: deleteDataref
+      tags:
+      - Datarefs
+      summary: Delete a dataref
+      description: Removes the dataref entity for the linked account.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: refName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteOneResult'
+  /api/v2/public/dataref/{refName}/clear-records:
+    put:
+      operationId: clearDatarefRecords
+      tags:
+      - Datarefs
+      summary: Clear all records of a dataref
+      description: Resets the dataref's `data` map to `{}` while preserving the entity.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: refName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataref'
+  /api/v2/public/datarefs/group:
+    put:
+      operationId: editDatarefGroup
+      tags:
+      - Datarefs
+      summary: Bulk set / clear dataref group
+      description: Updates the `group` field on the listed datarefs. Empty `group` unsets the field.
+      security:
+      - workflowApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditDatarefGroupRequest'
+      responses:
+        '204':
+          description: No Content
+  /api/v2/public/datastore/config/{slug}:
+    get:
+      operationId: listConfigDatastores
+      tags:
+      - Datastores
+      summary: List datastore names in a config
+      description: 'Returns the list of `store_variables` names saved on the installation for the
+
+        given app slug and config_id (defaulted to `linked_account_id`).
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /api/v2/public/datastore/config/{slug}/{datastore_name}/records:
+    get:
+      operationId: listConfigDatastoreRecords
+      tags:
+      - Datastores
+      summary: Get all records of a config datastore
+      description: Returns the raw `data` array stored under the named datastore.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: datastore_name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+  /api/v2/public/datastore/config/{slug}/{datastore_name}/search:
+    post:
+      operationId: searchConfigDatastoreRecords
+      tags:
+      - Datastores
+      summary: Search records in a config datastore
+      description: 'Filters records by matching `req.body` keys to record fields using a
+
+        case-insensitive regex search.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: datastore_name
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: config_id
+        in: query
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigDatastoreSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+  /api/v2/public/env/definitions:
+    get:
+      operationId: listVariableDefinitions
+      tags:
+      - Environment Variables
+      summary: List variable definitions for the org
+      description: Paginated list filterable by scope, format, and name (regex).
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: scope
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - org
+          - workspace
+          - linked_account
+          - workflow
+      - name: var_format
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - string
+          - number
+          - url
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVariableDefinitions'
+  /api/v2/public/env/definitions/{id}:
+    get:
+      operationId: getVariableDefinition
+      tags:
+      - Environment Variables
+      summary: Get a variable definition by id
+      description: Returns the definition wrapped in `{ definition }`.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariableDefinitionWrapped'
+  /api/v2/public/env/value/{definition_id}:
+    get:
+      operationId: getVariableValue
+      tags:
+      - Environment Variables
+      summary: Get a single variable value
+      description: Returns the value for a definition in the appropriate scope. Encrypted values are redacted.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: definition_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: environment
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEnvValueResponse'
+  /api/v2/public/env/values:
+    post:
+      operationId: setVariableValue
+      tags:
+      - Environment Variables
+      summary: Set a value for a variable definition
+      description: 'Upserts a scoped value. Validates against the definition''s `var_format` and
+
+        encrypts when the definition is marked encrypted. Linked-account auth must match
+
+        the target scope.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetEnvVariableValueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvVariableValue'
+  /api/v2/public/env/values/{scope}:
+    get:
+      operationId: listVariableValuesByScope
+      tags:
+      - Environment Variables
+      summary: List variable values by scope
+      description: 'Paginated values for the requested scope. Linked-account auth is restricted to
+
+        its own scope; workflow scope requires `workflow_id`.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - org
+          - workspace
+          - linked_account
+          - workflow
+      - name: variable_definition_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: linked_account_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnvVariableValues'
+  /api/v2/public/env/values/{value_id}:
+    delete:
+      operationId: deleteVariableValue
+      tags:
+      - Environment Variables
+      summary: Delete a variable value
+      description: Hard-deletes the value document by id. Linked-account auth is verified.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: value_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteEnvValueResponse'
+  /api/v2/public/execution:
+    get:
+      operationId: listExecutions
+      tags:
+      - Executions
+      summary: List executions for the linked account
+      description: 'Paginated executions scoped to org and linked account. Supports filters on status,
+
+        workflow, slug, date range, and execution type/source.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: slug
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Comma-separated app slugs.
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_name
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: workflow_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: execution_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: execution_type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: execution_source
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - API_CALL
+          - SCHEDULE
+          - Event
+      - name: sortAsc
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstances'
+  /api/v2/public/execution/{execution_id}:
+    get:
+      operationId: getExecutionById
+      tags:
+      - Executions
+      summary: Get an execution by id
+      description: 'Returns the full execution (instance) document for the linked account, with nodes
+
+        sorted by entry timestamp.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: execution_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instance'
+  /api/v2/public/execution/{execution_id}/nodes/{node_id}/batches:
+    get:
+      operationId: listExecutionNodeBatches
+      tags:
+      - Executions
+      summary: List batches for an execution node
+      description: 'Returns paginated batch sub-executions for a fan-out/batch node inside the given
+
+        execution. Throws 501 for instances executed by Thanos.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: execution_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: node_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInstanceBatches'
+        '501':
+          description: Not implemented for Thanos-executed instances.
+  /api/v2/public/execution/{instanceId}/stop:
+    post:
+      operationId: stopExecution
+      tags:
+      - Executions
+      summary: Stop a running execution
+      description: Marks the instance as stopped via API.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: instanceId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageOnly'
+  /api/v2/public/human-tasks/{id}:
+    get:
+      operationId: getHumanTask
+      tags:
+      - Human Tasks
+      summary: Get a public human task by id
+      description: Returns a sanitized version of the human task (form), safe for end-user display. No
+        authentication required.
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HumanTaskPublic'
+    post:
+      operationId: submitHumanTask
+      tags:
+      - Human Tasks
+      summary: Submit a public human task
+      description: 'No-auth endpoint that accepts form data. Validates read-only fields and required
+
+        fields against the form''s JSON schema. Errors with 400 if already submitted,
+
+        expired, or missing required fields.
+
+        '
+      security: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitHumanTaskRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v2/public/mcp-servers:
+    get:
+      operationId: listMcpServers
+      tags:
+      - MCP Servers
+      summary: List MCP servers for the org/environment
+      description: Paginated MCP server entries, sorted by createdAt desc.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMcpServers'
+    post:
+      operationId: createMcpServer
+      tags:
+      - MCP Servers
+      summary: Create a new MCP server
+      description: Creates an MCP entry with the given name/description.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMcpServerRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/McpServerCreatedResponse'
+  /api/v2/public/mcp-servers/{mcp_server_id}:
+    get:
+      operationId: getMcpServer
+      tags:
+      - MCP Servers
+      summary: Get MCP server details
+      description: Returns the full MCP server record including chains and notebooks.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: mcp_server_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPCrud'
+    put:
+      operationId: updateMcpServer
+      tags:
+      - MCP Servers
+      summary: Update an MCP server
+      description: Patch-style update — only provided fields are written.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: mcp_server_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMcpServerRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MCPCrud'
+    delete:
+      operationId: deleteMcpServer
+      tags:
+      - MCP Servers
+      summary: Delete an MCP server
+      description: Deletes the MCP entry by id, scoped to org/environment.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: mcp_server_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '204':
+          description: No Content
+  /api/v2/public/tables:
+    get:
+      operationId: listPersistentTables
+      tags:
+      - Persistent Tables
+      summary: List persistent tables
+      description: Paginated list of tables, with optional name regex search.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTables'
+    post:
+      operationId: createPersistentTable
+      tags:
+      - Persistent Tables
+      summary: Create a persistent table
+      description: 'Creates a new persistent table or returns the existing one''s id. Columns must be
+
+        objects with `column_name`, max 20 columns.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTableRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTableResponse'
+  /api/v2/public/tables/{table_id}:
+    get:
+      operationId: getPersistentTableRecords
+      tags:
+      - Persistent Tables
+      summary: Get records from a persistent table
+      description: Returns paginated records for the table, plus column names and table name.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/PageQuery'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersistentTableRecordsResponse'
+    patch:
+      operationId: addRecordsToPersistentTable
+      tags:
+      - Persistent Tables
+      summary: Add records to a persistent table
+      description: Inserts one or more records (max 10,000 per table). Unknown columns are stripped.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddRecordsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddRecordsResponse'
+    delete:
+      operationId: deletePersistentTable
+      tags:
+      - Persistent Tables
+      summary: Soft-delete a persistent table
+      description: Marks the table `is_deleted=true`.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+  /api/v2/public/tables/{table_id}/{record_id}:
+    delete:
+      operationId: deletePersistentTableRecord
+      tags:
+      - Persistent Tables
+      summary: Delete a record from a persistent table
+      description: Removes one row identified by `record_id`.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: record_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /api/v2/public/tables/{table_id}/columns/add:
+    patch:
+      operationId: addPersistentTableColumns
+      tags:
+      - Persistent Tables
+      summary: Add columns to a persistent table
+      description: Atomically adds new columns; enforces max 20 columns total and no duplicates.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColumnsArrayRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnsArrayResponse'
+  /api/v2/public/tables/{table_id}/columns/remove:
+    delete:
+      operationId: removePersistentTableColumns
+      tags:
+      - Persistent Tables
+      summary: Remove columns from a persistent table
+      description: Removes columns from a table. A table must keep at least one column.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColumnsArrayRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnsArrayResponse'
+  /api/v2/public/tables/{table_id}/columns/rename:
+    patch:
+      operationId: renamePersistentTableColumns
+      tags:
+      - Persistent Tables
+      summary: Rename columns in a persistent table
+      description: 'Atomically renames columns, supporting chained renames (A→B, B→C) via aggregation
+
+        pipeline. Updates both table schema and row data.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameColumnsRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColumnsArrayResponse'
+  /api/v2/public/tables/{table_id}/search:
+    post:
+      operationId: searchPersistentTableRecords
+      tags:
+      - Persistent Tables
+      summary: Search records in a persistent table
+      description: Filters records by `req.body` key/value (regex-based).
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: table_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: '`{column_name: value}` pairs used to filter records.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TableSearchResponse'
+  /api/v2/public/tables/group/edit:
+    put:
+      operationId: editTablesGroup
+      tags:
+      - Persistent Tables
+      summary: Bulk set / clear table group
+      description: Updates the `group` field on the listed tables. Empty `group` unsets the field.
+      security:
+      - workflowApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditTablesGroupRequest'
+      responses:
+        '204':
+          description: No Content
+  /api/v2/public/workflow:
+    get:
+      operationId: listWorkflows
+      tags:
+      - Workflows
+      summary: List workflows for org or linked account
+      description: 'If `linked_account_id` is in scope, returns linked-account public workflows.
+
+        With `scope=private`, returns linked-account private workflows. Otherwise returns
+
+        org-level workflows. Response includes a merged JSON schema across docs.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - name: application_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: slug
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: name
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Regex search on workflow name.
+      - name: published
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: scope
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - private
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkflows'
+    post:
+      operationId: createWorkflow
+      tags:
+      - Workflows
+      summary: Create a public workflow for a linked account
+      description: 'Creates a `public_access_workflow=true` workflow scoped to the linked account.
+
+        If neither `associated_application` nor `slug` is supplied, defaults to the org''s
+
+        default custom application.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateWorkflowResponse'
+  /api/v2/public/workflow/{workflowId}:
+    get:
+      operationId: getWorkflowById
+      tags:
+      - Workflows
+      summary: Get a workflow by id
+      description: 'Returns a workflow with allowlisted fields. Org-scoped for safety: returns 403 if
+
+        the workflow is private to a different linked account. Includes nodes (with start
+
+        node trigger config) and edges.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+    delete:
+      operationId: deleteWorkflow
+      tags:
+      - Workflows
+      summary: Delete a public workflow
+      description: 'Deletes the workflow plus all associated drafts/versions and deregisters its
+
+        triggers. Returns whether trigger deregistration fully succeeded.
+
+        '
+      security:
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteWorkflowResponse'
+  /api/v2/public/workflow/{workflowId}/edit:
+    get:
+      operationId: getDraftWorkflow
+      tags:
+      - Workflows
+      summary: Get the editable draft of a workflow
+      description: 'Returns the existing draft for a public workflow. If no draft exists, clones the
+
+        published version into a new draft and clones associated AI agent chats.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+  /api/v2/public/workflow/{workflowId}/execute:
+    post:
+      operationId: executeWorkflow
+      tags:
+      - Workflows
+      summary: Execute a workflow by id for the linked account
+      description: 'Validates workflow ownership, that it''s published, and that the linked account
+
+        owns it. Builds a manual-trigger execution with optional sync mode; can return
+
+        sanitized request headers via `include-headers`. Status code may be overridden
+
+        by a response node.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/ConfigIdHeader'
+      - name: slug
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: sync_execution
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: include-headers
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      - name: instance_tag
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: include-headers
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: Arbitrary JSON — passed as `payload` to the workflow.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstanceExecutionResult'
+  /api/v2/public/workflow/{workflowId}/publish:
+    put:
+      operationId: publishWorkflow
+      tags:
+      - Workflows
+      summary: Publish or unpublish a public workflow
+      description: '`published=true` registers triggers/crons. `published=false` unpublishes. With
+
+        `published=true` + `version=N`, the draft is published as version N. Emits audit
+
+        events.
+
+        '
+      security:
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishWorkflowRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workflow'
+  /api/v2/public/workflow/enabled:
+    get:
+      operationId: listEnabledWorkflows
+      tags:
+      - Workflows
+      summary: List enabled workflows for the linked account
+      description: 'Iterates installations for the linked account, returning workflows where
+
+        `enabled === true`. Includes the workflow id/name/icon, installation config_id,
+
+        and populated application document.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnabledWorkflowSummary'
+  /api/v2/public/workflow/request-structure/{workflowId}:
+    get:
+      operationId: getWorkflowRequestStructure
+      tags:
+      - Workflows
+      summary: Get the request body structure expected by a workflow
+      description: 'Returns the workflow''s JSON Schema (if any) and/or a structure derived from
+
+        `manual_execution_payload`. Consumers of `/workflow/{id}/execute` use this to
+
+        know the expected payload shape.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWorkflowRequestStructureResponse'
+  /api/v2/public/workflow/versions/{workflowId}:
+    get:
+      operationId: listWorkflowVersions
+      tags:
+      - Workflows
+      summary: List versions of a public workflow
+      description: Paginated published versions (snapshots) of the workflow, newest first.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: workflowId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/PageQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWorkflows'
+  /api/v1/workflow/public/scheduled:
+    get:
+      operationId: listSchedules
+      tags:
+      - Schedules
+      summary: List schedules
+      description: List the scheduled triggers registered for a linked account, paginated.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        description: The linked account whose schedules to list.
+        schema:
+          type: string
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 10
+      responses:
+        '200':
+          description: Paginated list of schedules.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  docs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Schedule'
+                  totalDocs:
+                    type: integer
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  hasNextPage:
+                    type: boolean
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+    post:
+      operationId: registerSchedule
+      tags:
+      - Schedules
+      summary: Register a schedule
+      description: Register a scheduled trigger that runs a workflow on a cron expression or at specific
+        interval date/times.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        description: The linked account that will run the scheduled workflow.
+        schema:
+          type: string
+      - name: slug
+        in: header
+        required: true
+        description: The application slug the workflow belongs to.
+        schema:
+          type: string
+          example: hubspot
+      - name: workflow_id_alias
+        in: header
+        required: true
+        description: The workflow ID to execute on schedule.
+        schema:
+          type: string
+      - name: config_id
+        in: header
+        required: true
+        description: The config to run under. Defaults to the linked account ID.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - trigger_type
+              properties:
+                trigger_type:
+                  type: string
+                  enum:
+                  - cron
+                  - interval
+                  description: '`cron` for recurring schedules, `interval` for specific date/times.'
+                regex:
+                  type: string
+                  description: (cron) The cron expression. Stored on the schedule as `cron_patten`.
+                interval_dates:
+                  type: array
+                  description: (interval) Specific date/time objects.
+                  items:
+                    type: object
+                    properties:
+                      day:
+                        type: integer
+                      month:
+                        type: integer
+                      year:
+                        type: integer
+                      hour:
+                        type: integer
+                      minute:
+                        type: integer
+                startDate:
+                  type: string
+                  description: Earliest date the schedule may run (YYYY-MM-DD).
+                endDate:
+                  type: string
+                  description: Latest date the schedule may run (YYYY-MM-DD).
+                tz:
+                  type: string
+                  description: Timezone, e.g. UTC, America/New_York.
+                payload:
+                  type: object
+                  additionalProperties: true
+                  description: Event payload passed to the workflow on each run.
+            examples:
+              cron:
+                summary: Cron schedule
+                value:
+                  trigger_type: cron
+                  regex: 0 9 * * 1
+                  tz: UTC
+                  startDate: '2026-07-01'
+                  payload:
+                    sync_type: full
+              interval:
+                summary: Interval schedule
+                value:
+                  trigger_type: interval
+                  interval_dates:
+                  - day: 1
+                    month: 7
+                    year: 2026
+                    hour: 9
+                    minute: 0
+                  tz: UTC
+      responses:
+        '200':
+          description: The created schedule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v1/workflow/public/scheduled/{schedule_id}:
+    put:
+      operationId: updateSchedule
+      tags:
+      - Schedules
+      summary: Update a schedule
+      description: Update an existing schedule's cron expression, interval dates, date window, timezone,
+        or payload.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                trigger_type:
+                  type: string
+                  enum:
+                  - cron
+                  - interval
+                regex:
+                  type: string
+                interval_dates:
+                  type: array
+                  items:
+                    type: object
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+                tz:
+                  type: string
+                payload:
+                  type: object
+                  additionalProperties: true
+            example:
+              trigger_type: cron
+              regex: 0 10 * * 1
+              tz: UTC
+      responses:
+        '200':
+          description: The updated schedule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '404':
+          description: Schedule not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+    delete:
+      operationId: deleteSchedule
+      tags:
+      - Schedules
+      summary: Delete a schedule
+      description: Permanently delete a schedule and deregister its job.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Confirmation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Schedule not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v1/workflow/public/scheduled/{schedule_id}/pause:
+    put:
+      operationId: pauseSchedule
+      tags:
+      - Schedules
+      summary: Pause a schedule
+      description: Pause a schedule so it stops firing. Afterwards `status` is `paused` and `inactive`
+        is `true`.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The paused schedule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '404':
+          description: Schedule not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v1/workflow/public/scheduled/{schedule_id}/resume:
+    put:
+      operationId: resumeSchedule
+      tags:
+      - Schedules
+      summary: Resume a schedule
+      description: Resume a paused schedule so it starts firing again. Afterwards `status` is `running`
+        and `inactive` is `false`.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: schedule_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The resumed schedule.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '404':
+          description: Schedule not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v2/integration-schema/{slug}/actions:
+    get:
+      operationId: listActions
+      tags:
+      - Actions
+      summary: List actions
+      description: List the actions you can execute against a connected application.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        description: The application slug.
+        schema:
+          type: string
+          example: hubspot
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Array of action objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    action_id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    tag:
+                      type: string
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v2/integration-schema/{slug}/actions/{action_id}:
+    get:
+      operationId: getActionSchema
+      tags:
+      - Actions
+      summary: Get action schema
+      description: Return the parameter schema for a specific action.
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: hubspot
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: search_contacts
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Array of parameter definitions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    label:
+                      type: string
+                    required:
+                      type: boolean
+                    type:
+                      type: string
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v2/integration-schema/{slug}/actions/{action_id}/execute:
+    post:
+      operationId: executeAction
+      tags:
+      - Actions
+      summary: Execute an action
+      description: 'Execute an action against a linked account''s connected application. The body holds
+        the action''s parameters (see Get action schema). Refold uses the linked account''s stored credentials
+        automatically — never put app tokens in the body.
+
+        '
+      security:
+      - workflowApiKeyAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: hubspot
+      - name: action_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: get_contact
+      - name: linked_account_id
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: One key per parameter from the action's schema.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            examples:
+              read:
+                summary: Read action
+                value:
+                  limit: '1'
+              write:
+                summary: Write action
+                value:
+                  email: jane@example.com
+                  firstname: Jane
+      responses:
+        '200':
+          description: Action result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  node_status:
+                    type: string
+                  data:
+                    type: object
+                    additionalProperties: true
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'
+  /api/v2/public/execution/{instanceId}/rerun:
+    post:
+      operationId: rerunExecution
+      tags:
+      - Executions
+      summary: Rerun an execution
+      description: Retry a failed or stopped execution using its original trigger payload. Creates and
+        starts a new execution.
+      security:
+      - workflowApiKeyAuth: []
+      - workflowBearerAuth: []
+      parameters:
+      - name: instanceId
+        in: path
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      responses:
+        '200':
+          description: The new execution.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  id:
+                    type: string
+        '404':
+          description: Execution not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentedError'

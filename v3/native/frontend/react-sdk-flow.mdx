@@ -1,0 +1,93 @@
+---
+title: "React SDK flow"
+description: "Embed Refold's connect experience directly in your React app, no redirect, no UI to build."
+---
+
+The **React SDK flow** drops Refold's prebuilt connect component into your React app. You wrap your integration UI in a `<Provider>` and render a `<Config>` component; the customer connects and configures in an in-app modal, with **no redirect** to an external page.
+
+It's the low-effort, in-product option: you get prebuilt components that handle connection status, OAuth, config fields, and workflow toggles, while keeping the whole flow inside your application.
+
+<Note>
+This flow needs a [linked account](/v3/platform/concepts/linked-account) and a [session token](/v3/native/frontend/overview#before-you-start) in place first. Both are created on your backend and documented on the [Overview](/v3/native/frontend/overview). Never expose your API key in the browser.
+</Note>
+
+## When to use it
+
+Choose the React SDK flow when:
+
+- **You have a React app** and want the connect experience embedded in-product.
+- **You want prebuilt components**, not a fully custom UI, `<Config>` renders connection status, fields, and workflow toggles for you.
+- **You don't want a redirect** to an externally hosted page.
+
+For a no-code option with no React, use the [Hosted flow](/v3/platform/authentication/connection-flows/hosted-flow). For a fully bespoke UI, [build your own](/v3/platform/authentication/connection-flows/build-your-own).
+
+## How it works
+
+<Steps>
+  <Step title="Install the SDK">
+    Install the React SDK alongside the underlying JavaScript SDK.
+
+```bash
+npm install --save @cobaltio/react-cobalt-js @cobaltio/cobalt-js@^8
+```
+  </Step>
+  <Step title="Wrap your app in the Provider">
+    Pass your customer's session token to `<Provider>`. Place it high enough in the tree to cover every component that renders `<Config>`.
+
+```jsx
+import { Provider, Config } from "@cobaltio/react-cobalt-js";
+
+function Integrations({ sessionToken }) {
+  return (
+    <Provider sessionToken={sessionToken}>
+      {/* your integration UI */}
+    </Provider>
+  );
+}
+```
+  </Step>
+  <Step title="Render the Config component">
+    Render `<Config>` with the app's `slug`, typically inside a modal. It only renders when `slug` is set, so you can mount it on demand.
+
+```jsx
+<Config
+  slug="hubspot"          // app slug: required
+  id="user_config_123"    // optional config id; defaults to the linked account id
+  labels={{}}             // optional dynamic labels for Map v2 fields
+  style={{                // optional container style overrides
+    borderRadius: 8,
+    maxWidth: 450,
+  }}
+/>
+```
+  </Step>
+</Steps>
+
+The `<Config>` component handles the whole experience: connection status, initiating OAuth, rendering your [config fields](/v3/native/configure/integration/config-fields), and saving the customer's choices.
+
+<Frame>{/* SCREENSHOT: Refold Config modal embedded in a React app showing connection status and config fields → /images/embedded/frontend/react-config-modal.png */}</Frame>
+
+<Tip>
+See the [React SDK](/v3/api-reference/sdks) reference for every `<Provider>` and `<Config>` prop, a complete example, and troubleshooting.
+</Tip>
+
+<Warning>
+Session tokens expire after 24 hours. Fetch a new token for each customer session and update the `<Provider>`.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="React SDK reference" icon="react" href="/v3/api-reference/sdks">
+    Every prop on `<Provider>` and `<Config>`, with examples.
+  </Card>
+  <Card title="Config fields" icon="list-check" href="/v3/native/configure/integration/config-fields">
+    What the customer configures inside the component.
+  </Card>
+  <Card title="Custom styling" icon="palette" href="/v3/native/frontend/customization/custom-styling">
+    Style the `<Config>` component to match your brand.
+  </Card>
+  <Card title="Connection status" icon="signal" href="/v3/platform/authentication/managing-connections/connection-status">
+    Check whether a customer's account is connected.
+  </Card>
+</CardGroup>
