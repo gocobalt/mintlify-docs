@@ -4,15 +4,10 @@ openapi: 3.1.0
 info:
   title: Refold Public API
   version: 1.0.0
-  description: 'Combined public API surface for Refold — merges the Auth Service and Workflow Service
-    V2 public routes into one specification. Covers organization authentication and linked-account lifecycle
-    (create / get / update / delete, OAuth URL generation, key-based credential storage), session-token
-    issuance for hosted Connect frontends, webhooks, application discovery, workflow CRUD and execution,
-    executions and batch retrieval, MCP servers and chain conversations, slug-scoped and project-scoped
-    configs, persistent (refold) tables, datarefs, environment variables, integration projects, application
-    events, datastores, public human tasks, and a mapping agent. All routes are mounted under /api/v2/public.
-
-    '
+  description: The Refold public REST API. Manage linked accounts, generate hosted Connect and OAuth URLs,
+    issue session tokens, subscribe to webhooks, discover and execute application actions, build and run
+    workflows, and work with configs, tables, datarefs, environment variables, events, and MCP servers.
+    Authenticate with your organization API key or a linked-account session token.
   contact:
     name: Refold
     url: https://www.refold.ai
@@ -20,96 +15,77 @@ servers:
 - url: https://app.refold.ai
   description: Refold API
 tags:
-- name: auth:applications
-  description: Discover applications enabled for the org / linked account
-- name: auth:auth-structure
-  description: Inspect auth field structure for an app (no auth required)
-- name: auth:connect
-  description: Hosted Connect URL generation
-- name: auth:credentials
-  description: Read / write integration credentials and tokens
-- name: auth:hosted-properties
-  description: Properties stashed by `POST /connect-url` for hosted pages
-- name: auth:linked-accounts
-  description: Manage linked accounts (the org's customers) and their integrations
-- name: auth:oauth
-  description: OAuth URL generation for linked-account integrations
-- name: auth:session-tokens
-  description: Generate and revoke session tokens for a linked account
-- name: auth:webhooks
-  description: Webhook subscription CRUD for org-level events
-- name: workflow:applications-events
-  description: Default-app event (trigger) CRUD and event firing
-- name: workflow:config-fields
-  description: Field-level config operations
-- name: workflow:configs
-  description: App installation (slug-scoped) config CRUD
-- name: workflow:datarefs
-  description: Dataref CRUD and group management
-- name: workflow:datastores
-  description: Per-config datastore reads and search
-- name: workflow:environment-variables
-  description: Variable definitions and scoped values
-- name: workflow:executions
-  description: Execution (instance) reads, batch listings, and stop
-- name: workflow:human-tasks
-  description: Public human-task (form) retrieval and submission (no auth)
-- name: workflow:mcp-servers
-  description: MCP server CRUD
-- name: workflow:persistent-tables
-  description: Persistent (refold) tables CRUD plus column ops
-- name: workflow:workflows
-  description: Workflow CRUD, draft/version retrieval, publish, execute
-- name: workflow:schedules
-  description: Scheduled workflow triggers (cron / interval)
-- name: workflow:actions
-  description: Discover and execute application actions on a connected account
+- name: Applications
+  description: Discover the applications enabled for your organization and a linked account's connection
+    status.
+- name: Auth Structure
+  description: Inspect an application's authentication fields.
+- name: Hosted Connect
+  description: Generate hosted Connect URLs for end-user authentication.
+- name: Credentials
+  description: Read and write integration credentials and tokens.
+- name: Hosted Properties
+  description: Properties stored for hosted Connect pages.
+- name: Linked Accounts
+  description: Manage linked accounts (your customers) and their integrations.
+- name: OAuth
+  description: Generate OAuth authorization URLs for linked-account integrations.
+- name: Session Tokens
+  description: Generate and revoke session tokens for a linked account.
+- name: Webhooks
+  description: Subscribe to organization-level event notifications.
+- name: Events
+  description: Define custom events and fire them to start workflows.
+- name: Config Fields
+  description: Read and set config field values.
+- name: Configs
+  description: Install and configure applications per linked account.
+- name: Datarefs
+  description: Manage reference-data tables for a linked account.
+- name: Datastores
+  description: Read and search per-config datastores.
+- name: Environment Variables
+  description: Manage variable definitions and scoped values.
+- name: Executions
+  description: Retrieve, stop, and rerun workflow executions.
+- name: Human Tasks
+  description: Retrieve and submit human-in-the-loop forms.
+- name: MCP Servers
+  description: Manage MCP servers.
+- name: Persistent Tables
+  description: Create and manage API-managed tables, columns, and records.
+- name: Workflows
+  description: Manage, publish, and execute workflows.
+- name: Schedules
+  description: Run workflows on cron or interval triggers.
+- name: Actions
+  description: Discover and execute application actions on a connected account.
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: x-api-key
-      description: 'Org-level API key. Production keys start with `pk`, test keys with `tk`.
-
-        Resolves `org_id` and `environment` on the request.
-
-        '
+      description: Organization API key, sent in the `x-api-key` header. Production keys start with `pk`,
+        test keys with `tk`.
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'JWT bearer token. Carries `org_id`, `environment`, optionally `linked_account_id`,
-
-        and a role claim (org-level or linked-account-level). Linked-account tokens are
-
-        issued by `POST /session-token`.
-
-        '
+      description: JWT bearer token. Use for linked-account-scoped requests; linked-account session tokens
+        are issued by `POST /session-token`.
     workflowApiKeyAuth:
       type: apiKey
       in: header
       name: x-api-key
-      description: 'Org-level API key. Production keys start with `pk`, test keys with `tk`.
-
-        Forwarded to the auth-service via `/api/v1/auth/validate/key` and cached.
-
-        For routes that are linked-account-scoped, the API-key path also requires
-
-        a `linked_account_id` header.
-
-        '
+      description: Organization API key, sent in the `x-api-key` header. Linked-account-scoped endpoints
+        also require a `linked_account_id` header.
     workflowBearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'JWT bearer token. Forwarded to the auth-service for validation. May be an
-
-        org-level token (with RBAC roles) or a linked-account token (issued by
-
-        the auth-service `POST /session-token`).
-
-        '
+      description: JWT bearer token — an organization token, or a linked-account session token issued
+        by `POST /session-token`.
   parameters:
     LinkedAccountIdHeader:
       name: linked_account_id
@@ -141,7 +117,7 @@ components:
       name: slug
       in: header
       required: true
-      description: App slug (mounted as a header by these routes, not the URL).
+      description: Application slug, passed as a header (not in the URL).
       schema:
         type: string
     ConfigIdHeader:
@@ -302,13 +278,8 @@ components:
               $ref: '#/components/schemas/LinkedAccount'
     CreateLinkedAccountRequest:
       type: object
-      description: 'Either `account_id` or `linked_account_id` must be supplied. `your_app.auth_credentials`
-
-        seeds the org''s default custom-app integration. `udf` is an object map turned
-
-        into `{key_name,key_value}` pairs internally.
-
-        '
+      description: Provide either `account_id` or `linked_account_id`. Use `your_app.auth_credentials`
+        to seed the default custom-app integration, and `udf` for custom key/value fields.
       properties:
         account_id:
           type: string
@@ -657,11 +628,8 @@ components:
             '
     MigrateTokenResponse:
       type: object
-      description: 'On success returns `{success, message}`. On certain validation failures the
-
-        service returns `{error}` with HTTP 200 (inconsistent — see UNRESOLVED.md).
-
-        '
+      description: On success returns `{success, message}`. Some validation failures return `{error}`
+        with an HTTP 200 status.
       properties:
         success:
           type: boolean
@@ -1247,11 +1215,8 @@ components:
       properties:
         tenant_config:
           type: boolean
-      description: '`GET /slug/{slug}/config(/{configId})` reads a JSON body in addition to params.
-
-        Only `tenant_config` is consulted (see UNRESOLVED.md — GET with body is unusual).
-
-        '
+      description: Optional request body for `GET /slug/{slug}/config(/{configId})`. Only `tenant_config`
+        is used.
     ConfigFieldValueRequest:
       type: object
       description: Value payload for a single config field (datasource-resolved).
@@ -1742,13 +1707,8 @@ components:
     CreateWorkflowRequest:
       type: object
       additionalProperties: true
-      description: 'Pass-through workflow document. Controller injects `org_id`, `linked_account_id`,
-
-        `public_access_workflow=true`, `is_v2=true`, `environment`, and
-
-        `test_instance_meta_data`. Any `Workflow` field may be supplied.
-
-        '
+      description: Workflow document. Any `Workflow` field may be supplied; Refold sets ownership and
+        environment fields automatically.
     CreateWorkflowResponse:
       type: object
       properties:
@@ -1852,7 +1812,7 @@ paths:
     get:
       operationId: listApplicationsForLinkedAccount
       tags:
-      - auth:applications
+      - Applications
       summary: List applications for a linked account
       description: 'Returns all enabled applications for the org+environment (delegated to the workflow
 
@@ -1903,7 +1863,7 @@ paths:
     get:
       operationId: getApplicationBySlug
       tags:
-      - auth:applications
+      - Applications
       summary: Get a single application by slug
       description: 'Same handler as `GET /application`, but returns only the first match when filtering
 
@@ -1950,7 +1910,7 @@ paths:
     get:
       operationId: getAuthStructureForApp
       tags:
-      - auth:auth-structure
+      - Auth Structure
       summary: Get the auth schema structure for an app
       description: 'Returns a flat description of the auth fields required for each `app_auth_type`
 
@@ -1979,17 +1939,11 @@ paths:
     post:
       operationId: createConnectUrl
       tags:
-      - auth:connect
+      - Hosted Connect
       summary: Create a hosted Connect URL
-      description: 'Stores the request body in Redis keyed by the current Bearer token (3-day TTL),
-
-        then returns a URL of the form `{base_app_url}/connect/{token}` (optionally with
-
-        `?config_id=...`). The hosted page later reads the stored body via
-
-        `GET /hosted-properties`. The body is opaque — no validation is applied.
-
-        '
+      description: Creates a hosted Connect URL of the form `{base_app_url}/connect/{token}` (optionally
+        with `?config_id=...`). Any properties in the request body are stored with the session and returned
+        to the hosted page via `GET /hosted-properties`.
       security:
       - BearerAuth: []
       parameters:
@@ -2010,13 +1964,9 @@ paths:
             schema:
               type: object
               additionalProperties: true
-              description: 'Opaque object — stored verbatim and returned by `GET /hosted-properties`.
-
-                Common keys consumed by hosted pages include `base_color`, `button_color`,
-
-                `redirect_url`, etc., but none are enforced here.
-
-                '
+              description: Optional properties stored with the Connect session and returned by `GET /hosted-properties`.
+                Common keys used by hosted pages include `base_color`, `button_color`, and `redirect_url`;
+                none are required.
       responses:
         '200':
           description: OK
@@ -2028,7 +1978,7 @@ paths:
     put:
       operationId: upsertDefaultAppAuthCredential
       tags:
-      - auth:credentials
+      - Credentials
       summary: Upsert one auth credential on the org's default app
       description: 'Adds or updates a single `{key_name, key_value}` auth credential on the org''s
 
@@ -2069,13 +2019,10 @@ paths:
     delete:
       operationId: deleteDefaultAppAuthCredential
       tags:
-      - auth:credentials
+      - Credentials
       summary: Delete one auth credential on the org's default app
-      description: 'Removes the named credential key from the linked account''s default-app `authTokens`
-
-        and invalidates the integration token cache. Returns 404 if the key does not exist.
-
-        '
+      description: Removes the named credential key from the linked account's default-app credentials.
+        Returns 404 if the key does not exist.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -2102,15 +2049,11 @@ paths:
     put:
       operationId: saveKeyBasedAppCredentials
       tags:
-      - auth:credentials
+      - Credentials
       summary: Save key-based credentials for an app
-      description: 'Validates that the app''s `app_auth_types` includes `keybased`, then delegates to
-
-        the app controller''s `saveCredentials`. The request body is treated as opaque
-
-        `auth_data` and forwarded; concrete keys depend on the app''s keybased schema.
-
-        '
+      description: Save key-based credentials for the app on this linked account. The app must support
+        key-based authentication. The request body holds the credential fields defined by the app's authentication
+        schema.
       security:
       - ApiKeyAuth: []
       parameters:
@@ -2146,7 +2089,7 @@ paths:
     put:
       operationId: migrateTokenForLinkedAccount
       tags:
-      - auth:credentials
+      - Credentials
       summary: Migrate an auth_object onto a linked account's integration
       description: 'Validates `auth_object` against the named app''s auth schema, encrypts each value,
 
@@ -2178,20 +2121,14 @@ paths:
     get:
       operationId: getHostedProperties
       tags:
-      - auth:hosted-properties
+      - Hosted Properties
       summary: Read hosted properties stashed by `/connect-url`
-      description: 'Reads the JSON previously stored in Redis under the current Bearer token by
-
-        `POST /connect-url`. Returns the value verbatim. Note that this is mounted in
-
-        the POST section of the source file but is itself a `GET` (see UNRESOLVED.md).
-
-        '
+      description: Returns the properties stored for the current Connect session by `POST /connect-url`.
       security:
       - BearerAuth: []
       responses:
         '200':
-          description: OK — verbatim payload from `POST /connect-url`.
+          description: OK — the properties stored by `POST /connect-url`.
           content:
             application/json:
               schema:
@@ -2201,7 +2138,7 @@ paths:
     get:
       operationId: listLinkedAccounts
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: List linked accounts for the org
       description: 'Returns a paginated list of linked accounts for the org+environment derived from
 
@@ -2241,7 +2178,7 @@ paths:
     post:
       operationId: createLinkedAccount
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Create a linked account
       description: 'Creates a linked account under the org+environment derived from the API key.
 
@@ -2268,7 +2205,7 @@ paths:
     put:
       operationId: upsertLinkedAccount
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Update or create a linked account
       description: 'Upserts a linked account. If authenticated via session JWT, the linked-account id
 
@@ -2297,7 +2234,7 @@ paths:
     get:
       operationId: getLinkedAccountById
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Get a linked account by id
       description: 'Returns the linked account matching the path id. `integrations[*].credentials`,
 
@@ -2323,17 +2260,11 @@ paths:
     delete:
       operationId: deleteLinkedAccount
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Delete a linked account
-      description: 'Revokes all of the linked account''s integration tokens, removes any workflow
-
-        installations associated with the integrations, deletes the linked account,
-
-        clears its cache, and removes any access tokens issued to it. Blocks deletion
-
-        of the configured Refold test user in `test` environment.
-
-        '
+      description: 'Deletes the linked account: revokes all of its integration tokens, removes the associated
+        workflow installations, and invalidates any access tokens issued to it. The configured test user
+        cannot be deleted in the `test` environment.'
       security:
       - ApiKeyAuth: []
       parameters:
@@ -2353,19 +2284,10 @@ paths:
     delete:
       operationId: deleteIntegration
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Delete an integration on a linked account
-      description: 'Removes the integration from the linked account (or a single connection within it
-
-        when `auth_type` is supplied), deletes the workflow-side installation when no
-
-        connections remain, clears related caches and dataslot keys, emits a webhook event,
-
-        and enqueues a revoke-token job when the app supports it. Custom apps are resolved
-
-        by `application_id`.
-
-        '
+      description: Removes the integration from the linked account — or a single connection within it
+        when `auth_type` is supplied. Revokes the token when the app supports it and emits a webhook event.
       security:
       - ApiKeyAuth: []
       parameters:
@@ -2396,7 +2318,7 @@ paths:
     get:
       operationId: getLinkedAccountBySessionToken
       tags:
-      - auth:linked-accounts
+      - Linked Accounts
       summary: Get the linked account for the current session token
       description: 'Decodes the session JWT and returns the corresponding linked account. Useful for
 
@@ -2416,17 +2338,10 @@ paths:
     get:
       operationId: getOAuthUrlForLinkedAccount
       tags:
-      - auth:oauth
+      - OAuth
       summary: Get the OAuth authorization URL for an app
-      description: 'Resolves the application controller for the given slug, verifies it''s an OAuth2 app,
-
-        and delegates to the controller''s `integrate` method to construct the auth URL.
-
-        Per-app pre-requisite fields may need to be supplied as query parameters (see
-
-        UNRESOLVED.md — these vary per integration).
-
-        '
+      description: Builds the OAuth authorization URL for the given app slug. The app must support OAuth2.
+        Some apps require additional fields supplied as query parameters; these vary per integration.
       security:
       - ApiKeyAuth: []
       parameters:
@@ -2447,15 +2362,10 @@ paths:
     post:
       operationId: generateSessionTokenForLinkedAccount
       tags:
-      - auth:session-tokens
+      - Session Tokens
       summary: Generate a session token for a linked account
-      description: 'Issues a JWT session token (and refresh token) for the named linked account.
-
-        Honors an existing valid token unless `force_refresh=true`. Token TTL is
-
-        determined by service configuration.
-
-        '
+      description: Issues a JWT session token (and refresh token) for the named linked account. Reuses
+        an existing valid token unless `force_refresh=true`.
       security:
       - ApiKeyAuth: []
       parameters:
@@ -2485,7 +2395,7 @@ paths:
     post:
       operationId: revokeLinkedAccountSessionToken
       tags:
-      - auth:session-tokens
+      - Session Tokens
       summary: Revoke the current linked-account session token
       description: 'Blacklists the Bearer token (and its refresh token if present) and deletes it
 
@@ -2507,7 +2417,7 @@ paths:
     get:
       operationId: listWebhooks
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: List webhooks for the org/environment
       description: 'Returns all `RefoldWebhook` records for the org and environment, each enriched
 
@@ -2530,7 +2440,7 @@ paths:
     post:
       operationId: registerWebhook
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: Register a webhook
       description: 'Creates a new `RefoldWebhook` for the org+environment. Validates the URL scheme,
 
@@ -2561,7 +2471,7 @@ paths:
     get:
       operationId: getWebhookById
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: Get a webhook by id
       description: Returns one webhook by id, enriched with the inferred `webhook_type`.
       security:
@@ -2582,7 +2492,7 @@ paths:
     put:
       operationId: updateWebhook
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: Update a webhook
       description: 'Patches a webhook by id with the supplied fields. Emits an audit event when the
 
@@ -2616,7 +2526,7 @@ paths:
     delete:
       operationId: deleteWebhook
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: Delete a webhook
       description: 'Deletes a single webhook by id and returns the list of remaining webhooks for
 
@@ -2645,7 +2555,7 @@ paths:
     put:
       operationId: updateWebhooksGroup
       tags:
-      - auth:webhooks
+      - Webhooks
       summary: Bulk update webhook group membership
       description: 'Sets (or unsets, when empty) the `group` field on every webhook whose id is in
 
@@ -2673,7 +2583,7 @@ paths:
     get:
       operationId: listEvents
       tags:
-      - workflow:applications-events
+      - Events
       summary: List events for the default custom application
       description: Returns the `triggers` array from the org's default custom application.
       security:
@@ -2690,7 +2600,7 @@ paths:
     post:
       operationId: createEvent
       tags:
-      - workflow:applications-events
+      - Events
       summary: Create a custom event for the default app
       description: 'Adds a custom trigger to the org''s default custom application and returns the
 
@@ -2718,7 +2628,7 @@ paths:
     get:
       operationId: getEvent
       tags:
-      - workflow:applications-events
+      - Events
       summary: Get a custom event by id
       description: Returns one trigger from the org's default custom application.
       security:
@@ -2739,7 +2649,7 @@ paths:
     put:
       operationId: updateEvent
       tags:
-      - workflow:applications-events
+      - Events
       summary: Update a custom event
       description: Edits an existing trigger on the default app and returns the updated triggers list.
       security:
@@ -2768,7 +2678,7 @@ paths:
     delete:
       operationId: deleteEvent
       tags:
-      - workflow:applications-events
+      - Events
       summary: Delete a custom event
       description: Removes a trigger from the default custom application.
       security:
@@ -2792,7 +2702,7 @@ paths:
     post:
       operationId: triggerEventBySlug
       tags:
-      - workflow:applications-events
+      - Events
       summary: Fire a custom-app trigger (slug variant)
       description: 'Aliased to `POST /event/trigger`. Same body, but the app slug is provided via the
 
@@ -2848,15 +2758,10 @@ paths:
     post:
       operationId: triggerEvent
       tags:
-      - workflow:applications-events
+      - Events
       summary: Fire a custom-app trigger
-      description: 'Validates the trigger exists on the default custom app, optionally validates auth
-
-        on the named slug, then enqueues the webhook for async workflow execution.
-
-        Returns synchronously while the workflow runs in the background.
-
-        '
+      description: Fires the named event trigger to start its associated workflow. Returns immediately
+        while the workflow runs in the background.
       security:
       - workflowApiKeyAuth: []
       - workflowBearerAuth: []
@@ -2904,7 +2809,7 @@ paths:
     post:
       operationId: getConfigFields
       tags:
-      - workflow:config-fields
+      - Config Fields
       summary: Get all fields for a config
       description: 'POST because datasource handlers may accept a payload. Returns the configured
 
@@ -2928,7 +2833,7 @@ paths:
     post:
       operationId: getConfigFieldOptions
       tags:
-      - workflow:config-fields
+      - Config Fields
       summary: Get options for a single config field
       description: 'Resolves a field''s options via its datasource. The datasource may consume the
 
@@ -2980,7 +2885,7 @@ paths:
     put:
       operationId: updateConfigField
       tags:
-      - workflow:config-fields
+      - Config Fields
       summary: Update a config field value
       description: Sets the value for a single field, optionally scoped to a workflow.
       security:
@@ -3028,7 +2933,7 @@ paths:
     delete:
       operationId: deleteConfigField
       tags:
-      - workflow:config-fields
+      - Config Fields
       summary: Clear a config field value
       description: Clears the value of the specified field, optionally scoped to a workflow.
       security:
@@ -3071,7 +2976,7 @@ paths:
     post:
       operationId: getRuleEngineOptions
       tags:
-      - workflow:config-fields
+      - Config Fields
       summary: Get options for a rule-engine field
       description: Resolves rule-engine column options for a config field.
       security:
@@ -3113,7 +3018,7 @@ paths:
     post:
       operationId: getOrCreateConfig
       tags:
-      - workflow:configs
+      - Configs
       summary: Get or create an application config
       description: 'Finds the config by id and creates it if missing. Supports `labels` →
 
@@ -3149,7 +3054,7 @@ paths:
     put:
       operationId: updateConfig
       tags:
-      - workflow:configs
+      - Configs
       summary: Update an installed config
       description: 'Replaces fields and workflows on the installation. Maintains backward
 
@@ -3187,15 +3092,10 @@ paths:
     get:
       operationId: getInstalledConfigDefault
       tags:
-      - workflow:configs
+      - Configs
       summary: Get installed config (configId defaulted)
-      description: 'Variant of `getInstalledConfig` when no `configId` is supplied — defaults to
-
-        `linked_account_id`. Reads optional `tenant_config` from a JSON body
-
-        (see UNRESOLVED.md — GET with body is unusual).
-
-        '
+      description: Returns the installed config for the app slug when no `configId` is supplied — defaults
+        to the linked account. Accepts an optional `tenant_config` in the request body.
       security:
       - workflowApiKeyAuth: []
       parameters:
@@ -3228,7 +3128,7 @@ paths:
     delete:
       operationId: deleteConfigDefault
       tags:
-      - workflow:configs
+      - Configs
       summary: Delete config installation (configId defaulted)
       description: 'Variant of `deleteConfig` when no `configId` is supplied — uses
 
@@ -3254,15 +3154,10 @@ paths:
     get:
       operationId: getInstalledConfig
       tags:
-      - workflow:configs
+      - Configs
       summary: Get installed config for an app + configId
-      description: 'Returns the installed config for the given app slug and config id. Renames
-
-        `application_data_slots`→`fields` and workflow `data_slots`→`fields`. Reads
-
-        an optional `tenant_config` from a JSON body (see UNRESOLVED.md).
-
-        '
+      description: Returns the installed config for the given app slug and config id, with fields exposed
+        under `fields`. Accepts an optional `tenant_config` in the request body.
       security:
       - workflowApiKeyAuth: []
       parameters:
@@ -3300,7 +3195,7 @@ paths:
     delete:
       operationId: deleteConfig
       tags:
-      - workflow:configs
+      - Configs
       summary: Delete config installation
       description: 'Deletes the installation by config id. Emits `CONFIG_DELETED` audit.
 
@@ -3329,7 +3224,7 @@ paths:
     patch:
       operationId: toggleConfigWorkflow
       tags:
-      - workflow:configs
+      - Configs
       summary: Enable or disable a workflow in a config
       description: 'Toggles a single workflow''s `enabled` flag in a config without re-installing.
 
@@ -3372,7 +3267,7 @@ paths:
     get:
       operationId: listConfigsForApplication
       tags:
-      - workflow:configs
+      - Configs
       summary: List config ids for an app and linked account
       description: 'Returns config_id entries (with optional `tenant_config: true` marker) for the
 
@@ -3407,7 +3302,7 @@ paths:
     get:
       operationId: listDatarefs
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: List datarefs for the org / linked account
       description: 'Paginated list of datarefs scoped to org/environment, optionally filtered to
 
@@ -3442,7 +3337,7 @@ paths:
     post:
       operationId: createDataref
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: Create a new dataref
       description: Creates an empty dataref for the linked account.
       security:
@@ -3464,7 +3359,7 @@ paths:
     get:
       operationId: getDatarefAsTable
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: Get a dataref as a table
       description: 'Returns the dataref''s records reshaped as a tabular structure (headers + rows),
 
@@ -3496,7 +3391,7 @@ paths:
     delete:
       operationId: deleteDataref
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: Delete a dataref
       description: Removes the dataref entity for the linked account.
       security:
@@ -3518,7 +3413,7 @@ paths:
     put:
       operationId: clearDatarefRecords
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: Clear all records of a dataref
       description: Resets the dataref's `data` map to `{}` while preserving the entity.
       security:
@@ -3540,7 +3435,7 @@ paths:
     put:
       operationId: editDatarefGroup
       tags:
-      - workflow:datarefs
+      - Datarefs
       summary: Bulk set / clear dataref group
       description: Updates the `group` field on the listed datarefs. Empty `group` unsets the field.
       security:
@@ -3558,7 +3453,7 @@ paths:
     get:
       operationId: listConfigDatastores
       tags:
-      - workflow:datastores
+      - Datastores
       summary: List datastore names in a config
       description: 'Returns the list of `store_variables` names saved on the installation for the
 
@@ -3591,7 +3486,7 @@ paths:
     get:
       operationId: listConfigDatastoreRecords
       tags:
-      - workflow:datastores
+      - Datastores
       summary: Get all records of a config datastore
       description: Returns the raw `data` array stored under the named datastore.
       security:
@@ -3626,7 +3521,7 @@ paths:
     post:
       operationId: searchConfigDatastoreRecords
       tags:
-      - workflow:datastores
+      - Datastores
       summary: Search records in a config datastore
       description: 'Filters records by matching `req.body` keys to record fields using a
 
@@ -3671,7 +3566,7 @@ paths:
     get:
       operationId: listVariableDefinitions
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: List variable definitions for the org
       description: Paginated list filterable by scope, format, and name (regex).
       security:
@@ -3714,7 +3609,7 @@ paths:
     get:
       operationId: getVariableDefinition
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: Get a variable definition by id
       description: Returns the definition wrapped in `{ definition }`.
       security:
@@ -3736,13 +3631,9 @@ paths:
     get:
       operationId: getVariableValue
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: Get a single variable value
-      description: 'Resolves the value for a definition in the appropriate scope. Encrypted values
-
-        are redacted.
-
-        '
+      description: Returns the value for a definition in the appropriate scope. Encrypted values are redacted.
       security:
       - workflowApiKeyAuth: []
       - workflowBearerAuth: []
@@ -3778,7 +3669,7 @@ paths:
     post:
       operationId: setVariableValue
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: Set a value for a variable definition
       description: 'Upserts a scoped value. Validates against the definition''s `var_format` and
 
@@ -3807,7 +3698,7 @@ paths:
     get:
       operationId: listVariableValuesByScope
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: List variable values by scope
       description: 'Paginated values for the requested scope. Linked-account auth is restricted to
 
@@ -3856,7 +3747,7 @@ paths:
     delete:
       operationId: deleteVariableValue
       tags:
-      - workflow:environment-variables
+      - Environment Variables
       summary: Delete a variable value
       description: Hard-deletes the value document by id. Linked-account auth is verified.
       security:
@@ -3879,7 +3770,7 @@ paths:
     get:
       operationId: listExecutions
       tags:
-      - workflow:executions
+      - Executions
       summary: List executions for the linked account
       description: 'Paginated executions scoped to org and linked account. Supports filters on status,
 
@@ -3964,7 +3855,7 @@ paths:
     get:
       operationId: getExecutionById
       tags:
-      - workflow:executions
+      - Executions
       summary: Get an execution by id
       description: 'Returns the full execution (instance) document for the linked account, with nodes
 
@@ -3992,7 +3883,7 @@ paths:
     get:
       operationId: listExecutionNodeBatches
       tags:
-      - workflow:executions
+      - Executions
       summary: List batches for an execution node
       description: 'Returns paginated batch sub-executions for a fan-out/batch node inside the given
 
@@ -4034,7 +3925,7 @@ paths:
     post:
       operationId: stopExecution
       tags:
-      - workflow:executions
+      - Executions
       summary: Stop a running execution
       description: Marks the instance as stopped via API.
       security:
@@ -4058,15 +3949,10 @@ paths:
     get:
       operationId: getHumanTask
       tags:
-      - workflow:human-tasks
+      - Human Tasks
       summary: Get a public human task by id
-      description: 'No-auth endpoint that returns a sanitized version of the human task (form) for
-
-        end-user consumption. Strips `delayed_job_id`, `instance_id`, `node_id`, `org_id`,
-
-        and `associated_form_id`.
-
-        '
+      description: Returns a sanitized version of the human task (form), safe for end-user display. No
+        authentication required.
       security: []
       parameters:
       - name: id
@@ -4084,7 +3970,7 @@ paths:
     post:
       operationId: submitHumanTask
       tags:
-      - workflow:human-tasks
+      - Human Tasks
       summary: Submit a public human task
       description: 'No-auth endpoint that accepts form data. Validates read-only fields and required
 
@@ -4118,7 +4004,7 @@ paths:
     get:
       operationId: listMcpServers
       tags:
-      - workflow:mcp-servers
+      - MCP Servers
       summary: List MCP servers for the org/environment
       description: Paginated MCP server entries, sorted by createdAt desc.
       security:
@@ -4138,7 +4024,7 @@ paths:
     post:
       operationId: createMcpServer
       tags:
-      - workflow:mcp-servers
+      - MCP Servers
       summary: Create a new MCP server
       description: Creates an MCP entry with the given name/description.
       security:
@@ -4163,7 +4049,7 @@ paths:
     get:
       operationId: getMcpServer
       tags:
-      - workflow:mcp-servers
+      - MCP Servers
       summary: Get MCP server details
       description: Returns the full MCP server record including chains and notebooks.
       security:
@@ -4186,7 +4072,7 @@ paths:
     put:
       operationId: updateMcpServer
       tags:
-      - workflow:mcp-servers
+      - MCP Servers
       summary: Update an MCP server
       description: Patch-style update — only provided fields are written.
       security:
@@ -4215,7 +4101,7 @@ paths:
     delete:
       operationId: deleteMcpServer
       tags:
-      - workflow:mcp-servers
+      - MCP Servers
       summary: Delete an MCP server
       description: Deletes the MCP entry by id, scoped to org/environment.
       security:
@@ -4235,7 +4121,7 @@ paths:
     get:
       operationId: listPersistentTables
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: List persistent tables
       description: Paginated list of tables, with optional name regex search.
       security:
@@ -4258,7 +4144,7 @@ paths:
     post:
       operationId: createPersistentTable
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Create a persistent table
       description: 'Creates a new persistent table or returns the existing one''s id. Columns must be
 
@@ -4284,7 +4170,7 @@ paths:
     get:
       operationId: getPersistentTableRecords
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Get records from a persistent table
       description: Returns paginated records for the table, plus column names and table name.
       security:
@@ -4312,7 +4198,7 @@ paths:
     patch:
       operationId: addRecordsToPersistentTable
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Add records to a persistent table
       description: Inserts one or more records (max 10,000 per table). Unknown columns are stripped.
       security:
@@ -4339,7 +4225,7 @@ paths:
     delete:
       operationId: deletePersistentTable
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Soft-delete a persistent table
       description: Marks the table `is_deleted=true`.
       security:
@@ -4361,7 +4247,7 @@ paths:
     delete:
       operationId: deletePersistentTableRecord
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Delete a record from a persistent table
       description: Removes one row identified by `record_id`.
       security:
@@ -4389,7 +4275,7 @@ paths:
     patch:
       operationId: addPersistentTableColumns
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Add columns to a persistent table
       description: Atomically adds new columns; enforces max 20 columns total and no duplicates.
       security:
@@ -4417,13 +4303,9 @@ paths:
     delete:
       operationId: removePersistentTableColumns
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Remove columns from a persistent table
-      description: 'Removes columns from a table (transactional). Table must keep at least 1 column.
-
-        Note: DELETE with body is non-standard — see UNRESOLVED.md.
-
-        '
+      description: Removes columns from a table. A table must keep at least one column.
       security:
       - workflowApiKeyAuth: []
       parameters:
@@ -4449,7 +4331,7 @@ paths:
     patch:
       operationId: renamePersistentTableColumns
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Rename columns in a persistent table
       description: 'Atomically renames columns, supporting chained renames (A→B, B→C) via aggregation
 
@@ -4481,7 +4363,7 @@ paths:
     post:
       operationId: searchPersistentTableRecords
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Search records in a persistent table
       description: Filters records by `req.body` key/value (regex-based).
       security:
@@ -4511,7 +4393,7 @@ paths:
     put:
       operationId: editTablesGroup
       tags:
-      - workflow:persistent-tables
+      - Persistent Tables
       summary: Bulk set / clear table group
       description: Updates the `group` field on the listed tables. Empty `group` unsets the field.
       security:
@@ -4529,7 +4411,7 @@ paths:
     get:
       operationId: listWorkflows
       tags:
-      - workflow:workflows
+      - Workflows
       summary: List workflows for org or linked account
       description: 'If `linked_account_id` is in scope, returns linked-account public workflows.
 
@@ -4598,7 +4480,7 @@ paths:
     post:
       operationId: createWorkflow
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Create a public workflow for a linked account
       description: 'Creates a `public_access_workflow=true` workflow scoped to the linked account.
 
@@ -4629,7 +4511,7 @@ paths:
     get:
       operationId: getWorkflowById
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Get a workflow by id
       description: 'Returns a workflow with allowlisted fields. Org-scoped for safety: returns 403 if
 
@@ -4656,7 +4538,7 @@ paths:
     delete:
       operationId: deleteWorkflow
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Delete a public workflow
       description: 'Deletes the workflow plus all associated drafts/versions and deregisters its
 
@@ -4682,7 +4564,7 @@ paths:
     get:
       operationId: getDraftWorkflow
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Get the editable draft of a workflow
       description: 'Returns the existing draft for a public workflow. If no draft exists, clones the
 
@@ -4710,7 +4592,7 @@ paths:
     post:
       operationId: executeWorkflow
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Execute a workflow by id for the linked account
       description: 'Validates workflow ownership, that it''s published, and that the linked account
 
@@ -4785,7 +4667,7 @@ paths:
     put:
       operationId: publishWorkflow
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Publish or unpublish a public workflow
       description: '`published=true` registers triggers/crons. `published=false` unpublishes. With
 
@@ -4819,7 +4701,7 @@ paths:
     get:
       operationId: listEnabledWorkflows
       tags:
-      - workflow:workflows
+      - Workflows
       summary: List enabled workflows for the linked account
       description: 'Iterates installations for the linked account, returning workflows where
 
@@ -4846,7 +4728,7 @@ paths:
     get:
       operationId: getWorkflowRequestStructure
       tags:
-      - workflow:workflows
+      - Workflows
       summary: Get the request body structure expected by a workflow
       description: 'Returns the workflow''s JSON Schema (if any) and/or a structure derived from
 
@@ -4876,7 +4758,7 @@ paths:
     get:
       operationId: listWorkflowVersions
       tags:
-      - workflow:workflows
+      - Workflows
       summary: List versions of a public workflow
       description: Paginated published versions (snapshots) of the workflow, newest first.
       security:
@@ -4902,7 +4784,7 @@ paths:
     get:
       operationId: listSchedules
       tags:
-      - workflow:schedules
+      - Schedules
       summary: List schedules
       description: List the scheduled triggers registered for a linked account, paginated.
       security:
@@ -4955,7 +4837,7 @@ paths:
     post:
       operationId: registerSchedule
       tags:
-      - workflow:schedules
+      - Schedules
       summary: Register a schedule
       description: Register a scheduled trigger that runs a workflow on a cron expression or at specific
         interval date/times.
@@ -5072,7 +4954,7 @@ paths:
     put:
       operationId: updateSchedule
       tags:
-      - workflow:schedules
+      - Schedules
       summary: Update a schedule
       description: Update an existing schedule's cron expression, interval dates, date window, timezone,
         or payload.
@@ -5135,7 +5017,7 @@ paths:
     delete:
       operationId: deleteSchedule
       tags:
-      - workflow:schedules
+      - Schedules
       summary: Delete a schedule
       description: Permanently delete a schedule and deregister its job.
       security:
@@ -5171,7 +5053,7 @@ paths:
     put:
       operationId: pauseSchedule
       tags:
-      - workflow:schedules
+      - Schedules
       summary: Pause a schedule
       description: Pause a schedule so it stops firing. Afterwards `status` is `paused` and `inactive`
         is `true`.
@@ -5205,7 +5087,7 @@ paths:
     put:
       operationId: resumeSchedule
       tags:
-      - workflow:schedules
+      - Schedules
       summary: Resume a schedule
       description: Resume a paused schedule so it starts firing again. Afterwards `status` is `running`
         and `inactive` is `false`.
@@ -5239,7 +5121,7 @@ paths:
     get:
       operationId: listActions
       tags:
-      - workflow:actions
+      - Actions
       summary: List actions
       description: List the actions you can execute against a connected application.
       security:
@@ -5285,7 +5167,7 @@ paths:
     get:
       operationId: getActionSchema
       tags:
-      - workflow:actions
+      - Actions
       summary: Get action schema
       description: Return the parameter schema for a specific action.
       security:
@@ -5336,7 +5218,7 @@ paths:
     post:
       operationId: executeAction
       tags:
-      - workflow:actions
+      - Actions
       summary: Execute an action
       description: 'Execute an action against a linked account''s connected application. The body holds
         the action''s parameters (see Get action schema). Refold uses the linked account''s stored credentials
@@ -5403,7 +5285,7 @@ paths:
     post:
       operationId: rerunExecution
       tags:
-      - workflow:executions
+      - Executions
       summary: Rerun an execution
       description: Retry a failed or stopped execution using its original trigger payload. Creates and
         starts a new execution.
