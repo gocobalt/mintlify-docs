@@ -1,56 +1,10 @@
 ---
 title: Update Config Field Value
-api: put /api/v2/public/config/field/{fieldId}
+openapi: "PUT /api/v2/public/config/field/{fieldId}"
 description: Set the value of a single config field.
 ---
 
 Set the value for a single config field, optionally scoped to a specific workflow. The config must already be installed for the linked account (see [Get or Create Config](/legacy/api-reference/configs/create-config)).
-
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Headers
-
-<ParamField header="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
-
-## Path Parameters
-
-<ParamField path="fieldId" type="string" required>The field ID to set.</ParamField>
-
-## Query Parameters
-
-<ParamField query="config_id" type="string">Config to scope to. Defaults to the linked account's config.</ParamField>
-<ParamField query="workflow_id" type="string">Scope the value to a specific workflow.</ParamField>
-
-## Body Parameters
-
-<ParamField body="value" type="any" required>The value to set. Shape depends on the field type (e.g. an array for a multi-select).</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the field with its new `value`.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    Returned when the config does not exist for the linked account.
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

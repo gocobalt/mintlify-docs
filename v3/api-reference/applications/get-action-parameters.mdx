@@ -1,44 +1,10 @@
 ---
 title: Get Action Schema
-api: get /api/v2/integration-schema/{slug}/actions/{action_id}
+openapi: "GET /api/v2/integration-schema/{slug}/actions/{action_id}"
 description: Get the parameter schema for an application action.
 ---
 
 Return the parameter schema for a specific action. Use it to know which fields to send when you [execute the action](/v3/api-reference/applications/execute-action) — including which are required.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-<ParamField header="linked_account_id" type="string" required>
-  The linked account whose connection to use.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>The application slug. **Example:** `hubspot`</ParamField>
-<ParamField path="action_id" type="string" required>The action ID (from [List Actions](/v3/api-reference/applications/get-actions)). **Example:** `search_contacts`</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns an array of parameter definitions.
-    <ResponseField name="name" type="string">Parameter key to send when executing.</ResponseField>
-    <ResponseField name="label" type="string">Display label.</ResponseField>
-    <ResponseField name="required" type="boolean">Whether the parameter is required.</ResponseField>
-    <ResponseField name="type" type="string">Input type, e.g. `text`.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

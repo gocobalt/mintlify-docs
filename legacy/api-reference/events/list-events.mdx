@@ -1,42 +1,10 @@
 ---
 title: List Events
-api: get /api/v2/public/application/event
+openapi: "GET /api/v2/public/application/event"
 description: List the custom events defined on your org's default app.
 ---
 
 List the custom events (triggers) defined on your organization's default custom application. These event definitions describe the payloads your application can fire to start workflows.
-
-## Authentication
-
-Events are defined at the org level, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns an array of event (trigger) objects.
-    <ResponseField name="_id" type="string">Event ID.</ResponseField>
-    <ResponseField name="name" type="string">Event name, referenced when firing a trigger.</ResponseField>
-    <ResponseField name="response" type="array">
-      Parsed shape of the event payload.
-      <Expandable title="properties">
-        <ResponseField name="key" type="string">Field path (e.g. `payload.email`).</ResponseField>
-        <ResponseField name="type" type="string">Field type, e.g. `text`, `object`.</ResponseField>
-      </Expandable>
-    </ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

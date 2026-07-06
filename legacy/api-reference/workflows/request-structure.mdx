@@ -1,6 +1,6 @@
 ---
 title: Get Workflow Request Structure
-api: get /api/v2/public/workflow/request-structure/{workflow_id}
+openapi: "GET /api/v2/public/workflow/request-structure/{workflowId}"
 description: Get the request body structure a workflow expects on execute.
 ---
 
@@ -9,40 +9,6 @@ Return the structure a workflow expects when you [execute](/legacy/api-reference
 <Note>
   This authenticates as a linked account, so it resolves the structure for that account's **private** workflow.
 </Note>
-
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">The linked account that owns the workflow.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Path Parameters
-
-<ParamField path="workflow_id" type="string" required>The workflow ID.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="payload" type="object">A sample payload derived from `manual_execution_payload`, or `null`.</ResponseField>
-    <ResponseField name="schema" type="object">The workflow's JSON Schema, or `null`.</ResponseField>
-    <ResponseField name="schema_interpreted" type="object">A friendly interpretation of the schema, or `null`.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200 No schema defined

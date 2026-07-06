@@ -1,73 +1,10 @@
 ---
 title: List Linked Accounts
-api: get /api/v2/public/linked-account
+openapi: "GET /api/v2/public/linked-account"
 description: Retrieve a paginated list of all linked accounts in your organization.
 ---
 
 Retrieve a paginated list of the linked accounts in your organization and environment (derived from your API key). Each account's sensitive fields (`integrations[*].credentials`, `authTokens`, and `connections`) are stripped from the response.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">
-  Page number to retrieve.
-</ParamField>
-
-<ParamField query="limit" type="integer" default="10">
-  Number of linked accounts per page.
-</ParamField>
-
-<ParamField query="env_variable_name" type="string">
-  Filter accounts by an environment-variable name set on the account.
-</ParamField>
-
-<ParamField query="env_variable_value" type="string">
-  Filter accounts by an environment-variable value. Use together with `env_variable_name`.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope.
-
-    <ResponseField name="docs" type="array">
-      The linked account objects on this page.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Internal record ID.</ResponseField>
-        <ResponseField name="associated_org" type="string">The org that owns this account.</ResponseField>
-        <ResponseField name="account_id" type="string">Your unique identifier for the account.</ResponseField>
-        <ResponseField name="environment" type="string">Environment: `test` or `live`.</ResponseField>
-        <ResponseField name="name" type="string">Display name.</ResponseField>
-        <ResponseField name="udf" type="array">User-defined fields as `{key_name, key_value}` pairs.</ResponseField>
-        <ResponseField name="integrations" type="array">Connected integrations (credentials/tokens stripped).</ResponseField>
-        <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp.</ResponseField>
-        <ResponseField name="updatedAt" type="string">ISO 8601 last-update timestamp.</ResponseField>
-      </Expandable>
-    </ResponseField>
-
-    <ResponseField name="totalDocs" type="integer">Total number of linked accounts.</ResponseField>
-    <ResponseField name="limit" type="integer">Page size used.</ResponseField>
-    <ResponseField name="totalPages" type="integer">Total number of pages.</ResponseField>
-    <ResponseField name="page" type="integer">Current page number.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-    <ResponseField name="hasPrevPage" type="boolean">Whether a previous page exists.</ResponseField>
-    <ResponseField name="nextPage" type="integer | null">Next page number, or `null`.</ResponseField>
-    <ResponseField name="prevPage" type="integer | null">Previous page number, or `null`.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category, e.g. `UNAUTHORIZED`.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

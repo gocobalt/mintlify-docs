@@ -1,45 +1,10 @@
 ---
 title: List Actions
-api: get /api/v2/integration-schema/{slug}/actions
+openapi: "GET /api/v2/integration-schema/{slug}/actions"
 description: List the available actions for a connected application.
 ---
 
 List the actions you can execute against a connected application — operations like creating a contact, searching records, or making a raw HTTP request. Each action's `action_id` is used to [fetch its parameter schema](/legacy/api-reference/applications/get-action-parameters) and to [execute it](/legacy/api-reference/applications/execute-action).
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-<ParamField header="linked_account_id" type="string" required>
-  The linked account whose connection to use.
-</ParamField>
-
-## Path Parameters
-
-<ParamField path="slug" type="string" required>
-  The application slug. **Example:** `hubspot`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns an array of action objects.
-    <ResponseField name="action_id" type="string">Identifier used to fetch parameters and execute the action.</ResponseField>
-    <ResponseField name="name" type="string">Human-readable action name.</ResponseField>
-    <ResponseField name="description" type="string">What the action does.</ResponseField>
-    <ResponseField name="tag" type="string">Action version tag, e.g. `v2`.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

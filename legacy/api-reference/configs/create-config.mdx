@@ -1,6 +1,6 @@
 ---
 title: Get or Create Config
-api: post /api/v2/public/config
+openapi: "POST /api/v2/public/config"
 description: Get or create an application config for a linked account.
 ---
 
@@ -11,52 +11,6 @@ Get or create the config (app installation) for an app on a linked account. If a
 <Note>
   **Multiple configs per account.** Omit `config_id` to manage the single default config (its ID is the linked account ID). Pass a custom `config_id` (e.g. `production`, `staging`) to create and manage **additional named configs** for the same linked account and app. Each is retrieved with [Get Config by ID](/legacy/api-reference/configs/get-config) and all are returned by [List Config IDs](/legacy/api-reference/configs/list-configs).
 </Note>
-
-## Authentication
-
-Configs are scoped to a linked account via the `linked_account_id` header.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-<ParamField header="linked_account_id" type="string" required>
-  The linked account to install the config for.
-</ParamField>
-
-## Body Parameters
-
-<ParamField body="slug" type="string" required>The app slug to install. This is the only required field. **Example:** `hubspot`</ParamField>
-<ParamField body="config_id" type="string">
-  A custom ID to create/manage a distinct named config for this account+app (e.g. `production`). Omit it to use the single default config (ID = the linked account ID).
-</ParamField>
-<ParamField body="workflows" type="array">
-  Workflows to enable or disable at install, each `{ "id": "...", "enabled": true }`.
-</ParamField>
-<ParamField body="labels" type="object">Arbitrary key/value labels for the config.</ParamField>
-<ParamField body="fields" type="array">
-  Optional initial field definitions, each `{ "id": "...", "value": ... }`. Field **values** are more reliably set after install via [Update Config Field Value](/legacy/api-reference/config-fields/update-field-value).
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="slug" type="string">The app slug.</ResponseField>
-    <ResponseField name="config_id" type="string">The config ID.</ResponseField>
-    <ResponseField name="fields" type="array">Configurable fields (see [Get All Config Fields](/legacy/api-reference/config-fields/get-all-fields)).</ResponseField>
-    <ResponseField name="workflows" type="array">Workflows in the config, each `{id, name, description, enabled}`.</ResponseField>
-    <ResponseField name="field_errors" type="array">Any datasource resolution errors.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    Returned when the app slug is unknown.
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

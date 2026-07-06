@@ -1,57 +1,12 @@
 ---
 title: Generate Session Token
-api: post /api/v2/public/session-token
+openapi: "POST /api/v2/public/session-token"
 description: Issue a session token for a linked account.
 ---
 
 Issue a JWT session token (and refresh token) for a linked account. Session tokens authenticate hosted and Connect frontends that should never hold your API key — the token itself encodes the org, linked account, and environment.
 
 By default an existing valid token is reused; pass `force_refresh=true` to always mint a new one. Token TTL is determined by service configuration.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. Find it in **Settings → Credentials**.
-</ParamField>
-
-## Query Parameters
-
-<ParamField query="force_refresh" type="boolean" default="false">
-  When `true`, always issues a new token instead of reusing an existing valid one.
-</ParamField>
-
-## Body Parameters
-
-<ParamField body="linked_account_id" type="string" required>
-  The linked account to issue the token for.
-
-  **Example:** `user_12345`
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="token" type="string">The session token (JWT). Send as `Authorization: Bearer <token>`.</ResponseField>
-    <ResponseField name="refresh_token" type="string">Token used to obtain a new session token after expiry.</ResponseField>
-    <ResponseField name="expires_in" type="integer">Seconds until the session token expires.</ResponseField>
-    <ResponseField name="refresh_expires_in" type="integer">Seconds until the refresh token expires.</ResponseField>
-  </Tab>
-
-  <Tab title="400 Bad Request">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category, e.g. `BAD_REQUEST`.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code. `INVALID_LINKED_ACCOUNT_ID` when the account does not exist.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

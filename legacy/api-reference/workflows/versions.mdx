@@ -1,6 +1,6 @@
 ---
 title: List Workflow Versions
-api: get /api/v2/public/workflow/versions/{workflow_id}
+openapi: "GET /api/v2/public/workflow/versions/{workflowId}"
 description: List the published version snapshots of a workflow.
 ---
 
@@ -9,46 +9,6 @@ List the published versions (snapshots) of a workflow, paginated, newest first. 
 <Note>
   This authenticates as a linked account, so it lists versions of that account's **private** workflow.
 </Note>
-
-## Authentication
-
-This endpoint is scoped to a linked account, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">The linked account that owns the workflow.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Path Parameters
-
-<ParamField path="workflow_id" type="string" required>The workflow ID.</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns a paginated envelope of version snapshots, newest first.
-    <ResponseField name="docs" type="array">Versions, each with `version`, `_id`, and `createdAt`.</ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total versions.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,28 +1,10 @@
 ---
 title: Delete Dataref
-api: delete /api/v2/public/dataref/{refName}
+openapi: "DELETE /api/v2/public/dataref/{refName}"
 description: Delete a dataref for a linked account.
 ---
 
 Remove a dataref entity for a linked account. This deletes the dataref and all its records.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the dataref.</ParamField>
-
-## Path Parameters
-
-<ParamField path="refName" type="string" required>The dataref name to delete. **Example:** `contacts`</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="acknowledged" type="boolean">Whether the delete was acknowledged.</ResponseField>
-    <ResponseField name="deletedCount" type="integer">Number of datarefs deleted.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

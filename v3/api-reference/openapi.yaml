@@ -62,55 +62,26 @@ tags:
   description: Discover and execute application actions on a connected account.
 components:
   securitySchemes:
-    ApiKeyAuth:
+    Org API Key:
       type: apiKey
       in: header
       name: x-api-key
       description: Organization API key, sent in the `x-api-key` header. Production keys start with `pk`,
         test keys with `tk`.
-    BearerAuth:
+    Linked Account Token:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description: JWT bearer token. Use for linked-account-scoped requests; linked-account session tokens
         are issued by `POST /session-token`.
-    workflowApiKeyAuth:
-      type: apiKey
-      in: header
-      name: x-api-key
-      description: Organization API key, sent in the `x-api-key` header. Linked-account-scoped endpoints
-        also require a `linked_account_id` header.
-    workflowBearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT bearer token — an organization token, or a linked-account session token issued
-        by `POST /session-token`.
   parameters:
     LinkedAccountIdHeader:
       name: linked_account_id
       in: header
       required: false
-      description: 'Linked-account id. Required when authenticating via `x-api-key` for routes
-
-        that are scoped to a single linked account. Ignored if the route is path-scoped
-
-        or a Bearer JWT already carries the linked-account id.
-
-        '
-      schema:
-        type: string
-    WorkflowLinkedAccountIdHeader:
-      name: linked_account_id
-      in: header
-      required: false
-      description: 'Linked-account id. Required when authenticating via `x-api-key` for routes
-
-        scoped to a single linked account. When a Bearer JWT carries the id, this
-
-        header is optional.
-
-        '
+      description: Identifies the linked account to act on. Required when authenticating with the Org
+        API Key on linked-account-scoped endpoints. Not needed with a Linked Account Token — the token
+        already identifies the account.
       schema:
         type: string
     SlugHeader:
@@ -1822,7 +1793,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: linked_account_id
@@ -1871,7 +1842,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -1945,7 +1916,7 @@ paths:
         with `?config_id=...`). Any properties in the request body are stored with the session and returned
         to the hosted page via `GET /hosted-properties`.
       security:
-      - BearerAuth: []
+      - Linked Account Token: []
       parameters:
       - name: linked_account_id
         in: query
@@ -1988,8 +1959,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: key
         in: path
@@ -2024,8 +1995,8 @@ paths:
       description: Removes the named credential key from the linked account's default-app credentials.
         Returns 404 if the key does not exist.
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: key
         in: path
@@ -2055,7 +2026,7 @@ paths:
         key-based authentication. The request body holds the credential fields defined by the app's authentication
         schema.
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -2101,7 +2072,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - $ref: '#/components/parameters/LinkedAccountIdHeader'
       requestBody:
@@ -2125,7 +2096,7 @@ paths:
       summary: Read hosted properties stashed by `/connect-url`
       description: Returns the properties stored for the current Connect session by `POST /connect-url`.
       security:
-      - BearerAuth: []
+      - Linked Account Token: []
       responses:
         '200':
           description: OK — the properties stored by `POST /connect-url`.
@@ -2148,7 +2119,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: page
         in: query
@@ -2188,7 +2159,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -2215,8 +2186,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       requestBody:
         required: true
         content:
@@ -2242,8 +2213,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: linked_account_id
         in: path
@@ -2266,7 +2237,7 @@ paths:
         workflow installations, and invalidates any access tokens issued to it. The configured test user
         cannot be deleted in the `test` environment.'
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: path
@@ -2289,7 +2260,7 @@ paths:
       description: Removes the integration from the linked account — or a single connection within it
         when `auth_type` is supplied. Revokes the token when the app supports it and emits a webhook event.
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -2326,7 +2297,7 @@ paths:
 
         '
       security:
-      - BearerAuth: []
+      - Linked Account Token: []
       responses:
         '200':
           description: OK
@@ -2343,7 +2314,7 @@ paths:
       description: Builds the OAuth authorization URL for the given app slug. The app must support OAuth2.
         Some apps require additional fields supplied as query parameters; these vary per integration.
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -2367,7 +2338,7 @@ paths:
       description: Issues a JWT session token (and refresh token) for the named linked account. Reuses
         an existing valid token unless `force_refresh=true`.
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: force_refresh
         in: query
@@ -2405,7 +2376,7 @@ paths:
 
         '
       security:
-      - BearerAuth: []
+      - Linked Account Token: []
       responses:
         '200':
           description: OK
@@ -2427,7 +2398,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       responses:
         '200':
           description: OK
@@ -2452,8 +2423,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       requestBody:
         required: true
         content:
@@ -2475,7 +2446,7 @@ paths:
       summary: Get a webhook by id
       description: Returns one webhook by id, enriched with the inferred `webhook_type`.
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: id
         in: path
@@ -2502,8 +2473,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: id
         in: path
@@ -2534,8 +2505,8 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: id
         in: path
@@ -2563,7 +2534,7 @@ paths:
 
         '
       security:
-      - ApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -2587,7 +2558,7 @@ paths:
       summary: List events for the default custom application
       description: Returns the `triggers` array from the org's default custom application.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       responses:
         '200':
           description: OK
@@ -2608,7 +2579,7 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -2632,7 +2603,7 @@ paths:
       summary: Get a custom event by id
       description: Returns one trigger from the org's default custom application.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: event_id
         in: path
@@ -2653,7 +2624,7 @@ paths:
       summary: Update a custom event
       description: Edits an existing trigger on the default app and returns the updated triggers list.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: event_id
         in: path
@@ -2682,7 +2653,7 @@ paths:
       summary: Delete a custom event
       description: Removes a trigger from the default custom application.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: event_id
         in: path
@@ -2710,15 +2681,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: slug
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/ConfigIdHeader'
       - name: instance_tag
         in: header
@@ -2763,10 +2734,10 @@ paths:
       description: Fires the named event trigger to start its associated workflow. Returns immediately
         while the workflow runs in the background.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/ConfigIdHeader'
       - name: slug
         in: header
@@ -2817,10 +2788,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/SlugHeader'
       responses:
         '200':
@@ -2841,15 +2812,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: fieldId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/SlugHeader'
       - name: disable_field_options
         in: header
@@ -2889,15 +2860,15 @@ paths:
       summary: Update a config field value
       description: Sets the value for a single field, optionally scoped to a workflow.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: fieldId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/SlugHeader'
       - name: disable_field_options
         in: header
@@ -2937,15 +2908,15 @@ paths:
       summary: Clear a config field value
       description: Clears the value of the specified field, optionally scoped to a workflow.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: fieldId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/SlugHeader'
       - name: disable_field_options
         in: header
@@ -2980,15 +2951,15 @@ paths:
       summary: Get options for a rule-engine field
       description: Resolves rule-engine column options for a config field.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: fieldId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/SlugHeader'
       - name: config_id
         in: query
@@ -3028,8 +2999,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: disable_field_options
         in: header
         required: false
@@ -3064,9 +3036,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: disable_field_options
         in: header
         required: false
@@ -3097,8 +3070,9 @@ paths:
       description: Returns the installed config for the app slug when no `configId` is supplied — defaults
         to the linked account. Accepts an optional `tenant_config` in the request body.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3136,8 +3110,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3159,8 +3134,9 @@ paths:
       description: Returns the installed config for the given app slug and config id, with fields exposed
         under `fields`. Accepts an optional `tenant_config` in the request body.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3201,8 +3177,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3232,9 +3209,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3275,15 +3253,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: slug
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -3310,7 +3288,7 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
@@ -3341,7 +3319,7 @@ paths:
       summary: Create a new dataref
       description: Creates an empty dataref for the linked account.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -3355,6 +3333,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Dataref'
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
   /api/v2/public/dataref/{refName}:
     get:
       operationId: getDatarefAsTable
@@ -3367,8 +3347,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: refName
         in: path
         required: true
@@ -3395,8 +3376,9 @@ paths:
       summary: Delete a dataref
       description: Removes the dataref entity for the linked account.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: refName
         in: path
         required: true
@@ -3417,8 +3399,9 @@ paths:
       summary: Clear all records of a dataref
       description: Resets the dataref's `data` map to `{}` while preserving the entity.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: refName
         in: path
         required: true
@@ -3439,7 +3422,7 @@ paths:
       summary: Bulk set / clear dataref group
       description: Updates the `group` field on the listed datarefs. Empty `group` unsets the field.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -3449,6 +3432,8 @@ paths:
       responses:
         '204':
           description: No Content
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
   /api/v2/public/datastore/config/{slug}:
     get:
       operationId: listConfigDatastores
@@ -3461,8 +3446,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3490,8 +3476,9 @@ paths:
       summary: Get all records of a config datastore
       description: Returns the raw `data` array stored under the named datastore.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3529,8 +3516,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: slug
         in: path
         required: true
@@ -3570,7 +3558,7 @@ paths:
       summary: List variable definitions for the org
       description: Paginated list filterable by scope, format, and name (regex).
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: scope
         in: query
@@ -3613,7 +3601,7 @@ paths:
       summary: Get a variable definition by id
       description: Returns the definition wrapped in `{ definition }`.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: id
         in: path
@@ -3635,8 +3623,8 @@ paths:
       summary: Get a single variable value
       description: Returns the value for a definition in the appropriate scope. Encrypted values are redacted.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: definition_id
         in: path
@@ -3679,8 +3667,8 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       requestBody:
         required: true
         content:
@@ -3694,6 +3682,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EnvVariableValue'
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
   /api/v2/public/env/values/{scope}:
     get:
       operationId: listVariableValuesByScope
@@ -3706,8 +3696,8 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: scope
         in: path
@@ -3751,9 +3741,10 @@ paths:
       summary: Delete a variable value
       description: Hard-deletes the value document by id. Linked-account auth is verified.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: value_id
         in: path
         required: true
@@ -3778,10 +3769,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       - name: slug
@@ -3863,15 +3854,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: execution_id
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -3891,8 +3882,8 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: execution_id
         in: path
@@ -3904,7 +3895,7 @@ paths:
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       - name: status
@@ -3929,15 +3920,15 @@ paths:
       summary: Stop a running execution
       description: Marks the instance as stopped via API.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: instanceId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -4008,10 +3999,10 @@ paths:
       summary: List MCP servers for the org/environment
       description: Paginated MCP server entries, sorted by createdAt desc.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       responses:
@@ -4028,10 +4019,10 @@ paths:
       summary: Create a new MCP server
       description: Creates an MCP entry with the given name/description.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       requestBody:
         required: true
         content:
@@ -4053,15 +4044,15 @@ paths:
       summary: Get MCP server details
       description: Returns the full MCP server record including chains and notebooks.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: mcp_server_id
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -4076,15 +4067,15 @@ paths:
       summary: Update an MCP server
       description: Patch-style update — only provided fields are written.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: mcp_server_id
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       requestBody:
         required: true
         content:
@@ -4105,15 +4096,15 @@ paths:
       summary: Delete an MCP server
       description: Deletes the MCP entry by id, scoped to org/environment.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: mcp_server_id
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '204':
           description: No Content
@@ -4125,8 +4116,9 @@ paths:
       summary: List persistent tables
       description: Paginated list of tables, with optional name regex search.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       - name: name
@@ -4152,7 +4144,7 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -4166,6 +4158,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateTableResponse'
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
   /api/v2/public/tables/{table_id}:
     get:
       operationId: getPersistentTableRecords
@@ -4174,8 +4168,9 @@ paths:
       summary: Get records from a persistent table
       description: Returns paginated records for the table, plus column names and table name.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4202,8 +4197,9 @@ paths:
       summary: Add records to a persistent table
       description: Inserts one or more records (max 10,000 per table). Unknown columns are stripped.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4229,8 +4225,9 @@ paths:
       summary: Soft-delete a persistent table
       description: Marks the table `is_deleted=true`.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4251,8 +4248,9 @@ paths:
       summary: Delete a record from a persistent table
       description: Removes one row identified by `record_id`.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4279,8 +4277,9 @@ paths:
       summary: Add columns to a persistent table
       description: Atomically adds new columns; enforces max 20 columns total and no duplicates.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4307,8 +4306,9 @@ paths:
       summary: Remove columns from a persistent table
       description: Removes columns from a table. A table must keep at least one column.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4339,8 +4339,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4367,8 +4368,9 @@ paths:
       summary: Search records in a persistent table
       description: Filters records by `req.body` key/value (regex-based).
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: table_id
         in: path
         required: true
@@ -4397,7 +4399,7 @@ paths:
       summary: Bulk set / clear table group
       description: Updates the `group` field on the listed tables. Empty `group` unsets the field.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       requestBody:
         required: true
         content:
@@ -4407,6 +4409,8 @@ paths:
       responses:
         '204':
           description: No Content
+      parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
   /api/v2/public/workflow:
     get:
       operationId: listWorkflows
@@ -4421,10 +4425,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       - name: application_id
@@ -4490,10 +4494,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       requestBody:
         required: true
         content:
@@ -4521,8 +4525,9 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - name: workflowId
         in: path
         required: true
@@ -4546,7 +4551,7 @@ paths:
 
         '
       security:
-      - workflowBearerAuth: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
@@ -4572,15 +4577,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -4604,15 +4609,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/ConfigIdHeader'
       - name: slug
         in: header
@@ -4677,7 +4682,7 @@ paths:
 
         '
       security:
-      - workflowBearerAuth: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
@@ -4711,10 +4716,10 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -4738,15 +4743,15 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: OK
@@ -4762,15 +4767,15 @@ paths:
       summary: List versions of a public workflow
       description: Paginated published versions (snapshots) of the workflow, newest first.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: workflowId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       - $ref: '#/components/parameters/PageQuery'
       - $ref: '#/components/parameters/LimitQuery'
       responses:
@@ -4788,7 +4793,7 @@ paths:
       summary: List schedules
       description: List the scheduled triggers registered for a linked account, paginated.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -4842,7 +4847,7 @@ paths:
       description: Register a scheduled trigger that runs a workflow on a cron expression or at specific
         interval date/times.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -4959,7 +4964,7 @@ paths:
       description: Update an existing schedule's cron expression, interval dates, date window, timezone,
         or payload.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -5021,7 +5026,7 @@ paths:
       summary: Delete a schedule
       description: Permanently delete a schedule and deregister its job.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -5058,7 +5063,7 @@ paths:
       description: Pause a schedule so it stops firing. Afterwards `status` is `paused` and `inactive`
         is `true`.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -5092,7 +5097,7 @@ paths:
       description: Resume a paused schedule so it starts firing again. Afterwards `status` is `running`
         and `inactive` is `false`.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: linked_account_id
         in: header
@@ -5125,7 +5130,7 @@ paths:
       summary: List actions
       description: List the actions you can execute against a connected application.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -5171,7 +5176,7 @@ paths:
       summary: Get action schema
       description: Return the parameter schema for a specific action.
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -5226,7 +5231,7 @@ paths:
 
         '
       security:
-      - workflowApiKeyAuth: []
+      - Org API Key: []
       parameters:
       - name: slug
         in: path
@@ -5290,15 +5295,15 @@ paths:
       description: Retry a failed or stopped execution using its original trigger payload. Creates and
         starts a new execution.
       security:
-      - workflowApiKeyAuth: []
-      - workflowBearerAuth: []
+      - Org API Key: []
+      - Linked Account Token: []
       parameters:
       - name: instanceId
         in: path
         required: true
         schema:
           type: string
-      - $ref: '#/components/parameters/WorkflowLinkedAccountIdHeader'
+      - $ref: '#/components/parameters/LinkedAccountIdHeader'
       responses:
         '200':
           description: The new execution.

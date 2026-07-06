@@ -1,34 +1,10 @@
 ---
 title: Resume Schedule
-api: put /api/v1/workflow/public/scheduled/{schedule_id}/resume
+openapi: "PUT /api/v1/workflow/public/scheduled/{schedule_id}/resume"
 description: Resume a paused scheduled trigger.
 ---
 
 Resume a paused schedule so it starts firing again. After resuming, `status` is `running` and `inactive` is `false`.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the schedule.</ParamField>
-
-## Path Parameters
-
-<ParamField path="schedule_id" type="string" required>The schedule ID to resume.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the schedule with `status: "running"` and `inactive: false`.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

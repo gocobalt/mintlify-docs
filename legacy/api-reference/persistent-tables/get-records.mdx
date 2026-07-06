@@ -1,44 +1,10 @@
 ---
 title: Get Table Records
-api: get /api/v2/public/tables/{table_id}
+openapi: "GET /api/v2/public/tables/{table_id}"
 description: Get records from a persistent table.
 ---
 
 Return the records in a persistent table, paginated, along with the table's column list.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
-
-## Path Parameters
-
-<ParamField path="table_id" type="string" required>The table ID.</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Rows per page.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="name" type="string">Table name.</ResponseField>
-    <ResponseField name="columns" type="array">Column names.</ResponseField>
-    <ResponseField name="docs" type="array">Records, each keyed by column plus a `record_id`.</ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total records.</ResponseField>
-    <ResponseField name="page" type="integer">Current page.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,37 +1,10 @@
 ---
 title: Get Dataref
-api: get /api/v2/public/dataref/{refName}
+openapi: "GET /api/v2/public/dataref/{refName}"
 description: Get a dataref's records as a table.
 ---
 
 Return a dataref's records reshaped as a tabular structure — `headers` plus `rows` — paginated by record ID.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the dataref.</ParamField>
-
-## Path Parameters
-
-<ParamField path="refName" type="string" required>The dataref name. **Example:** `contacts`</ParamField>
-
-## Query Parameters
-
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="100">Rows per page.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="headers" type="array">Column names. Always includes `record_id`.</ResponseField>
-    <ResponseField name="rows" type="array">Row objects keyed by header.</ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total rows.</ResponseField>
-    <ResponseField name="page" type="integer">Current page.</ResponseField>
-    <ResponseField name="limit" type="integer">Rows per page.</ResponseField>
-    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200 With records

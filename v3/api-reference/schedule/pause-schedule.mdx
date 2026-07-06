@@ -1,34 +1,10 @@
 ---
 title: Pause Schedule
-api: put /api/v1/workflow/public/scheduled/{schedule_id}/pause
+openapi: "PUT /api/v1/workflow/public/scheduled/{schedule_id}/pause"
 description: Pause a scheduled trigger.
 ---
 
 Pause a schedule so it stops firing. The schedule is retained and can be resumed later. After pausing, `status` is `paused` and `inactive` is `true`.
-
-## Authentication
-
-<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string" required>The linked account that owns the schedule.</ParamField>
-
-## Path Parameters
-
-<ParamField path="schedule_id" type="string" required>The schedule ID to pause.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the schedule with `status: "paused"` and `inactive: true`.
-  </Tab>
-
-  <Tab title="404 Not Found">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

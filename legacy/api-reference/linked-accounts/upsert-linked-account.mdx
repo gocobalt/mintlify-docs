@@ -1,68 +1,10 @@
 ---
 title: Upsert Linked Account
-api: put /api/v2/public/linked-account
+openapi: "PUT /api/v2/public/linked-account"
 description: Create a new linked account or update an existing one.
 ---
 
 Create a new linked account or update an existing one. If an account with the provided `account_id` (or `linked_account_id`) exists, it is updated; otherwise a new account is created. Body fields may be supplied flat or nested under `payload` — when `payload` is present it takes precedence.
-
-
-## Authentication
-
-Managing linked accounts is an org-level operation, so this endpoint uses API-key auth.
-
-<ParamField header="x-api-key" type="string" required>
-  Your Refold API key. The account is taken from `account_id` in the body.
-</ParamField>
-
-## Body Parameters
-
-<ParamField body="account_id" type="string" required>
-  Your unique identifier for the account (alias: `linked_account_id`).
-
-  **Example:** `user_12345`
-</ParamField>
-
-<ParamField body="name" type="string">
-  Display name. May also be nested under `payload`.
-</ParamField>
-
-<ParamField body="your_app" type="object">
-  Seeds/updates the default custom-app integration credentials. May also be nested under `payload`.
-</ParamField>
-
-<ParamField body="udf" type="object">
-  User-defined fields as a key/value map. May also be nested under `payload`.
-</ParamField>
-
-<ParamField body="payload" type="object">
-  Optional wrapper for `name`, `your_app`, and `udf`. Takes precedence over the flat fields when present.
-</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the full linked account document.
-
-    <ResponseField name="_id" type="string">Internal record ID.</ResponseField>
-    <ResponseField name="associated_org" type="string">The org that owns this account.</ResponseField>
-    <ResponseField name="account_id" type="string">Your unique identifier for the account.</ResponseField>
-    <ResponseField name="environment" type="string">Environment: `test` or `live`.</ResponseField>
-    <ResponseField name="name" type="string">Display name.</ResponseField>
-    <ResponseField name="udf" type="array">User-defined fields.</ResponseField>
-    <ResponseField name="new_account" type="boolean">`true` if a new account was created, `false` if an existing one was updated.</ResponseField>
-    <ResponseField name="createdAt" type="string">ISO 8601 creation timestamp.</ResponseField>
-    <ResponseField name="updatedAt" type="string">ISO 8601 last-update timestamp.</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,59 +1,10 @@
 ---
 title: List Variable Values
-api: get /api/v2/public/env/values/{scope}
+openapi: "GET /api/v2/public/env/values/{scope}"
 description: List environment-variable values for a scope.
 ---
 
 List the variable values for a given scope, paginated. Linked-account auth is restricted to its own scope; workflow scope requires a `workflow_id`. Encrypted values are redacted.
-
-## Authentication
-
-This endpoint reads scoped values, so it accepts **either** authentication method.
-
-**Option 1 — API key**
-
-<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
-<ParamField header="linked_account_id" type="string">Required (header or query) for the `linked_account` scope.</ParamField>
-
-**Option 2 — Session token**
-
-<ParamField header="Authorization" type="string">Session token (restricted to the account's own scope). **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
-
-## Path Parameters
-
-<ParamField path="scope" type="string" required>The scope to list: `org`, `linked_account`, or `workflow`.</ParamField>
-
-## Query Parameters
-
-<ParamField query="variable_definition_id" type="string">Filter to one definition.</ParamField>
-<ParamField query="linked_account_id" type="string">Required for `linked_account` scope.</ParamField>
-<ParamField query="workflow_id" type="string">Required for `workflow` scope.</ParamField>
-<ParamField query="page" type="integer" default="1">Page number.</ParamField>
-<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    <ResponseField name="status" type="string">`success`.</ResponseField>
-    <ResponseField name="docs" type="array">
-      Value documents. The `variable_definition_id` is populated with the definition.
-      <Expandable title="properties">
-        <ResponseField name="_id" type="string">Value document ID.</ResponseField>
-        <ResponseField name="variable_definition_id" type="object">The populated definition.</ResponseField>
-        <ResponseField name="value" type="string">Value, or `[REDACTED]` if encrypted.</ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="totalDocs" type="integer">Total values in scope.</ResponseField>
-  </Tab>
-
-  <Tab title="400 Bad Request">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200

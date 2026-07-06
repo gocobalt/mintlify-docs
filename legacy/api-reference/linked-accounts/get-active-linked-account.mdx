@@ -1,43 +1,10 @@
 ---
 title: Get Active Linked Account
-api: get /api/v2/public/session/active-linked-account
+openapi: "GET /api/v2/public/session/active-linked-account"
 description: Get the linked account associated with the current session token.
 ---
 
 Return the linked account associated with the current session token. This decodes the session JWT and looks up the matching account — useful for hosted or Connect frontends that hold only a session token (not your API key).
-
-## Authentication
-
-<ParamField header="Authorization" type="string" required>
-  Bearer session token for the linked account.
-
-  **Format:** `Bearer YOUR_SESSION_TOKEN`
-</ParamField>
-
-Session tokens are issued by [Generate Session Token](/legacy/api-reference/session-tokens/generate-session-token).
-
-## Response
-
-<Tabs>
-  <Tab title="200 OK">
-    Returns the linked account (same shape as [Get Linked Account](/legacy/api-reference/linked-accounts/get-linked-account)).
-
-    <ResponseField name="_id" type="string">Internal record ID.</ResponseField>
-    <ResponseField name="associated_org" type="string">The org that owns this account.</ResponseField>
-    <ResponseField name="account_id" type="string">Your unique identifier for the account.</ResponseField>
-    <ResponseField name="environment" type="string">Environment: `test` or `live`.</ResponseField>
-    <ResponseField name="name" type="string">Display name.</ResponseField>
-    <ResponseField name="udf" type="array">User-defined fields.</ResponseField>
-    <ResponseField name="integrations" type="array">Connected integrations (credentials/tokens stripped).</ResponseField>
-  </Tab>
-
-  <Tab title="401 Unauthorized">
-    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
-    <ResponseField name="http_error_type" type="string">Error category, e.g. `UNAUTHORIZED`.</ResponseField>
-    <ResponseField name="error" type="string">Internal error code, e.g. `INVALID_TOKEN`.</ResponseField>
-    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
-  </Tab>
-</Tabs>
 
 <ResponseExample>
 ```json 200
