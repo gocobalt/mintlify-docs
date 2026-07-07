@@ -8,7 +8,7 @@ rss: true
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**The Universal Connector lets you connect any API-backed service and run its actions inside workflows, alongside a native MongoDB integration, trigger idempotency, per-tenant rate limiting, and a redesigned Custom Output field picker.**
+**The Universal Connector lets you connect any API-backed service and run its actions inside workflows; alongside a native MongoDB integration, trigger idempotency, per-tenant rate limiting, and a redesigned Custom Output field picker.**
 
 **New Features**
 
@@ -28,10 +28,7 @@ rss: true
 
 **Improvements**
 
-- **Environment Propagation**: The environment from the session token is now propagated into request headers in the auth middleware.
-- **Universal Connector Templating**: Templating is unified on `{{application.var.*}}` matching the execution side, with a clear error when OAuth `client_id` is unconfigured.
 - **Public Workflow Group Field**: The public workflow list now exposes the `group` field.
-- **Prerequisite Fields Naming**: `additional_fields` has been renamed to `pre_requisite_fields` across key-based auth configs (basic, api_key, bearer) to align with OAuth2.
 - **Archival Read Compatibility**: Archived instance data now uses a packed blob layout for reduced storage footprint. Reads auto-detect format so previously archived instances remain fully readable.
 - **Integration Retry Visibility**: Transient upstream errors (429/5xx and connection resets) are now retried at the workflow-engine layer, so every attempt is visible in execution history with an accurate attempt count. Retryable status codes are configurable.
 - **Terminate Semantics in Loops**: `terminate_with_error` inside a loop now reports the batch as ERRORED and forces the instance to ERRORED; `terminate_with_success` reports COMPLETED without propagating as a terminate. Sibling batches continue to completion. The same behavior applies inside subflows and try-catch blocks.
@@ -40,7 +37,6 @@ rss: true
 - **Linked Account Deletion**: Corrected URL encoding of the linked account ID in delete requests.
 - **Custom Output Path Handling**: Custom Output now recurses into arrays of objects with wildcard selectors, hides system envelope fields, and unwraps the test envelope so saved paths match production.
 - **Start Node Payload Retention**: The workflow builder now retains the start-node payload in the UI after saving.
-- **Project-Scoped Workflow Listing**: Listing project-scoped workflows now correctly sends the project ID.
 - **403 Response Detail**: Unauthorized (role-lacking) access now returns a clearer, structured 403 response across the platform.
 
 **API Changes**
