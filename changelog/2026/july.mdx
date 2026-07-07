@@ -1,0 +1,73 @@
+---
+title: "July 2026"
+description: "Platform updates, API changes, and integration additions for July 2026."
+rss: true
+---
+
+<Update label="June 17, 2026" description="v3.7.00 · Universal Connector & platform hardening">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**This release introduces the Universal Connector — letting you connect to any API-backed service and run its actions inside workflows — along with per-tenant rate limiting, trigger idempotency, a native MongoDB connector, and major archival and AI service improvements.**
+
+**New Features**
+
+- **Universal Connector**: Connect to any API-backed service via the connect portal and invoke its actions from workflows, with authentication, execution, and lifecycle (including cascading deletes of connections and chat memory) handled end-to-end.
+- **Per-Tenant Rate Limiting**: Opt-in, Redis-backed token-bucket rate limiting scoped per organization and environment; over-budget requests receive HTTP 429. Disabled by default and fails open on Redis errors.
+- **Trigger Idempotency**: Opt-in per-trigger idempotency scoped to `(trigger_id, linked_account_id)`. Duplicate events are recorded with a new `DUPLICATE` status and do not re-run the workflow.
+- **Native MongoDB Connector**: New key-based MongoDB integration with 18 actions covering CRUD, aggregation (auto-capped at 1000 documents when no `$limit` is set), bulk writes, distinct, count, list databases/collections, and ping.
+- **Custom Output Field Picker**: The Workflow Builder replaces the free-form text list with a checkbox picker driven by the node's actual test response, including an inline Run Node action, loading/error states, and encrypt indicators.
+- **Connect Portal Field Editing**: Add fields faster with a new "Add Fields" CTA, an empty-state ghost row, and drag-and-drop of dataslot cards from the palette onto the field list.
+- **Legacy Connect Portal Access**: A new "Connect Portal" sidebar item (tagged Legacy) provides access to the previous config UI under the new design's URL space.
+- **Connections Workflow Search**: Search workflows by name and alias across Shared and Private views, with a contextual empty state and clear button.
+- **Incremental Sync Ledger**: The per-workflow delta cron screen is replaced by an account-level sync ledger tab with workflow/config/date filters and instance links.
+- **Unified MCP Logs**: Global MCP logs and server audit logs now use the shared catalog and table layout, with export and reusable filters/detail panel.
+- **Integration Graph Review Queue**: Org-wide and per-app pending review queues to approve or reject artifacts, with confidence-score color coding and artifact metadata.
+- **Private Workflows Grouping**: Private workflows now support folder grouping, with application icon and name shown on each item and a search-aware empty state.
+- **Default AI Chat View**: The instance panel now defaults to AI chat when supported, with per-agent starter prompts for session chats.
+- **Workflow Settings Consolidation**: Workflow metadata now appears in the settings tab; the separate workflow-details sidebar panel has been removed.
+
+**Improvements**
+
+- **Packed Blob Archival (Default On)**: Archived instance data is now packed into a single blob per unit, dramatically reducing object count and storage footprint. Reads auto-detect packed and legacy formats, so previously archived instances remain readable.
+- **Archival Performance**: Sliding-window org fan-out and bounded parallelism within chunks, along with higher concurrency limits, improve archival throughput. Per-unit panic recovery prevents a single failure from taking down the worker.
+- **Temporal-Owned Integration Retries**: Transient upstream failures (429/5xx, connection resets) are now retried at the Temporal layer, making every attempt visible in workflow history and `attempts_made`. Retryable statuses are configurable.
+- **PostgreSQL File Validation**: Upload size limits and other file validation options are now configurable.
+- **Public Workflow List**: Now includes the `group` field.
+- **Unified Auth Config Field Naming**: `additional_fields` has been renamed to `pre_requisite_fields` across basic, API key, and bearer auth configs, matching OAuth2.
+- **Clearer 403 Messages**: Structured, detailed 403 responses when a role lacks access, from both the auth and audit services.
+- **App Studio Retrieval**: Role-aware seeding on prompt submission, run endpoints keyed by app slug (reused on revisit), full run conversation persisted for context, and a flat VFS layout for app documents.
+
+**Bug Fixes**
+
+- **Dropbox Business Connections**: Removed the unsupported `Dropbox-API-Select-User` header from `get_user`, fixing "unexpected select user header" errors on every Dropbox Business connection attempt.
+- **Archival Tenant Keying**: Archival now reads the correct top-level `org_id`, `linked_account_id`, and `environment`, fixing instances with live data being wrongly flagged as `pebble_data_missing`.
+- **DAG Terminate Semantics**: `terminate_with_success` and `terminate_with_error` now behave as they did before the revamp — inside a loop, `terminate_with_error` forces the instance to ERRORED and `terminate_with_success` completes cleanly without propagating as a terminate. Mirrored in subflow and try-catch.
+- **Try-Catch + Terminate Iteration**: `terminate_iteration` with the success toggle no longer runs the wrapping try-catch's `try_success` nodes.
+- **Linked Account Delete**: Fixed double URL-encoding of the linked account ID.
+- **New Field Modal**: Now prefills saved field values when editing.
+- **Custom Output**: Recurses into arrays of objects with wildcard selectors, hides system envelope fields, and unwraps the test envelope so saved paths match production.
+- **Workflow Builder**: Retains start-node payload in the UI after saving; sends project ID when listing project-scoped workflows.
+- **Workspace Slug for Universal Connectors**: Any workspace slug is now accepted as an environment for UCs.
+- **Environment Propagation**: The environment from the JWT is now propagated into request headers in the auth middleware.
+
+**API Changes**
+
+- New gRPC surface on `cobalt.auth.AuthService`: `Integrate`, `GetLinkedAccountAuth`, `ListLinkedAccounts`, `RefreshConnection`, `MarkConnectionExpired`, `DeleteConnectorConnections`.
+- New gRPC surface on the AI service: `AIService`/`JarvisService` with `NotifyExecutionCompleted`, `PublishWorkflow`, and standard `grpc.health.v1`.
+- New session-token connect-portal list and detail endpoints on the auth service.
+- Universal Connector action REST routes now address actions by a stable `operationId` (immutable on update; 409 on explicit duplicates) instead of Mongo `_id`.
+- Rate-limited requests return HTTP `429` when rate limiting is enabled.
+- ⚠️ Breaking: The MCP app has moved from `/mcp/v3` to `/mcp/v1`. Update any client, gateway, or ingress route targeting the MCP path.
+- ⚠️ Breaking: The internal HTTP cascade-delete endpoint on the auth service has been removed, replaced by the `DeleteConnectorConnections` gRPC RPC.
+- ⚠️ Breaking: The internal HTTP pilot-event endpoint on the AI service has been removed, replaced by the `NotifyExecutionCompleted` gRPC RPC.
+- Deprecated: The `UDF` field on linked accounts is deprecated in favor of `env_vars`.
+
+**Integration Updates**
+
+- **MongoDB**: New native connector with key-based authentication (connection string required, optional username/password, ping validation) and 18 actions.
+- **PostgreSQL**: File upload size limits and validation options are now configurable.
+- **Dropbox**: Fixed connection failures for Dropbox Business accounts.
+- ⚠️ **Action required (MCP clients)**: Update any client, gateway, or ingress configuration pointing at `/mcp/v3` to use `/mcp/v1`.
+
+</Update>
