@@ -1,0 +1,56 @@
+---
+title: "June 2026"
+description: "Platform updates, API changes, and integration additions for June 2026."
+rss: true
+---
+
+<Update label="June 17, 2026" description="v3.7.00 · Universal Connector, MongoDB integration & trigger idempotency">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**The Universal Connector lets you connect any API-backed service and run its actions inside workflows, alongside a native MongoDB integration, trigger idempotency, per-tenant rate limiting, and a redesigned Custom Output field picker.**
+
+**New Features**
+
+- **Universal Connector**: Connect any API-backed service and run its actions inside workflows, with authentication, execution, and lifecycle handled end-to-end. Deleting a Universal Connector cascades cleanup of its connections and associated chat memory.
+- **Trigger Idempotency**: Opt-in per-trigger idempotency prevents duplicate webhook or event deliveries from re-running the same workflow. Duplicate deliveries are recorded with a new `DUPLICATE` event status.
+- **Per-Tenant Rate Limiting**: New token-bucket rate limiter scoped per organization and environment. Over-budget requests receive HTTP 429; the limiter fails open on backend outages so availability is preserved. Disabled by default and tunable per environment.
+- **Custom Output Field Picker**: The workflow builder's Custom Output configuration now presents a checkbox list driven by the node's actual test response, with an inline Run Node action, loading and error states, and encrypt pills. Saved fields absent from the latest response are preserved and duplicates are prevented by construction.
+- **Connect Portal Field Editing**: Add fields faster via a new "Add Fields" CTA in the fields list and workflow drill-down, plus drag-and-drop of dataslot cards from the palette onto the fields list.
+- **Legacy Connect Portal Access**: A new "Connect Portal" sidebar item (tagged Legacy) provides access to the previous configuration UI under the new design's URL space.
+- **Connections Workflow Search**: Search workflows by name or alias across Shared and Private views, with a contextual empty state and clear button.
+- **Account-Level Sync Ledger**: The per-workflow delta cron screen has been replaced with an account-level sync ledger tab featuring workflow, config, and date filters, instance links, and split workflow and instance columns.
+- **Unified MCP Logs View**: Global MCP logs and server audit logs now use the shared catalog and table layout, with an aligned toolbar, export button, and reusable filters and detail panel.
+- **Integration Graph Review Queue**: Org-wide and per-application pending review queues let you approve or reject artifacts, with confidence-score color coding, artifact metadata, and library counts in the sidebar.
+- **Private Workflows Grouping**: Private workflows now group by folder, show application icon and name on items, and support a search-aware empty state.
+- **Default AI Chat View**: The instance panel now defaults to AI chat when supported, with session-chat starter prompts per agent.
+- **Workflow Settings Tab**: Workflow metadata now appears in the settings tab; the workflow-details sidebar panel has been retired.
+
+**Improvements**
+
+- **Environment Propagation**: The environment from the session token is now propagated into request headers in the auth middleware.
+- **Universal Connector Templating**: Templating is unified on `{{application.var.*}}` matching the execution side, with a clear error when OAuth `client_id` is unconfigured.
+- **Public Workflow Group Field**: The public workflow list now exposes the `group` field.
+- **Prerequisite Fields Naming**: `additional_fields` has been renamed to `pre_requisite_fields` across key-based auth configs (basic, api_key, bearer) to align with OAuth2.
+- **Archival Read Compatibility**: Archived instance data now uses a packed blob layout for reduced storage footprint. Reads auto-detect format so previously archived instances remain fully readable.
+- **Integration Retry Visibility**: Transient upstream errors (429/5xx and connection resets) are now retried at the workflow-engine layer, so every attempt is visible in execution history with an accurate attempt count. Retryable status codes are configurable.
+- **Terminate Semantics in Loops**: `terminate_with_error` inside a loop now reports the batch as ERRORED and forces the instance to ERRORED; `terminate_with_success` reports COMPLETED without propagating as a terminate. Sibling batches continue to completion. The same behavior applies inside subflows and try-catch blocks.
+- **Try-Catch Iteration Termination**: `terminate_iteration` with the success toggle no longer runs the wrapping try-catch's `try_success` nodes and correctly ends the iteration.
+- **Field Modal Prefill**: The new field modal now prefills saved field values when editing.
+- **Linked Account Deletion**: Corrected URL encoding of the linked account ID in delete requests.
+- **Custom Output Path Handling**: Custom Output now recurses into arrays of objects with wildcard selectors, hides system envelope fields, and unwraps the test envelope so saved paths match production.
+- **Start Node Payload Retention**: The workflow builder now retains the start-node payload in the UI after saving.
+- **Project-Scoped Workflow Listing**: Listing project-scoped workflows now correctly sends the project ID.
+- **403 Response Detail**: Unauthorized (role-lacking) access now returns a clearer, structured 403 response across the platform.
+
+**API Changes**
+
+- ⚠️ Breaking: The MCP surface has moved from `/mcp/v3` to `/mcp/v1`. Update any client, gateway, or ingress configuration pointing at the previous path.
+
+**Integration Updates**
+
+- **MongoDB**: New native connector with key-based authentication (connection string with optional username and password, validated via ping). Ships with 18 actions including `insert_one`/`insert_many`, `find_one`/`find_many`, `update_one`/`update_many`, `delete_one`/`delete_many`, `replace_one`, `find_one_and_update`, `find_one_and_delete`, `aggregate`, `count_documents`, `distinct`, `bulk_write`, `list_collections`, `list_databases`, and `ping`.
+- **PostgreSQL**: File validation is now configurable, including an adjustable upload size limit.
+- **Dropbox**: Improved `get_user` reliability for Dropbox Business accounts.
+
+</Update>
