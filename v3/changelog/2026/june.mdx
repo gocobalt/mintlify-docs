@@ -24,9 +24,7 @@ rss: true
 
 - **Connections Workflow Search**: Search workflows by name or alias across Shared and Private views, with contextual empty states and a clear button.
 - **MCP Logs Unification**: Global MCP logs and server audit logs now use the shared catalog and table layout, aligning the toolbar, export, filters, and detail panel with project executions.
-- **Integration Graph Review Queue**: Org-wide and per-app pending review queues for approving or rejecting artifacts, with confidence-score color coding, artifact metadata, and library counts in the sidebar.
 - **Private Workflows Grouping**: Private workflows now group by folder, show the application icon and name on each item, and provide a search-aware empty state.
-- **Default AI Chat View**: The instance panel now defaults to AI chat when supported, with session-chat starter prompts tailored to each agent.
 - **Workflow Settings Consolidation**: Workflow metadata now lives in the settings tab; the separate workflow-details sidebar panel has been removed.
 - **Group Field on Public Workflow List**: The public workflow list response now includes the workflow's group.
 - **Improved Archival Efficiency**: Archived instance data is now packed into a single blob per unit, cutting object count and storage footprint. Reads auto-detect packed and legacy formats, so previously archived instances remain accessible.
@@ -34,10 +32,6 @@ rss: true
 - **Terminate Semantics in Loops**: A batch carrying `terminate_with_error` inside a loop now marks the instance as ERRORED, while `terminate_with_success` completes the batch without propagating termination. Sibling batches continue to run to completion. The same semantics apply inside subflows and try-catch.
 - **Try-Catch with Terminate Iteration**: `terminate_iteration` with the success toggle now ends the iteration cleanly without running the wrapping try-catch's try-success nodes.
 - **Descriptive Access-Denied Messages**: Requests denied due to insufficient role permissions now return a clear, structured 403 response.
-- **Environment Propagation**: The environment claim from the session token is now consistently propagated to downstream service calls.
-- **Field Naming Alignment**: The `additional_fields` property on key-based auth configs (basic, api key, bearer) has been renamed to `pre_requisite_fields`, matching the OAuth2 configuration.
-- **New Field Modal**: Editing a saved field now prefills its existing value.
-- **Linked Account Deletion**: Linked account IDs are no longer double URL-encoded on delete.
 - **Start Node Payload Retention**: Start-node payloads are now retained in the UI after saving.
 
 **API Changes**
@@ -45,7 +39,6 @@ rss: true
 - ⚠️ Breaking: The MCP surface has moved from `/mcp/v3` to `/mcp/v1`. Update any client, gateway, or ingress configuration that targets the MCP path.
 - `POST /api/v2/public/linked-accounts` and update endpoints now accept an `env_vars` field for setting environment variable values at account creation or update time. The previous UDF field is deprecated.
 - New `PATCH /api/v2/public/tables/:tableId/records/:recordId` endpoint for updating individual table records.
-- Universal Connector actions are now addressed by a stable `operation_id` rather than an internal identifier. Attempting to create a duplicate operation ID returns HTTP 409.
 - Custom webhook trigger payloads now accept optional `headers` and an `IdempotencyConfig` for opt-in event deduplication.
 - When rate limiting is enabled, over-budget requests return HTTP 429.
 
@@ -56,6 +49,7 @@ rss: true
 - **Dropbox**: Improved reliability of the `get_user` action for Dropbox Business accounts.
 
 </Update>
+
 
 <Update label="June 15, 2026" description="v3.6.00 · Workday custom output & Zoho webhook fixes">
 
