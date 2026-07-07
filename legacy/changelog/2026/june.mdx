@@ -4,6 +4,59 @@ description: "Platform updates, API changes, and integration additions for June 
 rss: true
 ---
 
+<Update label="June 17, 2026" description="v3.7.00 · Universal Connector, MongoDB, trigger idempotency & rate limiting">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A production-ready Universal Connector for any API-backed service, a native MongoDB connector with 18 actions, per-tenant rate limiting, trigger idempotency, and a redesigned Custom Output field picker.**
+
+**New Features**
+
+- **Universal Connector**: Connect to any API-backed service and run its actions inside workflows, with authentication, execution, and lifecycle handled end-to-end. Universal Connectors support a connector-level base URL, stable operation IDs on each action (immutable across updates), OAuth and key-based auth flows via the connect portal, and cascading teardown of connections and chat memory when a connector is deleted.
+- **Per-Tenant Rate Limiting**: A new token-bucket rate limiter enforces per-organization and per-environment request budgets, returning HTTP 429 when the budget is exceeded. Configurable burst capacity and refill rate, fail-open on transient infrastructure issues, and disabled by default.
+- **Trigger Idempotency**: Opt-in idempotency on triggers deduplicates events by trigger and linked account. Duplicate deliveries are recorded with a new `DUPLICATE` status instead of re-executing the workflow.
+- **Custom Output Field Picker**: The workflow builder's Custom Output configuration is now a checkbox list driven by the node's actual test response, with an inline Run Node action, encryption pills, and support for wildcard selectors on arrays of objects. Saved fields absent from the latest response are preserved, and duplicate fields are prevented by construction.
+- **Connect Portal — Faster Field Setup**: An "Add Fields" CTA in the fields list and workflow drill-down, plus drag-and-drop of dataslot cards from the palette directly onto the fields list.
+- **Legacy Connect Portal Access**: A new "Connect Portal" sidebar entry (tagged Legacy) provides continued access to the previous portal configuration UI.
+- **Account-Level Sync Ledger**: The per-workflow delta cron screen has been replaced with an account-level sync ledger tab, with workflow, config, and date filters, instance links, and split workflow/instance columns.
+
+**Improvements**
+
+- **Connections Workflow Search**: Search workflows by name or alias across Shared and Private views, with contextual empty states and a clear button.
+- **MCP Logs Unification**: Global MCP logs and server audit logs now use the shared catalog and table layout, aligning the toolbar, export, filters, and detail panel with project executions.
+- **Integration Graph Review Queue**: Org-wide and per-app pending review queues for approving or rejecting artifacts, with confidence-score color coding, artifact metadata, and library counts in the sidebar.
+- **Private Workflows Grouping**: Private workflows now group by folder, show the application icon and name on each item, and provide a search-aware empty state.
+- **Default AI Chat View**: The instance panel now defaults to AI chat when supported, with session-chat starter prompts tailored to each agent.
+- **Workflow Settings Consolidation**: Workflow metadata now lives in the settings tab; the separate workflow-details sidebar panel has been removed.
+- **Group Field on Public Workflow List**: The public workflow list response now includes the workflow's group.
+- **Improved Archival Efficiency**: Archived instance data is now packed into a single blob per unit, cutting object count and storage footprint. Reads auto-detect packed and legacy formats, so previously archived instances remain accessible.
+- **Improved Integration Retry Visibility**: Transient integration failures (429s, 5xx responses, connection resets) are now retried at the workflow orchestration layer, so every retry attempt appears in execution history. The set of retryable status codes is configurable.
+- **Terminate Semantics in Loops**: A batch carrying `terminate_with_error` inside a loop now marks the instance as ERRORED, while `terminate_with_success` completes the batch without propagating termination. Sibling batches continue to run to completion. The same semantics apply inside subflows and try-catch.
+- **Try-Catch with Terminate Iteration**: `terminate_iteration` with the success toggle now ends the iteration cleanly without running the wrapping try-catch's try-success nodes.
+- **Descriptive Access-Denied Messages**: Requests denied due to insufficient role permissions now return a clear, structured 403 response.
+- **Environment Propagation**: The environment claim from the session token is now consistently propagated to downstream service calls.
+- **Field Naming Alignment**: The `additional_fields` property on key-based auth configs (basic, api key, bearer) has been renamed to `pre_requisite_fields`, matching the OAuth2 configuration.
+- **New Field Modal**: Editing a saved field now prefills its existing value.
+- **Linked Account Deletion**: Linked account IDs are no longer double URL-encoded on delete.
+- **Start Node Payload Retention**: Start-node payloads are now retained in the UI after saving.
+
+**API Changes**
+
+- ⚠️ Breaking: The MCP surface has moved from `/mcp/v3` to `/mcp/v1`. Update any client, gateway, or ingress configuration that targets the MCP path.
+- `POST /api/v2/public/linked-accounts` and update endpoints now accept an `env_vars` field for setting environment variable values at account creation or update time. The previous UDF field is deprecated.
+- New `PATCH /api/v2/public/tables/:tableId/records/:recordId` endpoint for updating individual table records.
+- Universal Connector actions are now addressed by a stable `operation_id` rather than an internal identifier. Attempting to create a duplicate operation ID returns HTTP 409.
+- Custom webhook trigger payloads now accept optional `headers` and an `IdempotencyConfig` for opt-in event deduplication.
+- When rate limiting is enabled, over-budget requests return HTTP 429.
+
+**Integration Updates**
+
+- **MongoDB**: New native connector with key-based authentication and 18 actions covering document CRUD (`insert_one`, `insert_many`, `find_one`, `find_many`, `update_one`, `update_many`, `delete_one`, `delete_many`, `replace_one`, `find_one_and_update`, `find_one_and_delete`), aggregation, counting, distinct values, bulk writes, collection and database listing, and connectivity checks.
+- **PostgreSQL**: File upload size limits on PostgreSQL actions are now configurable.
+- **Dropbox**: Improved reliability of the `get_user` action for Dropbox Business accounts.
+
+</Update>
+
 <Update label="June 15, 2026" description="v3.6.00 · Workday custom output & Zoho webhook fixes">
 
 <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
