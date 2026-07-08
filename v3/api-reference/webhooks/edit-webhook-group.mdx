@@ -1,10 +1,41 @@
 ---
 title: Edit Webhook Group
-openapi: "PUT /api/v2/public/webhooks/group/edit"
+api: put /api/v2/public/webhooks/group/edit
 description: Bulk-assign or clear the group on multiple webhooks.
 ---
 
 Assign (or clear) a group label on multiple webhooks in one call. Groups let you organize webhooks; passing an empty/falsy `group` unsets it. The response is the updated list of the affected webhooks.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhookIds" type="array" required>
+  IDs of the webhooks to update (at least one).
+</ParamField>
+
+<ParamField body="group" type="string">
+  Group label to set. An empty string unsets the group.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the array of updated webhooks.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

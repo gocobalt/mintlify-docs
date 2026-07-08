@@ -1,6 +1,6 @@
 ---
 title: Delete Workflow
-openapi: "DELETE /api/v2/public/workflow/{workflowId}"
+api: delete /api/v2/public/workflow/{workflow_id}
 description: Delete a private workflow and its drafts, versions, and triggers.
 ---
 
@@ -9,6 +9,39 @@ Delete a workflow along with all its drafts and versions, and deregister its tri
 <Note>
   A version-snapshot workflow cannot be deleted directly — delete the parent (published) workflow instead.
 </Note>
+
+## Authentication
+
+This endpoint requires a **session token**; it deletes the linked account's private workflow.
+
+<ParamField header="Authorization" type="string" required>
+  Session token for the linked account.
+
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>
+  The **published** workflow ID to delete (from [List Workflows](/legacy/api-reference/workflows/list-workflows) or the publish response). Deleting a draft/version snapshot directly is rejected.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="success" type="boolean">Whether the workflow was deleted.</ResponseField>
+    <ResponseField name="triggers_deregistered" type="boolean">Whether all triggers were fully deregistered.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned, for example, when targeting a version-snapshot workflow.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

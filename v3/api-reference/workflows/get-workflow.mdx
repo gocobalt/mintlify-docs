@@ -1,6 +1,6 @@
 ---
 title: Get Workflow
-openapi: "GET /api/v2/public/workflow/{workflowId}"
+api: get /api/v2/public/workflow/{workflow_id}
 description: Get a workflow by ID, including its nodes and edges.
 ---
 
@@ -9,6 +9,42 @@ Return a workflow by ID with an allowlisted set of fields, including its `nodes`
 <Note>
   This read is org-scoped, so it works for **public** (org, slug-level) workflows. To read a **private** workflow (one that belongs to a linked account), pass that account's `linked_account_id`.
 </Note>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">Required to access a workflow that is private to a linked account.</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>The workflow ID.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="_id" type="string">Workflow ID.</ResponseField>
+    <ResponseField name="name" type="string">Workflow name.</ResponseField>
+    <ResponseField name="published" type="boolean">Whether it's published.</ResponseField>
+    <ResponseField name="slug" type="string">Associated application slug.</ResponseField>
+    <ResponseField name="associated_application" type="string">Associated application ID.</ResponseField>
+    <ResponseField name="nodes" type="array">Workflow nodes (the start node carries trigger config).</ResponseField>
+    <ResponseField name="edges" type="array">Connections between nodes.</ResponseField>
+  </Tab>
+
+  <Tab title="403 Forbidden">
+    Returned when the workflow is private to a different linked account.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="message" type="string">`Workflow not found`.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

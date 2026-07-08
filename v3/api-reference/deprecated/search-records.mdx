@@ -1,6 +1,6 @@
 ---
 title: Search Datastore Records
-openapi: "POST /api/v2/public/datastore/config/{slug}/{datastore_name}/search"
+api: post /api/v2/public/datastore/config/{slug}/{datastore_name}/search
 description: Search records in a config datastore.
 ---
 
@@ -9,6 +9,41 @@ description: Search records in a config datastore.
 </Warning>
 
 Search a datastore's records by column values. The request body is an arbitrary `{column_name: value}` map; values are **regex-matched** against the stored records. Returns the matching records.
+
+## Authentication
+
+Datastores are scoped to a linked account via the `linked_account_id` header.
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account.</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
+<ParamField path="datastore_name" type="string" required>The datastore name.</ParamField>
+
+## Query Parameters
+
+<ParamField query="config_id" type="string">Config to read from. Defaults to the linked account ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="{column_name}" type="string">
+  One or more `column: value` pairs. Each value is treated as a regular expression and matched against that column.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of matching record objects.
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="message" type="string">Error message.</ResponseField>
+    <ResponseField name="error" type="string">Error detail, e.g. `Config not found`.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

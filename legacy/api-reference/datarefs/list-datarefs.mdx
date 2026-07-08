@@ -1,10 +1,51 @@
 ---
 title: List Datarefs
-openapi: "GET /api/v2/public/dataref"
+api: get /api/v2/public/dataref
 description: List datarefs for the org or a linked account.
 ---
 
 List datarefs (named reference-data stores) for your org and environment, paginated. Optionally filter to a single linked account or to unique names.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+
+## Query Parameters
+
+<ParamField query="linked_account_id" type="string">Filter to a single linked account's datarefs.</ParamField>
+<ParamField query="unique" type="boolean">Return unique dataref names with their linked accounts.</ParamField>
+<ParamField query="page" type="integer" default="1">Page number.</ParamField>
+<ParamField query="limit" type="integer" default="10">Page size.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns a paginated envelope.
+    <ResponseField name="docs" type="array">
+      Dataref objects.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">Record ID.</ResponseField>
+        <ResponseField name="name" type="string">Dataref name (`refName`).</ResponseField>
+        <ResponseField name="linked_account_id" type="string">Owning linked account.</ResponseField>
+        <ResponseField name="environment" type="string">`test` or `live`.</ResponseField>
+        <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="totalDocs" type="integer">Total datarefs.</ResponseField>
+    <ResponseField name="page" type="integer">Current page.</ResponseField>
+    <ResponseField name="limit" type="integer">Page size.</ResponseField>
+    <ResponseField name="totalPages" type="integer">Total pages.</ResponseField>
+    <ResponseField name="hasNextPage" type="boolean">Whether another page follows.</ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

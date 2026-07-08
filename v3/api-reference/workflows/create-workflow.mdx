@@ -1,6 +1,6 @@
 ---
 title: Create Workflow
-openapi: "POST /api/v2/public/workflow"
+api: post /api/v2/public/workflow
 description: Create a private workflow scoped to a linked account.
 ---
 
@@ -9,6 +9,48 @@ Create a workflow scoped to a linked account. If you don't supply `associated_ap
 <Note>
   Because this call authenticates as a linked account (API key + `linked_account_id`, or a session token), it creates a **private workflow** — one that belongs to that specific linked account. **Public workflows** are org-level and tied to application slugs; they are not created through this endpoint.
 </Note>
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account to scope the workflow to.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string">Workflow name.</ParamField>
+<ParamField body="slug" type="string">Application slug to associate. Defaults to the org's default custom app.</ParamField>
+<ParamField body="associated_application" type="string">Application ID to associate (alternative to `slug`).</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="workflow" type="object">
+      The created workflow.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">The **draft** workflow ID — pass this to [Publish Workflow](/v3/api-reference/workflows/publish-workflow). Publishing returns a separate published ID.</ResponseField>
+        <ResponseField name="name" type="string">Workflow name.</ResponseField>
+        <ResponseField name="nodes" type="array">Initial nodes (a `start` node).</ResponseField>
+        <ResponseField name="published" type="boolean">`false` for a new draft.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,10 +1,44 @@
 ---
 title: Update Schedule
-openapi: "PUT /api/v1/workflow/public/scheduled/{schedule_id}"
+api: put /api/v1/workflow/public/scheduled/{schedule_id}
 description: Update a scheduled trigger's cron or interval configuration.
 ---
 
 Update an existing schedule — change its cron expression, interval dates, date window, timezone, or payload. Returns the updated schedule.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the schedule.</ParamField>
+
+## Path Parameters
+
+<ParamField path="schedule_id" type="string" required>The schedule ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="trigger_type" type="string">`cron` or `interval`.</ParamField>
+<ParamField body="regex" type="string">Cron expression (cron schedules). Stored as `cron_patten`.</ParamField>
+<ParamField body="interval_dates" type="array">Interval date objects (interval schedules).</ParamField>
+<ParamField body="startDate" type="string">Earliest run date (`YYYY-MM-DD`).</ParamField>
+<ParamField body="endDate" type="string">Latest run date (`YYYY-MM-DD`).</ParamField>
+<ParamField body="tz" type="string">Timezone.</ParamField>
+<ParamField body="payload" type="object">Event payload passed to the workflow.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated schedule (same shape as [Register Schedule](/v3/api-reference/schedule/register-schedule)).
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

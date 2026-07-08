@@ -1,10 +1,33 @@
 ---
 title: Get Hosted Properties
-openapi: "GET /api/v2/public/hosted-properties"
+api: get /api/v2/public/hosted-properties
 description: Read the properties stashed by Create Connect URL.
 ---
 
 Read the JSON previously stashed by [Create Connect URL](/legacy/api-reference/connect/create-connect-url) for the current session token. The value is returned verbatim. Hosted Connect frontends use this to retrieve the context you passed when generating the URL.
+
+## Authentication
+
+<ParamField header="Authorization" type="string" required>
+  The session token whose properties you want to read. Accepts **session-token auth only**.
+
+  **Format:** `Bearer YOUR_SESSION_TOKEN`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the stashed JSON object exactly as it was supplied to `POST /connect-url`.
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code, e.g. `INVALID_TOKEN`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

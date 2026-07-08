@@ -1,6 +1,6 @@
 ---
 title: Get Workflow Draft
-openapi: "GET /api/v2/public/workflow/{workflowId}/edit"
+api: get /api/v2/public/workflow/{workflow_id}/edit
 description: Get the editable draft of a workflow.
 ---
 
@@ -9,6 +9,40 @@ Return the editable draft of a workflow. If no draft exists yet, the published v
 <Note>
   This authenticates as a linked account, so it operates on that account's **private** workflows.
 </Note>
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account that owns the workflow.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>
+  The workflow ID. This draft ID is what you pass to [Publish Workflow](/v3/api-reference/workflows/publish-workflow) — publishing then returns a separate published ID.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the draft workflow, including `nodes`, `edges`, `data_slots`, and the link to its `associated_workflow`.
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

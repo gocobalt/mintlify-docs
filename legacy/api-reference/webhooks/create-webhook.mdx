@@ -1,10 +1,83 @@
 ---
 title: Create Webhook
-openapi: "POST /api/v2/public/webhook"
+api: post /api/v2/public/webhook
 description: Register a webhook to receive real-time event notifications.
 ---
 
 Register a webhook to receive real-time notifications when events occur in Refold — connection and workflow lifecycle events are pushed to your URL immediately, so you don't have to poll.
+
+## Authentication
+
+Webhooks are an org-level resource, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhook_url" type="string" required>
+  HTTPS URL that will receive event POSTs. Must match `^https?://`.
+</ParamField>
+
+<ParamField body="webhook_events" type="array" required>
+  Event types to subscribe to (at least one):
+  - `Connection Created` — a linked account connects an integration
+  - `Connection Deleted` — a linked account disconnects an integration
+  - `Connection Expired` — an integration's authentication expires
+  - `Workflow Completed` — a workflow execution succeeds
+  - `Workflow Errored` — a workflow execution fails
+</ParamField>
+
+<ParamField body="webhook_type" type="string" default="default">
+  Payload format: `default`, `slack`, or `custom`.
+</ParamField>
+
+<ParamField body="method" type="string" default="POST">
+  HTTP method used to deliver the event: `POST`, `PUT`, or `PATCH`.
+</ParamField>
+
+<ParamField body="webhook_headers" type="object">
+  Custom headers to send with each delivery.
+</ParamField>
+
+<ParamField body="webhook_body" type="any">
+  Custom payload template. Defaults to `{{event}}` (the full event object).
+</ParamField>
+
+<ParamField body="slug" type="string">
+  Restrict to a single app. When set, only workflow-type events are allowed.
+</ParamField>
+
+<ParamField body="workflow_ids" type="array">
+  Restrict workflow events to specific workflow IDs.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the created webhook.
+    <ResponseField name="_id" type="string">Webhook ID.</ResponseField>
+    <ResponseField name="org_id" type="string">Owning org.</ResponseField>
+    <ResponseField name="environment" type="string">`test` or `live`.</ResponseField>
+    <ResponseField name="is_enabled" type="boolean">Whether the webhook is active.</ResponseField>
+    <ResponseField name="webhook_events" type="array">Subscribed events.</ResponseField>
+    <ResponseField name="webhook_url" type="string">Delivery URL.</ResponseField>
+    <ResponseField name="webhook_type" type="string">Payload format.</ResponseField>
+    <ResponseField name="method" type="string">Delivery HTTP method.</ResponseField>
+    <ResponseField name="webhook_body" type="string">Payload template.</ResponseField>
+    <ResponseField name="workflow_ids" type="array">Restricted workflow IDs, if any.</ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code, e.g. `INVALID_EVENT`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

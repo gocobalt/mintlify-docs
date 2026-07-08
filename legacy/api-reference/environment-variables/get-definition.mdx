@@ -1,10 +1,44 @@
 ---
 title: Get Variable Definition
-openapi: "GET /api/v2/public/env/definitions/{id}"
+api: get /api/v2/public/env/definitions/{id}
 description: Get an environment-variable definition by ID.
 ---
 
 Get a single environment-variable definition by its ID. The definition is returned wrapped in a `definition` object.
+
+## Authentication
+
+Definitions are org-level, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>The definition ID.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="definition" type="object">
+      The variable definition.
+      <Expandable title="properties">
+        <ResponseField name="_id" type="string">Definition ID.</ResponseField>
+        <ResponseField name="name" type="string">Variable name.</ResponseField>
+        <ResponseField name="scope" type="string">`org`, `linked_account`, or `workflow`.</ResponseField>
+        <ResponseField name="var_format" type="string">Value format.</ResponseField>
+        <ResponseField name="encrypted" type="boolean">Whether values are stored encrypted.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

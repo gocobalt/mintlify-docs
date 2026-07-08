@@ -1,10 +1,37 @@
 ---
 title: List Webhooks
-openapi: "GET /api/v2/public/webhook"
+api: get /api/v2/public/webhook
 description: List all webhooks registered for your organization.
 ---
 
 Retrieve all webhook subscriptions registered for your organization and environment. Use this to audit configurations or find a webhook ID for management.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of webhook objects.
+    <ResponseField name="_id" type="string">Webhook ID.</ResponseField>
+    <ResponseField name="webhook_url" type="string">Delivery URL.</ResponseField>
+    <ResponseField name="webhook_events" type="array">Subscribed events.</ResponseField>
+    <ResponseField name="is_enabled" type="boolean">Whether the webhook is active.</ResponseField>
+    <ResponseField name="webhook_type" type="string">Payload format: `default`, `slack`, or `custom`.</ResponseField>
+    <ResponseField name="createdAt" type="string">ISO 8601 timestamp.</ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200
