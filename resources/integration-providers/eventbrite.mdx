@@ -1,0 +1,125 @@
+---
+title: "Setup"
+description: "Connect to your Eventbrite app for OAuth"
+---
+
+To setup your Eventbrite app in Refold for OAuth, you will need the following credentials from your Eventbrite Developer account:
+
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Eventbrite Developer account.
+
+<Info>
+  If you haven't already created an app in Eventbrite, you'd need to create one.
+</Info>
+
+### Creating an app in Eventbrite
+
+To create a Eventbrite app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Eventbrite account at `https://www.eventbrite.com` and navigate to `https://www.eventbrite.com/platform/api-keys`.
+2. Navigate to your **Profile Settings** by clicking on your profile icon, then scroll to the **Developer Links** section and click on **API Keys**.
+
+<img
+  height="200"
+  src="/images/eventbrite/eventbrite_navigation.png"
+  alt="Navigation for App setup"
+/>
+
+3. Click on the **Create API Key** or **Create App** button to create a new OAuth application.
+4. Enter an **App Name** for your application and provide a **Description** and other required details.
+5. Select the application type and ensure **OAuth 2.0** is enabled for authentication.
+6. Go to your [`Apps catalog`](https://app.refold.ai/apps) in **Refold** \> Search for `Eventbrite` \> `Settings` \> `Use your credentials` \> `Callback Url` \> Copy it.
+7. Navigate to the **OAuth Settings** section in your Eventbrite app \> Locate the **OAuth Redirect URI** field \> Paste the Callback Url \> Click **Save**.
+
+<img
+  height="200"
+  src="/images/eventbrite/eventbrite_config.png"
+  alt="Setting up Eventbrite Developer app"
+/>
+
+8. Once the app is created, locate your **API Key** (Client ID) and click **Show Client Secret and OAuth Token** to reveal the **Client Secret**.
+
+<img
+  height="200"
+  src="/images/eventbrite/eventbrite_credentials.png"
+  alt="Getting Credentials"
+/>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/eventbrite/eventbrite_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes` section.
+
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any custom scopes supported by the respective platform.
+
+<img
+  height="200"
+  src="/images/eventbrite/eventbrite_scopes.png"
+  alt="OAuth Scopes"
+/>
+
+Once the scopes has been added to the application in Refold, go to your Eventbrite Developer account and ensure the application permissions match the scopes configured in Refold. Eventbrite uses permission-based access tied to your API key settings.
+
+<Warning>
+  If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are identical to the ones selected in the platform.
+</Warning>
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Eventbrite actions and triggers. Following are the set of Eventbrite actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Attendee">
+        1. **List Attendees By Org** - List attendees by organization in Eventbrite.
+        2. **List Attendees By Event** - List attendees by event in Eventbrite.
+        3. **Get Attendee** - Get attendee by ID in Eventbrite.
+      </Accordion>
+      <Accordion title="Event">
+        4. **List Events By Org** - List events by organization in Eventbrite.
+        5. **Create Event** - Create a new event in Eventbrite.
+        6. **Update Event** - Update an existing event in Eventbrite.
+        7. **Cancel Event** - Cancel an event in Eventbrite.
+      </Accordion>
+      <Accordion title="Member">
+        8. **List Members By Organization** - List members by organization in Eventbrite.
+      </Accordion>
+      <Accordion title="Order">
+        9. **List Orders By Organization** - List orders by organization in Eventbrite.
+      </Accordion>
+      <Accordion title="Organization">
+        10. **List Organizations** - List organizations to which you are a member in Eventbrite.
+        11. **List Organizations By User** - List organizations by user in Eventbrite.
+      </Accordion>
+      <Accordion title="User">
+        12. **Get Current User** - Get current user information in Eventbrite.
+      </Accordion>
+      <Accordion title="Others">
+        13. **HTTP Request** - Make HTTP API calls to any Eventbrite documented REST APIs.
+        14. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Attendee Checked In** - Triggers when an attendee checks in to an event in Eventbrite.
+    2. **Order Placed** - Triggers when an order is placed in Eventbrite.
+    3. **Order Refunded** - Triggers when an order is refunded in Eventbrite.
+  </Tab>
+</Tabs>

@@ -1,0 +1,122 @@
+---
+title: 'Resume Cron Schedule'
+api: put /api/v1/workflow/public/scheduled/:schedule_id/resume
+---
+
+This API resumes a paused cron schedule by its ID.
+
+## Request description
+#### Path Parameters 
+
+<ParamField path="schedule_id" type="string" required>
+  The id of the schedule that you want to resume.
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="_id" type="string">
+    ID of the registered cron
+    </ResponseField>
+    <ResponseField name="event_id" type="string">
+    Event ID
+    </ResponseField>
+    <ResponseField name="workflow" type="string">
+    ID or Alias of the workflow
+    </ResponseField>
+     <ResponseField name="linked_account_id" type="string">
+    Linked Account ID for which cron is registered
+    </ResponseField>
+    <ResponseField name="environment" type="string">
+    Environment in which cron registered
+    </ResponseField>
+    <ResponseField name="org_id" type="string">
+    Organization id
+    </ResponseField>
+    <ResponseField name="cron_pattern" type="string">
+    Cron Pattern used for schedule register.
+    </ResponseField>
+    <ResponseField name="inactive" type="boolean">
+    The schedule is inactive or not.
+    </ResponseField>
+    <ResponseField name="registered_by_api" type="boolean">
+    Whether the cron is registered using API.
+    </ResponseField>
+    <ResponseField name="options" type="object">
+    Cron body sent in the request
+     <Expandable title="properties">
+        <ResponseField name="currentDate" type="string">
+            Date currently
+        </ResponseField>
+        <ResponseField name="endDate" type="string">
+            End date for the schedule
+        </ResponseField>
+        <ResponseField name="startDate" type="string">
+            Start date of the schedule
+        </ResponseField>
+        <ResponseField name="tz" type="string">
+            Timezone for the schedule.
+        </ResponseField>
+     </Expandable>
+    </ResponseField>
+    <ResponseField name="trigger_interval" type="array">
+     Array of the interval dates for which the schedule is registered. It is empty if cron trigger_type is used.
+    </ResponseField>
+    <ResponseField name="schedule_added_at" type="string">
+    Timestamp when schedule was added
+    </ResponseField>
+    <ResponseField name="updatedAt" type="string">
+    Timestamp of schedule updation.
+    </ResponseField>
+  </Tab>
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Code for the Error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "_id": "67becf62f29636d291eaadc0",
+    "event_id": "67becf62f29636d291eaadbf",
+    "workflow": "663c73e4608a784bacac384a",
+    "linked_account_id": "tim-cook",
+    "environment": "test",
+    "org_id": "65c9ef72f4b95fce32e8ccf8",
+    "cron_patten": "*/6 * * * *",
+    "inactive": false,
+    "registered_by_api": true,
+    "options": {
+        "currentDate": "2025-02-26",
+        "endDate": "2025-02-28",
+        "startDate": "2025-02-27",
+        "tz": "Asia/Kolkata"
+    },
+    "trigger_type": "cron",
+    "trigger_interval": [],
+    "schedule_added_at": "2025-02-26T08:22:58.080Z",
+    "updatedAt": "2025-02-26T08:22:58.080Z"
+}
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "SERVER_ERROR",
+    "message": "Scheduled Job Already Active"
+}
+```
+</ ResponseExample>

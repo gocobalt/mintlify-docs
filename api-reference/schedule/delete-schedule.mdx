@@ -1,0 +1,55 @@
+---
+title: 'Delete Cron Schedule'
+api: delete /api/v1/workflow/public/scheduled/:schedule_id
+---
+
+This API deletes a cron schedule by its ID.
+
+## Request description
+#### Path Parameters 
+
+<ParamField path="schedule_id" type="string" required>
+  The id of the schedule that you want to delete.
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    <ResponseField name="message" type="string">
+    Message on successful deletion of schedule.
+    </ResponseField>
+  </Tab>
+
+  <Tab title="Error">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Code for the Error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+
+<ResponseExample>
+```JSON 200
+{
+    "message": "Scheduled Job Deleted Successfully"
+}
+```
+```JSON 404
+{
+    "status_code": 404,
+    "http_error_type": "NOT_FOUND",
+    "error_code": "RESOURCE_NOT_FOUND",
+    "message": "Scheduled Job Not Found"
+}
+```
+</ ResponseExample>
