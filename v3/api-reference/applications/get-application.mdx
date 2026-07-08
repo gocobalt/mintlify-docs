@@ -1,0 +1,95 @@
+---
+title: Get Application
+openapi: "GET /api/v2/public/application/{slug}"
+description: Retrieve details of a specific application by its slug.
+---
+
+Retrieve detailed information about a single application by its slug. Returns the same shape as [List Applications](/v3/api-reference/applications/list-applications), but as a single object — including connection status, authentication requirements, and connected-account details for the linked account.
+
+<ResponseExample>
+```json 200 OAuth (Connected)
+{
+  "name": "Hubspot",
+  "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png",
+  "description": "HubSpot is your all-in-one stop for all of your marketing software needs.",
+  "auth_type": "oauth2",
+  "type": "hubspot",
+  "app_id": "6992cc7dc124a392c80e9e9c",
+  "tags": ["CRM"],
+  "ecosystem": false,
+  "slug": "hubspot",
+  "auth_type_options": { "oauth2": [] },
+  "auth_input_map": [],
+  "connected": true,
+  "connected_accounts": [
+    {
+      "identifier": {
+        "portalId": 12345678,
+        "appId": 1234567,
+        "userId": 87654321,
+        "hub_domain": "your-domain-12345678.com"
+      },
+      "connectedAt": "2026-04-28T12:13:25.968Z",
+      "status": "active",
+      "auth_type": "oauth2"
+    }
+  ],
+  "reauth_required": false
+}
+```
+```json 200 Key-Based (Available)
+{
+  "name": "Netsuite",
+  "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/netsuite/logo.png",
+  "description": "NetSuite is a business technology vendor whose portfolio includes applications for ERP, financial management, e-commerce, CRM and professional services automation.",
+  "auth_type": "keybased",
+  "type": "netsuite",
+  "app_id": "6992cc7dc124a392c80e9c1c",
+  "tags": ["Accounting"],
+  "ecosystem": false,
+  "slug": "netsuite",
+  "auth_type_options": {
+    "keybased": [
+      { "name": "account_id", "label": "Account Id", "placeholder": "Please enter the Account Id", "required": true, "type": "text" },
+      { "name": "consumer_key", "label": "Consumer Key", "placeholder": "Please enter the Consumer Key", "required": true, "type": "text" },
+      { "name": "consumer_secret", "label": "Consumer Secret", "placeholder": "Please enter the Consumer Secret", "required": true, "type": "password" },
+      { "name": "token_id", "label": "Token Id", "placeholder": "Please enter the Token Id", "required": true, "type": "text" },
+      { "name": "token_secret", "label": "Token Secret", "placeholder": "Please enter the Token Secret", "required": true, "type": "password" }
+    ],
+    "oauth2": []
+  },
+  "auth_input_map": [
+    { "name": "account_id", "label": "Account Id", "placeholder": "Please enter the Account Id", "required": true, "type": "text" },
+    { "name": "consumer_key", "label": "Consumer Key", "placeholder": "Please enter the Consumer Key", "required": true, "type": "text" },
+    { "name": "consumer_secret", "label": "Consumer Secret", "placeholder": "Please enter the Consumer Secret", "required": true, "type": "password" },
+    { "name": "token_id", "label": "Token Id", "placeholder": "Please enter the Token Id", "required": true, "type": "text" },
+    { "name": "token_secret", "label": "Token Secret", "placeholder": "Please enter the Token Secret", "required": true, "type": "password" }
+  ],
+  "reauth_required": false
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "EXTERNAL_API_ERROR",
+  "error": "EXTERNAL_API_FAILURE",
+  "message": "Application with app_type 'test-app' not found for org 6500a1b2c3d4e5f6a7b8c9d0"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/application/{slug}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

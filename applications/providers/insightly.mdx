@@ -1,0 +1,104 @@
+---
+title: "Connect"
+description: "Connect to your Insightly app for API Key authentication"
+---
+
+To setup your Insightly app in Refold for API Key authentication, you will need the following credentials from your Insightly account:
+
+- API Key
+- API URL (Pod)
+
+### Pre-requisites
+
+1. Insightly account with access to User Settings.
+
+<Info>
+  If you don't have access to the User Settings in Insightly, you'll need to contact your Insightly administrator to obtain the API key.
+</Info>
+
+### Creating an API Key in Insightly
+
+To obtain your Insightly API key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Insightly account at [https://accounts.insightly.com](https://accounts.insightly.com).
+2. Click on the **Profile icon** in the top right corner of the navigation.
+
+<img
+  height="200"
+  src="/images/insightly/insightly_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Select `User Settings` from the dropdown menu.
+4. Scroll down to the **API** section on the User Settings page.
+5. Locate your **API Key** value displayed in this section.
+6. Copy the **API Key** and store it securely.
+
+<img
+  height="200"
+  src="/images/insightly/insightly_config.png"
+  alt="Setting up Insightly API Key"
+/>
+
+7. Also note your **API URL** which indicates your pod (e.g., `https://api.na1.insightly.com/v3.1/`). The pod identifier (na1, au1, eu1, etc.) is important for API configuration.
+
+<Warning>
+  API keys can read and modify all of your CRM data and should be handled very carefully. Store your API key securely and never share it publicly. If you believe your API key has been compromised, you can reset it from the User Settings page.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the API Key when prompted during the Insightly connection setup.
+
+<img
+  height="200"
+  src="/images/insightly/insightly_refold.png"
+  alt="Setting up API Key in hosted portal"
+/>
+
+Provide the acquired API Key in the hosted portal and complete the connection.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Insightly actions and triggers. Following are the set of Insightly actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Contact">
+        1. **List Contacts** - List all contacts in Insightly.
+        2. **Get Contact By ID** - Get a specific contact by ID in Insightly.
+        3. **Create Contact** - Create a new contact in Insightly.
+        4. **Update Contact** - Update an existing contact in Insightly.
+        5. **Delete Contact** - Delete a contact in Insightly.
+      </Accordion>
+      <Accordion title="Lead">
+        6. **Create Lead** - Create a new lead in Insightly.
+        7. **Update Lead** - Update an existing lead in Insightly.
+        8. **Delete Lead** - Delete a lead in Insightly.
+      </Accordion>
+      <Accordion title="Opportunity">
+        9. **Create Opportunity** - Create a new opportunity in Insightly.
+        10. **Update Opportunity** - Update an existing opportunity in Insightly.
+        11. **Delete Opportunity** - Delete an opportunity in Insightly.
+      </Accordion>
+      <Accordion title="Organisation">
+        12. **Create Organisation** - Create a new organisation in Insightly.
+        13. **Update Organisation** - Update an existing organisation in Insightly.
+        14. **Delete Organisation** - Delete an organisation in Insightly.
+      </Accordion>
+      <Accordion title="Task">
+        15. **Create Task** - Create a new task in Insightly.
+        16. **Update Task** - Update an existing task in Insightly.
+        17. **Delete Task** - Delete a task in Insightly.
+      </Accordion>
+      <Accordion title="Others">
+        18. **HTTP Request** - Make HTTP API calls to any Insightly documented REST APIs.
+        19. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

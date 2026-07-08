@@ -1,0 +1,135 @@
+---
+title: "Go-live checklist"
+description: "Everything to verify before your first customer connects a native integration in production: credentials, OAuth apps, the embedded flow, webhooks, and monitoring."
+---
+
+A go-live checklist is the set of checks that take a native integration from a working test to a production-ready feature your customers depend on. You confirm you are on production credentials, using your own OAuth app, shipping the connect flow inside your product, handling connection health, and watching the integration once it is live.
+
+Work through the groups in order. The [quickstart's go-live section](/v3/native/get-started/quickstart#step-6-go-live) covers the same switch at a glance; this page is the full pre-launch pass.
+
+<Note>
+Run this checklist once per environment, not once per connector. The credential, OAuth, and monitoring checks apply to your whole integration; the connector-specific checks (scopes, sandbox testing) repeat per app you enable.
+</Note>
+
+## Credentials and environment
+
+Confirm you are running against production, not the test setup you built with.
+
+<Steps>
+  <Step title="Use a production API key">
+    Generate a production API key in **Settings > Credentials** and use it server-side only. Never expose your API key in the browser.
+  </Step>
+  <Step title="Move secrets out of code">
+    Store your API key and OAuth secrets in your secret manager or environment, not in source control.
+  </Step>
+  <Step title="Confirm the base URL and headers">
+    Every server call hits `https://app.refold.ai` with your key in the `x-api-key` header, and account-scoped calls also send the customer's `linked_account_id`.
+  </Step>
+</Steps>
+
+## OAuth app and connector configuration
+
+Replace any shared test credentials with your own, and confirm each connector is configured for the actions you actually run.
+
+<Steps>
+  <Step title="Use your own OAuth app">
+    Swap Refold's shared test credentials for your own client ID and secret in **Apps > [App] > Settings**. Shared credentials are for testing only.
+  </Step>
+  <Step title="Register the Refold callback URL">
+    Add the callback URL Refold provides to your OAuth app's allowed redirect URIs, or auth will fail in production.
+  </Step>
+  <Step title="Scope the OAuth app correctly">
+    Confirm the requested scopes cover every action your integration runs, and no more. Over-broad scopes slow down your customers' security review.
+  </Step>
+  <Step title="Test against a sandbox once more">
+    Connect a sandbox account with your production OAuth app and run one real read and one real write. See [Testing](/v3/native/ship-and-operate/testing).
+  </Step>
+</Steps>
+
+<Warning>
+Changing scopes after launch can force every customer to re-consent. Get the scope list right before your first customer connects.
+</Warning>
+
+## The embedded connect flow
+
+Ship the connection experience inside your product so customers connect without leaving it.
+
+<Steps>
+  <Step title="Replace the hosted portal with your in-product flow">
+    For a fully embedded experience, use the [React SDK flow](/v3/native/frontend/react-sdk-flow) or [build your own](/v3/platform/authentication/connection-flows/build-your-own). The [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow) is fine if a redirect or embedded portal meets your needs.
+  </Step>
+  <Step title="Mint session tokens on your backend">
+    Generate a [session token](/v3/native/frontend/overview#before-you-start) per customer session on the server so your API key stays server-side. Tokens expire after 24 hours, so mint a fresh one each session.
+  </Step>
+  <Step title="Create a linked account per customer">
+    Create a [linked account](/v3/platform/concepts/linked-account) when a customer signs up, and reuse its id in every account-scoped call.
+  </Step>
+  <Step title="Place the connect entry point in your onboarding">
+    Surface the connect flow where customers expect it, typically in onboarding or an integrations settings page, behind your own auth.
+  </Step>
+</Steps>
+
+## Connection health
+
+A connection that breaks silently is the most common production failure. Wire up the signals that tell you and your customer when one breaks.
+
+<Steps>
+  <Step title="Subscribe to webhooks">
+    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) so your backend learns the moment a connection expires, instead of polling.
+  </Step>
+  <Step title="Render connection status in your UI">
+    Read [connection status](/v3/platform/authentication/managing-connections/connection-status) and render the **Connect**, **Connected**, or **Reconnect** state for every app.
+  </Step>
+  <Step title="Handle re-authentication">
+    Prompt a reconnect when `reauth_required` is set, following [re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
+  </Step>
+</Steps>
+
+## Workflows
+
+If your integration runs [workflows](/v3/platform/concepts/workflows/overview), confirm each is published and handles failure.
+
+<Steps>
+  <Step title="Publish the tested workflow">
+    A passing test does not activate a workflow. Publish it so incoming trigger events run against the current version. See [workflow testing](/v3/platform/concepts/workflows/testing).
+  </Step>
+  <Step title="Confirm failures surface">
+    Make sure a workflow failure reaches your product (through a webhook or a response) rather than failing silently.
+  </Step>
+  <Step title="Scope workflow access">
+    Confirm each workflow is enabled only for the linked accounts that should run it.
+  </Step>
+</Steps>
+
+## Monitoring and support
+
+Make sure you can see what is happening once customers are live, and that they can reach you.
+
+<Steps>
+  <Step title="Turn on monitoring">
+    Confirm you can read execution and connection activity before launch, not after the first incident. See [Monitoring](/v3/native/ship-and-operate/monitoring).
+  </Step>
+  <Step title="Know where the audit trail lives">
+    Configuration changes and platform activity are recorded in the Platform [audit](/v3/platform/concepts/audit) log.
+  </Step>
+  <Step title="Set up a support path">
+    Give your team a way to reach Refold support, and your customers a way to reach you when a connection needs attention.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Monitoring" icon="chart-line" href="/v3/native/ship-and-operate/monitoring">
+    Watch execution, connection health, and errors once you are live.
+  </Card>
+  <Card title="Testing" icon="vial" href="/v3/native/ship-and-operate/testing">
+    Re-run your test scenarios against production credentials.
+  </Card>
+  <Card title="Connection status" icon="signal" href="/v3/platform/authentication/managing-connections/connection-status">
+    Render Connect, Connected, and Reconnect states for each app.
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/v3/native/configure/developer/webhooks">
+    Get notified the moment a connection breaks.
+  </Card>
+</CardGroup>

@@ -1,0 +1,68 @@
+---
+title: "Roles"
+description: "Role-based access control for users in a Refold workspace."
+---
+
+A **role** controls what a user can see and do inside a workspace. Every
+user holds exactly one role; that role determines whether they can edit
+integrations, manage linked accounts, change settings, or only view.
+Workspace admins assign roles when they invite a teammate and can change
+them later from the [Users](/v3/platform/platform-settings/workspace-settings/users)
+page.
+
+Open the role list from **Settings > Organization > Roles**.
+
+## Built-in roles
+
+Refold ships with a set of built-in roles. Each grants a fixed set of
+permissions, which you can review per role on the **Roles** page in the
+dashboard.
+
+| Role | What they can do |
+|---|---|
+| **Owner** | Everything an Admin can do, plus ownership of the organization. The owner's email is the one associated with the org. There is exactly one owner. |
+| **Admin** | Full access to all features and settings. |
+| **Developer** | Manage applications and their configurations. |
+| **Solutions** | Manage workflows and view logs. |
+| **External** | Read-only access to applications, workflows, and logs. |
+
+<Note>
+  Every organization has exactly one **Owner**. To change the owner, the
+  current owner transfers ownership by selecting which Admin becomes the new
+  owner.
+</Note>
+
+## Change a user's role
+
+<Steps>
+  <Step title="Open Users">
+    Go to **Settings > Organization > Users**.
+  </Step>
+  <Step title="Open the row menu">
+    Click the row menu on the user whose role you want to change.
+  </Step>
+  <Step title="Pick the new role">
+    Select the new role from the list. Refold applies the change
+    immediately and the user's permissions update at their next page load.
+  </Step>
+</Steps>
+
+## Custom roles
+
+Custom roles let an admin create a role with a specific set of permissions,
+beyond the built-in roles, when none of the defaults fit a teammate's needs.
+
+<Note>
+  Custom roles are **coming soon**.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Users" href="/v3/platform/platform-settings/workspace-settings/users">
+    Invite teammates and change their roles.
+  </Card>
+  <Card title="Policy" href="/v3/platform/platform-settings/workspace-settings/policy">
+    Set the workspace-level security policies that apply to every role.
+  </Card>
+</CardGroup>

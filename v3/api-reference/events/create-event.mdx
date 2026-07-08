@@ -1,0 +1,42 @@
+---
+title: Create Event
+openapi: "POST /api/v2/public/application/event"
+description: Define a custom event on your org's default app.
+---
+
+Add a custom event (trigger) to your organization's default custom application. Once defined, your application can [fire the event](/v3/api-reference/events/trigger-event) for a linked account to start workflows. The response is the full, updated list of events.
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "6a314123d0aeb8165be4f175",
+    "name": "candidate_created",
+    "response": [
+      { "key": "event", "type": "text" },
+      { "key": "payload", "type": "object" }
+    ]
+  }
+]
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "name and response are required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/application/event" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "candidate_created",
+    "response": "{ \"event\": \"candidate_created\", \"payload\": { \"jobid\": \"123\", \"email\": \"jane@example.com\" } }"
+  }'
+```
+</RequestExample>

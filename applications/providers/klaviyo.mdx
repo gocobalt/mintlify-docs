@@ -1,0 +1,112 @@
+---
+title: "Setup"
+description: "Connect to your Klaviyo app for API Key"
+---
+
+To setup your Klaviyo app in Refold for API Key, you will need the following credentials from your Klaviyo account:
+
+- Private API Key
+
+### Pre-requisites
+
+1. Klaviyo account with Owner, Admin, or Manager role.
+
+<Info>
+  If you haven't already created a Private API Key in Klaviyo, you'd need to create one.
+</Info>
+
+### Creating an API Key in Klaviyo
+
+To create a Klaviyo Private API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Klaviyo account at [https://www.klaviyo.com](https://www.klaviyo.com).
+2. Click on your organization name in the bottom-left corner of the page and select `Settings`.
+
+<img
+  height="200"
+  src="/images/klaviyo/klaviyo_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Navigate to the `API Keys` tab in the Settings page.
+4. Scroll down to the `Private API Keys` section and click on `Create Private API Key` button in the upper right-hand corner.
+5. Enter a name for your Private API Key (e.g., "Refold Integration") in the `Private API Key Name` field.
+6. In the `Select Access Level` section, choose the appropriate access level:
+   - **Full Access Key** - Grants full access to every API scope
+   - **Custom Key** - Allows you to select specific scopes for read-only or full access
+7. Click `Create` to generate your Private API Key.
+
+<img
+  height="200"
+  src="/images/klaviyo/klaviyo_config.png"
+  alt="Setting up Klaviyo Private API Key"
+/>
+
+8. Copy the generated **Private API Key** immediately and store it securely.
+
+<img
+  height="200"
+  src="/images/klaviyo/klaviyo_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  You will not be able to view your Private API Key again after creation. Klaviyo Private API Keys start with the prefix `pk_` followed by a 34-character alphanumeric string (e.g., pk_abc123def456ghi789jkl0mno123pqrst4). Treat private API keys like passwords and never expose them in client-side code or public repositories.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/klaviyo/klaviyo_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired Private API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Klaviyo actions and triggers. Following are the set of Klaviyo actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Campaign">
+        1. **Get All Campaigns** - Get all campaigns in Klaviyo.
+        2. **Get Campaign By ID** - Get a campaign by ID in Klaviyo.
+        3. **Create Campaign** - Create a campaign in Klaviyo.
+        4. **Create Campaign Recipient Estimation Job** - Create a campaign recipient estimation job in Klaviyo.
+        5. **Create Campaign Send Job** - Create a campaign send job in Klaviyo.
+        6. **Campaign Message Assign Template** - Assign a template to a campaign message in Klaviyo.
+      </Accordion>
+      <Accordion title="List">
+        7. **Get All Lists** - Get all lists in Klaviyo.
+        8. **Get List By ID** - Get a list by ID in Klaviyo.
+        9. **Create List** - Create a list in Klaviyo.
+        10. **Delete List** - Delete a list in Klaviyo.
+      </Accordion>
+      <Accordion title="Profile">
+        11. **List Profiles** - Get all profiles in an account in Klaviyo.
+        12. **Get Profile By ID** - Get a profile by ID in Klaviyo.
+        13. **Create Profile** - Create a new profile in Klaviyo.
+        14. **Update Profile** - Update a profile by ID in Klaviyo.
+        15. **Create or Update Profile** - Create or update a profile in Klaviyo.
+      </Accordion>
+      <Accordion title="Tag">
+        16. **Get All Tags** - Get all tags in Klaviyo.
+      </Accordion>
+      <Accordion title="Template">
+        17. **Create Template** - Create a template in Klaviyo.
+      </Accordion>
+      <Accordion title="Others">
+        18. **HTTP Request** - Make HTTP API calls to any Klaviyo documented REST APIs.
+        19. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

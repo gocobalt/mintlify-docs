@@ -1,0 +1,38 @@
+---
+title: List Config IDs
+openapi: "GET /api/v2/public/slug/{slug}/configs"
+description: List the config IDs installed for an app on a linked account.
+---
+
+List the config installations for an app on a linked account. Returns each config's record ID and `config_id`.
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "6a3144e5d396207fd24dbcbd",
+    "config_id": "user_12345"
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/slug/{slug}/configs" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/slug/{slug}/configs" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

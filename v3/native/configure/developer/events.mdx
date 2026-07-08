@@ -1,0 +1,121 @@
+---
+title: "Events"
+description: "Trigger Refold workflows from your backend by firing a custom event with your own payload."
+---
+
+An event is a named signal your backend sends to Refold to start one or more [workflows](/v3/native/configure/integration/workflow). You define an event once, attach workflows to it, then fire it from your app whenever the matching thing happens, for example a contact created or an invoice paid. Refold runs every workflow wired to that event, passing along the payload you send.
+
+Events decouple your app from the integrations behind them. One event can drive several workflows across several apps, so your backend fires a single signal and Refold fans it out.
+
+<Note>
+Firing an event is account-scoped: it runs for one [linked account](/v3/platform/concepts/linked-account). Authenticate with your API key and the `linked_account_id`, against the base URL `https://app.refold.ai`.
+</Note>
+
+## How it works
+
+An event has a name and a sample payload. The sample payload defines the data fields a workflow can reference as variables. When you fire the event with real data, those fields fill the variables inside every attached workflow.
+
+The lifecycle is:
+
+- **Define the event** in the Console, with a sample payload that mirrors what you will send.
+- **Attach workflows** that should run when the event fires.
+- **Fire the event** from your backend with a real payload for a specific linked account.
+
+## Define an event
+
+You create events in the Console before you can fire them.
+
+<Steps>
+  <Step title="Open the events page">
+    In the [Refold Console](https://app.refold.ai), go to **Settings > Developer > Events**.
+  </Step>
+  <Step title="Create the event">
+    Click **New Event**, choose a model, and give it a name.
+  </Step>
+  <Step title="Set the sample payload">
+    Edit the sample payload to match the data you will send. Each field becomes a variable workflows can use. Click **Create event**.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: Settings > Developer > Events showing the New Event dialog and sample payload editor -> /images/embedded/backend/create-event.png */}</Frame>
+
+<Note>
+Workflows reference the event's payload fields as trigger variables. Keep the sample payload's field names stable, renaming a field can break workflows that reference it.
+</Note>
+
+## Fire an event
+
+Fire the event from your backend for a specific linked account. The app slug goes in the URL path, and the body carries the event name and your payload.
+
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/event/hubspot" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: user_12345" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event": "New Contact Created",
+    "payload": {
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane@example.com"
+    }
+  }'
+```
+
+```json Output
+{
+  "message": "Webhook Fired Success"
+}
+```
+
+With the Node.js SDK, use `event`:
+
+```javascript Node.js
+const result = await client.event({
+  linked_account_id: "user_12345",
+  event: "New Contact Created",
+  slug: "hubspot",
+  payload: {
+    first_name: "Jane",
+    last_name: "Doe",
+    email: "jane@example.com",
+  },
+});
+
+console.log(result.message); // "Webhook Fired Success"
+```
+
+<Tip>
+The `slug` (or path slug) narrows execution to one app's workflows. Omit it to run every workflow attached to the event for that linked account.
+</Tip>
+
+<Note>
+The `event` name in the body must match the event name in the Console exactly, including case. A mismatch returns `404 INVALID_EVENT` with "Trigger not found".
+</Note>
+
+## Events vs webhooks
+
+Both involve event payloads, but they move in opposite directions. Don't confuse them.
+
+| | Events | [Webhooks](/v3/native/configure/developer/webhooks) |
+|--|--------|----------|
+| **Direction** | Your backend to Refold | Refold to your backend |
+| **Purpose** | Start a workflow | React to something that happened |
+| **You provide** | The payload to run on | An endpoint to receive deliveries |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Build a workflow" icon="diagram-project" href="/v3/native/configure/integration/workflow">
+    Attach workflows to the events you fire.
+  </Card>
+  <Card title="Trigger event API" icon="code" href="/v3/api-reference/events/trigger-event-by-slug">
+    Full request and response reference.
+  </Card>
+  <Card title="Receive webhooks" icon="bell" href="/v3/native/configure/developer/webhooks">
+    Get notified when those workflows complete or error.
+  </Card>
+  <Card title="Node.js SDK" icon="node-js" href="/v3/api-reference/sdks">
+    The `event` method and the rest of the server API.
+  </Card>
+</CardGroup>

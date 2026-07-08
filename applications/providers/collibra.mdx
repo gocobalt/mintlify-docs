@@ -1,0 +1,101 @@
+---
+title: "Setup"
+description: "Connect to your Collibra app for API Key"
+---
+
+To setup your Collibra app in Refold for API Key, you will need the following credentials from your Collibra account:
+
+- Username
+- Password
+- Base64 Encoded Credentials
+- Collibra Instance URL
+
+### Pre-requisites
+
+1. Collibra account with API access permissions.
+
+<Info>
+  If you don't have API access enabled in your Collibra environment, contact your Collibra administrator to grant the necessary permissions.
+</Info>
+
+### Getting API credentials in Collibra
+
+To acquire the above mentioned credentials from Collibra, please follow the steps mentioned below:
+
+1. Log in to your Collibra Data Intelligence Platform at `https://<your_collibra_url>`.
+2. Navigate to your **User Profile** by clicking on your profile icon in the top-right corner.
+
+<img
+  height="200"
+  src="/images/collibra/collibra_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Note down your **Username** (typically your email address) that you use to log in to Collibra.
+4. Your **Password** is the same password you use to sign in to your Collibra environment.
+5. To create the **Base64 Encoded Credentials**, combine your username and password in the format `username:password` and encode it using Base64 encoding.
+6. Note down your **Collibra Instance URL** which follows the format `https://<your_collibra_url>`. The API base URL will be `https://<your_collibra_url>/rest/2.0/`.
+7. To verify your credentials, you can test the authentication by making a GET request to `https://<your_collibra_url>/rest/2.0/communities` with the Authorization header set to `Basic <Base64_encoded_credentials>`.
+
+<img
+  height="200"
+  src="/images/collibra/collibra_config.png"
+  alt="Setting up Collibra API authentication"
+/>
+
+8. Once verified, copy your **Username**, **Password**, and **Base64 Encoded Credentials** for configuration in Refold.
+
+<img
+  height="200"
+  src="/images/collibra/collibra_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  Keep your credentials secure and never share them publicly. Collibra API credentials provide access to your data catalog and governance platform. Consider using a dedicated service account for API integrations.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/collibra/collibra_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired Username, Password, Base64 Encoded Credentials, and Collibra Instance URL under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Collibra actions and triggers. Following are the set of Collibra actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Asset">
+        1. **Get Assets** - Retrieve a list of assets from Collibra.
+        2. **Find Assets** - Search for assets based on specified criteria in Collibra.
+        3. **Create Asset** - Create a new asset in Collibra.
+        4. **Create Asset Bulk** - Create multiple assets in bulk in Collibra.
+        5. **Add Asset Tag** - Add a tag to an existing asset in Collibra.
+      </Accordion>
+      <Accordion title="Type">
+        6. **Get Asset Types** - Retrieve all available asset types in Collibra.
+        7. **Get Relation Types** - Retrieve all available relation types in Collibra.
+      </Accordion>
+      <Accordion title="Relation">
+        8. **Create Relation** - Create a relation between assets in Collibra.
+        9. **Create Relation Bulk** - Create multiple relations in bulk in Collibra.
+      </Accordion>
+      <Accordion title="Others">
+        10. **HTTP Request** - Make HTTP API calls to any Collibra documented REST APIs.
+        11. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

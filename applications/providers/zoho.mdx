@@ -1,0 +1,149 @@
+---
+title: Setup
+description: Connect to your Zoho CRM app for OAuth.
+---
+To setup your Zoho CRM app in Refold for OAuth, you will need the following credentials from your [Zoho Developer Console](https://api-console.zoho.com/):
+- Client ID
+- Client Secret
+
+### Pre-requisites
+
+1. Zoho Developer Console. You can create one [here](https://accounts.zoho.com/register).
+
+### Required Settings
+
+* **Mandatory Scopes** 
+1. ZohoCRM.users.READ
+2. ZohoCRM.notifications.CREATE
+3. ZohoCRM.notifications.DELETE
+
+<Info>If you haven't already created an app in Zoho CRM, you'd need to create one.</Info>
+
+### Data centers and regions
+
+Zoho hosts customer accounts across several regional data centers (US, EU, India, Australia, Japan, Canada, and Saudi Arabia), each with its own API domain. **You don't need to know or select which data center a customer belongs to** — Refold detects it automatically during the OAuth flow.
+
+Here's how it works:
+
+1. Refold always starts authorization at the global Zoho accounts endpoint, `accounts.zoho.com`.
+2. When your customer signs in, Zoho returns their region (the `location` and `accounts-server` values) along with the authorization code.
+3. Refold exchanges the code at that customer's regional accounts server and reads the `api_domain` from the token response.
+4. Every subsequent API call is routed to that `api_domain`, so requests always land in the customer's correct data center.
+
+Because this resolution happens per linked account, a single Zoho connector in Refold works for customers across **all** Zoho data centers — there is no per-region setup on your side.
+
+Once a customer connects successfully through OAuth 2.0, Refold surfaces the resolved **base URL / server domain** on that linked account's Zoho connected page, so you can confirm which data center the account is routed to.
+
+| Data center | Accounts server | API domain |
+|-------------|-----------------|------------|
+| United States | `accounts.zoho.com` | `www.zohoapis.com` |
+| Europe | `accounts.zoho.eu` | `www.zohoapis.eu` |
+| India | `accounts.zoho.in` | `www.zohoapis.in` |
+| Australia | `accounts.zoho.com.au` | `www.zohoapis.com.au` |
+| Japan | `accounts.zoho.jp` | `www.zohoapis.jp` |
+| Canada | `accounts.zohocloud.ca` | `www.zohoapis.ca` |
+| Saudi Arabia | `accounts.zoho.sa` | `www.zohoapis.sa` |
+
+<Warning>
+The **China** data center (`accounts.zoho.com.cn`) is **not supported**. Zoho operates China as a separate region that the global `accounts.zoho.com` authorization flow cannot reach, so customers hosted there cannot connect through this connector.
+</Warning>
+
+<Note>
+Use a single set of OAuth credentials (Client ID and Client Secret) created in your [Zoho Developer Console](https://api-console.zoho.com/). Refold handles routing to the right regional API domain for you — you do not need separate credentials or connectors per region.
+</Note>
+
+### Creating an app in Zoho CRM
+
+To create a Zoho CRM app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your [Zoho Developer Console](https://api-console.zoho.com/).
+2. Click on the `+ Add Client` button in the right and select `Server-based Applications` button.
+<img height="200" src="/images/Zohocrm/Zohocrm_navigation.png" alt="Navigation for App setup"/>
+3. Enter the **Client Name** for your application and add a **Homepage URL**.
+4. Go to your [`Apps catalog`](https://app.refold.ai/applications) in **Refold** > Search for `Zoho` > `Settings` > `Use your credentials` > `Callback Url` > Copy it.
+5. Paste the Callback URL under `Authorized Redirect URIs` and click on the `Create` button.
+
+<img height="200" src="/images/Zohocrm/Zohocrm_config.png" alt="Setting up Zoho CRM Developer app"/>
+6. Navigate to the `Client Secret` tab in the app and copy the **Client ID** and **Client Secret**.
+<img height="200" src="/images/Zohocrm/Zohocrm_credentials.png" alt="Getting Credentials"/>
+
+#### Configuring credentials in Refold
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data,
+they would first need to install your application. This page lets you set up your application credentials.
+
+<img height="200" src="/images/Zohocrm/Zohocrm_cobalt.png" alt="Setting up application client credentials"/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes`
+section. 
+
+For some applications Refold sets mandatory scopes which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
+custom scopes supported by the respective platform.
+<img height="200" src="/images/Zohocrm/Zohocrm_scopes.png" alt="OAuth Scopes"/>
+
+Once the scopes has been added to the application in Refold, the app will now request for access of the mentioned scopes.
+
+<Warning>
+If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform.
+</Warning>
+
+#### Actions and triggers
+Once the above setup is completed, you can create orchestrations of your use-cases using Zoho CRM actions and triggers. Following are the set of Zoho CRM actions and triggers
+supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+  <Accordion title="Account">
+     1. **Create Account** - Create an account in Zoho CRM.
+     2. **Update Account** - Update an account in Zoho CRM.
+     3. **Upsert Account** - Upsert an account in Zoho CRM.
+     4. **Delete Account** - Delete an account in Zoho CRM.
+    </Accordion>
+    <Accordion title="Contact">
+     5. **Create Contact** - Create a contact in Zoho CRM.
+     6. **Update Contact** - Update a contact in Zoho CRM.
+     7. **Upsert Contact** - Upsert a contact in Zoho CRM.
+     8. **Delete Contact** - Delete a contact in Zoho CRM.
+      </Accordion>
+    <Accordion title="Deal">
+     9. **Create Deal** - Create a deal in Zoho CRM.
+     10. **Update Deal** - Update a deal in Zoho CRM.
+     11. **Upsert Deal** - Upsert a deal in Zoho CRM.
+     12. **Delete Deal** - Delete a deal in Zoho CRM.
+       </Accordion>
+    <Accordion title="Lead">
+     13. **Create Lead** - Create a lead in Zoho CRM.
+     14. **Update Lead** - Update a lead in Zoho CRM.
+     15. **Upsert Lead** - Upsert a lead in Zoho CRM.
+     16. **Delete Lead** - Delete a lead in Zoho CRM.
+      </Accordion>
+    <Accordion title="Note">
+     17. **Create Note** - Create a note in Zoho CRM.
+     18. **Update Note** - Update a note in Zoho CRM.
+     19. **Delete Note** - Delete a note in Zoho CRM.
+      </Accordion>
+    <Accordion title="Task">
+     20. **Create Task** - Create a task in Zoho CRM.
+     21. **Update Task** - Update a task in Zoho CRM.
+     22. **Delete Task** - Delete a task in Zoho CRM.
+    </Accordion>
+    <Accordion title="Others">
+     23. **HTTP Request** - Make HTTP API calls to any Zoho CRM documented REST APIs.
+  </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+         1. **Account Created** - Triggers when an account is created on Zoho CRM.
+         2. **Account Updated** - Triggers when an account is updated on Zoho CRM.
+         3. **Contact Created** - Triggers when a contact is created on Zoho CRM.
+         4. **Contact Updated** - Triggers when a contact is updated on Zoho CRM.
+         5. **Deal Created** - Triggers when a deal is created on Zoho CRM.
+         6. **Deal Updated** - Triggers when a deal is updated on Zoho CRM.
+         7. **Lead Created** - Triggers when a lead is created on Zoho CRM.
+         8. **Lead Updated** - Triggers when a lead is updated on Zoho CRM.
+  </Tab>
+</Tabs>

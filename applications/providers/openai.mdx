@@ -1,0 +1,97 @@
+---
+title: "Connect"
+description: "Connect to your OpenAI app for API Key"
+---
+
+OpenAI is an API Key-based integration and does not require the setup of an app.
+
+To connect with the OpenAI integration, you will need the following credentials:
+
+- API Key
+
+### Pre-requisites
+
+1. OpenAI account with API access.
+
+<Info>
+  If you haven't already created an API Key in OpenAI, you'd need to create one from the OpenAI Dashboard.
+</Info>
+
+### Getting Credentials of OpenAI
+
+To acquire the required credentials and connect, please follow the steps mentioned below:
+
+1. Log in to your [OpenAI Dashboard](https://platform.openai.com).
+2. Navigate to **API Keys** section and click on **Create new secret key**.
+
+<img
+  height="200"
+  src="/images/openai/openai_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Provide a unique **Name** to the Organization and Project. Keep the **Permissions** set to `All`, then click on **Create Secret Key**.
+
+<img
+  height="200"
+  src="/images/openai/openai_config.png"
+  alt="Creating OpenAI Secret Key"
+/>
+
+4. Copy the **API Key** and click on **Done**.
+
+<img
+  height="200"
+  src="/images/openai/openai_credentials.png"
+  alt="Getting API Key"
+/>
+
+<Warning>
+  Keep your API Key confidential — don't share it with anybody. The API Key is only displayed once during creation, so make sure to copy and store it securely. If lost, you'll need to generate a new key.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the API Key when prompted during the OpenAI connection setup.
+
+<img
+  height="200"
+  src="/images/openai/openai_refold.png"
+  alt="Setting up API Key in hosted portal"
+/>
+
+Provide the acquired API Key in the hosted portal and complete the connection.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using OpenAI actions and triggers. Following are the set of OpenAI actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Audit Logs">
+        1. **List Audit Logs** - List user actions and configuration changes within this organization in OpenAI.
+      </Accordion>
+      <Accordion title="Projects">
+        2. **List Projects** - Returns a list of projects in OpenAI.
+        3. **Create Project** - Creates a new project in OpenAI.
+        4. **Update Project** - Modifies a project in the organization in OpenAI.
+      </Accordion>
+      <Accordion title="Users">
+        5. **List Users** - Lists all of the users in the organization in OpenAI.
+        6. **Get User** - Retrieves a user by their identifier in OpenAI.
+        7. **Update User** - Modifies a user's role in the organization in OpenAI.
+        8. **Delete User** - Deletes a user from the organization in OpenAI.
+        9. **Invite User** - Invites a user to the organization in OpenAI.
+        10. **List Project Users** - Returns a list of users in the project in OpenAI.
+      </Accordion>
+      <Accordion title="Others">
+        11. **HTTP Request** - Make HTTP API calls to any OpenAI documented REST APIs.
+        12. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    No triggers available for this application.
+  </Tab>
+</Tabs>

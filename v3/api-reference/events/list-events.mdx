@@ -1,0 +1,40 @@
+---
+title: List Events
+openapi: "GET /api/v2/public/application/event"
+description: List the custom events defined on your org's default app.
+---
+
+List the custom events (triggers) defined on your organization's default custom application. These event definitions describe the payloads your application can fire to start workflows.
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "69f89fa2b195883025cfcb65",
+    "name": "candidate_created",
+    "response": [
+      { "key": "event", "type": "text" },
+      { "key": "payload", "type": "object" },
+      { "key": "payload.jobid", "type": "text" },
+      { "key": "payload.firstname", "type": "text" },
+      { "key": "payload.email", "type": "text" }
+    ]
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/application/event" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

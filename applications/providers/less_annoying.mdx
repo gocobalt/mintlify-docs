@@ -1,0 +1,98 @@
+---
+title: "Connect"
+description: "Connect to your Less Annoying CRM app for API Key"
+---
+
+To setup your Less Annoying CRM app in Refold for API Key, you will need the following credentials from your Less Annoying CRM account:
+
+- API Key
+
+### Pre-requisites
+
+1. Less Annoying CRM account with API access enabled.
+
+<Info>
+  If you haven't already created an API Key in Less Annoying CRM, you'd need to create one.
+</Info>
+
+### Creating an API Key in Less Annoying CRM
+
+To create a Less Annoying CRM API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Less Annoying CRM account at [https://www.lessannoyingcrm.com](https://www.lessannoyingcrm.com).
+2. Click on the `Settings` icon on the left panel. 
+3. Scroll down to access "Programmer API" section within `Other Tools`.
+
+<img
+  height="200"
+  src="/images/lessannoyingcrm/lessannoyingcrm_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+4. `Enable API` if accessing it for the first time. Post that, Click on `Create a new API Key` button.
+5. Enter a name for your API Key (e.g., "Refold Integration") and configure the required permissions:
+   - **Read** - Allow reading data from CRM
+   - **Create** - Allow creating new records
+   - **Edit** - Allow editing existing records
+   - **Delete** - Allow deleting records
+6. Select the appropriate permissions based on the actions you want to perform in Refold.
+7. Click `Create key` to generate your API Key.
+
+<img
+  height="200"
+  src="/images/lessannoyingcrm/lessannoyingcrm_config.png"
+  alt="Setting up Less Annoying CRM API Key"
+/>
+
+8. Copy the generated **API Key** immediately and store it securely.
+
+<Warning>
+  The API Key is only displayed once at the time of creation. Less Annoying CRM encrypts keys in storage, so you will not be able to retrieve the key after you create it. If you forget or lose your API Key, you will need to create a new one and delete the old one.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the API Key when prompted during the Less Annoying CRM connection setup.
+
+<img
+  height="200"
+  src="/images/lessannoyingcrm/lessannoyingcrm_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key in the hosted portal and complete the connection.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Less Annoying CRM actions and triggers. Following are the set of Less Annoying CRM actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Company">
+        1. **Create Company** - Create a new company in Less Annoying CRM.
+        2. **Update Company** - Update a company in Less Annoying CRM.
+        3. **Delete Company** - Delete a company in Less Annoying CRM.
+      </Accordion>
+      <Accordion title="Contact">
+        4. **Create Contact** - Create a new contact in Less Annoying CRM.
+        5. **Update Contact** - Update a contact in Less Annoying CRM.
+        6. **List Contacts** - Search or list all contacts in Less Annoying CRM.
+        7. **Get Contact** - Get a contact by ID in Less Annoying CRM.
+        8. **Delete Contact** - Delete a contact in Less Annoying CRM.
+      </Accordion>
+      <Accordion title="Pipeline Item">
+        9. **Create Pipeline Item** - Create a pipeline item in Less Annoying CRM.
+        10. **Update Pipeline Item** - Update a pipeline item in Less Annoying CRM.
+        11. **Delete Pipeline Item** - Delete a pipeline item in Less Annoying CRM.
+      </Accordion>
+      <Accordion title="Others">
+        12. **HTTP Request** - Make HTTP API calls to any Less Annoying CRM documented REST APIs.
+        13. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

@@ -1,0 +1,104 @@
+---
+title: "Setup"
+description: "Connect to your Amplitude app for API Key"
+---
+
+To setup your Amplitude app in Refold for API Key, you will need the following credentials from your Amplitude account:
+
+- API Key
+- Secret Key
+
+### Pre-requisites
+
+1. Amplitude account with Manager or Admin role permissions.
+
+<Info>
+  If you don't have the required permissions to access API credentials, contact your Amplitude administrator to grant you Manager or Admin role on the project.
+</Info>
+
+### Getting API credentials in Amplitude
+
+To acquire the above mentioned credentials from Amplitude, please follow the steps mentioned below:
+
+1. Log in to your Amplitude Analytics account at `https://analytics.amplitude.com`.
+2. Navigate to **Organization Settings** by clicking on the settings icon in the upper right navigation.
+
+<img
+  height="200"
+  src="/images/amplitude/amplitude_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Click on **Projects** from the left sidebar menu.
+4. Find your target project in the list and click on it to open the project settings.
+5. On the **General** tab, locate your **API Key**. Users with Manager role can copy the API Key directly.
+6. To generate a **Secret Key**, click on **Generate Secret Key**, provide a name for the key, and copy it immediately.
+
+<img
+  height="200"
+  src="/images/amplitude/amplitude_config.png"
+  alt="Setting up Amplitude API credentials"
+/>
+
+7. Alternatively, you can navigate to **API Keys** section in Organization Settings to manage all API keys and Secret keys for your projects.
+8. Copy both the **API Key** and **Secret Key** for configuration in Refold.
+
+<img
+  height="200"
+  src="/images/amplitude/amplitude_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  Amplitude does not store Secret Keys. The Secret Key is only displayed once at the time of creation. Store it securely as you cannot retrieve it again. If lost, you will need to generate a new Secret Key.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/amplitude/amplitude_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key and Secret Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Amplitude actions and triggers. Following are the set of Amplitude actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Chart">
+        1. **Get Results From Chart** - Get results from an existing chart in Amplitude.
+      </Accordion>
+      <Accordion title="Cohort">
+        2. **List Cohorts** - Get all discoverable cohorts for an app in Amplitude.
+        3. **Get Cohort** - Get a discoverable cohort using its cohort_id in Amplitude.
+        4. **Update Cohort Membership** - Update cohort membership in Amplitude.
+      </Accordion>
+      <Accordion title="Event Type">
+        5. **Create Event Type** - Create an event type in Amplitude.
+        6. **Get All Event Types** - Get all event types in Amplitude.
+        7. **Update Event Type** - Update an event type in Amplitude.
+      </Accordion>
+      <Accordion title="Event">
+        8. **Get Events List** - Get events list in Amplitude.
+        9. **Event Segmentation** - Perform event segmentation analysis in Amplitude.
+      </Accordion>
+      <Accordion title="User">
+        10. **Get User Activity** - Get user activity data in Amplitude.
+      </Accordion>
+      <Accordion title="Others">
+        11. **HTTP Request** - Make HTTP API calls to any Amplitude documented REST APIs.
+        12. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

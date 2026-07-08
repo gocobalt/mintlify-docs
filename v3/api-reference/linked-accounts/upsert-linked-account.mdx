@@ -1,0 +1,44 @@
+---
+title: Upsert Linked Account
+openapi: "PUT /api/v2/public/linked-account"
+description: Create a new linked account or update an existing one.
+---
+
+Create a new linked account or update an existing one. If an account with the provided `account_id` (or `linked_account_id`) exists, it is updated; otherwise a new account is created. Body fields may be supplied flat or nested under `payload` — when `payload` is present it takes precedence.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a3134fdc71d10070e78923e",
+  "associated_org": "6500a1b2c3d4e5f6a7b8c9d0",
+  "account_id": "user_12345",
+  "environment": "test",
+  "name": "Acme Inc. (renamed)",
+  "udf": [],
+  "createdAt": "2026-06-16T11:35:25.951Z",
+  "updatedAt": "2026-06-16T11:35:50.272Z",
+  "__v": 0,
+  "new_account": false
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/linked-account" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_id": "YOUR_LINKED_ACCOUNT_ID",
+    "name": "Acme Inc. (renamed)"
+  }'
+```
+</RequestExample>

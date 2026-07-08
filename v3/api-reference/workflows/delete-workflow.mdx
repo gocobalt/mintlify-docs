@@ -1,0 +1,35 @@
+---
+title: Delete Workflow
+openapi: "DELETE /api/v2/public/workflow/{workflowId}"
+description: Delete a private workflow and its drafts, versions, and triggers.
+---
+
+Delete a workflow along with all its drafts and versions, and deregister its triggers. The response indicates whether trigger deregistration fully succeeded.
+
+<Note>
+  A version-snapshot workflow cannot be deleted directly — delete the parent (published) workflow instead.
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "triggers_deregistered": true
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Workflow is a version workflow."
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/workflow/{workflow_id}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

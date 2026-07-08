@@ -1,0 +1,39 @@
+---
+title: Delete Webhook
+openapi: "DELETE /api/v2/public/webhook/{id}"
+description: Delete a webhook subscription.
+---
+
+Delete a webhook subscription. The response is the updated list of the remaining webhooks for your organization.
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "69c4c8ece6c48f40c1d3ff42",
+    "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+    "environment": "test",
+    "is_enabled": false,
+    "webhook_events": ["Connection Created", "Workflow Completed"],
+    "webhook_url": "https://your-app.com/webhooks",
+    "webhook_type": "default",
+    "method": "POST"
+  }
+]
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "RESOURCE_NOT_FOUND",
+  "message": "Webhook not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/webhook/{id}" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

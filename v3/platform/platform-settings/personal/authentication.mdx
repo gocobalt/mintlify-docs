@@ -1,0 +1,108 @@
+---
+title: "Authentication"
+description: "Manage the password and multi-factor authentication methods linked to your account."
+---
+
+The **Authentication** page holds the two controls that protect your Refold
+account: your **password** and **multi-factor authentication** (MFA). Turn
+on MFA as soon as you've signed in for the first time. It's the single
+biggest reduction in account-takeover risk you can make.
+
+Open it from **Settings > User > Authentication**.
+
+## Change your password
+
+<Steps>
+  <Step title="Open Authentication">
+    Go to **Settings > User > Authentication**.
+  </Step>
+  <Step title="Click Change Password">
+    Click **Change Password** in the **Password** section. Refold opens a
+    panel that asks for your current password and a new one.
+  </Step>
+  <Step title="Enter and confirm the new password">
+    Pick a password that's unique to Refold and meets your organization's
+    password policy. Save it in a password manager.
+  </Step>
+  <Step title="Save">
+    Click **Save**. Refold signs out your other active sessions so the new
+    password takes effect everywhere.
+  </Step>
+</Steps>
+
+<Tip>
+  If you can't sign in to reach this page, use **Forgot Password** on the
+  sign-in screen to send yourself a reset link.
+</Tip>
+
+## Multi-factor authentication
+
+MFA adds a second proof of identity to every sign-in: your password plus a
+code that only you can produce. Even if someone learns your password, they
+can't sign in without the second factor.
+
+Refold offers two MFA methods.
+
+### Authenticator app
+
+An authenticator app (Google Authenticator, 1Password, Authy, Microsoft
+Authenticator) generates a fresh six-digit code every 30 seconds. This is
+the recommended method.
+
+<Steps>
+  <Step title="Open Authentication">
+    Go to **Settings > User > Authentication**.
+  </Step>
+  <Step title="Click Setup">
+    In the **Multi-Factor Authentication** section, click **Setup** on the
+    **Authenticator** row.
+  </Step>
+  <Step title="Scan the QR code">
+    Open your authenticator app and scan the QR code Refold shows.
+  </Step>
+  <Step title="Enter the verification code">
+    Type the six-digit code your app generates, then click **Verify**.
+    Refold confirms MFA is on for your account.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (video, preferred): 20s screen recording of the Authenticator
+    Setup flow, from clicking Setup to confirming a verification code. */}
+<Frame caption="Setting up an authenticator app">
+  <video controls className="w-full aspect-video rounded-xl" src="/videos/PLACEHOLDER.mp4" />
+</Frame>
+
+### Email codes
+
+Email one-time codes send a six-digit code to your account email each time
+you sign in. Use this if you'd rather not set up an authenticator app.
+
+<Steps>
+  <Step title="Open Authentication">
+    Go to **Settings > User > Authentication**.
+  </Step>
+  <Step title="Enable email codes">
+    In the **Multi-Factor Authentication** section, turn on the **Email** row.
+    Codes are sent to your account email address.
+  </Step>
+  <Step title="Verify your email">
+    Enter the six-digit code Refold emails you to confirm the method is
+    working. From now on, you'll be asked for an email code at each sign-in.
+  </Step>
+</Steps>
+
+<Note>
+  Email codes are rolling out and may still appear as **Coming Soon** in your
+  dashboard until the method is enabled for your workspace.
+</Note>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Profile" href="/v3/platform/platform-settings/personal/profile">
+    Update your name, contact details, and avatar.
+  </Card>
+  <Card title="Policy" href="/v3/platform/platform-settings/workspace-settings/policy">
+    See the password and session policies enforced at the workspace level.
+  </Card>
+</CardGroup>

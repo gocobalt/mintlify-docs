@@ -1,0 +1,53 @@
+---
+title: Get Config Field Options
+openapi: "POST /api/v2/public/config/field/{fieldId}"
+description: Resolve the options for a single config field.
+---
+
+Resolve a single config field's options via its datasource. The datasource may consume the optional `value` payload (e.g. callable-workflow data sources that depend on other field values).
+
+<ResponseExample>
+```json 200
+{
+  "id": "699fec7a5bd27ed2af7243ad",
+  "name": "Select",
+  "field_type": "select",
+  "required": false,
+  "multiple": true,
+  "hidden": false,
+  "dynamic_slot_identifier": "options",
+  "options": [
+    { "name": "A", "value": "A" },
+    { "name": "B", "value": "B" },
+    { "name": "C", "value": "C" }
+  ],
+  "defaultValue": ""
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Field with id 699fec7a5bd27ed2af7243ad not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field/{fieldId}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field/{fieldId}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

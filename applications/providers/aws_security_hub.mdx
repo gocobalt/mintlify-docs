@@ -1,0 +1,72 @@
+---
+title: Connect
+description: Connect with the Linked Account's AWS Security Hub account.
+---
+<Note>
+AWS Security Hub is an **API Key** based integration and does not require the setup of an app.
+</Note>
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **AWS Security Hub** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Access Key ID
+2. Secret access key
+3. Region
+
+<Info>
+To understand how a Linked Account can get the above mentioned credentials, refer below.
+</Info>
+
+
+### Getting Credentials of AWS Security Hub
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+<img height="200" src="/images/AWSSecurityHub/cobalt.png" alt="Connect a Linked Account"/>
+
+1. Log in to your [AWS account](https://console.aws.amazon.com/securityhub/) with SecurityHub permissions and copy the `Region` from the URL present before **.console**.
+2. Click on your Profile in the top right corner and click on `Security Credentials`.
+<img height="200" src="/images/AWSSecurityHub/profileicpon.png" alt="Navigation in AWS"/>
+
+4. Scroll down to the **Access Keys** section and click on `Create access key`.
+<img height="200" src="/images/AWSSecurityHub/api_key.png" alt="Creating Credentials"/>
+5. Select a **Use case** > Click on `Next` and provide a name for the key under `Description tag value` and click on `Create access key`.
+6. Copy the `Access Key` and `Secret access key` displayed on the screen.
+<img height="200" src="/images/Amazons3/s3_credentials.png" alt="Getting Credentials"/>
+
+<Tip>
+Save your Secret Key as it will be visible only once.
+</Tip>
+
+The Linked Account or end-user now have all the credentials required to connect with AWS Security Hub.
+
+#### Actions and triggers
+In Refold, you can create orchestrations of your use-cases using AWS Security Hub actions and triggers. Following are the set of AWS Security Hub actions and triggers
+supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+  <AccordionGroup>
+    <Accordion title="Insights">
+     1. **List Insights** - List all insights for specified ARNs in AWS Security Hub.
+     2. **Update Insight** - Updates Insight identified by specified ARN in AWS Security Hub.
+    </Accordion>
+  <Accordion title="Members">
+     3. **List Members** - Lists details about all member accounts in AWS Security Hub.
+     4. **List Members By Ids** - List Members By Account Ids in AWS Security Hub.
+     5. **Invite Members By Ids** - Invite Members By Account Ids in AWS Security Hub.
+     6. **Delete Members By Ids** - Delete Members By Account Ids in AWS Security Hub.
+    </Accordion>
+  <Accordion title="Policies">
+     7. **List Configuration Policies** - List all the configuration policies in AWS Security Hub.
+    </Accordion>
+    <Accordion title="Others">
+     8. **HTTP Request** - Make HTTP API calls to any AWS Security Hub documented REST APIs.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

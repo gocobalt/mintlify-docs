@@ -1,0 +1,52 @@
+---
+title: Create Workflow
+openapi: "POST /api/v2/public/workflow"
+description: Create a private workflow scoped to a linked account.
+---
+
+Create a workflow scoped to a linked account. If you don't supply `associated_application` or `slug`, the workflow is attached to the org's default custom application. The new workflow starts as an unpublished draft with a single start node — build it out, then [publish](/v3/api-reference/workflows/publish-workflow) it.
+
+<Note>
+  Because this call authenticates as a linked account (API key + `linked_account_id`, or a session token), it creates a **private workflow** — one that belongs to that specific linked account. **Public workflows** are org-level and tied to application slugs; they are not created through this endpoint.
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "workflow": {
+    "_id": "6a31545ed0aeb8165beb9a43",
+    "name": "Lead Sync",
+    "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+    "nodes": [
+      { "id": "1", "type": "start", "incoming_nodes": [], "outgoing_nodes": [], "data": null }
+    ],
+    "createdAt": "2026-06-16T13:49:18.390Z",
+    "updatedAt": "2026-06-16T13:49:18.390Z"
+  }
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/workflow" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Lead Sync", "slug": "hubspot" }'
+```
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/workflow" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Lead Sync" }'
+```
+</RequestExample>

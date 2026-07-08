@@ -1,0 +1,40 @@
+---
+title: List Webhooks
+openapi: "GET /api/v2/public/webhook"
+description: List all webhooks registered for your organization.
+---
+
+Retrieve all webhook subscriptions registered for your organization and environment. Use this to audit configurations or find a webhook ID for management.
+
+<ResponseExample>
+```json 200
+[
+  {
+    "_id": "69c4c8ece6c48f40c1d3ff42",
+    "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+    "environment": "test",
+    "is_enabled": false,
+    "webhook_events": ["Connection Created", "Connection Deleted", "Workflow Completed", "Workflow Errored"],
+    "webhook_url": "https://your-app.com/webhooks",
+    "webhook_type": "default",
+    "method": "POST",
+    "createdAt": "2026-03-12T08:14:02.110Z"
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/webhook" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

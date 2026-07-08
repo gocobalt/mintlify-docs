@@ -1,0 +1,50 @@
+---
+title: List Variable Values
+openapi: "GET /api/v2/public/env/values/{scope}"
+description: List environment-variable values for a scope.
+---
+
+List the variable values for a given scope, paginated. Linked-account auth is restricted to its own scope; workflow scope requires a `workflow_id`. Encrypted values are redacted.
+
+<ResponseExample>
+```json 200
+{
+  "status": "success",
+  "docs": [
+    {
+      "_id": "6a314b06d396207fd24fb16b",
+      "variable_definition_id": {
+        "_id": "6a1401de41e63efd08fb3e54",
+        "name": "API_SECRET",
+        "scope": "linked_account",
+        "encrypted": true
+      },
+      "value": "[REDACTED]",
+      "updatedAt": "2026-06-16T13:09:26.023Z"
+    }
+  ],
+  "totalDocs": 1,
+  "limit": 10,
+  "page": 1
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "workflow_id is required for workflow scope"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/env/values/linked_account?linked_account_id=YOUR_LINKED_ACCOUNT_ID" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/env/values/linked_account" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

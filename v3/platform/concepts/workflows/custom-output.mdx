@@ -1,0 +1,149 @@
+---
+title: "Custom Output"
+description: "Choose which of a node's fields are exposed, and encrypt PII fields to redact them from your customer and logs."
+---
+
+Custom Output lets you control a node's output: select which of its fields pass to later steps and reach your customer, and encrypt sensitive fields so their values are redacted from the customer-facing output and from logs. Declaring the output also makes those fields available in the downstream data picker, so later nodes can reference them by name. Use it to keep node output lean, expose typed fields downstream, and protect PII such as emails, phone numbers, and tokens.
+
+## How Custom Output works
+
+Custom Output lives in a collapsible **Customize Output** section on the node. To populate it, you **run the node once** so Refold can read its actual output and list every available field. Each field then has two independent controls: include it in the output, and encrypt it.
+
+Key characteristics:
+
+- **Fields are discovered by running the node.** Refold lists every field the node returns, so you don't enter field paths by hand.
+- **Select per field.** Include only the fields later steps and your customer need. A **Select all fields** control toggles every field at once, and a counter shows how many of the total are selected.
+- **Encrypt per field.** Turn on **Encrypt** for any field whose value must be hidden from the customer. Encrypted fields are redacted in the output, the Run tab, and logs.
+- **Selection and encryption are independent.** A field can be included and encrypted, included and visible, or left out entirely.
+
+## Configure Custom Output
+
+<Steps>
+  <Step title="Expand Customize Output">
+    Open the node and click **Customize Output** to expand the section.
+  </Step>
+  <Step title="Run the node to load fields">
+    Click **Run Node**. Refold executes the node and loads its available output fields.
+  </Step>
+  <Step title="Select the fields to include">
+    Check the fields you want in the output. Use **Select all fields** to include everything; the counter shows **N of M selected**.
+  </Step>
+  <Step title="Encrypt sensitive fields">
+    Toggle **Encrypt** on any field that carries PII or secrets. Its value is redacted from the customer and from logs.
+  </Step>
+  <Step title="Save the node">
+    Save the node. The selected fields are exposed to later steps and to your customer, appear in the downstream data picker, and encrypted fields are redacted.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (video preferred): screen recording of expanding Customize Output, clicking Run Node, the field list loading, using Select all, and toggling Encrypt on a PII field so it shows as Encrypted. */}
+
+## Per-field controls
+
+| Control | What it does |
+|---------|--------------|
+| **Select** (checkbox) | Includes the field in the node's output. Cleared fields are dropped from the output. |
+| **Select all fields** | Selects or clears every field at once. |
+| **Encrypt** | Redacts the field's value from the customer-facing output, the Run tab, and logs. |
+
+## Field paths and arrays
+
+All node outputs are nested inside a top-level `body` object, and each field is addressed by its path relative to `body` (omit the literal `body` prefix). The `*` wildcard traverses every item in an array, so one entry covers every object in a list without a separate entry per index.
+
+Given this node output:
+
+```json Node output
+{
+  "body": {
+    "result": [
+      { "id": 1, "skill": "iPaaS" },
+      { "id": 2, "skill": "Platform" }
+    ],
+    "welcome": "Hello!"
+  }
+}
+```
+
+The fields resolve as:
+
+| Field | What it targets |
+| --- | --- |
+| `result.*.skill` | The `skill` field across every item in the `result` array. |
+| `welcome` | The top-level `welcome` field inside `body`. |
+
+## How encryption works
+
+Encryption is set per field, so visible and redacted fields can coexist in the same node.
+
+| Encrypt | Behavior |
+| --- | --- |
+| Off | Value is visible in the output, Run tab, and logs. |
+| On | Value is stored securely and shown redacted in the output, Run tab, and logs. Later nodes still receive the real value. |
+
+<Note>Encryption controls visibility, not flow. An encrypted field is redacted from the customer, the Run tab, and execution logs, but its real value is still passed in full to later nodes at runtime. Encryption does not block, alter, or strip the data in transit.</Note>
+
+## Example
+
+Take a [Custom Code](/v3/platform/concepts/workflows/nodes/custom-code) node that returns a list of skills alongside a public greeting:
+
+```json Node output
+{
+  "body": {
+    "result": [
+      { "id": 1, "skill": "iPaaS" },
+      { "id": 2, "skill": "Platform" }
+    ],
+    "welcome": "Hello!"
+  }
+}
+```
+
+Select both fields, with **Encrypt** on for `result.*.skill` and off for `welcome`. When the workflow runs, the output shows:
+
+```json Output
+{
+  "body": {
+    "result": [
+      { "id": 1, "skill": "[REDACTED]" },
+      { "id": 2, "skill": "[REDACTED]" }
+    ],
+    "welcome": "Hello!"
+  }
+}
+```
+
+A later node referencing `result.*.skill` still receives the real `iPaaS` and `Platform` values at runtime. Only the customer-facing output, Run tab, and logs see `[REDACTED]`.
+
+## Encrypt PII and secrets
+
+Turn on **Encrypt** for any field whose value must reach later steps but should never be visible to the customer or in logs:
+
+- Personal data such as email addresses, phone numbers, and government IDs.
+- API keys, auth tokens, or credentials returned by a node.
+- Secrets fetched from an external API during workflow execution.
+- Any field a downstream node needs but that must stay out of plain-text logs.
+
+## Limits and caveats
+
+- **Field paths are relative to `body`.** Including the literal `body` prefix will not match the output.
+- **The `*` wildcard applies to array traversal.** It captures the named field on every item in the array at that level.
+- **Encryption is per field, not per node.** Turn it on for each sensitive field individually.
+- **Encryption hides values from the customer, the Run tab, and execution history only.** Later nodes always receive the real value.
+- **Values are stored securely.** The specific algorithm, key management, and rotation details are not exposed in the product.
+
+{/* NEEDS INPUT: confirm which node types expose the Customize Output section (the design shows it on the Response node; confirm whether it is available on all workflow nodes). */}
+{/* NEEDS INPUT: confirm whether encrypted values are also redacted in webhook responses, exported run JSON, and external observability integrations, beyond the in-product output, Run tab, and logs. */}
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Response node" icon="arrow-right-from-bracket" href="/v3/platform/concepts/workflows/nodes/response">
+    Return the selected output to your customer through the Workflow API.
+  </Card>
+  <Card title="Environment variables" icon="key" href="/v3/platform/platform-settings/workspace-settings/environment-variables">
+    Store reusable secrets and configuration outside individual workflows.
+  </Card>
+  <Card title="Workflow testing" icon="flask" href="/v3/platform/concepts/workflows/testing">
+    Run a workflow end to end and inspect each node's output, including redacted fields.
+  </Card>
+</CardGroup>

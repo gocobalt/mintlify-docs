@@ -1,0 +1,41 @@
+---
+title: Update Config
+openapi: "PUT /api/v2/public/config"
+description: Update an installed config for a linked account.
+---
+
+Update an installed config — field values, enabled workflows, labels, and other installation settings. The config is identified by `config_id` (defaults to the linked account ID).
+
+<ResponseExample>
+```json 200
+{
+  "slug": "hubspot",
+  "config_id": "user_12345",
+  "field_errors": [],
+  "fields": [
+    { "id": "699fec7a5bd27ed2af7243ad", "name": "Select", "field_type": "select" }
+  ],
+  "workflows": [
+    { "id": "699d8648a81ba363578cc2f4", "name": "Sync Contacts", "enabled": true }
+  ]
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Config with config id user_12345 not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/config" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "slug": "{slug}", "labels": { "env": "production" } }'
+```
+</RequestExample>

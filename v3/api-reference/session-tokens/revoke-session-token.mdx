@@ -1,0 +1,31 @@
+---
+title: Revoke Session Token
+openapi: "POST /api/v2/public/session-token/revoke"
+description: Revoke the current linked-account session token.
+---
+
+Revoke the session token presented in the `Authorization` header. The token (and its refresh token, if present) is blacklisted and removed from the access-token store. The request body is unused. Use this when a hosted session ends or a token is compromised.
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "revoked_count": 1
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "INVALID_TOKEN",
+  "message": "Invalid token"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/session-token/revoke" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

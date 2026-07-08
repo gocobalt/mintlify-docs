@@ -1,0 +1,31 @@
+---
+title: Delete Schedule
+openapi: "DELETE /api/v1/workflow/public/scheduled/{schedule_id}"
+description: Delete a scheduled trigger.
+---
+
+Permanently delete a schedule and deregister its job. To temporarily stop a schedule instead, use [Pause Schedule](/v3/api-reference/schedule/pause-schedule).
+
+<ResponseExample>
+```json 200
+{
+  "message": "Scheduled Job Deleted Successfully"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "RESOURCE_NOT_FOUND",
+  "message": "Scheduled Job Not Found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v1/workflow/public/scheduled/{schedule_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

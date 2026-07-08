@@ -1,0 +1,96 @@
+---
+title: "Setup"
+description: "Connect to your Phished app for API Key"
+---
+
+To setup your Phished app in Refold for API Key, you will need the following credentials from your Phished account:
+
+- Organisation Token
+
+### Pre-requisites
+
+1. Phished account with administrator access.
+
+<Info>
+  If you haven't already created an Organisation Token in Phished, you'd need to create one from the Phished platform settings.
+</Info>
+
+### Getting API credentials in Phished
+
+To acquire the above mentioned credentials from Phished, please follow the steps mentioned below:
+
+1. Log in to your Phished platform at `https://app.phished.io`.
+2. Navigate to **Settings** → **API** in the platform menu.
+
+<img
+  height="200"
+  src="/images/phished/phished_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. Click on **Create API Token** or locate the **Organisation Token** section.
+4. Enter a descriptive **Name** for your token to identify its purpose.
+5. Click **Generate** to create the Organisation Token.
+6. Copy the generated **Organisation Token** immediately and store it securely.
+
+<img
+  height="200"
+  src="/images/phished/phished_config.png"
+  alt="Setting up Phished Organisation Token"
+/>
+
+7. The API base URL is `https://api.phished.io/`.
+
+<img
+  height="200"
+  src="/images/phished/phished_credentials.png"
+  alt="Getting Organisation Token"
+/>
+
+<Warning>
+  Keep your Organisation Token confidential — don't share it with anybody. The token may only be displayed once during creation, so make sure to copy and store it securely. If lost, you'll need to generate a new token.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/phished/phished_refold.png"
+  alt="Setting up application credentials"
+/>
+
+Provide the acquired Organisation Token under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Phished actions and triggers. Following are the set of Phished actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Administrator">
+        1. **List Administrators** - Get all administrators for the organisation in Phished.
+        2. **Create Administrator** - Create an administrator for the organisation in Phished.
+        3. **Get Administrator** - Retrieve specific administrator details in Phished.
+        4. **Update Administrator** - Update administrator information in Phished.
+        5. **Delete Administrator** - Remove an administrator from the organisation in Phished.
+      </Accordion>
+      <Accordion title="Recipient">
+        6. **List Recipients** - Retrieve all recipients and their respective tags in Phished.
+        7. **Create Recipient** - Add a new recipient to the Phished platform.
+        8. **Get Recipient** - Retrieve specific recipient details by ID in Phished.
+        9. **Update Recipient** - Update a recipient's information in Phished.
+        10. **Delete Recipient** - Delete a recipient from the platform in Phished.
+      </Accordion>
+      <Accordion title="Others">
+        11. **HTTP Request** - Make HTTP API calls to any Phished documented REST APIs.
+        12. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    No triggers available for this application.
+  </Tab>
+</Tabs>
