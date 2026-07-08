@@ -1,10 +1,35 @@
 ---
 title: Edit Table Group
-openapi: "PUT /api/v2/public/tables/group/edit"
+api: put /api/v2/public/tables/group/edit
 description: Bulk set or clear the group on multiple tables.
 ---
 
 Set or clear the `group` label on multiple persistent tables at once. An empty `group` unsets the field.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the tables.</ParamField>
+
+## Body Parameters
+
+<ParamField body="tableIds" type="array" required>IDs of the tables to update.</ParamField>
+<ParamField body="group" type="string">Group label to set. An empty string unsets the group.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns `200` with an empty body on success.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

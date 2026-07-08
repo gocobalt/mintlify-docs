@@ -1,10 +1,50 @@
 ---
 title: Update Webhook
-openapi: "PUT /api/v2/public/webhook/{id}"
+api: put /api/v2/public/webhook/{id}
 description: Update an existing webhook's configuration.
 ---
 
 Update a webhook's events, URL, enabled state, or delivery settings. Only the fields you send are changed.
+
+## Authentication
+
+Webhooks are an org-level resource, so this endpoint uses API-key auth.
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The webhook ID to update.
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="webhook_events" type="array">Replacement list of subscribed events.</ParamField>
+<ParamField body="webhook_url" type="string">New delivery URL (`^https?://`).</ParamField>
+<ParamField body="is_enabled" type="boolean">Enable or disable the webhook.</ParamField>
+<ParamField body="webhook_type" type="string">Payload format: `default`, `slack`, or `custom`.</ParamField>
+<ParamField body="method" type="string">Delivery method: `POST`, `PUT`, or `PATCH`.</ParamField>
+<ParamField body="webhook_headers" type="object">Custom delivery headers.</ParamField>
+<ParamField body="webhook_body" type="any">Custom payload template.</ParamField>
+<ParamField body="workflow_ids" type="array">Restricted workflow IDs.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the updated webhook object.
+  </Tab>
+
+  <Tab title="400 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code, e.g. `RESOURCE_NOT_FOUND`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

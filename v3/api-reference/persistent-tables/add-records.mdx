@@ -1,10 +1,40 @@
 ---
 title: Add Records
-openapi: "PATCH /api/v2/public/tables/{table_id}"
+api: patch /api/v2/public/tables/{table_id}
 description: Add records to a persistent table.
 ---
 
 Add one or more records to a persistent table. Pass a single object or an array of objects in `data`; each is assigned a generated `record_id`.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
+
+## Path Parameters
+
+<ParamField path="table_id" type="string" required>The table ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="data" type="object | array" required>
+  A record object, or an array of record objects. Keys should match the table's columns.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="add_record_result" type="array">The inserted records, each with its generated `record_id`.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

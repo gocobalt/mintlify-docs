@@ -1,10 +1,45 @@
 ---
 title: Create MCP Server
-openapi: "POST /api/v2/public/mcp-servers"
+api: post /api/v2/public/mcp-servers
 description: Create a new MCP server for a linked account.
 ---
 
 Create a new MCP (Model Context Protocol) server. Only `name` and `description` are required at creation; configure associated apps, chains, and suggestions afterward via [Update MCP Server](/legacy/api-reference/mcp-servers/update-mcp-server).
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account. Required with API-key auth.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Body Parameters
+
+<ParamField body="name" type="string" required>Name of the MCP server. **Example:** `Production CRM Server`</ParamField>
+<ParamField body="description" type="string" required>What the server is for.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="201 Created">
+    <ResponseField name="_id" type="string">The new MCP server ID.</ResponseField>
+    <ResponseField name="name" type="string">Server name.</ResponseField>
+    <ResponseField name="description" type="string">Server description.</ResponseField>
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 201

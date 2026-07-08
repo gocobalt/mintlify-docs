@@ -1,6 +1,6 @@
 ---
 title: Execute Workflow
-openapi: "POST /api/v2/public/workflow/{workflowId}/execute"
+api: post /api/v2/public/workflow/{workflow_id}/execute
 description: Execute a published workflow for a linked account.
 ---
 
@@ -9,6 +9,53 @@ Execute a workflow for a linked account via a manual trigger. The workflow must 
 <Note>
   The **`slug` header is required** — it names the application the workflow belongs to. Without it the call fails with `Workflow ID and slug are required`.
 </Note>
+
+## Authentication
+
+This endpoint is scoped to a linked account (it runs that account's private workflow), so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account that owns the workflow.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Path Parameters
+
+<ParamField path="workflow_id" type="string" required>
+  The **published** workflow ID (from [List Workflows](/legacy/api-reference/workflows/list-workflows)). The workflow must be published before it can be executed.
+</ParamField>
+
+## Headers
+
+<ParamField header="slug" type="string" required>The application slug the workflow belongs to.</ParamField>
+<ParamField header="config_id" type="string">Config to scope execution to. Defaults to the linked account ID.</ParamField>
+<ParamField header="sync_execution" type="boolean">Run synchronously and return the result inline.</ParamField>
+<ParamField header="instance_tag" type="string">Tag to label the resulting execution.</ParamField>
+<ParamField header="include-headers" type="boolean">Return sanitized request headers in the response.</ParamField>
+
+## Body Parameters
+
+<ParamField body="payload" type="object">
+  The execution input, matching the workflow's [request structure](/legacy/api-reference/workflows/request-structure).
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the execution result. For async runs this is an acknowledgement with the execution reference; for sync runs it includes the workflow output.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned when the `slug` is missing, or the workflow is unpublished / not owned by the linked account.
+    <ResponseField name="message" type="string">Error message, e.g. `Workflow ID and slug are required`.</ResponseField>
+    <ResponseField name="error" type="string">Error detail.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

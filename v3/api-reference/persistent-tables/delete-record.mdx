@@ -1,10 +1,35 @@
 ---
 title: Delete Record
-openapi: "DELETE /api/v2/public/tables/{table_id}/{record_id}"
+api: delete /api/v2/public/tables/{table_id}/{record_id}
 description: Delete a single record from a persistent table.
 ---
 
 Delete a single record from a persistent table by its `record_id`. Returns the deleted record.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
+
+## Path Parameters
+
+<ParamField path="table_id" type="string" required>The table ID.</ParamField>
+<ParamField path="record_id" type="string" required>The record ID to delete (from [Get Records](/v3/api-reference/persistent-tables/get-records)).</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the deleted record.
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

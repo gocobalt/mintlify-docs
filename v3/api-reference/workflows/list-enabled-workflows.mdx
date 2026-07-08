@@ -1,6 +1,6 @@
 ---
 title: List Enabled Workflows
-openapi: "GET /api/v2/public/workflow/enabled"
+api: get /api/v2/public/workflow/enabled
 description: List the workflows currently enabled for a linked account.
 ---
 
@@ -9,6 +9,39 @@ List the workflows enabled across a linked account's installations. For each ena
 <Note>
   This is scoped to a linked account, so it reflects that account's enabled workflows (its **private** workflows plus the **public** ones it has enabled).
 </Note>
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns an array of enabled workflows.
+    <ResponseField name="id" type="string">Workflow ID.</ResponseField>
+    <ResponseField name="name" type="string">Workflow name.</ResponseField>
+    <ResponseField name="icon" type="string">Workflow icon.</ResponseField>
+    <ResponseField name="config_id" type="string">The installation's config ID.</ResponseField>
+    <ResponseField name="application" type="object">The populated application `{_id, name, icon, description}`.</ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

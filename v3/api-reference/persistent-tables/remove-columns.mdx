@@ -1,10 +1,38 @@
 ---
 title: Remove Columns
-openapi: "DELETE /api/v2/public/tables/{table_id}/columns/remove"
+api: delete /api/v2/public/tables/{table_id}/columns/remove
 description: Remove columns from a persistent table.
 ---
 
 Remove one or more columns from a persistent table. Returns the table's remaining columns.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
+
+## Path Parameters
+
+<ParamField path="table_id" type="string" required>The table ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="columns" type="array" required>Column names to remove.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="columns" type="array">The table's columns after removal.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

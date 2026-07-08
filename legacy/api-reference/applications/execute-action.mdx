@@ -1,6 +1,6 @@
 ---
 title: Execute Action
-openapi: "POST /api/v2/integration-schema/{slug}/actions/{action_id}/execute"
+api: post /api/v2/integration-schema/{slug}/actions/{action_id}/execute
 description: Execute an application action against a connected account.
 ---
 
@@ -9,6 +9,43 @@ Execute an action against a linked account's connected application. The request 
 <Warning>
   Write actions (create / update / delete) make real changes in the connected application. Test with read actions (e.g. `get_contact`, `search_contacts`) first.
 </Warning>
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The linked account whose connection to use.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>The application slug. **Example:** `hubspot`</ParamField>
+<ParamField path="action_id" type="string" required>The action to execute. **Example:** `get_contact`</ParamField>
+
+## Body Parameters
+
+<ParamField body="{parameter}" type="any">
+  One key per parameter from the action's schema. Required parameters must be present.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="node_status" type="string">Execution status, e.g. `Success`.</ResponseField>
+    <ResponseField name="data" type="object">The action's result, in the application's native shape.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

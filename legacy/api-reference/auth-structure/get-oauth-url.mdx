@@ -1,12 +1,47 @@
 ---
 title: Get OAuth URL
-openapi: "GET /api/v2/public/linked-account/integration/oauth-url/{slug}"
+api: get /api/v2/public/linked-account/integration/oauth-url/{slug}
 description: Get the OAuth authorization URL for an app.
 ---
 
 Build the OAuth authorization URL for an app and linked account. Redirect the user to the returned `auth_url` to start the consent flow; after they approve, Refold completes the token exchange and attaches the integration to the linked account.
 
 The app must be an OAuth2 app. Some integrations require per-app prerequisite values supplied as query parameters — these vary by app.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>
+  Your Refold API key. Find it in **Settings → Credentials**.
+</ParamField>
+
+<ParamField header="linked_account_id" type="string" required>
+  The linked account the connection will be attached to.
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="slug" type="string" required>
+  The OAuth2 app slug.
+
+  **Example:** `hubspot`
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="auth_url" type="string">
+      The OAuth authorization URL. Redirect the user here to begin the consent flow.
+    </ResponseField>
+  </Tab>
+
+  <Tab title="401 Unauthorized">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,10 +1,38 @@
 ---
 title: Add Columns
-openapi: "PATCH /api/v2/public/tables/{table_id}/columns/add"
+api: patch /api/v2/public/tables/{table_id}/columns/add
 description: Add columns to a persistent table.
 ---
 
 Add one or more columns to a persistent table. Returns the table's full column list after the change.
+
+## Authentication
+
+<ParamField header="x-api-key" type="string" required>Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string" required>The linked account that owns the table.</ParamField>
+
+## Path Parameters
+
+<ParamField path="table_id" type="string" required>The table ID.</ParamField>
+
+## Body Parameters
+
+<ParamField body="columns" type="array" required>Column names to add.</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    <ResponseField name="columns" type="array">The table's columns after adding.</ResponseField>
+  </Tab>
+
+  <Tab title="404 Not Found">
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200

@@ -1,10 +1,58 @@
 ---
 title: Get Rule Engine Options
-openapi: "POST /api/v2/public/config/rule-engine/{fieldId}"
+api: post /api/v2/public/config/rule-engine/{fieldId}
 description: Resolve column options for a rule-engine config field.
 ---
 
 Resolve the available column options for a rule-engine config field. Provide the field-shaped `rule_column` describing the column whose options you want. The field must be of rule-engine type with defined columns.
+
+## Authentication
+
+This endpoint is scoped to a linked account, so it accepts **either** authentication method.
+
+**Option 1 — API key**
+
+<ParamField header="x-api-key" type="string">Your Refold API key.</ParamField>
+<ParamField header="linked_account_id" type="string">The linked account.</ParamField>
+
+**Option 2 — Session token**
+
+<ParamField header="Authorization" type="string">Session token. **Format:** `Bearer YOUR_SESSION_TOKEN`</ParamField>
+
+## Headers
+
+<ParamField header="slug" type="string" required>The app slug. **Example:** `hubspot`</ParamField>
+
+## Path Parameters
+
+<ParamField path="fieldId" type="string" required>The rule-engine field ID.</ParamField>
+
+## Query Parameters
+
+<ParamField query="config_id" type="string">Config to scope to. Defaults to the linked account's config.</ParamField>
+<ParamField query="workflow_id" type="string">Scope to a specific workflow.</ParamField>
+
+## Body Parameters
+
+<ParamField body="rule_column" type="object" required>
+  A field-shaped object describing the rule column to resolve options for.
+</ParamField>
+
+## Response
+
+<Tabs>
+  <Tab title="200 OK">
+    Returns the resolved options for the rule column.
+  </Tab>
+
+  <Tab title="400 Bad Request">
+    Returned when the field is not a rule-engine field or has no defined columns.
+    <ResponseField name="status_code" type="integer">HTTP status code.</ResponseField>
+    <ResponseField name="http_error_type" type="string">Error category.</ResponseField>
+    <ResponseField name="error_code" type="string">Internal error code.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable error description.</ResponseField>
+  </Tab>
+</Tabs>
 
 <ResponseExample>
 ```json 200
