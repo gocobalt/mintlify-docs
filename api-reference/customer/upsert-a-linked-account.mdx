@@ -6,6 +6,12 @@ api: put /api/v2/public/linked-account
 This API updates the details of an existing linked account or creates a new one if no account exists for the provided linked account ID.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Body Parameters
 <ParamField body="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com

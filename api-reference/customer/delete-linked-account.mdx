@@ -6,6 +6,12 @@ api: delete /api/v2/public/linked-account/:linked_account_id
 This API lets you delete an existing linked account by its ID.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Path Parameters
 <ParamField path="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com

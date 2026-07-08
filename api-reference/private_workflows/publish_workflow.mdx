@@ -16,18 +16,18 @@ This API supports two authentication methods. You can use either a Session Token
 </Note>
 
 #### Authentication Option 1: Session Token
-<ParamField header="Authorization" type="string" required>
+<ParamField header="Authorization" type="string">
   Bearer token using the [session token](https://docs.refold.ai/api-reference/session-token/generate-token-for-linked-account) of the linked account.
 
   **Format**: `Bearer <session_token>`
 </ParamField>
 
 #### Authentication Option 2: Org API Key + Linked Account ID
-<ParamField header="x-api-key" type="string" required>
+<ParamField header="x-api-key" type="string">
   Your org-level Refold API key.
 </ParamField>
 
-<ParamField header="linked_account_id" type="string" required>
+<ParamField header="linked_account_id" type="string">
   The unique identifier of the linked account to scope the request to.
 </ParamField>
 

@@ -6,6 +6,12 @@ api: delete /api/v1/workflow/public/scheduled/:schedule_id
 This API deletes a cron schedule by its ID.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Path Parameters 
 
 <ParamField path="schedule_id" type="string" required>

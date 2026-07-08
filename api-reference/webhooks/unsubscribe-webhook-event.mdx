@@ -10,6 +10,12 @@ This API is now deprecated.
 This API unsubscribes user from a Refold [webhook](https://app.gocobalt.io/webhooks) events.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Body Parameters
 <ParamField body="webhook_event" type="string" required>
   Webhooks event to unsubscribe. Accepted values are, `connection-created`, `connection-deleted`, `workflow-completed`, `workflow-errored`.
