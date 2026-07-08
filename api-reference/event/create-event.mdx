@@ -1,0 +1,146 @@
+---
+title: 'Create event'
+api: post /api/v2/public/application/event
+---
+
+This API creates a Refold [event](https://app.gocobalt.io/developer/events).
+
+## Request description
+#### Body Parameters
+<ParamField body="name" type="string" required>
+  Event Name
+</ParamField>
+
+<ParamField body="response" type="object" required>
+  Event model. This model's properties are accessed in the workflow as trigger variables.
+  ```JSON Example payload
+    {
+      "event": "event name",
+      "payload": {
+        "jobid": "677677AE59",
+        "firstname": "nanami",
+        "lastname": "jjk",
+        "email": "nana@jjk.com",
+        "headline": "Professional sorcerer"
+      }
+    }
+  ```
+  <Expandable title="example properties" defaultOpen="true">
+      <ResponseField name="event" type="string">
+          Event name string
+      </ResponseField>
+      <ResponseField name="payload" type="object">
+          Payload object containing event data fields
+      </ResponseField>
+  </Expandable>
+</ParamField>
+
+## Response description
+
+<Tabs>
+  <Tab title="200">
+    Returns an array of all events in the org after creation.
+    <ResponseField name="_id" type="string">
+      Event Id
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      Name of the event
+    </ResponseField>
+    <ResponseField name="response" type="array">
+      Array of response field objects derived from the event model
+      <Expandable title="properties">
+        <ResponseField name="key" type="string">
+          Field key name
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Field data type. Expected values: `text`, `object`
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="raw_response" type="string">
+      Raw JSON string of the event payload
+    </ResponseField>
+  </Tab>
+  <Tab title="400">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="http_error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="error_code" type="string">
+    Specific error code to identify the error
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+  <Tab title="500">
+    <ResponseField name="status_code" type="integer">
+    System generated status Code
+    </ResponseField>
+    <ResponseField name="error_type" type="string">
+    System generated error type
+    </ResponseField>
+    <ResponseField name="message" type="string">
+    Error message
+    </ResponseField>
+  </Tab>
+</Tabs>
+
+<ResponseExample>
+```JSON 200
+[
+    {
+        "_id": "64c8d0f92f6f5ad7ce6b4a6a",
+        "name": "Delete Contact",
+        "response": [
+            {
+                "key": "contact_id",
+                "type": "text"
+            },
+            {
+                "key": "app_contact_id",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"contact_id\":\"64e4742936ee94ac84be2d35\",\"app_contact_id\":\"\"}"
+    },
+    {
+        "_id": "64c8d1172f6f5ad7ce6b7462",
+        "name": "Add Lead",
+        "response": [
+            {
+                "key": "company",
+                "type": "text"
+            },
+            {
+                "key": "email",
+                "type": "text"
+            },
+            {
+                "key": "name",
+                "type": "text"
+            }
+        ],
+        "raw_response": "{\"company\":\"\",\"email\":\"\",\"name\":\"\"}"
+    }
+]
+```
+```JSON 400
+{
+    "status_code": 400,
+    "http_error_type": "BAD_REQUEST",
+    "error_code": "INVALID_EVENT_ID",
+    "message": "Trigger with name event name 211233 already exists"
+}
+```
+
+```JSON 500
+{
+    "status_code": 500,
+    "error_type": "INTERNAL_SERVER_ERROR",
+    "message": "Request failed with status code 500"
+}
+```
+</ResponseExample>
