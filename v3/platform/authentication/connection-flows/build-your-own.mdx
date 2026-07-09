@@ -25,24 +25,24 @@ For a no-code option, use the [Hosted flow](/v3/platform/authentication/connecti
 
 <Steps>
   <Step title="Install and initialize the SDK">
-    Install `@cobaltio/cobalt-js` and initialize it with the customer's session token.
+    Install `@refoldai/refold-js` and initialize it with the customer's session token.
 
 ```bash
-npm install --save @cobaltio/cobalt-js
+npm install --save @refoldai/refold-js
 ```
 
 ```javascript
-import { Cobalt } from "@cobaltio/cobalt-js";
+import { Refold } from "@refoldai/refold-js";
 
-const cobalt = new Cobalt({ token: "YOUR_SESSION_TOKEN" });
+const refold = new Refold({ token: "YOUR_SESSION_TOKEN" });
 ```
   </Step>
   <Step title="List available apps">
     Use `getApp()` to fetch the apps enabled for the customer and render your own catalog. Pass a slug to fetch a single app, or omit it for all of them.
 
 ```javascript
-const apps = await cobalt.getApp();         // all enabled apps
-const slack = await cobalt.getApp("slack"); // one app
+const apps = await refold.getApp();         // all enabled apps
+const slack = await refold.getApp("slack"); // one app
 ```
 
     <Tip>
@@ -53,14 +53,14 @@ const slack = await cobalt.getApp("slack"); // one app
     Call `connect(slug)` to start the auth flow, OAuth apps open a popup, key-based apps take a credentials payload. Call `disconnect(slug)` to revoke access and delete the app's config for the linked account.
 
 ```javascript
-await cobalt.connect("slack");                  // OAuth: opens popup
-await cobalt.connect("twilio", {                // key-based: saves credentials
+await refold.connect("slack");                  // OAuth: opens popup
+await refold.connect("twilio", {                // key-based: saves credentials
   number: "1234567890",
   sid: "ACCOUNT_SID",
   auth_token: "AUTH_TOKEN",
 });
 
-await cobalt.disconnect("slack");
+await refold.disconnect("slack");
 ```
   </Step>
   <Step title="Render and save config fields">
@@ -75,7 +75,7 @@ See the [JavaScript SDK](/v3/api-reference/javascript-sdk) reference for every m
 </Tip>
 
 <Warning>
-Call `connect()` in response to a user action (a click). Browsers block OAuth popups that aren't triggered by user interaction. Session tokens also expire after 24 hours. Generate a fresh one for each session.
+Call `connect()` in response to a user action (a click). Browsers block OAuth popups that aren't triggered by user interaction. Session tokens are also valid for 7 days by default. Generate a fresh one for each session rather than assuming a fixed lifetime.
 </Warning>
 
 ## Next steps

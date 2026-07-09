@@ -28,8 +28,12 @@ For a no-code option with no React, use the [Hosted flow](/v3/platform/authentic
     Install the React SDK alongside the underlying JavaScript SDK.
 
 ```bash
-npm install --save @cobaltio/react-cobalt-js @cobaltio/cobalt-js@^8
+npm install --save @cobaltio/react-cobalt-js @refoldai/refold-js
 ```
+
+<Note>
+The underlying JavaScript SDK is `@refoldai/refold-js` (renamed from `@cobaltio/cobalt-js`, see [JavaScript SDK](/v3/api-reference/javascript-sdk)). The React package's own name and rename status are unconfirmed — `@cobaltio/react-cobalt-js` above reflects the current published package.
+</Note>
   </Step>
   <Step title="Wrap your app in the Provider">
     Pass your customer's session token to `<Provider>`. Place it high enough in the tree to cover every component that renders `<Config>`.
@@ -72,7 +76,7 @@ See the [React SDK](/v3/api-reference/sdks) reference for every `<Provider>` and
 </Tip>
 
 <Warning>
-Session tokens expire after 24 hours. Fetch a new token for each customer session and update the `<Provider>`.
+Session tokens are valid for 7 days by default. Fetch a new token for each customer session and update the `<Provider>` rather than assuming a fixed lifetime.
 </Warning>
 
 ## Next steps

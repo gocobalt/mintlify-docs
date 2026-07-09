@@ -63,7 +63,7 @@ After a customer connects, use the SDK (or the [config APIs](/v3/api-reference/c
 
 <CodeGroup>
 ```javascript SDK
-const config = await cobalt.config({
+const config = await refold.config({
   slug: "hubspot",
   config_id: "config_123", // optional: defaults to the linked account ID
   labels: {},              // optional: dynamic labels for Map v2 fields
@@ -119,7 +119,7 @@ The response lists every field (with its type, options, and current value) and e
 
 <CodeGroup>
 ```javascript SDK
-await cobalt.updateConfig({
+await refold.updateConfig({
   slug: "hubspot",
   config_id: "config_123",
   fields: {
@@ -155,8 +155,8 @@ You can also set a single field's value with the [Update Config Field Value](/v3
 By default a linked account has one config, and its `config_id` is the linked account ID. To run the same workflow against more than one target for the same customer, say a customer syncing to both a **sales** and a **partnerships** HubSpot pipeline, create **additional named configs** by passing your own `config_id`.
 
 ```javascript
-await cobalt.config({ slug: "hubspot", config_id: "pipeline-sales" });
-await cobalt.config({ slug: "hubspot", config_id: "pipeline-partnerships" });
+await refold.config({ slug: "hubspot", config_id: "pipeline-sales" });
+await refold.config({ slug: "hubspot", config_id: "pipeline-partnerships" });
 
 // fire an event against a specific config
 await client.event({

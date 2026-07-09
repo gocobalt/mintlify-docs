@@ -11,16 +11,16 @@ The fields that matter are `connected`, `connected_accounts`, and `reauth_requir
 
 The application object is available on both the client and the server, so you can read status wherever you render your UI:
 
-- **Client-side**: call `cobalt.getApp()` from the [JavaScript SDK](/v3/api-reference/javascript-sdk) (using the customer's session token). Pass a slug for one app, or omit it for every enabled app.
+- **Client-side**: call `refold.getApp()` from the [JavaScript SDK](/v3/api-reference/javascript-sdk) (using the customer's session token). Pass a slug for one app, or omit it for every enabled app.
 - **Server-side**: call the List Applications API or the [Node.js SDK](/v3/api-reference/sdks) with the customer's `linked_account_id`.
 
 <CodeGroup>
 ```javascript JS SDK
 // one app
-const slack = await cobalt.getApp("slack");
+const slack = await refold.getApp("slack");
 
 // every enabled app
-const apps = await cobalt.getApp();
+const apps = await refold.getApp();
 ```
 
 ```bash cURL
@@ -93,7 +93,7 @@ function statusFor(app) {
 
 The application object reflects status at the moment you fetch it. To keep your UI current:
 
-- **Re-fetch after a connect**: call `cobalt.getApp()` again once a customer finishes the flow so the state flips to **Connected**.
+- **Re-fetch after a connect**: call `refold.getApp()` again once a customer finishes the flow so the state flips to **Connected**.
 - **Listen for expiry**: subscribe to the **Connection Expired** webhook to learn the moment a connection breaks, instead of polling. See [Re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
 
 ## Next steps

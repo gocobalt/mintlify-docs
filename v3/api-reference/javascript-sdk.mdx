@@ -25,7 +25,7 @@ Before using the JavaScript SDK:
 2. **Generate a Session Token** using the [Node.js SDK](/v3/api-reference/sdks) or [API](/v3/api-reference/session-tokens/generate-session-token)
 
 <Warning>
-Session tokens expire after 24 hours. Generate a new token for each user session.
+Session tokens are valid for 7 days by default. Generate a new token for each user session rather than assuming a fixed lifetime.
 </Warning>
 
 ## Installation
@@ -516,7 +516,7 @@ async function initializeIntegrationPage(sessionToken) {
   <Accordion title="Authentication Errors">
     | Problem | Solution |
     |---------|----------|
-    | "Invalid token" error | Generate a new session token. Tokens expire after 24 hours. |
+    | "Invalid token" error | Generate a new session token. Tokens are valid for 7 days by default. |
     | Token not working after page refresh | Store the token and reinitialize the SDK on page load, or fetch a new token from your backend. |
     | OAuth popup blocked | Ensure `.connect()` is called in response to a user action (click). Browsers block popups not triggered by user interaction. |
   </Accordion>

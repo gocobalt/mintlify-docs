@@ -6,7 +6,7 @@ description: Issue a session token for a linked account.
 
 Issue a JWT session token (and refresh token) for a linked account. Session tokens authenticate hosted and Connect frontends that should never hold your API key — the token itself encodes the org, linked account, and environment.
 
-By default an existing valid token is reused; pass `force_refresh=true` to always mint a new one. Token TTL is determined by service configuration.
+By default an existing valid token is reused; pass `force_refresh=true` to always mint a new one. Token TTL is determined by service configuration and defaults to **7 days (604,800 seconds)** if not overridden for your environment. Always read `expires_in` from the response rather than hard-coding a lifetime.
 
 <ResponseExample>
 ```json 200

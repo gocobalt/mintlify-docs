@@ -66,7 +66,7 @@ To render workflows yourself, read the config, then write the customer's choices
     Call `config()` for the linked account. The `workflows` array tells you what to render.
 
 ```javascript SDK
-const config = await cobalt.config({ slug: "hubspot" });
+const config = await refold.config({ slug: "hubspot" });
 // config.workflows -> [{ id, name, enabled, fields: [...] }, ...]
 ```
   </Step>
@@ -74,7 +74,7 @@ const config = await cobalt.config({ slug: "hubspot" });
     Use `updateConfig()` to enable a workflow and set its workflow-level fields. Reference each field by the `id` from the config response.
 
 ```javascript SDK
-await cobalt.updateConfig({
+await refold.updateConfig({
   slug: "hubspot",
   workflows: [
     {

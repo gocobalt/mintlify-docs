@@ -59,7 +59,7 @@ Ship the connection experience inside your product so customers connect without 
     For a fully embedded experience, use the [React SDK flow](/v3/native/frontend/react-sdk-flow) or [build your own](/v3/platform/authentication/connection-flows/build-your-own). The [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow) is fine if a redirect or embedded portal meets your needs.
   </Step>
   <Step title="Mint session tokens on your backend">
-    Generate a [session token](/v3/native/frontend/overview#before-you-start) per customer session on the server so your API key stays server-side. Tokens expire after 24 hours, so mint a fresh one each session.
+    Generate a [session token](/v3/native/frontend/overview#before-you-start) per customer session on the server so your API key stays server-side. Tokens are valid for 7 days by default, so mint a fresh one each session rather than relying on a cached one.
   </Step>
   <Step title="Create a linked account per customer">
     Create a [linked account](/v3/platform/concepts/linked-account) when a customer signs up, and reuse its id in every account-scoped call.

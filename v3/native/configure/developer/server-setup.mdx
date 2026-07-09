@@ -23,20 +23,20 @@ The SDK targets the base URL `https://app.refold.ai` and sends your API key in t
     Add the Refold Node.js SDK to your backend.
 
     ```bash
-    npm install @cobaltio/cobalt
+    npm install @refoldai/refold-node
     ```
 
     <Note>
-    TODO: confirm the published npm package name and import for the Refold-branded server SDK. The current package on npm is `@cobaltio/cobalt` and the client class is `Cobalt`. Verify whether a renamed Refold package exists before publishing.
+    Package name pending DEV-4759 — confirm before publishing. The Refold npm scope is `@refoldai` (the browser SDK already ships as [`@refoldai/refold-js`](/v3/api-reference/javascript-sdk)), but the exact server-SDK package name is still an open decision. `@refoldai/refold-node` above is a placeholder, not a published package.
     </Note>
   </Step>
   <Step title="Initialize the client">
     Create the client once at startup and read the API key from your environment.
 
     ```javascript Node.js
-    const Cobalt = require("@cobaltio/cobalt");
+    const { Refold } = require("@refoldai/refold-node"); // placeholder package name — pending DEV-4759
 
-    const client = new Cobalt({
+    const client = new Refold({
       apiKey: process.env.REFOLD_API_KEY,
     });
     ```

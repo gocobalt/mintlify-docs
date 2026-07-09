@@ -1,0 +1,127 @@
+---
+title: "Programmatic setup"
+description: "Create an MCP server, link an end user, and connect an agent, entirely from code — no dashboard required."
+---
+
+The [Quickstart](/v3/mcp/get-started/getting-started) walks through the Refold dashboard. This page is the code-only path: create an MCP server, register the end user as a linked account, and get a connection your agent SDK can use, without opening the dashboard.
+
+<Info>
+This page describes the **target** programmatic flow. Two pieces of it aren't live yet:
+
+- **The Node.js SDK's package name is unconfirmed.** It ships under the `@refoldai` scope (the browser SDK already does — see [JavaScript SDK](/v3/api-reference/javascript-sdk)), but the exact server-SDK package name is an open decision (Linear DEV-4759). This page uses `@refoldai/refold-node` as a **placeholder** — confirm the real name before you `npm install` it.
+- **There is no single call yet that returns a ready-to-use connection** (Server URL + auth header) for a linked account. That lands with Linear DEV-4901, which defines `refold.mcp.connections.generate()`. Until it ships, get the Server URL from the dashboard's **Overview** tab instead (see [Copy the Server URL](/v3/mcp/get-started/getting-started#create-your-mcp-server)), then skip ahead to [Hand the connection to your agent](#hand-the-connection-to-your-agent).
+
+Steps 1 and 2 below call the REST API directly, so they work today with no SDK dependency.
+</Info>
+
+## Prerequisites
+
+- A Refold account and an **API key** from **Settings > Credentials** (see [Developer app and API keys](/v3/native/configure/developer/developer-app))
+- At least one connector configured with valid credentials (see [Connector setup](/v3/platform/concepts/connector/supported-apps-actions))
+
+## 1. Create or find an MCP server
+
+Create a server with a name and description, or list existing servers to reuse one. Both are live REST endpoints today.
+
+<CodeGroup>
+```bash Create a server
+curl -X POST "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Production CRM Server", "description": "Access Salesforce and HubSpot. Create, update, and query contacts, deals, and accounts." }'
+```
+
+```bash List existing servers
+curl -X GET "https://app.refold.ai/api/v2/public/mcp-servers" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</CodeGroup>
+
+Creating a server only sets its `name` and `description`. To attach the apps and actions the agent can call, use [Update MCP Server](/v3/api-reference/mcp-servers/update-mcp-server) (the `associated_apps` field) or the dashboard's **Applications** tab — see [Add applications](/v3/mcp/get-started/getting-started#create-your-mcp-server).
+
+<Tip>
+The description is what the agent reads when it connects. Be specific about which apps and actions are available, the same guidance as the [dashboard quickstart](/v3/mcp/get-started/getting-started#create-your-mcp-server).
+</Tip>
+
+See the full [MCP Servers API reference](/v3/api-reference/mcp-servers/list-mcp-servers) for every field.
+
+## 2. Register a linked account
+
+Each end user needs a [linked account](/v3/platform/concepts/linked-account) before they can connect an agent. Create one with your own `account_id` for the end user:
+
+```bash
+curl -X PUT "https://app.refold.ai/api/v2/public/linked-account" \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "account_id": "YOUR_END_USER_ID", "name": "End user display name" }'
+```
+
+See [Upsert Linked Account](/v3/api-reference/linked-accounts/upsert-linked-account) for the full payload.
+
+## 3. Get a connection for the agent
+
+<Warning>
+`refold.mcp.connections.generate()` is not implemented yet (Linear DEV-4901). The snippet below is the target shape. Until it ships, copy the Server URL from the dashboard's **Overview** tab instead, and skip to the next section.
+</Warning>
+
+Once DEV-4901 ships, the Node.js SDK will resolve a server and mint a connection for a linked account in two calls:
+
+```javascript Node.js
+import { Refold } from "@refoldai/refold-node"; // placeholder package name — pending DEV-4759
+
+const refold = new Refold({ apiKey: process.env.REFOLD_API_KEY });
+
+const [server] = await refold.mcp.servers.list({ name: "Production CRM Server" });
+
+const connection = await refold.mcp.connections.generate({
+  serverId: server._id,
+  linkedAccountId: "YOUR_END_USER_ID",
+});
+
+// connection => { url, headers, credential, transport }
+```
+
+`connection` carries everything an agent SDK needs: the full Server URL (`url`), a ready-to-send `Authorization` header (`headers`), the raw token by itself (`credential`), and the transport type (`transport`). See [Connect from agent code](/v3/mcp/connect/connect-from-agent-code) for what each of those maps to per agent framework.
+
+## Hand the connection to your agent
+
+However you obtained it (the SDK call above, once it ships, or copied from the dashboard), the connection is a URL plus an optional auth header. Wire it into your agent SDK the same way for every framework. For example, with the Anthropic Messages API:
+
+```python Python
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.beta.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "What tools do you have?"}],
+    mcp_servers=[{
+        "type": "url",
+        "name": "refold",
+        "url": "https://<domain>/mcp/v1/<token>/<server_id>",
+    }],
+    tools=[{"type": "mcp_toolset", "mcp_server_name": "refold"}],
+    betas=["mcp-client-2025-11-20"],
+)
+```
+
+See [Connect from agent code](/v3/mcp/connect/connect-from-agent-code) for the same pattern against the OpenAI Agents SDK, Vercel AI SDK, LangChain, and Mastra, and [Authentication](/v3/mcp/connect/authentication) for how the token maps to a linked account and how to revoke it.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart (dashboard)" icon="browser" href="/v3/mcp/get-started/getting-started">
+    The same flow through the Refold dashboard, if you'd rather click than call the API.
+  </Card>
+  <Card title="Connect from agent code" icon="code" href="/v3/mcp/connect/connect-from-agent-code">
+    Wire a Server URL into every major agent SDK.
+  </Card>
+  <Card title="Authentication" icon="lock" href="/v3/mcp/connect/authentication">
+    How tokens map to linked accounts, scoping, and revocation.
+  </Card>
+  <Card title="MCP Servers API reference" icon="server" href="/v3/api-reference/mcp-servers/list-mcp-servers">
+    Every field on create, list, get, update, and delete.
+  </Card>
+</CardGroup>
