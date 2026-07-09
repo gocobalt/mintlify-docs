@@ -1,0 +1,39 @@
+---
+title: Clear Dataref Records
+openapi: "PUT /api/v2/public/dataref/{refName}/clear-records"
+description: Clear all records of a dataref while keeping the dataref.
+---
+
+Reset a dataref's `data` map to `{}`, removing all records while preserving the dataref itself.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a3149efd396207fd24f7aad",
+  "linked_account_id": "user_12345",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "name": "contacts",
+  "data": {},
+  "createdAt": "2026-06-16T13:04:47.926Z",
+  "updatedAt": "2026-06-16T13:05:10.228Z",
+  "__v": 0
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error": "SERVER_ERROR",
+  "message": "Dataref not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://app.refold.ai/api/v2/public/dataref/{refName}/clear-records" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

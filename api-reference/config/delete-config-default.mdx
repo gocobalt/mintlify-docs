@@ -1,0 +1,31 @@
+---
+title: Delete Config
+openapi: "DELETE /api/v2/public/slug/{slug}/config"
+description: Delete the installed config for an app (config ID defaulted).
+---
+
+Delete the config installation for an app on a linked account, without specifying a `config_id` — it defaults to the linked account ID. To target a specific config ID, use [Delete Config by ID](/api-reference/config/delete-config).
+
+<ResponseExample>
+```json 200
+{
+  "message": "Installation Deleted Success"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Config with config id user_12345 not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/slug/{slug}/config" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

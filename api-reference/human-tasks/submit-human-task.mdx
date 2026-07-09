@@ -1,0 +1,48 @@
+---
+title: Submit Human Task
+openapi: "POST /api/v2/public/human-tasks/{id}"
+description: Submit a public human task (form) response.
+---
+
+Submit a response to a human task. This is a **public, no-auth** endpoint — the person who received the form posts their answers here. The submission is validated against the form's JSON schema (required fields, read-only fields), and submitting resumes the paused workflow.
+
+<Note>
+  No API key or session token is required. Submitting an already-submitted, expired, or incomplete form returns a `400`.
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "message": "Form submitted successfully"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "Form has already been submitted"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Specified Form Not Found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/human-tasks/{id}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": {
+      "approved": true,
+      "notes": "Looks good — approved."
+    }
+  }'
+```
+</RequestExample>
