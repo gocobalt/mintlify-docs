@@ -1,0 +1,24 @@
+---
+title: Delete Dataref
+openapi: "DELETE /api/v2/public/dataref/{refName}"
+description: Delete a dataref for a linked account.
+---
+
+Remove a dataref entity for a linked account. This deletes the dataref and all its records.
+
+<ResponseExample>
+```json 200
+{
+  "acknowledged": true,
+  "deletedCount": 1
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/dataref/{refName}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

@@ -1,0 +1,33 @@
+---
+title: Remove Columns
+openapi: "DELETE /api/v2/public/tables/{table_id}/columns/remove"
+description: Remove columns from a persistent table.
+---
+
+Remove one or more columns from a persistent table. Returns the table's remaining columns.
+
+<ResponseExample>
+```json 200
+{
+  "columns": ["email", "stage"]
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "Table not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/tables/{table_id}/columns/remove" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "columns": ["score"] }'
+```
+</RequestExample>

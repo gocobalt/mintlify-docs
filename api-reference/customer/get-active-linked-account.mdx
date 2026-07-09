@@ -1,0 +1,39 @@
+---
+title: Get Active Linked Account
+openapi: "GET /api/v2/public/session/active-linked-account"
+description: Get the linked account associated with the current session token.
+---
+
+Return the linked account associated with the current session token. This decodes the session JWT and looks up the matching account — useful for hosted or Connect frontends that hold only a session token (not your API key).
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6992cc7e9d38bc6a2ae28d12",
+  "associated_org": "6500a1b2c3d4e5f6a7b8c9d0",
+  "account_id": "user_12345",
+  "environment": "test",
+  "name": "Acme Inc.",
+  "udf": [],
+  "integrations": [
+    { "type": "hubspot", "name": "Hubspot", "app_id": null },
+    { "type": "slack", "name": "Slack", "app_id": null }
+  ]
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "INVALID_TOKEN",
+  "message": "Invalid token"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/session/active-linked-account" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

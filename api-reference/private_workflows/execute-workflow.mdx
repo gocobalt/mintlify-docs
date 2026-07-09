@@ -1,0 +1,45 @@
+---
+title: Execute Workflow
+openapi: "POST /api/v2/public/workflow/{workflowId}/execute"
+description: Execute a published workflow for a linked account.
+---
+
+Execute a workflow for a linked account via a manual trigger. The workflow must be **published** and owned by the linked account. Execution is asynchronous by default; set the `sync_execution` header to run synchronously and return the result inline.
+
+<Note>
+  The **`slug` header is required** — it names the application the workflow belongs to. Without it the call fails with `Workflow ID and slug are required`.
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "message": "Workflow execution started",
+  "execution_id": "6a314c54d4616e99e7fa5a02"
+}
+```
+```json 400
+{
+  "message": "Server Error",
+  "error": "Workflow ID and slug are required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/workflow/{workflow_id}/execute" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{ "payload": { "email": "jane@example.com" } }'
+```
+```bash cURL (session token, sync)
+curl -X POST "https://app.refold.ai/api/v2/public/workflow/{workflow_id}/execute" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "slug: {slug}" \
+  -H "sync_execution: true" \
+  -H "Content-Type: application/json" \
+  -d '{ "payload": {} }'
+```
+</RequestExample>

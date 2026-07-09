@@ -1,0 +1,48 @@
+---
+title: Add Records
+openapi: "PATCH /api/v2/public/tables/{table_id}"
+description: Add records to a persistent table.
+---
+
+Add one or more records to a persistent table. Pass a single object or an array of objects in `data`; each is assigned a generated `record_id`.
+
+<ResponseExample>
+```json 200
+{
+  "add_record_result": [
+    { "record_id": "02cd01ca-c09f-4f91-893d-222ab529f585", "email": "jane@example.com", "stage": "new" },
+    { "record_id": "166047e8-f290-416b-ab4c-0fd03119d9f6", "email": "john@example.com", "stage": "qualified" }
+  ]
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "data is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (multiple records)
+curl -X PATCH "https://app.refold.ai/api/v2/public/tables/{table_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": [
+      { "email": "jane@example.com", "stage": "new" },
+      { "email": "john@example.com", "stage": "qualified" }
+    ]
+  }'
+```
+```bash cURL (single record)
+curl -X PATCH "https://app.refold.ai/api/v2/public/tables/{table_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "data": { "email": "jane@example.com", "stage": "new" } }'
+```
+</RequestExample>

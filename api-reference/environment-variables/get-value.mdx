@@ -1,0 +1,39 @@
+---
+title: Get Variable Value
+openapi: "GET /api/v2/public/env/value/{definition_id}"
+description: Resolve a single environment-variable value in its scope.
+---
+
+Resolve the value of a variable definition in the appropriate scope. For linked-account or workflow scope, pass the corresponding query parameter. Encrypted values are redacted in the response.
+
+<ResponseExample>
+```json 200 Plain value
+{
+  "value": "https://api.example.com",
+  "encrypted": false,
+  "name": "API_BASE_URL",
+  "scope": "org",
+  "variable_definition_id": "6a159a9741e63efd0833773f"
+}
+```
+```json 200 Encrypted value
+{
+  "value": "[REDACTED]",
+  "encrypted": true,
+  "name": "API_SECRET",
+  "scope": "linked_account",
+  "variable_definition_id": "6a1401de41e63efd08fb3e54"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key, linked-account scope)
+curl -X GET "https://app.refold.ai/api/v2/public/env/value/{definition_id}?linked_account_id=YOUR_LINKED_ACCOUNT_ID" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/env/value/{definition_id}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>
