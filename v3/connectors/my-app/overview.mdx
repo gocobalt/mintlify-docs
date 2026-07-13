@@ -62,7 +62,7 @@ Two things differ between environments, and you set both per environment in the 
 | **Connector auth** | Refold's shared test OAuth credentials, or your own | Your own OAuth client ID and secret |
 | **Data** | Sandboxed, safe to create and delete freely | Real customer connections and data |
 
-While building, you can connect an app with Refold's shared test credentials so you don't need your own OAuth client yet. Before going live, configure your own credentials for each connector under its [authentication settings](/v3/connectors/authentication).
+While building, you can connect an app with Refold's shared test credentials so you don't need your own OAuth client yet. Before going live, configure your own credentials for each connector under its [authentication settings](/v3/connectors/app-auth-modes).
 
 <Warning>
 The shared test credentials are for development only. Production traffic must use your own OAuth client ID and secret, configured per connector. Shipping with shared credentials risks rate limits and exposes your customers to a client you don't control.
@@ -86,7 +86,7 @@ Rotating a key invalidates the old one. Any backend still using the previous key
   <Card title="Linked accounts and session tokens" icon="user-plus" href="/v3/native/get-started/linked-accounts">
     Wire up your backend: represent each customer and mint a session token for the frontend.
   </Card>
-  <Card title="Connector authentication" icon="key" href="/v3/connectors/authentication">
+  <Card title="Connector authentication" icon="key" href="/v3/connectors/app-auth-modes">
     Configure your own OAuth credentials before going live.
   </Card>
   <Card title="Subscribe to webhooks" icon="bell" href="/v3/connectors/my-app/webhooks">
