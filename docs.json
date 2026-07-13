@@ -6,6 +6,10 @@
     {
       "source": "/welcome-v2",
       "destination": "/home"
+    },
+    {
+      "source": "/v3/platform/platform-settings/workspace-settings/webhooks",
+      "destination": "/v3/native/configure/developer/webhooks"
     }
   ],
   "logo": {
@@ -1263,17 +1267,34 @@
                 ]
               },
               {
+                "group": "Products",
+                "pages": [
+                  "v3/native/get-started/overview",
+                  "v3/mcp/get-started/what-is-mcp"
+                ]
+              },
+              {
+                "group": "Connectors",
+                "pages": [
+                  "v3/platform/concepts/connector/supported-apps-actions",
+                  "v3/platform/concepts/connector/custom-actions",
+                  "v3/platform/concepts/connector/authentication",
+                  {
+                    "group": "My App",
+                    "pages": [
+                      "v3/native/configure/developer/developer-app",
+                      "v3/native/configure/developer/authentication",
+                      "v3/native/configure/developer/api-proxies",
+                      "v3/native/configure/developer/events",
+                      "v3/native/configure/developer/webhooks"
+                    ]
+                  }
+                ]
+              },
+              {
                 "group": "Concepts",
                 "pages": [
                   "v3/platform/concepts/linked-account",
-                  {
-                    "group": "Connector",
-                    "pages": [
-                      "v3/platform/concepts/connector/supported-apps-actions",
-                      "v3/platform/concepts/connector/custom-actions",
-                      "v3/platform/concepts/connector/authentication"
-                    ]
-                  },
                   {
                     "group": "Workflows",
                     "pages": [
@@ -1333,8 +1354,7 @@
                       "v3/platform/concepts/advanced/internal-functions",
                       "v3/platform/concepts/advanced/data-ref-node"
                     ]
-                  },
-                  "v3/platform/concepts/audit"
+                  }
                 ]
               },
               {
@@ -1358,7 +1378,8 @@
                       "v3/platform/authentication/managing-connections/connection-status",
                       "v3/platform/authentication/managing-connections/integration-logs"
                     ]
-                  }
+                  },
+                  "v3/mcp/connect/authentication"
                 ]
               },
               {
@@ -1379,12 +1400,134 @@
                       "v3/platform/platform-settings/workspace-settings/users",
                       "v3/platform/platform-settings/workspace-settings/roles",
                       "v3/platform/platform-settings/workspace-settings/credentials",
-                      "v3/platform/platform-settings/workspace-settings/webhooks",
                       "v3/platform/platform-settings/workspace-settings/email",
                       "v3/platform/platform-settings/workspace-settings/connect-portal",
                       "v3/platform/platform-settings/workspace-settings/environment-variables",
                       "v3/platform/platform-settings/workspace-settings/certificates",
                       "v3/platform/platform-settings/workspace-settings/policy"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Native",
+                "pages": [
+                  {
+                    "group": "Get started",
+                    "pages": [
+                      "v3/native/get-started/how-it-works",
+                      "v3/native/get-started/quickstart"
+                    ]
+                  },
+                  {
+                    "group": "Frontend",
+                    "pages": [
+                      "v3/native/frontend/overview",
+                      "v3/native/frontend/react-sdk-flow",
+                      "v3/native/frontend/expose-workflow",
+                      {
+                        "group": "Customization",
+                        "pages": [
+                          "v3/native/frontend/customization/custom-styling",
+                          "v3/native/frontend/customization/white-label-flows"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Configure",
+                    "pages": [
+                      {
+                        "group": "Integration",
+                        "pages": [
+                          "v3/native/configure/integration/config-fields",
+                          {
+                            "group": "Field types",
+                            "pages": [
+                              "v3/native/configure/integration/field-types/overview",
+                              "v3/native/configure/integration/field-types/datasource",
+                              "v3/native/configure/integration/field-types/mapping",
+                              "v3/native/configure/integration/field-types/dependent",
+                              "v3/native/configure/integration/field-types/rule-engine"
+                            ]
+                          },
+                          "v3/native/configure/integration/dataslots",
+                          "v3/native/configure/integration/workflow"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Backend",
+                    "pages": [
+                      "v3/native/configure/developer/server-setup",
+                      "v3/native/configure/developer/linked-accounts"
+                    ]
+                  },
+                  {
+                    "group": "Move data",
+                    "pages": [
+                      "v3/native/move-data/read-write",
+                      "v3/native/move-data/sync-data",
+                      "v3/native/move-data/data-mapping"
+                    ]
+                  },
+                  {
+                    "group": "Ship & operate",
+                    "pages": [
+                      "v3/native/ship-and-operate/testing",
+                      "v3/native/ship-and-operate/go-live",
+                      "v3/native/ship-and-operate/monitoring"
+                    ]
+                  },
+                  {
+                    "group": "Recipes",
+                    "pages": [
+                      "v3/native/recipes/netsuite",
+                      "v3/native/recipes/salesforce",
+                      "v3/native/recipes/workday",
+                      "v3/native/recipes/two-way-sync",
+                      "v3/native/recipes/data-import"
+                    ]
+                  },
+                  {
+                    "group": "Best practices",
+                    "pages": [
+                      "v3/native/best-practices/rate-limiting",
+                      "v3/native/best-practices/error-handling",
+                      "v3/native/best-practices/idempotency",
+                      "v3/native/best-practices/embedding-security"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "MCP",
+                "pages": [
+                  {
+                    "group": "Get started",
+                    "pages": [
+                      "v3/mcp/get-started/getting-started",
+                      "v3/mcp/get-started/architecture",
+                      "v3/mcp/get-started/choose-your-pattern"
+                    ]
+                  },
+                  {
+                    "group": "Build",
+                    "pages": [
+                      "v3/mcp/build/server-configuration",
+                      "v3/mcp/build/skills",
+                      "v3/mcp/build/workflow-as-mcp"
+                    ]
+                  },
+                  "v3/mcp/connect/connect-from-agent-code",
+                  "v3/mcp/reference/tools",
+                  {
+                    "group": "Operate",
+                    "pages": [
+                      "v3/mcp/operate/mcp-logs",
+                      "v3/mcp/operate/debugging",
+                      "v3/mcp/operate/security-compliance"
                     ]
                   }
                 ]
@@ -1425,6 +1568,7 @@
                 "group": "Monitor",
                 "pages": [
                   "v3/platform/monitor/logs",
+                  "v3/platform/concepts/audit",
                   "v3/platform/monitor/reliability",
                   "v3/platform/monitor/try-api"
                 ]
@@ -2356,146 +2500,6 @@
                       }
                     ]
                   }
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "Native",
-            "groups": [
-              {
-                "group": "Get started",
-                "pages": [
-                  "v3/native/get-started/overview",
-                  "v3/native/get-started/how-it-works",
-                  "v3/native/get-started/quickstart"
-                ]
-              },
-              {
-                "group": "Frontend",
-                "pages": [
-                  "v3/native/frontend/overview",
-                  "v3/native/frontend/react-sdk-flow",
-                  "v3/native/frontend/expose-workflow",
-                  {
-                    "group": "Customization",
-                    "pages": [
-                      "v3/native/frontend/customization/custom-styling",
-                      "v3/native/frontend/customization/white-label-flows"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Configure",
-                "pages": [
-                  {
-                    "group": "Integration",
-                    "pages": [
-                      "v3/native/configure/integration/config-fields",
-                      {
-                        "group": "Field types",
-                        "pages": [
-                          "v3/native/configure/integration/field-types/overview",
-                          "v3/native/configure/integration/field-types/datasource",
-                          "v3/native/configure/integration/field-types/mapping",
-                          "v3/native/configure/integration/field-types/dependent",
-                          "v3/native/configure/integration/field-types/rule-engine"
-                        ]
-                      },
-                      "v3/native/configure/integration/dataslots",
-                      "v3/native/configure/integration/workflow"
-                    ]
-                  },
-                  {
-                    "group": "Developer",
-                    "pages": [
-                      "v3/native/configure/developer/developer-app",
-                      "v3/native/configure/developer/server-setup",
-                      "v3/native/configure/developer/linked-accounts",
-                      "v3/native/configure/developer/webhooks",
-                      "v3/native/configure/developer/events",
-                      "v3/native/configure/developer/api-proxies"
-                    ]
-                  }
-                ]
-              },
-              {
-                "group": "Move data",
-                "pages": [
-                  "v3/native/move-data/read-write",
-                  "v3/native/move-data/sync-data",
-                  "v3/native/move-data/data-mapping"
-                ]
-              },
-              {
-                "group": "Ship & operate",
-                "pages": [
-                  "v3/native/ship-and-operate/testing",
-                  "v3/native/ship-and-operate/go-live",
-                  "v3/native/ship-and-operate/monitoring"
-                ]
-              },
-              {
-                "group": "Recipes",
-                "pages": [
-                  "v3/native/recipes/netsuite",
-                  "v3/native/recipes/salesforce",
-                  "v3/native/recipes/workday",
-                  "v3/native/recipes/two-way-sync",
-                  "v3/native/recipes/data-import"
-                ]
-              },
-              {
-                "group": "Best practices",
-                "pages": [
-                  "v3/native/best-practices/rate-limiting",
-                  "v3/native/best-practices/error-handling",
-                  "v3/native/best-practices/idempotency",
-                  "v3/native/best-practices/embedding-security"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "MCP",
-            "groups": [
-              {
-                "group": "Get started",
-                "pages": [
-                  "v3/mcp/get-started/what-is-mcp",
-                  "v3/mcp/get-started/getting-started",
-                  "v3/mcp/get-started/architecture",
-                  "v3/mcp/get-started/choose-your-pattern"
-                ]
-              },
-              {
-                "group": "Build",
-                "pages": [
-                  "v3/mcp/build/server-configuration",
-                  "v3/mcp/build/skills",
-                  "v3/mcp/build/workflow-as-mcp"
-                ]
-              },
-              {
-                "group": "Connect",
-                "pages": [
-                  "v3/mcp/connect/connect-from-agent-code",
-                  "v3/mcp/connect/authentication"
-                ]
-              },
-              {
-                "group": "Reference",
-                "pages": [
-                  "v3/mcp/reference/tools"
-                ]
-              },
-              {
-                "group": "Operate",
-                "pages": [
-                  "v3/mcp/operate/mcp-logs",
-                  "v3/mcp/operate/debugging",
-                  "v3/mcp/operate/security-compliance"
                 ]
               }
             ]

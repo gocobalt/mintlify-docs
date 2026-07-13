@@ -61,7 +61,7 @@ For the full method list (linked accounts, tokens, config, and events), see the 
 Keep one rule: the API key stays on the server, and the browser only ever sees a session token.
 
 - **Read the key from an environment variable**, never a literal in source. The examples use `process.env.REFOLD_API_KEY`.
-- **Use the test key in non-production environments** and the live key in production. The key selects the environment. See [Test vs production credentials](/v3/native/configure/developer/developer-app#test-vs-production-credentials).
+- **Use the test key in non-production environments** and the production key in production. The key selects the environment. See [Test vs production credentials](/v3/native/configure/developer/developer-app#test-vs-production-credentials).
 - **Initialize one client per environment** and reuse it across requests rather than constructing a new client per call.
 
 <Warning>
