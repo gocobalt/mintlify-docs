@@ -11,6 +11,12 @@ Your backend does two things per customer. First, create a linked account, typic
 All calls use the base URL `https://app.refold.ai` and send your API key in the `x-api-key` header. Account-scoped calls also send the `linked_account_id`. Never expose your API key in the browser, mint a session token for the frontend instead.
 </Note>
 
+## Before you start
+
+- **Get an API key.** Copy it from **Settings > Credentials** in the [Refold Console](https://app.refold.ai). See [Developer app and API keys](/v3/native/configure/developer/developer-app).
+- **Keep the key server-side.** Read it from an environment variable (for example `REFOLD_API_KEY`), never a literal in source or anything the browser can reach. The key also selects the environment: a test key acts on `test`, a production key on `production`.
+- **Call the Public APIs directly.** Every operation below is a plain HTTP call, so any backend works — no SDK required. A [Node.js package](/v3/api-reference/sdks) wraps these endpoints, but it is not actively maintained and doesn't cover every API, so the examples here lead with `cURL` and the Public API is the recommended path.
+
 ## How it works
 
 The two objects play different roles, so keep them straight:
