@@ -87,7 +87,7 @@ A **Field Mapping** Dataslot lets the customer line up two lists, so a value on 
 - **Options**: for a Select column, the static list or **Use Data Source**, plus **Allow Multiple**.
 - **Dependency**: make the column depend on another field.
 
-The customer then maps each **LHS** value to an **RHS** value. Inside a workflow, the [Data Mapper node](/v3/platform/concepts/workflows/nodes/data-mapper) applies the saved mapping to records.
+The customer then maps each **LHS** value to an **RHS** value. Inside a workflow, the [Data Mapper node](/v3/concepts/workflows/nodes/data-mapper) applies the saved mapping to records.
 
 The saved value is an object keyed by **LHS value → RHS value**, stored under the field's `id`. Read and write it with `config()` / `updateConfig()`. See [Manage configs from your code](/v3/native/configure/integration/config-fields#manage-configs-from-your-code).
 
@@ -148,10 +148,10 @@ When the Dynamic Dataslot you need isn't available, supply the live data yoursel
     In the connector, add a workflow and name it so it's easy to spot (for example, `List Contact Properties`).
   </Step>
   <Step title="Fetch the data">
-    Add a node that retrieves the records you want to offer, a connector action, a [custom action](/v3/platform/concepts/connector/custom-actions), or an [HTTP Request](/v3/platform/concepts/workflows/nodes/http) node against the connected app.
+    Add a node that retrieves the records you want to offer, a connector action, a [custom action](/v3/platform/concepts/connector/custom-actions), or an [HTTP Request](/v3/concepts/workflows/nodes/http) node against the connected app.
   </Step>
   <Step title="Transform into name/value pairs">
-    Use a [Transform](/v3/platform/concepts/workflows/nodes/transform) or [Custom Code](/v3/platform/concepts/workflows/nodes/custom-code) node to reshape the records into objects with exactly `name` (the label the customer sees) and `value` (the ID you use).
+    Use a [Transform](/v3/concepts/workflows/nodes/transform) or [Custom Code](/v3/concepts/workflows/nodes/custom-code) node to reshape the records into objects with exactly `name` (the label the customer sees) and `value` (the ID you use).
 
     ```javascript Transform query
     {
@@ -166,7 +166,7 @@ When the Dynamic Dataslot you need isn't available, supply the live data yoursel
     </Warning>
   </Step>
   <Step title="Return the options">
-    End the workflow with a [Response](/v3/platform/concepts/workflows/nodes/response) node containing the transformed list. Nothing connects after it.
+    End the workflow with a [Response](/v3/concepts/workflows/nodes/response) node containing the transformed list. Nothing connects after it.
   </Step>
   <Step title="Publish">
     **Publish** the workflow, then select it under **Use Data Source** on your Dataslot. An unpublished workflow won't appear in the list and won't run for customers.
@@ -210,7 +210,7 @@ Until a field's parent has a value, the dependent field returns no options, so t
   <Card title="Config Fields" icon="list-check" href="/v3/native/configure/integration/config-fields">
     What config fields are for, how customers fill them, and how to manage them in code.
   </Card>
-  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/platform/concepts/workflows/nodes/data-mapper">
+  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/concepts/workflows/nodes/data-mapper">
     Apply a saved Field Mapping mapping to records inside a workflow.
   </Card>
   <Card title="Custom Actions" icon="bolt" href="/v3/platform/concepts/connector/custom-actions">

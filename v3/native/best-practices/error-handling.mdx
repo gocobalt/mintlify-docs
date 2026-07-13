@@ -5,7 +5,7 @@ description: "Handle failures in actions and workflows so a single bad call reco
 
 An **error** is any call that does not complete as intended: a connected app rejects a request, a token has expired, a record is missing, or a network hop times out. Integrations talk to systems you don't control, so failures are normal. Good error handling decides whether one bad call recovers quietly or surfaces to your customer as a broken integration.
 
-This page covers the failure modes you will hit when you [read and write data](/v3/native/move-data/read-write) and run [workflows](/v3/platform/concepts/workflows/overview): when to retry, how to catch errors inside a workflow, how to surface a failure to your customer, and how to recover from an auth failure.
+This page covers the failure modes you will hit when you [read and write data](/v3/native/move-data/read-write) and run [workflows](/v3/concepts/workflows/overview): when to retry, how to catch errors inside a workflow, how to surface a failure to your customer, and how to recover from an auth failure.
 
 ## Classify the failure first
 
@@ -31,17 +31,17 @@ A transient failure is temporary, so the fix is to wait and try again rather tha
 
 ## Catch errors inside a workflow
 
-When the failing call runs inside a [workflow](/v3/platform/concepts/workflows/overview), handle the error in the workflow itself so one failed node does not error out the whole run.
+When the failing call runs inside a [workflow](/v3/concepts/workflows/overview), handle the error in the workflow itself so one failed node does not error out the whole run.
 
 <Steps>
   <Step title="Wrap the risky nodes">
-    Put the calls that can fail (app actions, HTTP requests, lookups) inside a [Try & Catch node](/v3/platform/concepts/workflows/nodes/try-catch-node). When a node in the try block fails, execution branches to the catch path instead of failing the workflow.
+    Put the calls that can fail (app actions, HTTP requests, lookups) inside a [Try & Catch node](/v3/concepts/workflows/nodes/try-catch-node). When a node in the try block fails, execution branches to the catch path instead of failing the workflow.
   </Step>
   <Step title="Set a retry policy">
     On the Try & Catch node, configure the **Retry Policy** with an **Exponential** strategy, a delay, and a max-attempts cap so transient failures retry automatically before the catch branch runs.
   </Step>
   <Step title="Recover in the catch branch">
-    In the catch branch, provide a fallback: substitute a default value, queue the item in a [Tables node](/v3/platform/concepts/workflows/nodes/tables) for later processing, or notify your team. Keep the catch branch simple so it does not fail too.
+    In the catch branch, provide a fallback: substitute a default value, queue the item in a [Tables node](/v3/concepts/workflows/nodes/tables) for later processing, or notify your team. Keep the catch branch simple so it does not fail too.
   </Step>
   <Step title="Read the error details">
     Use the error fields the node exposes (`error_message`, `failed_node_id`) to log or branch on what went wrong. Record errors even when you handle them, so you can debug later.
@@ -49,7 +49,7 @@ When the failing call runs inside a [workflow](/v3/platform/concepts/workflows/o
 </Steps>
 
 <Tip>
-For complete node behavior, retry settings, and fallback examples, see the [Try & Catch node](/v3/platform/concepts/workflows/nodes/try-catch-node) reference.
+For complete node behavior, retry settings, and fallback examples, see the [Try & Catch node](/v3/concepts/workflows/nodes/try-catch-node) reference.
 </Tip>
 
 ## Recover from an auth failure
@@ -95,7 +95,7 @@ A failed integration is only actionable if the right person sees it. Match the a
 
 - [Rate limiting](/v3/native/best-practices/rate-limiting) : backoff and retry for throttled calls
 - [Idempotency](/v3/native/best-practices/idempotency) : make retries safe from duplicates
-- [Try & Catch node](/v3/platform/concepts/workflows/nodes/try-catch-node) : error handling and retry policy in workflows
+- [Try & Catch node](/v3/concepts/workflows/nodes/try-catch-node) : error handling and retry policy in workflows
 - [Re-authentication](/v3/platform/authentication/managing-connections/re-authentication) : prompt a reconnect after an auth failure
 - [Connection status](/v3/platform/authentication/managing-connections/connection-status) : read whether a connection is healthy
 - [Webhooks](/v3/native/configure/developer/webhooks) : get notified of connection and workflow failures

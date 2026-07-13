@@ -3,7 +3,7 @@ title: "Overview"
 description: "How your customers connect their third-party accounts in your product, the auth flow options, what they share, and when to use each."
 ---
 
-An **auth flow** is how a customer authorizes a third-party app inside your product so Refold can act on their behalf. The flow runs in your **frontend**; once a customer connects, their credentials are stored against their [linked account](/v3/platform/concepts/linked-account) and Refold signs every request for them.
+An **auth flow** is how a customer authorizes a third-party app inside your product so Refold can act on their behalf. The flow runs in your **frontend**; once a customer connects, their credentials are stored against their [linked account](/v3/concepts/linked-account) and Refold signs every request for them.
 
 This page is your starting point for building that experience in a Native integration. The connection flows themselves and connection management are documented once in the [Authentication hub](/v3/platform/authentication/overview); this section covers what is specific to a Native frontend, namely embedding the flow with the React SDK and branding it. (How a *connector* authenticates, such as OAuth vs key-based and scopes, is set once on the connector; see [Authentication](/v3/platform/concepts/connector/authentication).)
 
@@ -13,7 +13,7 @@ Every flow needs two things in place on your **backend** first. Never expose you
 
 <Steps>
   <Step title="Create a linked account">
-    Create one [linked account](/v3/platform/concepts/linked-account) per customer with a stable ID. See [Create a linked account](/v3/api-reference/linked-accounts/create-linked-account).
+    Create one [linked account](/v3/concepts/linked-account) per customer with a stable ID. See [Create a linked account](/v3/api-reference/linked-accounts/create-linked-account).
   </Step>
   <Step title="Generate a session token">
     Mint a short-lived [session token](/v3/api-reference/session-tokens/generate-session-token) for that linked account and pass it to your frontend. The flow uses it instead of your API key.

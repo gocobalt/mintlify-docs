@@ -9,7 +9,7 @@ The sections below explain what an MCP server is built from, how your actions, w
 
 ## Core MCP objects
 
-A Refold MCP server is built from objects you already configure in Refold. Three are MCP-specific; the rest are [platform objects](/v3/platform/concepts/linked-account) you connect to from MCP.
+A Refold MCP server is built from objects you already configure in Refold. Three are MCP-specific; the rest are [platform objects](/v3/concepts/linked-account) you connect to from MCP.
 
 - **MCP server** is a configuration unit in the dashboard under **Embedded Agents > MCP Servers**. It bundles a name, a set of connected apps and their actions, attached workflows and skills, the Agent Mode and Retrieve Skill toggles, and a generated Server URL. One MCP server is what an agent connects to. Create as many as you need. A common setup is one server per use case, such as a "Sales Operations" server and a "Finance" server.
 - **Tools** are the operations the agent can call. Refold generates them from the actions, workflows, and skills attached to the server (see [the object-to-tool model](#how-objects-become-tools)).
@@ -18,8 +18,8 @@ A Refold MCP server is built from objects you already configure in Refold. Three
 The objects an MCP server draws from live in the core Refold platform. Each links to its full reference:
 
 - A [connector](/v3/platform/concepts/connector/supported-apps-actions) is the integration package for an app (Salesforce, SAP, Workday): its OAuth flow, credentials, and the catalog of actions and workflows.
-- A [linked account](/v3/platform/concepts/linked-account) is one end user's connection to those apps. Its credentials are what every tool call runs under.
-- A [platform workflow](/v3/platform/concepts/workflows/overview) is a multi-step process you build once and can expose as a single MCP tool.
+- A [linked account](/v3/concepts/linked-account) is one end user's connection to those apps. Its credentials are what every tool call runs under.
+- A [platform workflow](/v3/concepts/workflows/overview) is a multi-step process you build once and can expose as a single MCP tool.
 
 ### How objects become tools
 

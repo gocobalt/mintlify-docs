@@ -5,7 +5,7 @@ description: "The per-customer settings your integration collects, so one connec
 
 A **config field** is a setting your customer provides so your integration behaves the way *their* account needs, which HubSpot pipeline to add deals to, which stage counts as "won," who to notify. You build config fields by adding **[Dataslots](/v3/native/configure/integration/dataslots)** to your connector; each customer then supplies their own values when they connect or enable a workflow.
 
-Config fields are how a single connector serves every customer without custom code. The values a customer enters are saved against their [linked account](/v3/platform/concepts/linked-account) as a **config**, which your [workflows](/v3/platform/concepts/workflows/overview) read at run time.
+Config fields are how a single connector serves every customer without custom code. The values a customer enters are saved against their [linked account](/v3/concepts/linked-account) as a **config**, which your [workflows](/v3/concepts/workflows/overview) read at run time.
 
 <Note>
 In the platform, the fields you add come from a palette called **Dataslots**. This page explains what config fields are *for*, how customers fill them, and how to manage their values from code; for the full catalog of field types and their settings, see [Dataslots](/v3/native/configure/integration/dataslots).
@@ -26,7 +26,7 @@ A config field moves through three stages: you **define** it on the connector, y
     When a customer connects the app or enables a workflow in the hosted portal, they see your fields and enter their values.
   </Step>
   <Step title="Workflows read the values">
-    Each saved value becomes a **DataSlot** your workflow nodes reference with `{{ }}` templating. See [Data Variables](/v3/platform/concepts/data-variables).
+    Each saved value becomes a **DataSlot** your workflow nodes reference with `{{ }}` templating. See [Data Variables](/v3/concepts/data-variables).
   </Step>
 </Steps>
 
@@ -173,7 +173,7 @@ List every config on a linked account with [List Config IDs](/v3/api-reference/c
 
 ## Use config values in a workflow
 
-Saved values surface inside workflows as **DataSlots**, which you reference with `{{ }}` templating just like event payloads and node outputs. See [Data Variables](/v3/platform/concepts/data-variables). For example, a HubSpot node's stage field can read the customer's selected **Pipeline Stage** from the config rather than a hardcoded value.
+Saved values surface inside workflows as **DataSlots**, which you reference with `{{ }}` templating just like event payloads and node outputs. See [Data Variables](/v3/concepts/data-variables). For example, a HubSpot node's stage field can read the customer's selected **Pipeline Stage** from the config rather than a hardcoded value.
 
 ## Best practices
 

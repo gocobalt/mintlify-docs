@@ -5,7 +5,7 @@ description: "Reshape and validate records so they fit the destination as data m
 
 **Data mapping** is the step that reshapes a record from one system's structure into another's, and checks it is valid, as the record moves between your app and a customer's connected app. Two systems rarely agree on field names, formats, or required values, so a record read from one side usually needs work before it can be written to the other.
 
-This is the Native angle on a capability the Platform provides. You decide what each field should become and which records to reject; the Platform's [data-mapper node](/v3/platform/concepts/workflows/nodes/data-mapper) and other [workflow nodes](/v3/platform/concepts/workflows/overview) do the reshaping inside a workflow.
+This is the Native angle on a capability the Platform provides. You decide what each field should become and which records to reject; the Platform's [data-mapper node](/v3/concepts/workflows/nodes/data-mapper) and other [workflow nodes](/v3/concepts/workflows/overview) do the reshaping inside a workflow.
 
 ## Why mapping is needed
 
@@ -21,7 +21,7 @@ When two systems hold the same data under different field names, let your custom
 
 Collect the mapping with a **Field Mapping** [Dataslot](/v3/native/configure/integration/dataslots#field-mapping) in the connector's Connect Portal. The customer matches each of their fields to the field your integration expects, for example their HubSpot contact properties to your contact schema. The saved mapping is stored on the linked account as an object keyed by left-hand value to right-hand value.
 
-Inside a workflow, the [data-mapper node](/v3/platform/concepts/workflows/nodes/data-mapper) applies that saved mapping to records as they pass through, so each customer's records are reshaped according to their own configuration.
+Inside a workflow, the [data-mapper node](/v3/concepts/workflows/nodes/data-mapper) applies that saved mapping to records as they pass through, so each customer's records are reshaped according to their own configuration.
 
 <Frame>{/* SCREENSHOT: a Field Mapping field where the customer maps their app's fields to the integration's expected fields -> /images/embedded/move-data/field-mapping.png */}</Frame>
 
@@ -35,10 +35,10 @@ When a value needs to change shape rather than just change name, transform it in
 
 The Platform provides nodes for this inside a workflow:
 
-- **[Transform](/v3/platform/concepts/workflows/nodes/transform)** reshapes a payload declaratively, for example mapping an array of source records into the destination's field names.
-- **[Custom Code](/v3/platform/concepts/workflows/nodes/custom-code)** handles logic a declarative transform cannot express, such as conditional formatting or lookups.
+- **[Transform](/v3/concepts/workflows/nodes/transform)** reshapes a payload declaratively, for example mapping an array of source records into the destination's field names.
+- **[Custom Code](/v3/concepts/workflows/nodes/custom-code)** handles logic a declarative transform cannot express, such as conditional formatting or lookups.
 
-This page does not re-document those nodes. See [Workflows overview](/v3/platform/concepts/workflows/overview) for how to build and connect them.
+This page does not re-document those nodes. See [Workflows overview](/v3/concepts/workflows/overview) for how to build and connect them.
 
 ## Validate before you write
 
@@ -55,7 +55,7 @@ Validate before a [write action](/v3/native/move-data/read-write#execute-a-write
 ## See also
 
 <CardGroup cols={2}>
-  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/platform/concepts/workflows/nodes/data-mapper">
+  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/concepts/workflows/nodes/data-mapper">
     Apply a saved Field Mapping mapping to records inside a workflow.
   </Card>
   <Card title="Dataslots" icon="list-check" href="/v3/native/configure/integration/dataslots">

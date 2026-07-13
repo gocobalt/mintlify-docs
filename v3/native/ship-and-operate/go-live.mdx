@@ -62,7 +62,7 @@ Ship the connection experience inside your product so customers connect without 
     Generate a [session token](/v3/native/frontend/overview#before-you-start) per customer session on the server so your API key stays server-side. Tokens expire after 24 hours, so mint a fresh one each session.
   </Step>
   <Step title="Create a linked account per customer">
-    Create a [linked account](/v3/platform/concepts/linked-account) when a customer signs up, and reuse its id in every account-scoped call.
+    Create a [linked account](/v3/concepts/linked-account) when a customer signs up, and reuse its id in every account-scoped call.
   </Step>
   <Step title="Place the connect entry point in your onboarding">
     Surface the connect flow where customers expect it, typically in onboarding or an integrations settings page, behind your own auth.
@@ -87,11 +87,11 @@ A connection that breaks silently is the most common production failure. Wire up
 
 ## Workflows
 
-If your integration runs [workflows](/v3/platform/concepts/workflows/overview), confirm each is published and handles failure.
+If your integration runs [workflows](/v3/concepts/workflows/overview), confirm each is published and handles failure.
 
 <Steps>
   <Step title="Publish the tested workflow">
-    A passing test does not activate a workflow. Publish it so incoming trigger events run against the current version. See [workflow testing](/v3/platform/concepts/workflows/testing).
+    A passing test does not activate a workflow. Publish it so incoming trigger events run against the current version. See [workflow testing](/v3/concepts/workflows/testing).
   </Step>
   <Step title="Confirm failures surface">
     Make sure a workflow failure reaches your product (through a webhook or a response) rather than failing silently.
@@ -110,7 +110,7 @@ Make sure you can see what is happening once customers are live, and that they c
     Confirm you can read execution and connection activity before launch, not after the first incident. See [Monitoring](/v3/native/ship-and-operate/monitoring).
   </Step>
   <Step title="Know where the audit trail lives">
-    Configuration changes and platform activity are recorded in the Platform [audit](/v3/platform/concepts/audit) log.
+    Configuration changes and platform activity are recorded in the Platform [audit](/v3/concepts/audit) log.
   </Step>
   <Step title="Set up a support path">
     Give your team a way to reach Refold support, and your customers a way to reach you when a connection needs attention.

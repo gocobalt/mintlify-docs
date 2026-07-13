@@ -3,7 +3,7 @@ title: "Monitoring"
 description: "Watch live native integrations: execution logs, connection health, and the errors and alerts that tell you a customer's integration broke."
 ---
 
-Monitoring a live native integration means knowing, at any moment, whether each customer's connection works and whether the calls running through it succeed. You watch two things: connection health (is the customer still authenticated) and execution health (are reads, writes, and [workflows](/v3/platform/concepts/workflows/overview) succeeding). Refold records both, and webhooks push the events you care about to your backend so you do not have to poll.
+Monitoring a live native integration means knowing, at any moment, whether each customer's connection works and whether the calls running through it succeed. You watch two things: connection health (is the customer still authenticated) and execution health (are reads, writes, and [workflows](/v3/concepts/workflows/overview) succeeding). Refold records both, and webhooks push the events you care about to your backend so you do not have to poll.
 
 In production, the failure that hurts most is a connection that breaks silently: a customer's token expires, every call starts failing, and nobody notices until the customer complains. The signals below catch that before they do.
 
@@ -25,7 +25,7 @@ A connection breaks when a customer's token expires or they revoke access. Detec
 
 <Steps>
   <Step title="Subscribe to the connection-expired webhook">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) so your backend is notified the moment a connection breaks, instead of polling. Flag the affected [linked account](/v3/platform/concepts/linked-account) for reconnect.
+    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) so your backend is notified the moment a connection breaks, instead of polling. Flag the affected [linked account](/v3/concepts/linked-account) for reconnect.
   </Step>
   <Step title="Read connection status in your UI">
     Read [connection status](/v3/platform/authentication/managing-connections/connection-status) wherever you render the integration. When `reauth_required` is `true`, show a **Reconnect** prompt and follow [re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
@@ -41,11 +41,11 @@ A broken connection makes every call for that customer fail until they reconnect
 
 ## Monitor execution
 
-Execution monitoring tells you whether the calls running through a connection are succeeding. For single actions, watch the response your backend gets. For [workflows](/v3/platform/concepts/workflows/overview), watch the execution logs.
+Execution monitoring tells you whether the calls running through a connection are succeeding. For single actions, watch the response your backend gets. For [workflows](/v3/concepts/workflows/overview), watch the execution logs.
 
 Workflow execution logs (run history, per-node input and output, replay and retry) are a Platform surface. Use them to inspect any run:
 
-<Card title="Audit and activity" icon="list-check" href="/v3/platform/concepts/audit">
+<Card title="Audit and activity" icon="list-check" href="/v3/concepts/audit">
   Track configuration changes, user actions, and platform activity for your account.
 </Card>
 
@@ -84,7 +84,7 @@ Decide ahead of time how each failure is surfaced, so a production error reaches
     Subscribe to [webhooks](/v3/native/configure/developer/webhooks) for connection and execution events instead of polling status on a timer.
   </Step>
   <Step title="Per-customer visibility">
-    Be able to scope any check to a single [linked account](/v3/platform/concepts/linked-account), because most production reports are about one customer.
+    Be able to scope any check to a single [linked account](/v3/concepts/linked-account), because most production reports are about one customer.
   </Step>
   <Step title="Failures are actionable">
     Every failure should either auto-recover, surface a Reconnect prompt to the customer, or raise an alert to your team.
@@ -99,5 +99,5 @@ Decide ahead of time how each failure is surfaced, so a production error reaches
 - [Connection status](/v3/platform/authentication/managing-connections/connection-status): read whether a customer is connected and healthy.
 - [Re-authentication](/v3/platform/authentication/managing-connections/re-authentication): prompt a reconnect when a connection breaks.
 - [Webhooks](/v3/native/configure/developer/webhooks): the events that drive real-time monitoring.
-- [Audit](/v3/platform/concepts/audit): the Platform log of configuration changes and account activity.
+- [Audit](/v3/concepts/audit): the Platform log of configuration changes and account activity.
 - [Go-live checklist](/v3/native/ship-and-operate/go-live): confirm monitoring is on before you launch.

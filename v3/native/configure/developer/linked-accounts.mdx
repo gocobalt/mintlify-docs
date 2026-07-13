@@ -3,7 +3,7 @@ title: "Linked Accounts and Session Tokens"
 description: "Create a linked account for each customer, then mint a session token your frontend can use safely."
 ---
 
-A [linked account](/v3/platform/concepts/linked-account) represents one of your customers inside Refold. It is the scope that holds that customer's connections, credentials, and configuration, and you reference it by an ID you choose. This page covers the backend wiring: how to create a linked account and mint the [session token](/v3/api-reference/session-tokens/generate-session-token) your frontend needs to run the connect experience.
+A [linked account](/v3/concepts/linked-account) represents one of your customers inside Refold. It is the scope that holds that customer's connections, credentials, and configuration, and you reference it by an ID you choose. This page covers the backend wiring: how to create a linked account and mint the [session token](/v3/api-reference/session-tokens/generate-session-token) your frontend needs to run the connect experience.
 
 Your backend does two things per customer. First, create a linked account, typically when the customer signs up. Then, whenever that customer opens your integration UI, mint a fresh session token so the frontend can authenticate without ever seeing your API key.
 
@@ -130,7 +130,7 @@ Token TTL is set by service configuration, so read `expires_in` from the respons
   <Card title="Embed the connect flow" icon="window" href="/v3/native/frontend/overview">
     Hand the session token to the Connect portal or React SDK.
   </Card>
-  <Card title="Linked account concept" icon="circle-info" href="/v3/platform/concepts/linked-account">
+  <Card title="Linked account concept" icon="circle-info" href="/v3/concepts/linked-account">
     What a linked account is and how it scopes everything.
   </Card>
   <Card title="Generate session token API" icon="code" href="/v3/api-reference/session-tokens/generate-session-token">

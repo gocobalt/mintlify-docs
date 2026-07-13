@@ -1,0 +1,179 @@
+---
+title: "Tables"
+description: "Store and query structured data in workspace-scoped tables, accessible from any workflow."
+---
+
+Tables are structured row and column data stores scoped to your workspace. You use them from inside workflows to persist values between runs, share state across applications, or look up reference data without calling an external system.
+
+You read and write tables through the **Tables by Refold** node. A table has a fixed set of columns, and every row gets a unique `Record_Id` when it is created.
+
+## Table types
+
+You pick the type when you create a table. The two types behave differently in terms of lifetime and where you can see them.
+
+<CardGroup cols={2}>
+  <Card title="Persistent" icon="database">
+    Lives in your workspace until you explicitly delete it. Readable and writable from any workflow in any application. Listed in the dashboard.
+  </Card>
+  <Card title="Non-Persistent" icon="clock">
+    Exists only for the lifetime of a single workflow execution. Deleted automatically when the instance finishes. Not visible in the dashboard.
+  </Card>
+</CardGroup>
+
+<Info>
+  Persistent tables can only be created from the dashboard using **New Table**. The **Create Table** workflow action creates Non-Persistent tables for use within a single run.
+</Info>
+
+## Create a table
+
+You create Persistent tables in the dashboard and Non-Persistent tables from a workflow.
+
+### From the dashboard (Persistent)
+
+<Steps>
+  <Step title="Open Tables">
+    Go to **Settings** > [Tables](https://app.refold.ai/tables) in your Refold dashboard.
+  </Step>
+  <Step title="Create a new table">
+    Click **New Table**, then provide a name and define the columns.
+  </Step>
+  <Step title="Reference it in workflows">
+    The table is now available to every workflow in your workspace by its Table ID.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the New Table dialog in the dashboard with name and columns fields filled in */}
+
+<Frame>
+  <img height="200" src="/images/Guides/Workflow/list_persistent.png" alt="View all Persistent Tables in Refold" />
+</Frame>
+
+### From a workflow (Non-Persistent)
+
+Add the **Tables by Refold** node, choose the **Create Table** action, then provide:
+
+| Field | Description |
+| --- | --- |
+| Type | `Non-Persistent` for tables scoped to this run. |
+| Name | Human-readable label for the table. |
+| Columns | Column names that make up the row schema. |
+
+<Tip>
+  If you need the data to outlive the run, create the table in the dashboard first and reference it from the workflow.
+</Tip>
+
+## Limits
+
+Every table, regardless of type, is bounded by the following.
+
+| Limit | Value |
+| --- | --- |
+| Columns per table | 10 |
+| Rows per table | 50,000 |
+
+<Warning>
+  These are hard caps. Plan your schema with growth in mind, since you cannot work around them by splitting data into more columns once the limit is hit.
+</Warning>
+
+## Read from a table
+
+The Tables node exposes several read actions. Each one runs against a single table identified by its `Table ID`.
+
+<AccordionGroup>
+  <Accordion title="Get Tables">
+    Returns the list of tables in your workspace. You filter by table type (Persistent or Non-Persistent) to scope the result.
+  </Accordion>
+  <Accordion title="Get Table Records">
+    Returns every record in a table. Provide the `Table ID` to fetch all rows.
+  </Accordion>
+  <Accordion title="Search Table Records">
+    Returns records that match a value in any column. You pick the column to search on and supply the value to match.
+  </Accordion>
+</AccordionGroup>
+
+## Write to a table
+
+Writes happen one record at a time. Every record you add gets a `Record_Id` that you store and reuse for later updates or deletes.
+
+<AccordionGroup>
+  <Accordion title="Add Table Record">
+    Inserts a new record. Select the table, then fill in values for each column.
+  </Accordion>
+  <Accordion title="Update Table Record">
+    Updates an existing record. Enter new values for the fields you want to change.
+  </Accordion>
+  <Accordion title="Delete Table Record">
+    Deletes a single record. Provide the `Record_Id` returned when the record was created.
+  </Accordion>
+  <Accordion title="Delete Table">
+    Deletes the entire table and all its records. Provide the `Table ID`.
+  </Accordion>
+</AccordionGroup>
+
+## Use a table in a workflow
+
+<Steps>
+  <Step title="Add the Tables by Refold node">
+    Drop the node into your workflow and choose the action you need (for example, **Add Table Record**).
+  </Step>
+  <Step title="Select the table">
+    Pick a Persistent table from the dropdown, or supply a `Table ID` from an earlier step.
+  </Step>
+  <Step title="Map the fields">
+    Bind each column to a value from an upstream step using templating, or type a literal value.
+  </Step>
+  <Step title="Reference the output downstream">
+    Use the node's output in later steps. For writes, capture the returned `Record_Id`. For reads, iterate over the returned records.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of the Tables by Refold node configured with an Add Table Record action and field mappings */}
+
+## Dashboard reference
+
+The [Tables](https://app.refold.ai/tables) page under **Settings** lists every Persistent table in your workspace with its ID and Name. Click any row to view and edit records directly in the UI without running a workflow.
+
+## Examples
+
+### Cache an external API response
+
+Use a Persistent table to avoid re-fetching slow third-party data.
+
+<Steps>
+  <Step title="Create a Persistent table">
+    In the dashboard, create a table named `api_cache` with columns `key`, `value`, and `fetched_at`.
+  </Step>
+  <Step title="Look up the key">
+    In your workflow, add a **Search Table Records** action that searches `api_cache` for a row where `key` matches the request you are about to make.
+  </Step>
+  <Step title="Branch on the result">
+    If a record exists, return its `value`. If not, call the external API and use **Add Table Record** to store the response.
+  </Step>
+</Steps>
+
+### Track per-run state
+
+Use a Non-Persistent table to accumulate intermediate results inside a single workflow run.
+
+<Steps>
+  <Step title="Create the table at the start">
+    Add a **Create Table** action of type `Non-Persistent` with the columns you need for this run.
+  </Step>
+  <Step title="Append as you go">
+    Inside a loop, call **Add Table Record** to append each iteration's result.
+  </Step>
+  <Step title="Read before exiting">
+    Before the workflow ends, call **Get Table Records** to retrieve everything at once. The table is dropped automatically when the run completes.
+  </Step>
+</Steps>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Workflow basics" icon="diagram-project" href="/v3/concepts/workflows/overview">
+    Learn how nodes, triggers, and templating fit together.
+  </Card>
+  <Card title="Templating reference" icon="code" href="/v3/concepts/workflows/templating">
+    Reference upstream node outputs (including table records) in downstream steps.
+  </Card>
+</CardGroup>

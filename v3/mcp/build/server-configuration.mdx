@@ -32,12 +32,12 @@ https://<domain>/mcp/v1/<server_id>
 
 | Segment | What it is |
 |---------|------------|
-| `token` | Auth token tied to a specific [linked account](/v3/platform/concepts/linked-account). It goes in the URL path or in an `Authorization: Bearer` header. Each end user gets a unique token. |
+| `token` | Auth token tied to a specific [linked account](/v3/concepts/linked-account). It goes in the URL path or in an `Authorization: Bearer` header. Each end user gets a unique token. |
 | `server_id` | Identifies this MCP server configuration. |
 
 The token authenticates every request. It scopes the session to one end user's linked account, and every tool call in that session runs under that end user's credentials.
 
-You build one server configuration and reuse it for every end user. Because each URL is unique to an end user, one URL maps to one [linked account](/v3/platform/concepts/linked-account), which maps to one end user. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/mcp/connect/authentication).
+You build one server configuration and reuse it for every end user. Because each URL is unique to an end user, one URL maps to one [linked account](/v3/concepts/linked-account), which maps to one end user. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/mcp/connect/authentication).
 
 <Info>
 The Server URL is generated per linked account and retrieved from the dashboard. The examples above show its structure; copy the complete URL, including the host, from there rather than assembling it by hand.

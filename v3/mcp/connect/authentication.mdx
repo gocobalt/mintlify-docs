@@ -3,7 +3,7 @@ title: "Authentication in MCP"
 description: "Authenticate agents to an MCP server with per-user tokens, control which apps and actions they reach, and revoke access on demand."
 ---
 
-MCP authentication builds on Refold [linked accounts](/v3/platform/concepts/linked-account). Every MCP server connection carries a token that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents, including how those accounts and their credentials are established.
+MCP authentication builds on Refold [linked accounts](/v3/concepts/linked-account). Every MCP server connection carries a token that identifies one linked account, and Refold validates it on every request. The same model that connects your customers' third-party accounts also authenticates their agents, including how those accounts and their credentials are established.
 
 Three things are MCP-specific: the auth token, how access is scoped to the apps and actions you expose, and how to revoke a token. For the connection flows that produce a linked account in the first place (hosted, build-your-own, re-authentication, and more), see the [authentication hub](/v3/platform/authentication/overview).
 
@@ -104,7 +104,7 @@ Because token state is checked on every request, revocation takes effect on the 
 
 ## See also
 
-- [Linked accounts](/v3/platform/concepts/linked-account): the account and credential model MCP authentication builds on
+- [Linked accounts](/v3/concepts/linked-account): the account and credential model MCP authentication builds on
 - [Connectors](/v3/platform/concepts/connector/supported-apps-actions): where the underlying OAuth and API-key credentials are configured
 - [Hosted auth flow](/v3/platform/authentication/connection-flows/hosted-flow): how end users connect their accounts in the first place
 - [Server configuration](/v3/mcp/build/server-configuration): where to set the app, action, and mode toggles
