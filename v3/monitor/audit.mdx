@@ -1,0 +1,114 @@
+---
+title: "Audit"
+description: "Review configuration changes, user actions, and platform events in one filterable activity timeline."
+---
+
+The audit log records configuration changes, user actions, and platform events across your workspace as a chronological, day-by-day timeline. Use it to see who changed what and when, trace the source of an unexpected change, and produce an activity trail for security and compliance reviews.
+
+Refold captures every event automatically. No setup, no instrumentation.
+
+Open **Audit** from the **Maintain** section of the dashboard.
+
+<Frame caption="The Audit timeline groups events by day, with filters across the top.">
+  <img src="/images/v3/platform/concepts/audit-timeline.png" alt="Audit activity timeline showing events grouped by day with filter controls" />
+</Frame>
+
+## How the audit log works
+
+The audit log is a read-only record of activity in your workspace. A few things to know before you start:
+
+- **Automatic capture.** Refold logs events as they happen, so there is nothing to enable or configure.
+- **Grouped by day.** Events sit under day headers (`Today`, then dated groups such as `26 Jun`) that you can collapse with the chevron.
+- **Newest first.** Within each day, the most recent event appears at the top.
+- **Workspace-scoped.** The log shows activity for the workspace you are currently in.
+- **Read-only.** Entries reflect what happened and cannot be edited.
+
+## Reading an event
+
+Each event starts collapsed as a one-line summary and expands to show full detail.
+
+A collapsed row shows:
+
+- **Timestamp.** Relative for recent events (for example, `19 minutes ago`) and a clock time within `Today`.
+- **Actor.** The user or system that performed the action, with an avatar.
+- **Entity badge.** The type of object the action affected, such as **Linked Account** or **Workflow**.
+- **Action badge.** A color-coded label for the kind of action (see below).
+- **Summary.** A short description of what happened, such as `a workflow` or `workflow settings`.
+
+Select the chevron on the right to expand the row and reveal:
+
+- **Full description**, including the affected object's name and ID.
+- **IP address** the action originated from.
+- **User agent** of the browser or client used.
+
+Action badges are color-coded so you can scan the timeline by type of change:
+
+| Color | Action type | Examples |
+|-------|-------------|----------|
+| Green | Create | Created, Added |
+| Blue | Update | Updated, Renamed |
+| Purple | Publish | Published |
+| Red | Delete or error | Deleted, Disconnected, Errored |
+
+## Filtering the timeline
+
+Use the filter bar at the top of the page to narrow what the timeline shows. Filters apply as soon as you set them.
+
+| Filter | What it does | Default |
+|--------|--------------|---------|
+| **Date range** | Shows events from the last 7, 30, or 90 days. | Last 7 Days |
+| **Event type** | Limits the log to one or more [event types](#event-types). | All Events |
+| **User** | Shows only events performed by a specific user. | All Users |
+| **Custom key/value** | Matches events carrying a specific metadata key and value. Enter the key in the `utm_key` field and its value in the `value` field. | Empty |
+
+Two buttons sit at the right of the bar:
+
+- **Refresh** re-runs the current query so you see the latest events.
+- The **funnel** button resets every filter to its default and reloads the timeline.
+
+<Tip>To match a custom key/value, fill in both the key and the value field. A key with an empty value is ignored.</Tip>
+
+## Event types
+
+The audit log captures events from across the platform. This table groups every captured event by area.
+
+| Area | Events captured |
+|------|-----------------|
+| **Authentication & access** | Login, Logout, Login Failed, Password Changed, Forgot Password Requested, Password Reset by Admin, Two Factor Auth, API Key Regenerated |
+| **Users & roles** | User Invited, User Removed, User Updated, User Role Assigned, User Role Updated, Role Assigned, Workspace Settings Updated |
+| **Workflows** | Workflow Created, Workflow Deleted, Workflow Duplicated, Workflow Published, Workflow Unpublished, Workflow Enabled, Workflow Disabled, Workflow Settings Updated, Draft Workflow Updated, Draft Workflow Published |
+| **Triggers & actions** | Trigger Added, Trigger Deleted, Action Added, Action Deleted |
+| **Linked accounts & connections** | Linked Account Created, Linked Account Updated, Linked Account Deleted, Bulk Linked Account Created, Connection Created, Connection Expired, Connection Disconnected, Connection Errored |
+| **Webhooks** | Webhook Created, Webhook Updated, Webhook Deleted |
+| **Apps & configs** | App Settings Updated, Custom App Created, Custom App Deleted, Config Created, Config Updated, Config Deleted |
+| **Variables** | Environment Variable Created, Environment Variable Updated, Environment Variable Deleted, Variable Definition Created, Variable Definition Updated, Variable Definition Deleted, Variable Value Set, Variable Value Updated, Variable Value Deleted |
+| **Schedules** | Schedule Created, Schedule Deleted |
+| **Tables** | Table Created, Table Deleted, Table Record Added, Table Record Updated, Table Record Deleted, Table Columns Added, Table Columns Removed, Table Columns Renamed |
+
+## Common uses
+
+- **Investigate a change.** Filter by event type and user to find who published, edited, or deleted a workflow.
+- **Debug a connection issue.** Look for `Connection Expired`, `Connection Disconnected`, or `Connection Errored` events around the time a problem started.
+- **Review access activity.** Track `Login`, `Login Failed`, and `User Role Updated` events for a security review.
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="How far back can I see events?">
+    The date-range filter covers the last 7, 30, or 90 days. How long events remain available depends on your account's retention policy.
+  </Accordion>
+  <Accordion title="Who can view the audit log?">
+    Every workspace role can view the audit log except **Linked Account Solution**.
+  </Accordion>
+</AccordionGroup>
+
+## See also
+
+<CardGroup cols={2}>
+  <Card title="Logs" icon="list" href="/v3/monitor/logs">
+    Inspect event, workflow, and webhook execution logs.
+  </Card>
+  <Card title="Integration logs" icon="link" href="/v3/authentication/managing-connections/integration-logs">
+    Review connection and integration activity for linked accounts.
+  </Card>
+</CardGroup>

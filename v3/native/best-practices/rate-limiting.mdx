@@ -3,7 +3,7 @@ title: "Rate Limiting"
 description: "Keep integrations within third-party and Refold rate limits using backoff, batching, and scheduling so calls succeed instead of getting throttled."
 ---
 
-A **rate limit** is the cap a service places on how many requests it accepts in a window of time. When you move data through Refold, two sets of limits apply: the limits of the [connected app](/v3/platform/concepts/connector/supported-apps-actions) you call, and Refold's own platform limits. Design for both so high-volume customers don't get throttled.
+A **rate limit** is the cap a service places on how many requests it accepts in a window of time. When you move data through Refold, two sets of limits apply: the limits of the [connected app](/v3/connectors/supported-apps-actions) you call, and Refold's own platform limits. Design for both so high-volume customers don't get throttled.
 
 This page covers the patterns that keep you under those limits: backing off on rejection, batching work, and scheduling load. It assumes you already [read and write data](/v3/native/move-data/read-write) through actions or [workflows](/v3/concepts/workflows/overview).
 

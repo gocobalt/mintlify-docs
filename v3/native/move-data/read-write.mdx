@@ -3,7 +3,7 @@ title: "Read and Write Data"
 description: "Read records from a customer's connected app and write changes back by executing actions from your backend."
 ---
 
-An **action** is a single operation a [connector](/v3/platform/concepts/connector/supported-apps-actions) exposes against a connected app, such as fetching a contact or creating one. Execute an action to read records from a customer's app or to write changes back, using the credentials Refold already holds for that [linked account](/v3/concepts/linked-account).
+An **action** is a single operation a [connector](/v3/connectors/supported-apps-actions) exposes against a connected app, such as fetching a contact or creating one. Execute an action to read records from a customer's app or to write changes back, using the credentials Refold already holds for that [linked account](/v3/concepts/linked-account).
 
 Every action runs against one linked account. You pass the account in the `linked_account_id` header, and Refold resolves its stored credentials, so no app tokens go in your request. Read actions return data. Write actions change the connected app.
 

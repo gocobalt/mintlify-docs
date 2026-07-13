@@ -14,7 +14,7 @@ How you respond depends on the kind of error. Sort every failure into one of thr
 | Failure type | Examples | What to do |
 | --- | --- | --- |
 | **Transient** | Timeout, `429` rate limit, `5xx` from the app | Retry with backoff. See [Rate limiting](/v3/native/best-practices/rate-limiting). |
-| **Auth** | Expired or revoked token, `401`/`403`, `reauth_required` set | Prompt the customer to [reconnect](/v3/platform/authentication/managing-connections/re-authentication). |
+| **Auth** | Expired or revoked token, `401`/`403`, `reauth_required` set | Prompt the customer to [reconnect](/v3/authentication/managing-connections/re-authentication). |
 | **Permanent** | Bad input (`400`), missing record (`404`), validation failure | Don't retry. Surface the error so it can be fixed. |
 
 <Warning>
@@ -58,17 +58,17 @@ An **auth failure** means the customer's credentials no longer work: the token w
 
 Refold surfaces an auth failure in two places:
 
-- **The `reauth_required` field** flips to `true` on the application object. Read it through [Connection status](/v3/platform/authentication/managing-connections/connection-status) and show a **Reconnect** prompt.
-- **The Connection Expired webhook** fires the moment a connection breaks, so you can react without polling. Subscribe through [webhooks](/v3/native/configure/developer/webhooks).
+- **The `reauth_required` field** flips to `true` on the application object. Read it through [Connection status](/v3/authentication/managing-connections/connection-status) and show a **Reconnect** prompt.
+- **The Connection Expired webhook** fires the moment a connection breaks, so you can react without polling. Subscribe through [webhooks](/v3/connectors/my-app/webhooks).
 
-When you detect it, walk the customer through [re-authentication](/v3/platform/authentication/managing-connections/re-authentication). Routine token expiry never reaches this path, because Refold handles it automatically through [token refresh](/v3/platform/authentication/managing-connections/token-refresh).
+When you detect it, walk the customer through [re-authentication](/v3/authentication/managing-connections/re-authentication). Routine token expiry never reaches this path, because Refold handles it automatically through [token refresh](/v3/authentication/managing-connections/token-refresh).
 
 ## Surface failures to your customer
 
 A failed integration is only actionable if the right person sees it. Match the audience to the failure.
 
-- **Show connection problems in your UI.** Render the **Reconnect** state from [Connection status](/v3/platform/authentication/managing-connections/connection-status) so the customer can fix an auth failure themselves.
-- **Notify your team of workflow failures.** Subscribe to the workflow-errored event through [webhooks](/v3/native/configure/developer/webhooks) so your team learns about a broken run in real time instead of from a customer ticket.
+- **Show connection problems in your UI.** Render the **Reconnect** state from [Connection status](/v3/authentication/managing-connections/connection-status) so the customer can fix an auth failure themselves.
+- **Notify your team of workflow failures.** Subscribe to the workflow-errored event through [webhooks](/v3/connectors/my-app/webhooks) so your team learns about a broken run in real time instead of from a customer ticket.
 - **Keep customer-facing messages plain.** Say what broke and what to do ("Reconnect HubSpot to resume syncing"), not the raw provider error code.
 
 ## Best practices
@@ -96,6 +96,6 @@ A failed integration is only actionable if the right person sees it. Match the a
 - [Rate limiting](/v3/native/best-practices/rate-limiting) : backoff and retry for throttled calls
 - [Idempotency](/v3/native/best-practices/idempotency) : make retries safe from duplicates
 - [Try & Catch node](/v3/concepts/workflows/nodes/try-catch-node) : error handling and retry policy in workflows
-- [Re-authentication](/v3/platform/authentication/managing-connections/re-authentication) : prompt a reconnect after an auth failure
-- [Connection status](/v3/platform/authentication/managing-connections/connection-status) : read whether a connection is healthy
-- [Webhooks](/v3/native/configure/developer/webhooks) : get notified of connection and workflow failures
+- [Re-authentication](/v3/authentication/managing-connections/re-authentication) : prompt a reconnect after an auth failure
+- [Connection status](/v3/authentication/managing-connections/connection-status) : read whether a connection is healthy
+- [Webhooks](/v3/connectors/my-app/webhooks) : get notified of connection and workflow failures

@@ -40,7 +40,7 @@ The embedded connect experience runs in the customer's browser, where your API k
     Call the [Generate session token](/v3/api-reference/session-tokens/generate-session-token) API from your server, authenticated with your API key, for a specific `linked_account_id`. The token comes back scoped to that customer.
   </Step>
   <Step title="Pass it to the frontend">
-    Hand the token to the browser and use it to render the connect experience, whether that's the [React SDK flow](/v3/native/frontend/react-sdk-flow), a [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow), or a [build-your-own](/v3/platform/authentication/connection-flows/build-your-own) UI.
+    Hand the token to the browser and use it to render the connect experience, whether that's the [React SDK flow](/v3/native/frontend/react-sdk-flow), a [hosted flow](/v3/authentication/connection-flows/hosted-flow), or a [build-your-own](/v3/authentication/connection-flows/build-your-own) UI.
   </Step>
   <Step title="Refresh on expiry">
     Session tokens are short-lived. Generate a fresh token for each new customer session instead of reusing or caching one.
@@ -48,7 +48,7 @@ The embedded connect experience runs in the customer's browser, where your API k
 </Steps>
 
 <Note>
-A session token is scoped to one linked account and expires (the [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow) generates a new connect URL per session). Generate it per customer, per session, on the server. Never share one token across customers.
+A session token is scoped to one linked account and expires (the [hosted flow](/v3/authentication/connection-flows/hosted-flow) generates a new connect URL per session). Generate it per customer, per session, on the server. Never share one token across customers.
 </Note>
 
 ## Scope every call to one linked account
@@ -57,7 +57,7 @@ Multi-tenant isolation depends on scoping. Each customer is a [linked account](/
 
 - **Derive the linked account from your session, not from client input.** Map the authenticated user to their `linked_account_id` on your backend so a customer can never pass another customer's id.
 - **One linked account per customer.** Keep credentials and data isolated by giving each customer their own linked account rather than sharing one.
-- **Let Refold hold the tokens.** Customer OAuth and API credentials are stored encrypted against their linked account and used automatically. Your code never handles raw third-party tokens. See [token refresh](/v3/platform/authentication/managing-connections/token-refresh).
+- **Let Refold hold the tokens.** Customer OAuth and API credentials are stored encrypted against their linked account and used automatically. Your code never handles raw third-party tokens. See [token refresh](/v3/authentication/managing-connections/token-refresh).
 
 ## Secure the embedded connect experience
 
@@ -91,6 +91,6 @@ The connect flow itself runs in the browser, so apply standard frontend hygiene 
 
 - [Session tokens](/v3/api-reference/session-tokens/generate-session-token) : short-lived frontend credentials
 - [Generate session token](/v3/api-reference/session-tokens/generate-session-token) : the API your backend calls
-- [Auth overview](/v3/platform/authentication/overview) : how Refold authenticates apps and customers
+- [Auth overview](/v3/authentication/overview) : how Refold authenticates apps and customers
 - [Linked accounts](/v3/concepts/linked-account) : the per-customer scope every call carries
 - [Application security](https://www.refold.ai/security) : Refold's platform-level controls

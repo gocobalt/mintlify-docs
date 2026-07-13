@@ -47,9 +47,9 @@ flowchart LR
 
 Splitting the work across the three systems keeps your API key server-side and your customers' credentials with Refold.
 
-- **Your backend** holds your API key, creates one [linked account](/v3/concepts/linked-account) per customer, mints short-lived [session tokens](/v3/native/frontend/overview#before-you-start) for the frontend, triggers workflows and actions, and receives [webhooks](/v3/native/configure/developer/webhooks).
+- **Your backend** holds your API key, creates one [linked account](/v3/concepts/linked-account) per customer, mints short-lived [session tokens](/v3/native/frontend/overview#before-you-start) for the frontend, triggers workflows and actions, and receives [webhooks](/v3/connectors/my-app/webhooks).
 - **Your frontend** runs the [connect flow](/v3/native/frontend/overview) and renders [config fields](/v3/native/configure/integration/config-fields), authenticated by a session token, not your API key.
-- **Refold** runs the connection and [auth flows](/v3/platform/authentication/overview), stores and refreshes credentials, and executes every [workflow](/v3/concepts/workflows/overview) and action using the stored credential for the right linked account.
+- **Refold** runs the connection and [auth flows](/v3/authentication/overview), stores and refreshes credentials, and executes every [workflow](/v3/concepts/workflows/overview) and action using the stored credential for the right linked account.
 - **The third-party app** authorizes the connection and serves the requests Refold makes on the customer's behalf.
 
 <Warning>
@@ -61,7 +61,7 @@ Your API key carries full account access, so it stays on your backend. The front
 The four objects below combine to turn one connector into a working, per-customer integration. Each is defined once on the platform; this is how they relate in a Native build.
 
 - **[Linked account](/v3/concepts/linked-account)** is the unit of tenancy. Every connection, credential, config value, and data call is scoped to a linked account, which keeps one customer's data isolated from another's.
-- **[Connector](/v3/platform/concepts/connector/supported-apps-actions)** is the third-party app and the set of actions Refold can run against it. You enable the connectors your customers can connect.
+- **[Connector](/v3/connectors/supported-apps-actions)** is the third-party app and the set of actions Refold can run against it. You enable the connectors your customers can connect.
 - **[Config fields](/v3/native/configure/integration/config-fields)** are the per-customer settings (which pipeline, which channel, which mapping) that let a single connector adapt to each customer's account. Customers fill them in when they connect or enable a workflow, and the values save against their linked account.
 - **[Workflow](/v3/concepts/workflows/overview)** is the automation that moves data. It reads config field values and connected-app data at run time, so the same workflow behaves correctly for every customer.
 
@@ -84,7 +84,7 @@ Putting it together, every customer follows the same loop:
     They fill in [config fields](/v3/native/configure/integration/config-fields) and enable the [workflows](/v3/native/frontend/expose-workflow) you offer. The values save against their linked account.
   </Step>
   <Step title="Your product moves data">
-    Your backend triggers actions and workflows. Refold executes them with the customer's stored credential and returns results, then keeps you informed through [webhooks](/v3/native/configure/developer/webhooks).
+    Your backend triggers actions and workflows. Refold executes them with the customer's stored credential and returns results, then keeps you informed through [webhooks](/v3/connectors/my-app/webhooks).
   </Step>
 </Steps>
 

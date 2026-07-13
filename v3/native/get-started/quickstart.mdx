@@ -10,7 +10,7 @@ By the end you will have connected a real account and created a record in the co
 ## Prerequisites
 
 - **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai). Don't have one? [Contact us](https://www.refold.ai/contact-us) to get set up.
-- **An app to integrate.** This guide uses HubSpot (`hubspot`) as the example. Any [connector](/v3/platform/concepts/connector/supported-apps-actions) works; swap the slug and action names to match yours.
+- **An app to integrate.** This guide uses HubSpot (`hubspot`) as the example. Any [connector](/v3/connectors/supported-apps-actions) works; swap the slug and action names to match yours.
 - **A backend that can make HTTP calls.** Every example here is a `curl` you can run from a terminal, then move into your server.
 
 <Note>
@@ -159,10 +159,10 @@ You have run the full loop in test. To take it to production:
     Generate a production API key in **Settings > Credentials** and use real OAuth credentials for the app, not the shared test ones.
   </Step>
   <Step title="Embed the connect flow in your product">
-    Replace the hosted portal with the [React SDK](/v3/native/frontend/react-sdk-flow) or a [build-your-own](/v3/platform/authentication/connection-flows/build-your-own) flow so customers connect without leaving your app.
+    Replace the hosted portal with the [React SDK](/v3/native/frontend/react-sdk-flow) or a [build-your-own](/v3/authentication/connection-flows/build-your-own) flow so customers connect without leaving your app.
   </Step>
   <Step title="Handle connection health">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) and surface [connection status](/v3/platform/authentication/managing-connections/connection-status) so customers can reconnect when a token expires.
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) and surface [connection status](/v3/authentication/managing-connections/connection-status) so customers can reconnect when a token expires.
   </Step>
   <Step title="Run the go-live checklist">
     Walk the [go-live checklist](/v3/native/ship-and-operate/go-live) before your first customer.

@@ -56,7 +56,7 @@ Ship the connection experience inside your product so customers connect without 
 
 <Steps>
   <Step title="Replace the hosted portal with your in-product flow">
-    For a fully embedded experience, use the [React SDK flow](/v3/native/frontend/react-sdk-flow) or [build your own](/v3/platform/authentication/connection-flows/build-your-own). The [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow) is fine if a redirect or embedded portal meets your needs.
+    For a fully embedded experience, use the [React SDK flow](/v3/native/frontend/react-sdk-flow) or [build your own](/v3/authentication/connection-flows/build-your-own). The [hosted flow](/v3/authentication/connection-flows/hosted-flow) is fine if a redirect or embedded portal meets your needs.
   </Step>
   <Step title="Mint session tokens on your backend">
     Generate a [session token](/v3/native/frontend/overview#before-you-start) per customer session on the server so your API key stays server-side. Tokens expire after 24 hours, so mint a fresh one each session.
@@ -75,13 +75,13 @@ A connection that breaks silently is the most common production failure. Wire up
 
 <Steps>
   <Step title="Subscribe to webhooks">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) so your backend learns the moment a connection expires, instead of polling.
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) so your backend learns the moment a connection expires, instead of polling.
   </Step>
   <Step title="Render connection status in your UI">
-    Read [connection status](/v3/platform/authentication/managing-connections/connection-status) and render the **Connect**, **Connected**, or **Reconnect** state for every app.
+    Read [connection status](/v3/authentication/managing-connections/connection-status) and render the **Connect**, **Connected**, or **Reconnect** state for every app.
   </Step>
   <Step title="Handle re-authentication">
-    Prompt a reconnect when `reauth_required` is set, following [re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
+    Prompt a reconnect when `reauth_required` is set, following [re-authentication](/v3/authentication/managing-connections/re-authentication).
   </Step>
 </Steps>
 
@@ -110,7 +110,7 @@ Make sure you can see what is happening once customers are live, and that they c
     Confirm you can read execution and connection activity before launch, not after the first incident. See [Monitoring](/v3/native/ship-and-operate/monitoring).
   </Step>
   <Step title="Know where the audit trail lives">
-    Configuration changes and platform activity are recorded in the Platform [audit](/v3/concepts/audit) log.
+    Configuration changes and platform activity are recorded in the Platform [audit](/v3/monitor/audit) log.
   </Step>
   <Step title="Set up a support path">
     Give your team a way to reach Refold support, and your customers a way to reach you when a connection needs attention.
@@ -126,10 +126,10 @@ Make sure you can see what is happening once customers are live, and that they c
   <Card title="Testing" icon="vial" href="/v3/native/ship-and-operate/testing">
     Re-run your test scenarios against production credentials.
   </Card>
-  <Card title="Connection status" icon="signal" href="/v3/platform/authentication/managing-connections/connection-status">
+  <Card title="Connection status" icon="signal" href="/v3/authentication/managing-connections/connection-status">
     Render Connect, Connected, and Reconnect states for each app.
   </Card>
-  <Card title="Webhooks" icon="bell" href="/v3/native/configure/developer/webhooks">
+  <Card title="Webhooks" icon="bell" href="/v3/connectors/my-app/webhooks">
     Get notified the moment a connection breaks.
   </Card>
 </CardGroup>

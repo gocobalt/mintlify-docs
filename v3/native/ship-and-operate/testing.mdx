@@ -13,7 +13,7 @@ Test in this order: get one action working, then the workflow that uses it, then
 | --- | --- | --- |
 | **Action** | A single read or write call returns the data or result you expect. | A `curl` or SDK call from your backend. |
 | **Workflow** | Triggers, nodes, branching, and error handling resolve correctly across a full run. | The Platform [workflow testing](/v3/concepts/workflows/testing) panel. |
-| **End-to-end** | A customer can connect an app and your product reads or writes through that connection. | Your product (or the [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow)) plus your backend. |
+| **End-to-end** | A customer can connect an app and your product reads or writes through that connection. | Your product (or the [hosted flow](/v3/authentication/connection-flows/hosted-flow)) plus your backend. |
 
 <Note>
 Workflow internals (nodes, payloads, run logs) are owned by Platform. This page covers the Native angle: testing against a test linked account and the customer-facing flow. For node-by-node testing, follow [workflow testing](/v3/concepts/workflows/testing).
@@ -28,10 +28,10 @@ Every test runs against a [linked account](/v3/concepts/linked-account), and tha
     Create a linked account with an id you reserve for testing, for example `test-user-1`. Reuse that `linked_account_id` in every test call.
   </Step>
   <Step title="Connect a sandbox app">
-    Connect the third-party app using a sandbox or trial account where the connector offers one. The fastest way to connect is to generate a [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow) connect URL and complete auth there.
+    Connect the third-party app using a sandbox or trial account where the connector offers one. The fastest way to connect is to generate a [hosted flow](/v3/authentication/connection-flows/hosted-flow) connect URL and complete auth there.
   </Step>
   <Step title="Confirm the connection is healthy">
-    Read the [connection status](/v3/platform/authentication/managing-connections/connection-status) for the account. Confirm `connected` is `true` and `reauth_required` is `false` before you run any action or workflow against it.
+    Read the [connection status](/v3/authentication/managing-connections/connection-status) for the account. Confirm `connected` is `true` and `reauth_required` is `false` before you run any action or workflow against it.
   </Step>
 </Steps>
 
@@ -94,7 +94,7 @@ For Native specifically, cover these scenarios before shipping:
 - **The happy path.** Trigger the workflow with a realistic payload and confirm the expected record is created, updated, or returned in the connected app.
 - **Each branch.** If the workflow branches on a [Rule](/v3/concepts/workflows/nodes/rule) or [Switch](/v3/concepts/workflows/nodes/switch-case) node, feed one payload per branch and confirm the right path runs.
 - **Error handling.** Send a payload guaranteed to fail (bad id, missing field) and confirm any [Try/Catch](/v3/concepts/workflows/nodes/try-catch-node) branch behaves, and that a failure surfaces to your product rather than failing silently.
-- **A re-auth state.** Let the test account's token expire (or revoke it) and confirm the workflow surfaces the failure so your UI can prompt a [reconnect](/v3/platform/authentication/managing-connections/connection-status).
+- **A re-auth state.** Let the test account's token expire (or revoke it) and confirm the workflow surfaces the failure so your UI can prompt a [reconnect](/v3/authentication/managing-connections/connection-status).
 
 ## Test the end-to-end flow
 
@@ -102,16 +102,16 @@ The last level tests what a customer experiences: connecting an app and having y
 
 <Steps>
   <Step title="Run the connect flow as a customer">
-    Open your embedded connect experience (the [React SDK flow](/v3/native/frontend/react-sdk-flow), [hosted flow](/v3/platform/authentication/connection-flows/hosted-flow), or your [own UI](/v3/platform/authentication/connection-flows/build-your-own)) and connect the sandbox app from start to finish.
+    Open your embedded connect experience (the [React SDK flow](/v3/native/frontend/react-sdk-flow), [hosted flow](/v3/authentication/connection-flows/hosted-flow), or your [own UI](/v3/authentication/connection-flows/build-your-own)) and connect the sandbox app from start to finish.
   </Step>
   <Step title="Confirm the connected state renders">
-    Check that your UI reads [connection status](/v3/platform/authentication/managing-connections/connection-status) and shows the **Connected** state after auth succeeds.
+    Check that your UI reads [connection status](/v3/authentication/managing-connections/connection-status) and shows the **Connected** state after auth succeeds.
   </Step>
   <Step title="Trigger a real read or write">
     Drive the action your product runs for this integration (sync a record, fetch data, fire the workflow) and confirm the result lands in the connected app.
   </Step>
   <Step title="Confirm webhooks arrive">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) and confirm your backend receives the events you depend on, including the connection-expired event used to drive [re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) and confirm your backend receives the events you depend on, including the connection-expired event used to drive [re-authentication](/v3/authentication/managing-connections/re-authentication).
   </Step>
   <Step title="Test the unhappy paths">
     Cancel the connect flow midway, deny the OAuth consent, and let a token expire. Confirm your product recovers gracefully from each.
@@ -140,6 +140,6 @@ The last level tests what a customer experiences: connecting an app and having y
 ## See also
 
 - [Workflow testing](/v3/concepts/workflows/testing): the canonical guide to running and debugging a workflow node by node.
-- [Connection status](/v3/platform/authentication/managing-connections/connection-status): read whether a test account is connected and healthy.
-- [Webhooks](/v3/native/configure/developer/webhooks): the events your backend subscribes to during an end-to-end test.
+- [Connection status](/v3/authentication/managing-connections/connection-status): read whether a test account is connected and healthy.
+- [Webhooks](/v3/connectors/my-app/webhooks): the events your backend subscribes to during an end-to-end test.
 - [Go-live checklist](/v3/native/ship-and-operate/go-live): what to verify once testing passes.

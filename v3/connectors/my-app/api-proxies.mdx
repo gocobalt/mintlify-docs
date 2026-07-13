@@ -1,0 +1,99 @@
+---
+title: "API Proxies"
+description: "Register your own API endpoints as custom actions on your app, then call them from any workflow."
+---
+
+An **API proxy** is a custom action on your [app](/v3/connectors/my-app/developer-app) (your default application) that wraps one of *your own* API endpoints. You configure the endpoint once in Refold, and it becomes a reusable action you can drop into any workflow, so your automations can call back into your own systems without per-workflow glue.
+
+Use API proxies to reference your APIs from Refold: send a workflow's result to your backend, pull data from a service Refold doesn't model, or trigger downstream work in your own systems. One definition is reusable across every workflow that needs it.
+
+<Note>
+API proxies call **your own** endpoints. To read and write data in a customer's *connected third-party app* (HubSpot, Salesforce, and so on), execute a connector action instead — see [Read and write data](/v3/native/move-data/read-write).
+</Note>
+
+## How it works
+
+An API proxy has two parts you define in the Console:
+
+- **Fields** are the inputs the action accepts. They become the action's parameters and carry values between steps in a workflow.
+- **The API call** is the request Refold makes when the action runs: an HTTP method and endpoint, plus headers, params, and a body that reference your fields.
+
+When the action runs inside a workflow, Refold fills the request with the field values, calls your endpoint, and returns the response for later steps to use.
+
+<Note>
+You don't add credentials to each proxy. Refold authenticates calls to your API centrally — see [Authentication](/v3/connectors/my-app/authentication) to store per-customer credentials and inject a token into every proxy call.
+</Note>
+
+## Create an API proxy
+
+<Steps>
+  <Step title="Create the action">
+    In the [Refold Console](https://app.refold.ai), go to **Settings > Developer > API Proxies**, click **New Action**, and give it a **Name** and **Description**.
+
+    <Frame>{/* SCREENSHOT: API Proxies list with the New Action dialog (name + description) -> /images/embedded/backend/api-proxy-new-action.png */}</Frame>
+  </Step>
+  <Step title="Add fields">
+    On the **Fields** tab, add each input your call needs. For every field set its **Type**, **Label**, **Placeholder**, **Description**, and whether it is required. These become the action's parameters and can be passed between steps in a workflow.
+  </Step>
+  <Step title="Configure the API call">
+    On the **API Call** tab, choose the HTTP method and enter the endpoint URL, then add any **Path** or **Query** params, **Headers**, and a **pre-request script**. Reference your fields anywhere in the request:
+
+    - In the **URL**, insert a field as a variable with curly braces, for example `https://api.your-app.com/customers/{customer_id}`.
+    - In the **Body**, insert a field or variable with the `(x)` control.
+
+    Click **Save API Call**.
+
+    <Frame>{/* SCREENSHOT: API Call tab showing method, URL with a {variable}, headers, and body with field inserters -> /images/embedded/backend/api-proxy-call.png */}</Frame>
+  </Step>
+</Steps>
+
+## Configure the response
+
+On the **API Call** tab, Refold offers a few options for how the response is handled.
+
+<AccordionGroup>
+  <Accordion title="Response format">
+    **Default** returns the response as the API sends it, and is on for every API proxy. Choose **Stream** when you want to stream the response in chunks.
+  </Accordion>
+  <Accordion title="Save response to bucket">
+    Turn this on to store the response in a Refold-provided S3 bucket instead of returning it inline. Use it when you retrieve non-JSON payloads such as PDFs. The stored URL can be referenced by other nodes (for example, the [PDF node](/v3/concepts/workflows/nodes/pdf)).
+  </Accordion>
+  <Accordion title="Use public URL">
+    <Warning>
+      **Use Public URL** only takes effect when **Save response to bucket** is on; otherwise it is ignored.
+    </Warning>
+    The bucket URL is private by default, reachable only within the same AWS org. Turn on **Use Public URL** to share the stored response publicly.
+  </Accordion>
+  <Accordion title="Pagination">
+    If your API paginates, enable the **Pagination** toggle, select the pagination **Type**, and provide the required fields. Refold then pages through the endpoint for you.
+
+    <Frame>{/* SCREENSHOT: Pagination settings on the API Call tab -> /images/embedded/backend/api-proxy-pagination.png */}</Frame>
+  </Accordion>
+</AccordionGroup>
+
+## Use an API proxy in a workflow
+
+Once created, an API proxy is available through your app (your default application) as an action node. Add it to a [workflow](/v3/concepts/workflows/overview) like any other node, map the workflow's data into its fields, and use its response in later steps. Because the action is defined once on your app, the same API proxy can run in as many workflows as you need.
+
+<Frame>{/* SCREENSHOT: a workflow canvas with the app's API proxy action added as a node -> /images/embedded/backend/api-proxy-workflow.png */}</Frame>
+
+<Tip>
+For a one-off request inside a single workflow, the [HTTP node](/v3/concepts/workflows/nodes/http) may be simpler. Reach for an API proxy when the same call is reused across workflows or needs response streaming, bucket storage, or pagination.
+</Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Your app and API keys" icon="key" href="/v3/connectors/my-app/developer-app">
+    Where API proxies and your credentials live.
+  </Card>
+  <Card title="Run a workflow" icon="diagram-project" href="/v3/concepts/workflows/overview">
+    Chain your API proxy with other steps and triggers.
+  </Card>
+  <Card title="Read and write data" icon="arrows-rotate" href="/v3/native/move-data/read-write">
+    Execute connector actions against a customer's third-party app.
+  </Card>
+  <Card title="HTTP node" icon="globe" href="/v3/concepts/workflows/nodes/http">
+    Make a one-off request inside a single workflow.
+  </Card>
+</CardGroup>

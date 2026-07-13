@@ -11,7 +11,7 @@ In production, the failure that hurts most is a connection that breaks silently:
 
 | Signal | What it tells you | Where you read it |
 | --- | --- | --- |
-| **Connection health** | Whether a customer's account is still authenticated, or needs a reconnect. | [Connection status](/v3/platform/authentication/managing-connections/connection-status) and the connection-expired webhook. |
+| **Connection health** | Whether a customer's account is still authenticated, or needs a reconnect. | [Connection status](/v3/authentication/managing-connections/connection-status) and the connection-expired webhook. |
 | **Execution results** | Whether actions and workflow runs are succeeding or failing. | Platform execution logs and your action/workflow responses. |
 | **Errors and rejections** | Failed calls, expired tokens, rate limits, bad payloads. | Error responses on your calls, plus the run log for workflows. |
 
@@ -25,13 +25,13 @@ A connection breaks when a customer's token expires or they revoke access. Detec
 
 <Steps>
   <Step title="Subscribe to the connection-expired webhook">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) so your backend is notified the moment a connection breaks, instead of polling. Flag the affected [linked account](/v3/concepts/linked-account) for reconnect.
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) so your backend is notified the moment a connection breaks, instead of polling. Flag the affected [linked account](/v3/concepts/linked-account) for reconnect.
   </Step>
   <Step title="Read connection status in your UI">
-    Read [connection status](/v3/platform/authentication/managing-connections/connection-status) wherever you render the integration. When `reauth_required` is `true`, show a **Reconnect** prompt and follow [re-authentication](/v3/platform/authentication/managing-connections/re-authentication).
+    Read [connection status](/v3/authentication/managing-connections/connection-status) wherever you render the integration. When `reauth_required` is `true`, show a **Reconnect** prompt and follow [re-authentication](/v3/authentication/managing-connections/re-authentication).
   </Step>
   <Step title="Track auth failures">
-    Authentication events, token refreshes, and auth failures are recorded in [integration logs](/v3/platform/authentication/managing-connections/integration-logs). Check them when a customer reports a connection that will not stay connected.
+    Authentication events, token refreshes, and auth failures are recorded in [integration logs](/v3/authentication/managing-connections/integration-logs). Check them when a customer reports a connection that will not stay connected.
   </Step>
 </Steps>
 
@@ -45,7 +45,7 @@ Execution monitoring tells you whether the calls running through a connection ar
 
 Workflow execution logs (run history, per-node input and output, replay and retry) are a Platform surface. Use them to inspect any run:
 
-<Card title="Audit and activity" icon="list-check" href="/v3/concepts/audit">
+<Card title="Audit and activity" icon="list-check" href="/v3/monitor/audit">
   Track configuration changes, user actions, and platform activity for your account.
 </Card>
 
@@ -73,7 +73,7 @@ Decide ahead of time how each failure is surfaced, so a production error reaches
     Route the connection-expired webhook into your own alerting (a log, a dashboard, or an internal notification) so a broken connection becomes a ticket, not a surprise.
   </Step>
   <Step title="Surface the state to the customer">
-    When a connection needs attention, show the customer the **Reconnect** state so they can fix it themselves. See [connection status](/v3/platform/authentication/managing-connections/connection-status).
+    When a connection needs attention, show the customer the **Reconnect** state so they can fix it themselves. See [connection status](/v3/authentication/managing-connections/connection-status).
   </Step>
 </Steps>
 
@@ -81,7 +81,7 @@ Decide ahead of time how each failure is surfaced, so a production error reaches
 
 <Steps>
   <Step title="Real-time over polling">
-    Subscribe to [webhooks](/v3/native/configure/developer/webhooks) for connection and execution events instead of polling status on a timer.
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) for connection and execution events instead of polling status on a timer.
   </Step>
   <Step title="Per-customer visibility">
     Be able to scope any check to a single [linked account](/v3/concepts/linked-account), because most production reports are about one customer.
@@ -96,8 +96,8 @@ Decide ahead of time how each failure is surfaced, so a production error reaches
 
 ## See also
 
-- [Connection status](/v3/platform/authentication/managing-connections/connection-status): read whether a customer is connected and healthy.
-- [Re-authentication](/v3/platform/authentication/managing-connections/re-authentication): prompt a reconnect when a connection breaks.
-- [Webhooks](/v3/native/configure/developer/webhooks): the events that drive real-time monitoring.
-- [Audit](/v3/concepts/audit): the Platform log of configuration changes and account activity.
+- [Connection status](/v3/authentication/managing-connections/connection-status): read whether a customer is connected and healthy.
+- [Re-authentication](/v3/authentication/managing-connections/re-authentication): prompt a reconnect when a connection breaks.
+- [Webhooks](/v3/connectors/my-app/webhooks): the events that drive real-time monitoring.
+- [Audit](/v3/monitor/audit): the Platform log of configuration changes and account activity.
 - [Go-live checklist](/v3/native/ship-and-operate/go-live): confirm monitoring is on before you launch.

@@ -26,7 +26,7 @@ A workflow added to a server shows up as a tool:
 - **Direct mode:** as `<app_slug>_<workflow_name>_workflow`
 - **Agent mode:** reachable through `EXECUTE_ACTION` with `type: "workflow"`
 
-The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and the final result comes back. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/reference/tools) for the exact parameter shape.
+The agent sees the workflow's input schema as the tool's schema. It fills in the inputs, the workflow runs, and the final result comes back. Structured outputs come back as JSON; defined error paths come back as structured error responses the agent can act on. See [Tools](/v3/mcp/tools) for the exact parameter shape.
 
 ## What a workflow guarantees
 
@@ -114,7 +114,7 @@ When all the steps must run as a single atomic unit, keep them in one workflow.
   <Card title="Server configuration" icon="gear" href="/v3/mcp/build/server-configuration">
     Configure which apps, actions, and workflows a server exposes
   </Card>
-  <Card title="Tools" icon="wrench" href="/v3/mcp/reference/tools">
+  <Card title="Tools" icon="wrench" href="/v3/mcp/tools">
     The exact parameter shape for every tool type
   </Card>
 </CardGroup>

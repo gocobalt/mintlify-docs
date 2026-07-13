@@ -37,7 +37,7 @@ https://<domain>/mcp/v1/<server_id>
 
 The token authenticates every request. It scopes the session to one end user's linked account, and every tool call in that session runs under that end user's credentials.
 
-You build one server configuration and reuse it for every end user. Because each URL is unique to an end user, one URL maps to one [linked account](/v3/concepts/linked-account), which maps to one end user. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/mcp/connect/authentication).
+You build one server configuration and reuse it for every end user. Because each URL is unique to an end user, one URL maps to one [linked account](/v3/concepts/linked-account), which maps to one end user. For how Refold issues and stores per-user URLs in production, see [How it works](/v3/mcp/get-started/architecture). For token security, revocation, and per-user scoping, see [Authentication](/v3/authentication/mcp).
 
 <Info>
 The Server URL is generated per linked account and retrieved from the dashboard. The examples above show its structure; copy the complete URL, including the host, from there rather than assembling it by hand.
@@ -56,10 +56,10 @@ Two more toggles layer capabilities onto whichever mode is active. Neither is a 
 |--------|----------------|---------|
 | **Agent Mode** | Switches the server from direct mode to agent mode, replacing per-action tools with `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. | Off |
 | **Retrieve Skill** | Adds `GET_KNOWLEDGE_INDEX` (the skill index) and `LOAD_SKILL`. The agent browses the index of skills attached to this server, then loads the full procedure it needs. Works in either mode. See [Skills](/v3/mcp/build/skills). | Off |
-| **Auth Tool** | Adds a reconnect prompt. If a connection needs re-authorization, the end user is prompted to reconnect instead of the call failing silently. See [Authentication](/v3/mcp/connect/authentication). | Off |
+| **Auth Tool** | Adds a reconnect prompt. If a connection needs re-authorization, the end user is prompted to reconnect instead of the call failing silently. See [Authentication](/v3/authentication/mcp). | Off |
 
 <Note>
-The **Agent Mode** and **Retrieve Skill** toggles change which tools the agent sees and how it invokes actions. They also change what the agent can reach in a session, so review the security model before enabling them. See [Authentication](/v3/mcp/connect/authentication).
+The **Agent Mode** and **Retrieve Skill** toggles change which tools the agent sees and how it invokes actions. They also change what the agent can reach in a session, so review the security model before enabling them. See [Authentication](/v3/authentication/mcp).
 </Note>
 
 <Tip>
@@ -87,7 +87,7 @@ The **Applications** tab lists the apps connected to this server and defines the
 
 Each app must be:
 
-1. **Configured** in your Refold account with valid auth settings. See the [connector setup guide](/v3/platform/concepts/connector/supported-apps-actions).
+1. **Configured** in your Refold account with valid auth settings. See the [connector setup guide](/v3/connectors/supported-apps-actions).
 2. **Authorized** by the linked account. The end user must have completed the auth flow for that app.
 
 You can connect multiple apps to a single server. A server with Salesforce, SAP, and NetSuite gives the agent access to CRM, ERP, and financial actions in one session.
@@ -109,9 +109,9 @@ Skills attached here are scoped to this MCP server only. See [Skills](/v3/mcp/bu
 ## See also
 
 - [How it works](/v3/mcp/get-started/architecture): request lifecycle, per-user URLs, and the object-to-tool model.
-- [Authentication](/v3/mcp/connect/authentication): token security, revocation, and how the toggles affect access.
+- [Authentication](/v3/authentication/mcp): token security, revocation, and how the toggles affect access.
 - [Choose your pattern](/v3/mcp/get-started/choose-your-pattern): direct, agent, and workflow patterns compared.
 - [Skills](/v3/mcp/build/skills): create and attach reusable agent procedures.
 - [Workflows as tools](/v3/mcp/build/workflow-as-mcp): expose a workflow as a single MCP tool call.
-- [Tools](/v3/mcp/reference/tools): full tool reference and schemas.
+- [Tools](/v3/mcp/tools): full tool reference and schemas.
 - [MCP Logs](/v3/mcp/operate/mcp-logs): audit trail for every tool call.

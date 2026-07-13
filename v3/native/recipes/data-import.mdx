@@ -12,7 +12,7 @@ This recipe assumes you can already connect an app and execute an action (see th
 Choose by how much data you move and how often:
 
 - **Direct execute** suits a one-off pull or a small set of records. Your backend calls the connector's read action and handles the result inline. No workflow needed.
-- **Workflow import** suits bulk loads, paging, per-record fetches, and scheduled refreshes. A workflow reads the records, reshapes them, and posts them to your server through an [API Proxy](/v3/native/configure/developer/api-proxies).
+- **Workflow import** suits bulk loads, paging, per-record fetches, and scheduled refreshes. A workflow reads the records, reshapes them, and posts them to your server through an [API Proxy](/v3/connectors/my-app/api-proxies).
 
 <Note>
 Start with direct execute to prove the read works, then move to a workflow once you need paging, transformation, or a schedule.
@@ -62,7 +62,7 @@ For a bulk or scheduled import, build a workflow. It reads the records, transfor
     Add a transform step to flatten and rename fields into the shape your backend expects. See [Data mapping](/v3/native/move-data/data-mapping).
   </Step>
   <Step title="Deliver to your server">
-    Add an [API Proxy](/v3/native/configure/developer/api-proxies) node that POSTs the transformed records to your own endpoint.
+    Add an [API Proxy](/v3/connectors/my-app/api-proxies) node that POSTs the transformed records to your own endpoint.
   </Step>
 </Steps>
 
@@ -111,7 +111,7 @@ Your endpoint receives the transformed records, and they appear in your product.
   <Card title="Two-way sync recipe" icon="arrows-left-right" href="/v3/native/recipes/two-way-sync">
     Keep the imported records in sync after the first load.
   </Card>
-  <Card title="API Proxies" icon="server" href="/v3/native/configure/developer/api-proxies">
+  <Card title="API Proxies" icon="server" href="/v3/connectors/my-app/api-proxies">
     Deliver workflow output to your own endpoints.
   </Card>
   <Card title="Configure the integration" icon="sliders" href="/v3/native/configure/integration/config-fields">

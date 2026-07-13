@@ -7,7 +7,7 @@ Data variables are the typed values that flow through a workflow. You reference 
 
 Three categories of variables share the same templating syntax:
 
-- **Workflow data**: the triggering event's payload, outputs from upstream nodes, and values stored in [Config](/v3/platform/concepts/connector/supported-apps-actions) DataSlots.
+- **Workflow data**: the triggering event's payload, outputs from upstream nodes, and values stored in [Config](/v3/connectors/supported-apps-actions) DataSlots.
 - **Environment variables**: workspace-scoped values (API endpoints, region codes, feature flags, default tokens) that you manage in workspace settings and reference by name.
 - **Templating tokens**: instance metadata, linked account fields, and helper expressions baked into the templating engine.
 
@@ -21,7 +21,7 @@ Open the **Insert Variable** picker by clicking any input field on a node. The p
 
 <AccordionGroup>
   <Accordion title="DataSlots">
-    DataSlots are variables sourced from the [Application or Workflow Config](/v3/platform/concepts/connector/supported-apps-actions) you created. A few default meta variables are also available under Workflow DataSlots.
+    DataSlots are variables sourced from the [Application or Workflow Config](/v3/connectors/supported-apps-actions) you created. A few default meta variables are also available under Workflow DataSlots.
 
     {/* MEDIA-TODO (image): Screenshot of the DataSlots tab in the Insert Variable picker, showing both config-defined DataSlots and the built-in meta variables. */}
     <Frame>
@@ -170,7 +170,7 @@ Every variable access and modification is logged. Each entry includes the timest
 
 ### Templating tokens
 
-Beyond workflow data and environment variables, the templating engine exposes built-in tokens for instance metadata and linked account data. These are available everywhere templates work: workflow node fields, [API Proxies](/v3/native/configure/developer/api-proxies), and authorization/developer settings.
+Beyond workflow data and environment variables, the templating engine exposes built-in tokens for instance metadata and linked account data. These are available everywhere templates work: workflow node fields, [API Proxies](/v3/connectors/my-app/api-proxies), and authorization/developer settings.
 
 #### Instance metadata
 

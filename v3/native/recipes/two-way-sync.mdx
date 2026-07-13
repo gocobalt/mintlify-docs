@@ -12,8 +12,8 @@ This recipe assumes you can already connect an app and execute an action (see th
 A two-way sync is three workflows working together, not one. Each handles a different direction or moment:
 
 - **Initial sync** reads all existing records out of the connected app once, so both sides start from the same data. This is the [Data import recipe](/v3/native/recipes/data-import).
-- **Outbound push** writes to the connected app whenever a record changes in your product. Your backend fires an [event](/v3/native/configure/developer/events); a workflow runs an action on the connected app.
-- **Inbound push** writes to your product whenever a record changes in the connected app. The app's webhook trigger starts a workflow; the workflow posts the change to your server through an [API Proxy](/v3/native/configure/developer/api-proxies).
+- **Outbound push** writes to the connected app whenever a record changes in your product. Your backend fires an [event](/v3/connectors/my-app/events); a workflow runs an action on the connected app.
+- **Inbound push** writes to your product whenever a record changes in the connected app. The app's webhook trigger starts a workflow; the workflow posts the change to your server through an [API Proxy](/v3/connectors/my-app/api-proxies).
 
 <Note>
 Run the initial sync once per customer when they connect. Run the outbound and inbound workflows continuously after that. Keeping them separate is what makes the sync debuggable: each direction has its own logs.
@@ -73,7 +73,7 @@ When a record changes in the connected app, run a workflow that posts the change
     Create a workflow whose trigger is the connected app's change event, for example a **Contact Created** or **Contact Updated** webhook. The workflow receives the changed record as its payload.
   </Step>
   <Step title="Post the change to your server">
-    Add an [API Proxy](/v3/native/configure/developer/api-proxies) node that POSTs the payload to your own endpoint, so your backend can upsert the record.
+    Add an [API Proxy](/v3/connectors/my-app/api-proxies) node that POSTs the payload to your own endpoint, so your backend can upsert the record.
   </Step>
   <Step title="Upsert by the stored ID">
     In your endpoint, look up the record by the connected app's ID you stored in Step 1 and update it, or create it if it is new.
@@ -105,7 +105,7 @@ Edit a contact in your app and watch it update in the connected app. Edit a cont
   <Card title="Data import recipe" icon="download" href="/v3/native/recipes/data-import">
     Build the initial sync this recipe depends on.
   </Card>
-  <Card title="Webhooks" icon="bell" href="/v3/native/configure/developer/webhooks">
+  <Card title="Webhooks" icon="bell" href="/v3/connectors/my-app/webhooks">
     Receive and verify change events in your backend.
   </Card>
   <Card title="Configure the integration" icon="sliders" href="/v3/native/configure/integration/config-fields">

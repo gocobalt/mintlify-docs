@@ -33,7 +33,7 @@ Building a datasource is two tasks: create the workflow that returns the options
     In the connector, add an [Application Workflow](/v3/native/configure/integration/workflow) and name it for what it returns, such as `Get Vendors`, so it's easy to find later. A datasource workflow needs no trigger, it's run on demand when the field loads.
   </Step>
   <Step title="Fetch the records">
-    Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/platform/concepts/connector/custom-actions), or an [HTTP Request](/v3/concepts/workflows/nodes/http) node against the connected app.
+    Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/connectors/custom-actions), or an [HTTP Request](/v3/concepts/workflows/nodes/http) node against the connected app.
   </Step>
   <Step title="Transform into name/value pairs">
     Add a [Transform](/v3/concepts/workflows/nodes/transform) or [Custom Code](/v3/concepts/workflows/nodes/custom-code) node that reshapes each record into an object with exactly `name` (the label the customer sees) and `value` (the ID you use in your workflow).
