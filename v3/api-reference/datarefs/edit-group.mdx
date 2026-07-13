@@ -1,0 +1,37 @@
+---
+title: Edit Dataref Group
+openapi: "PUT /api/v2/public/datarefs/group"
+description: Bulk set or clear the group on multiple datarefs.
+---
+
+Set or clear the `group` label on multiple datarefs at once. Passing an empty `group` unsets the field. Groups help organize related datarefs.
+
+<ResponseExample>
+```json 200
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "refNames is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (set group)
+curl -X PUT "https://app.refold.ai/api/v2/public/datarefs/group" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "refNames": ["contacts", "deals"], "group": "crm-data" }'
+```
+```bash cURL (clear group)
+curl -X PUT "https://app.refold.ai/api/v2/public/datarefs/group" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "refNames": ["contacts"], "group": "" }'
+```
+</RequestExample>

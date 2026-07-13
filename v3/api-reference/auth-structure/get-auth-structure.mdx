@@ -1,0 +1,58 @@
+---
+title: Get Auth Structure
+openapi: "GET /api/v2/public/auth-structure/{slug}"
+description: Get the authentication field structure for an app.
+---
+
+Return a flat description of the auth fields required for each of an app's supported auth types (`oauth2`, `keybased`, …). Use this to build a credential-entry form dynamically, or to know exactly which fields to send to [Save Key Credentials](/v3/api-reference/credentials/save-key-credentials) or [Migrate Token](/v3/api-reference/credentials/migrate-token).
+
+Each field's value is either a type string (e.g. `"string"`) or an object `{type, required: false}` for optional fields.
+
+<Note>
+  This route has **no authentication** — no API key or session token is required.
+</Note>
+
+<ResponseExample>
+```json 200 OAuth app
+{
+  "oauth2": {
+    "access_token": "string",
+    "refresh_token": "string",
+    "client_id": "string",
+    "client_secret": "string",
+    "callback_url": { "type": "string", "required": false }
+  }
+}
+```
+```json 200 App with both auth types
+{
+  "keybased": {
+    "account_id": "string",
+    "consumer_key": "string",
+    "consumer_secret": "string",
+    "token_id": "string",
+    "token_secret": "string"
+  },
+  "oauth2": {
+    "access_token": "string",
+    "refresh_token": "string",
+    "account_id": "string",
+    "client_id": "string",
+    "client_secret": "string",
+    "callback_url": { "type": "string", "required": false }
+  }
+}
+```
+```json 500
+{
+  "error": "SERVER_ERROR",
+  "message": "Schema not found for integration type: test-app"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/auth-structure/{slug}"
+```
+</RequestExample>

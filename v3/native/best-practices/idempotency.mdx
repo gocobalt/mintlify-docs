@@ -1,0 +1,93 @@
+---
+title: "Idempotency"
+description: "Make integration operations safe to retry so a repeated call never creates a duplicate record or a double effect."
+---
+
+An operation is **idempotent** when running it twice has the same result as running it once. This matters because integrations retry: a [rate limit](/v3/native/best-practices/rate-limiting) or a timeout can cause you to repeat a call whose first attempt actually succeeded, and without idempotency that retry creates a duplicate contact, a double payment, or a second order. Designing operations to be safe to retry is what makes retry logic trustworthy.
+
+There are two layers to get right: stopping a duplicate *event* from starting a workflow twice, and stopping a duplicate *write* from creating two records in a connected app. This page covers both.
+
+## Built-in idempotency on event triggers
+
+For event-triggered workflows, Refold deduplicates at the source. Turn on [idempotency](/v3/concepts/workflows/idempotency) in the workflow's event trigger: Refold reads a key from each incoming event (from the **Header** or **Payload**, written as `{event:<key>}`) and ignores any repeat that carries the same key within the time window (5 minutes by default). A double-sent event never starts a second run.
+
+Use a key that is unique per logical event and stable across retries, such as an upstream record or event ID. For everything that happens after the workflow starts (the writes into connected apps), apply the patterns below.
+
+## Why retries cause duplicates
+
+The dangerous case is a write that succeeds but whose response you never see. The connected app created the record, then the network dropped or the app returned a `5xx` before the success reached you. Your code treats it as a failure and retries, and now two records exist.
+
+Reads are naturally idempotent: fetching the same data twice changes nothing. The risk is concentrated in **writes that create** (create contact, submit payment, send message). Focus your effort there.
+
+<Note>
+Not every operation can be made idempotent by you alone. Whether a repeat is safe depends on the connected app's API. The patterns below let you build safety on top of whatever the app provides.
+</Note>
+
+## Use an idempotency key when the app supports it
+
+An **idempotency key** is a unique value you attach to a write so the receiving app recognizes a repeat and returns the original result instead of acting again. Many provider APIs support this directly, often as a header or a field on the request.
+
+<Steps>
+  <Step title="Generate a stable key per operation">
+    Derive the key from something that identifies the logical operation, not the attempt. A natural identifier (an order ID, an event ID) means every retry of the same operation reuses the same key.
+  </Step>
+  <Step title="Send it on every attempt">
+    Pass the same key on the first call and on each retry. Pass it through to the app on the [HTTP request](/v3/concepts/workflows/nodes/http) or action that supports it.
+  </Step>
+  <Step title="Trust the app's response">
+    When the app recognizes the key, it returns the original result rather than creating a second record. The retry becomes a no-op.
+  </Step>
+</Steps>
+
+<Tip>
+Check the connected app's API docs for idempotency support. The header or field name and the retention window vary by provider, so confirm them per app rather than assuming a single convention.
+</Tip>
+
+## Deduplicate when the app has no key
+
+When an app does not support idempotency keys, make the operation safe yourself: check before you write, or detect a duplicate after.
+
+- **Check before you create.** Look up the record by a natural key (email, external ID) first; create it only if the lookup returns nothing. Inside a workflow, use a [Rule node](/v3/concepts/workflows/nodes/rule) to branch on whether the lookup found a match.
+- **Track what you've processed.** Record the IDs of operations you've completed in a [Tables node](/v3/concepts/workflows/nodes/tables) and skip any ID you've already handled. This is especially useful for [event-driven and polling](/v3/concepts/workflows/overview) workflows where the same event can arrive more than once.
+- **Store the app's record ID on your side.** Once you create a record, save its ID against your own object so the next sync updates that record instead of creating a new one.
+
+<Warning>
+A check-then-create has a race: two near-simultaneous runs can both find nothing and both create. Where it matters, prefer an idempotency key or an upsert, and keep a deduplication store you can reconcile against.
+</Warning>
+
+## Prefer upsert over create
+
+An **upsert** updates a record if it exists and creates it if it doesn't, keyed on a unique field. It is idempotent by design: running it repeatedly converges on one record instead of stacking duplicates.
+
+- **Use the app's native upsert** when it offers one (many CRMs upsert on an external ID). One call, no pre-check, no duplicate.
+- **Build an upsert from lookup plus branch** when the app has none: look up by the unique key, then update on a match or create on no match.
+- **Key on a value that is stable and unique** across runs, such as an external ID you control, so the same input always resolves to the same record.
+
+## Best practices
+
+<Steps>
+  <Step title="Make every create safe to repeat">
+    Assume any write can run twice, and design so the second run has no extra effect.
+  </Step>
+  <Step title="Use an idempotency key where the app supports one">
+    Derive it from the logical operation and send the same key on every retry.
+  </Step>
+  <Step title="Default to upsert over blind create">
+    Key on a stable unique value so repeats converge on one record.
+  </Step>
+  <Step title="Track processed IDs for events">
+    Dedupe redundant deliveries with a Tables-backed record of what you've handled.
+  </Step>
+  <Step title="Pair idempotency with retries">
+    Only add aggressive [retry logic](/v3/native/best-practices/error-handling) once the operation underneath it is safe to repeat.
+  </Step>
+</Steps>
+
+## See also
+
+- [Workflow idempotency](/v3/concepts/workflows/idempotency) : the built-in event deduplication setting
+- [Error handling](/v3/native/best-practices/error-handling) : when and how to retry safely
+- [Rate limiting](/v3/native/best-practices/rate-limiting) : the throttling that triggers retries
+- [Tables node](/v3/concepts/workflows/nodes/tables) : store processed IDs to deduplicate
+- [Rule node](/v3/concepts/workflows/nodes/rule) : branch on whether a record already exists
+- [Read & write data](/v3/native/move-data/read-write) : the operations these patterns apply to

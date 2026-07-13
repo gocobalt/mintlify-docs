@@ -1,0 +1,206 @@
+---
+title: "Setup"
+description: "Connect to your Gong app for OAuth or API Key"
+---
+
+Gong supports two authentication methods. Choose the one that best fits your use case:
+
+- **API Key Authentication** - Best for internal integrations and quick setup
+- **OAuth 2.0 Authentication** - Best for publishing apps in the Gong Collective
+
+## API Key Authentication
+
+To setup your Gong app in Refold for API Key, you will need the following credentials from your Gong account:
+
+- Access Key
+- Access Key Secret
+
+### Pre-requisites
+
+1. Gong account with Technical Administrator permissions.
+
+<Info>
+  You must be a Technical Administrator in Gong to create and manage API keys.
+</Info>
+
+### Getting API credentials in Gong
+
+To acquire the above mentioned credentials from Gong, please follow the steps mentioned below:
+
+1. Log in to your Gong account at `https://app.gong.io`.
+2. Navigate to **Company Settings** by clicking on the settings icon, then go to **Ecosystem** → **API**.
+
+<img
+  height="200"
+  src="/images/gong/gong_navigation.png"
+  alt="Navigation for API setup"
+/>
+
+3. In the **API Keys** section, click on **Create** or **Get API Key** to generate new credentials.
+4. Provide a descriptive name for your API key to identify its purpose.
+5. Select the required **API Scopes** based on the actions you need to perform.
+6. Click **Create** to generate the **Access Key** and **Access Key Secret**.
+7. Copy both the **Access Key** and **Access Key Secret** immediately and store them securely.
+
+<img
+  height="200"
+  src="/images/gong/gong_apikey_config.png"
+  alt="Setting up Gong API Key"
+/>
+
+8. The API uses Basic Authentication with the format `AccessKey:AccessKeySecret` encoded in Base64.
+
+<img
+  height="200"
+  src="/images/gong/gong_apikey_credentials.png"
+  alt="Getting API Key Credentials"
+/>
+
+<Warning>
+  The Access Key Secret is only displayed once at the time of creation. Store it securely as you cannot retrieve it again. If lost, you will need to generate new API credentials.
+</Warning>
+
+#### Configuring API Key credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/gong/gong_apikey_refold.png"
+  alt="Setting up API Key credentials"
+/>
+
+Provide the acquired Access Key and Access Key Secret under Settings of the app and save it.
+
+---
+
+## OAuth 2.0 Authentication
+
+To setup your Gong app in Refold for OAuth, you will need the following credentials from your Gong Developer account:
+
+- Client ID
+- Client Secret
+- Scopes
+
+### Pre-requisites
+
+1. Gong account with Technical Administrator permissions.
+
+<Info>
+  If you haven't already created an integration in Gong, you'd need to create one. OAuth is recommended if you want to publish your app in the Gong Collective.
+</Info>
+
+### Creating an app in Gong
+
+To create a Gong app and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Gong account at `https://app.gong.io`.
+2. Navigate to **Company Settings** → **Ecosystem** → **API** in the Admin Center.
+
+<img
+  height="200"
+  src="/images/gong/gong_oauth_navigation.png"
+  alt="Navigation for OAuth App setup"
+/>
+
+3. Click on **Create Integration** to create a new OAuth application.
+4. Enter the **Integration Name**, **Description**, and upload a **Logo** for your application.
+5. Select the required **Scopes** based on the API endpoints you need access to.
+6. Go to your [`Apps catalog`](https://app.refold.ai/applications) in **Refold** \> Search for `Gong` \> `Settings` \> `Use your credentials` \> `Callback Url` \> Copy it.
+7. Navigate to the **Redirect URI** field in your Gong integration settings \> Paste the Callback Url \> Click **Save**.
+
+<img
+  height="200"
+  src="/images/gong/gong_oauth_config.png"
+  alt="Setting up Gong OAuth app"
+/>
+
+8. Once the integration is created, copy the **Client ID** and **Client Secret** from the integration details.
+
+<img
+  height="200"
+  src="/images/gong/gong_oauth_credentials.png"
+  alt="Getting OAuth Credentials"
+/>
+
+#### Configuring OAuth credentials in Refold
+
+App settings page lets you configure the authentication settings for an `OAuth2` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/gong/gong_oauth_refold.png"
+  alt="Setting up OAuth credentials"
+/>
+
+Provide the acquired Client ID and Client Secret under Settings of the app and save it.
+
+#### Configuring Scopes
+
+Refold lets you configure what permissions to ask from your users while they install your application. The scopes can be added or removed from the App settings page, under `Permissions & Scopes` section.
+
+For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any custom scopes supported by the respective platform.
+
+<img
+  height="200"
+  src="/images/gong/gong_scopes.png"
+  alt="OAuth Scopes"
+/>
+
+Once the scopes has been added to the application in Refold, go to your Gong integration settings and ensure the selected scopes match those configured in Refold. Common scopes include `api:calls:read:basic`, `api:calls:create`, `api:users:read`, and `api:meetings:user:create`.
+
+<Warning>
+  If you are facing scopes missing or invalid scope error. Make sure you are not passing any custom scope not supported by the platform. And, the scopes selected here are identical to the ones selected in the platform.
+</Warning>
+
+---
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Gong actions and triggers. Following are the set of Gong actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Call">
+        1. **List Calls** - List calls that took place during a specified date range in Gong.
+        2. **Create Call** - Create a call and provide a downloadable media URL in Gong.
+        3. **Get Call By Id** - Get a call by its unique identifier in Gong.
+        4. **List Call Transcripts** - List call transcripts in Gong.
+        5. **List Extensive Calls** - List extensive calls with detailed information in Gong.
+        6. **Add Call Media** - Add call media as a subsequent request in Gong.
+      </Accordion>
+      <Accordion title="Library">
+        7. **List Library Folders** - List all library folders in Gong.
+        8. **List of Calls in Folder** - List calls in a specific library folder in Gong.
+      </Accordion>
+      <Accordion title="Meeting">
+        9. **Create Meeting** - Create a new meeting in Gong.
+        10. **Update Meeting** - Update an existing meeting in Gong.
+        11. **Delete Meeting** - Delete a meeting in Gong.
+      </Accordion>
+      <Accordion title="Tracker">
+        12. **List Trackers** - List all trackers in Gong.
+      </Accordion>
+      <Accordion title="User">
+        13. **Search User** - Search for a user by their email address or phone number in Gong.
+        14. **List Users** - List users that match the specified filter in Gong.
+        15. **Get User By Id** - Get a user by their unique ID in Gong.
+      </Accordion>
+      <Accordion title="Scorecard">
+        16. **List Scorecards** - List all scorecards in Gong.
+      </Accordion>
+      <Accordion title="Content">
+        17. **Create Content View Event** - Create a content view event in Gong.
+        18. **Create Content Share Engagement Event** - Create a content share engagement event in Gong.
+      </Accordion>
+      <Accordion title="Others">
+        19. **HTTP Request** - Make HTTP API calls to any Gong documented REST APIs.
+        20. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

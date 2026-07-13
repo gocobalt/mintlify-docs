@@ -6,6 +6,12 @@ api: post /api/v2/public/linked-account
 This API allows you to create a new linked account for your customer within Refold's platform.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Body Parameters
 <ParamField body="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com

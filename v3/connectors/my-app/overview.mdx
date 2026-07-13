@@ -1,0 +1,95 @@
+---
+title: "Overview"
+description: "My App represents your own application in Refold — the home for your API keys, environments, authentication, and API proxies."
+---
+
+**My App** is how Refold represents *your own application* — your product and its backend — inside the platform. Where a [connector](/v3/connectors/supported-apps-actions) represents a third-party app your customers connect, My App represents *you*: the application your customers use your integrations from. In the API it's the `your_app` on each [linked account](/v3/concepts/linked-account); in the Console it's your **Developer** area.
+
+A native integration moves data across two sides — your customers' connected apps, and your own product. Connectors cover the third-party side; **My App is your side**. It's the single home for everything Refold needs to reach your backend, and everything your backend needs to reach Refold.
+
+## What My App holds
+
+| Area | Purpose |
+| --- | --- |
+| **API keys & environments** | Authenticate your backend *to* Refold, isolated across test and production. Set up on this page. |
+| **[Authentication](/v3/connectors/my-app/authentication)** | How Refold authenticates *to your API* when it calls back into your systems. |
+| **[API proxies](/v3/connectors/my-app/api-proxies)** | Your own endpoints, registered as reusable actions any workflow can call. |
+| **[Webhooks](/v3/connectors/my-app/webhooks) & [Events](/v3/connectors/my-app/events)** | Real-time sync in both directions between Refold and your backend. |
+| **Connector configuration** | OAuth credentials and settings for the third-party apps you enable. |
+
+## API keys and environments
+
+Every backend request to Refold authenticates with an API key sent in the `x-api-key` header. The key you use determines which environment the call hits, so getting keys and environments right is the first thing to set up before you wire up [linked accounts](/v3/concepts/linked-account), [webhooks](/v3/connectors/my-app/webhooks), or [actions](/v3/connectors/my-app/api-proxies).
+
+Refold gives your app two isolated environments:
+
+- **Test** is for building and QA. Linked accounts, connections, and workflow runs created here never touch production data.
+- **Production** is what your customers use.
+
+Each environment has its own API key and its own connector credentials. A call made with the test key only ever sees test linked accounts, and a call made with the production key only ever sees production ones. The environment is encoded in the key, so you switch environments by switching keys, not by changing the base URL.
+
+<Note>
+All API calls use the base URL `https://app.refold.ai` and send your API key in the `x-api-key` header. Never expose your API key in the browser. For frontend authentication, mint a [session token](/v3/api-reference/session-tokens/generate-session-token) on your backend instead.
+</Note>
+
+## Get your API key
+
+<Steps>
+  <Step title="Open Settings > Credentials">
+    In the [Refold Console](https://app.refold.ai), go to **Settings > Credentials**.
+  </Step>
+  <Step title="Copy the key for the environment you want">
+    Each environment lists its own key. Copy the **test** key while you build and the **production** key when you ship.
+  </Step>
+  <Step title="Store it as an environment variable">
+    Keep the key out of source control. Read it from an environment variable in your backend.
+
+    ```bash
+    export REFOLD_API_KEY="your-api-key-here"
+    ```
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: Settings > Credentials page showing the test and production API keys -> /images/embedded/backend/credentials.png */}</Frame>
+
+## Test vs production credentials
+
+Two things differ between environments, and you set both per environment in the Console.
+
+| What | Test | Production |
+|------|------|------|
+| **API key** | Test key from **Settings > Credentials** | Production key from **Settings > Credentials** |
+| **Connector auth** | Refold's shared test OAuth credentials, or your own | Your own OAuth client ID and secret |
+| **Data** | Sandboxed, safe to create and delete freely | Real customer connections and data |
+
+While building, you can connect an app with Refold's shared test credentials so you don't need your own OAuth client yet. Before going live, configure your own credentials for each connector under its [authentication settings](/v3/connectors/app-auth-modes).
+
+<Warning>
+The shared test credentials are for development only. Production traffic must use your own OAuth client ID and secret, configured per connector. Shipping with shared credentials risks rate limits and exposes your customers to a client you don't control.
+</Warning>
+
+<Tip>
+Hold the test and production keys in separate secrets (for example, `REFOLD_API_KEY` in your staging config and another in production). Selecting the environment then becomes a deploy concern, not a code change.
+</Tip>
+
+## Manage and rotate keys
+
+You manage keys from the same **Settings > Credentials** page where you find them. Rotate a key if it leaks or on your normal secret-rotation schedule, then update the secret in your backend.
+
+<Warning>
+Rotating a key invalidates the old one. Any backend still using the previous key gets `401 Unauthorized` until you deploy the new key.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Linked accounts and session tokens" icon="user-plus" href="/v3/native/get-started/linked-accounts">
+    Wire up your backend: represent each customer and mint a session token for the frontend.
+  </Card>
+  <Card title="Connector authentication" icon="key" href="/v3/connectors/app-auth-modes">
+    Configure your own OAuth credentials before going live.
+  </Card>
+  <Card title="Subscribe to webhooks" icon="bell" href="/v3/connectors/my-app/webhooks">
+    Get notified when connections expire or workflows finish.
+  </Card>
+</CardGroup>

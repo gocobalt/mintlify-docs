@@ -1,0 +1,58 @@
+---
+title: List Schedules
+openapi: "GET /api/v1/workflow/public/scheduled"
+description: List the scheduled triggers for a linked account.
+---
+
+List the scheduled triggers registered for a linked account, paginated. Each entry includes the workflow it runs, its cron/interval config, and its current status.
+
+<Note>
+  Schedules are part of the v1 workflow service (`/api/v1/workflow/public/scheduled`).
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a312175d0aeb8165bdac34a",
+      "event_id": "6a312175d0aeb8165bdac328",
+      "workflow": {
+        "_id": "6a17f312aae660322b26883e",
+        "name": "Daily Contact Sync",
+        "associated_application": { "_id": "6992cc7dc124a392c80e9e9c", "name": "Hubspot" }
+      },
+      "config_id": "user_12345",
+      "linked_account_id": "user_12345",
+      "trigger_type": "cron",
+      "cron_patten": "5 * * * *",
+      "trigger_interval": [],
+      "status": "running",
+      "inactive": false,
+      "registered_by_api": false
+    }
+  ],
+  "totalDocs": 3,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 1,
+  "hasNextPage": false
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v1/workflow/public/scheduled?limit=10" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

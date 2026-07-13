@@ -1,0 +1,36 @@
+---
+title: Create Table
+openapi: "POST /api/v2/public/tables"
+description: Create a persistent table for a linked account.
+---
+
+Create a persistent table with a set of columns for a linked account. Up to 20 columns can be defined at creation; add more later with [Add Columns](/v3/api-reference/persistent-tables/add-columns).
+
+<ResponseExample>
+```json 200
+{
+  "table_id": "6a314fc3d396207fd2506a0a"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "table_name and columns are required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/tables" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "table_name": "leads",
+    "columns": [ { "column_name": "email" }, { "column_name": "stage" } ]
+  }'
+```
+</RequestExample>

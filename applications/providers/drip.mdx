@@ -1,0 +1,93 @@
+---
+title: "Setup"
+description: "Connect to your Drip app for API Key"
+---
+
+To setup your Drip app in Refold for API Key, you will need the following credentials from your Drip account:
+
+- API Token
+- Account ID
+
+### Pre-requisites
+
+1. Drip account with API access enabled.
+
+<Info>
+  If you haven't already created an API Token in Drip, you'd need to create one. If API access is not enabled, reach out to support@drip.com for assistance.
+</Info>
+
+### Creating an API Token in Drip
+
+To create a Drip API Token and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Drip account at [https://www.getdrip.com](https://www.getdrip.com).
+2. Click on `Settings` in the left navigation pane and select `User Settings`.
+
+<img
+  height="200"
+  src="/images/drip/drip_navigation.png"
+  alt="Navigation for API Token setup"
+/>
+
+3. On the User Info page, scroll down to find the `API Token` section.
+4. If an API Token already exists, copy it. If not, click on `Generate a New API Token` to create one.
+5. Copy the generated **API Token** and store it securely.
+
+<img
+  height="200"
+  src="/images/drip/drip_config.png"
+  alt="Setting up Drip API Token"
+/>
+
+6. To find your **Account ID**, look at your Drip dashboard URL. The number in the URL path is your Account ID (e.g., if the URL is `https://www.getdrip.com/123456/dashboard`, your Account ID is `123456`).
+
+<img
+  height="200"
+  src="/images/drip/drip_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  Your API Token authenticates your account when using the REST API. Treat it like a password and never expose it publicly. If you generate a new API Token, the previous token will no longer be valid, and any third-party integrations using the old token will need to be updated.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/drip/drip_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Token and Account ID under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Drip actions and triggers. Following are the set of Drip actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Account">
+        1. **List Accounts** - List all accounts in Drip.
+        2. **Get Account** - Fetch an account by ID in Drip.
+      </Accordion>
+      <Accordion title="Subscriber">
+        3. **List Subscribers** - List all subscribers in your account in Drip.
+        4. **Get Subscriber** - Fetch a subscriber by ID or email in Drip.
+        5. **Create Or Update Subscriber** - Create or update a subscriber in Drip.
+        6. **Delete Subscriber** - Delete a subscriber in Drip.
+        7. **Unsubscribe Subscriber** - Unsubscribe a subscriber from all mailings in Drip.
+      </Accordion>
+      <Accordion title="Others">
+        8. **HTTP Request** - Make HTTP API calls to any Drip documented REST APIs.
+        9. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    There are no triggers in this application.
+  </Tab>
+</Tabs>

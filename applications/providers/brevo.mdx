@@ -1,0 +1,106 @@
+---
+title: "Setup"
+description: "Connect to your Brevo app for API Key"
+---
+
+To setup your Brevo app in Refold for API Key, you will need the following credentials from your Brevo account:
+
+- API Key
+
+### Pre-requisites
+
+1. Brevo (formerly Sendinblue) account.
+
+<Info>
+  If you haven't already created an API Key in Brevo, you'd need to create one.
+</Info>
+
+### Creating an API Key in Brevo
+
+To create a Brevo API Key and acquire the above mentioned credentials, please follow the steps mentioned below:
+
+1. Log in to your Brevo account at [https://www.brevo.com](https://www.brevo.com).
+2. Click on your profile name at the top-right corner of the page and select `SMTP & API`.
+
+<img
+  height="200"
+  src="/images/brevo/brevo_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. On the SMTP & API page, click on the `API Keys` tab.
+4. Click on `Generate a new API key` button. If you are new to Brevo, click on the "Click here" link to generate your first API key.
+5. Enter a name for your API Key (e.g., "Refold Integration") in the popup window.
+6. Click `Generate` to create your API Key.
+
+<img
+  height="200"
+  src="/images/brevo/brevo_config.png"
+  alt="Setting up Brevo API Key"
+/>
+
+7. Copy the generated **API Key** immediately from the popup and store it securely. Click the copy icon beside the API key to copy it.
+8. Click `OK` to close the popup.
+
+<img
+  height="200"
+  src="/images/brevo/brevo_credentials.png"
+  alt="Getting Credentials"
+/>
+
+<Warning>
+  To protect your API keys, existing keys are not fully visible from your Brevo account. Only the last digits are displayed on the API Keys page. Store your API key in a safe environment and never expose it publicly. If you lose your API key, you will need to generate a new one.
+</Warning>
+
+#### Configuring credentials in Refold
+
+App settings page lets you configure the authentication settings for an `API Key` based application. For your customers to provide you authorization to access their data, they would first need to install your application. This page lets you set up your application credentials.
+
+<img
+  height="200"
+  src="/images/brevo/brevo_refold.png"
+  alt="Setting up application client credentials"
+/>
+
+Provide the acquired API Key under Settings of the app and save it.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Brevo actions and triggers. Following are the set of Brevo actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Company">
+        1. **Get All Companies** - Get all companies with optional filtering and pagination in Brevo.
+        2. **Get Company By ID** - Get a company by its unique identifier in Brevo.
+        3. **Create Company** - Create a company in Brevo.
+      </Accordion>
+      <Accordion title="Contact">
+        4. **Get All Contacts** - Get all contacts with optional filtering and pagination in Brevo.
+        5. **Get Contact By ID** - Get a contact by ID or email in Brevo.
+        6. **Create Contact** - Create a contact in Brevo.
+        7. **Create Contact Attribute** - Create a contact attribute in Brevo.
+      </Accordion>
+      <Accordion title="List">
+        8. **Create List** - Create a list in Brevo.
+      </Accordion>
+      <Accordion title="Folder">
+        9. **Create Folder** - Create a folder in Brevo.
+      </Accordion>
+      <Accordion title="Task">
+        10. **Create Task** - Create a task in Brevo.
+      </Accordion>
+      <Accordion title="Others">
+        11. **HTTP Request** - Make HTTP API calls to any Brevo documented REST APIs.
+        12. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    1. **Update Contact** - Triggers when a contact is updated in Brevo.
+    2. **Delete Contact** - Triggers when a contact is deleted in Brevo.
+    3. **Add Contact to a List** - Triggers when a contact is added to a list in Brevo.
+    4. **When Message is Unsubscribed** - Triggers when a message is unsubscribed in Brevo.
+  </Tab>
+</Tabs>

@@ -1,0 +1,162 @@
+---
+title: "Internal Functions"
+description: "Reusable JavaScript-style functions you can call from any workflow."
+---
+
+Internal Functions are reusable JavaScript functions defined once at the workspace level and called from any workflow through the Functions node. Use them to share logic, like data transforms, signature generation, or date math, across multiple workflows without copy-pasting Custom Code into each one.
+
+<Note>
+For one-off scripts that live inside a single workflow, use the [Custom Code node](/v3/concepts/workflows/nodes/custom-code) instead. Internal Functions are for logic you want to call from more than one place.
+</Note>
+
+## Define a function
+
+A function definition has three parts:
+
+- **Code**: the JavaScript body that runs when the function is called.
+- **Input fields**: the parameters the function accepts.
+- **Output fields**: the keys the function returns.
+
+The runtime is server-side JavaScript. Each function exports a single entry point named `yourFunction` that takes a `params` object and returns an object whose keys match the declared output fields. Async functions are supported.
+
+### Create a function
+
+<Steps>
+  <Step title="Open the Functions page">
+    In the Refold dashboard, go to **Advanced > Functions** in the side menu.
+  </Step>
+  <Step title="Start a new function">
+    Click **+ Create Function** and enter a **Name** for the function.
+
+    {/* MEDIA-TODO (image): screenshot of the Create Function dialog with the Name field filled in */}
+    <Frame>
+      <img height="200" src="/images/Guides/Nodes/functions_create.png" alt="Create Functions" />
+    </Frame>
+  </Step>
+  <Step title="Write the code and declare inputs and outputs">
+    Write the function body, then declare the **input** parameters the function expects and the **output** fields it returns. Click **Create** to save.
+
+    <Info>
+    You can `require` any of the supported npm libraries inside the function body. See [Supported libraries](#supported-libraries) for the full list.
+    </Info>
+  </Step>
+</Steps>
+
+<Tip>
+To change a function later, open **Advanced > Functions**, select it, and edit the code, inputs, or outputs in place.
+</Tip>
+
+### Function shape
+
+Every function follows the same shape:
+
+```javascript
+function yourFunction(params) {
+    // params.<inputField> matches each declared input
+    return {
+        // each key matches a declared output field
+        data: "value"
+    };
+}
+```
+
+For async work (HTTP calls, awaits), use `async`:
+
+```javascript
+async function yourFunction(params) {
+    const result = await someAsyncCall();
+    return { data: result };
+}
+```
+
+## Call a function from a workflow
+
+To run an internal function inside a workflow, add a **Functions node** and pick the function by name. The node exposes one form field per declared input. Map workflow data into each input the same way you map data into any other node.
+
+The function's return object becomes the node's output. Downstream nodes can reference any returned key (for example, `{{functions_node.data}}`) just as they would with any other node's output.
+
+## Supported libraries
+
+You can `require` any of the npm modules below inside a function body. If a module you need is not in this list, email [support@refold.ai](mailto:support@refold.ai) to request it.
+
+- [axios](https://www.npmjs.com/package/axios)
+- [cheerio](https://www.npmjs.com/package/cheerio)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [fast-xml-parser](https://www.npmjs.com/package/fast-xml-parser)
+- [fuse.js](https://www.npmjs.com/package/fuse.js)
+- [lodash](https://www.npmjs.com/package/lodash)
+- [mime](https://www.npmjs.com/package/mime/v/3.0.0) (pinned to v3.0.0)
+- [number-to-words](https://www.npmjs.com/package/number-to-words)
+- [url](https://www.npmjs.com/package/url)
+- [uuid](https://www.npmjs.com/package/uuid)
+- [danfo](https://danfo.jsdata.org/getting-started)
+
+<Note>
+The `danfo` library is loaded with `require('dfd')`, not `require('danfojs')`.
+</Note>
+
+## Library functions
+
+Refold ships a set of pre-defined functions called **Library functions** that appear in the Functions node by default. You can call them but you cannot edit them.
+
+Common Library functions include:
+
+- Find element in array
+- Encrypt string
+- Get current date
+
+To use one, select it in the Functions node and fill in the required inputs.
+
+{/* MEDIA-TODO (image): screenshot of the Functions node showing the list of Library functions */}
+<Frame>
+  <img height="200" src="/images/Guides/Nodes/functions.png" alt="Library Functions" />
+</Frame>
+
+## Examples
+
+<CodeGroup>
+```javascript axios
+const axios = require('axios');
+
+async function yourFunction(params) {
+    const res = await axios.get("https://genshin-impact.up.railway.app/characters");
+
+    return {
+        data: res.data
+    };
+}
+```
+
+```javascript danfo
+const dfd = require('dfd');
+
+function yourFunction(params) {
+    const s = new dfd.Series([1, 3, 5, undefined, 6, 8]);
+    return dfd.toJSON(s);
+}
+```
+
+```javascript lodash
+const _ = require('lodash');
+
+function yourFunction(params) {
+    const array = [{ id: 3 }, { id: 1 }, { id: 2 }];
+    const sortedData = _.sortBy(array, "id");
+
+    return {
+        data: sortedData
+    };
+}
+```
+</CodeGroup>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Code node" href="/v3/concepts/workflows/nodes/custom-code">
+    Run one-off JavaScript inside a single workflow without creating a reusable function.
+  </Card>
+  <Card title="Request a library" href="mailto:support@refold.ai">
+    Need an npm module that is not on the supported list? Email the integrations team.
+  </Card>
+</CardGroup>

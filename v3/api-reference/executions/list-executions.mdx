@@ -1,0 +1,55 @@
+---
+title: List Executions
+openapi: "GET /api/v2/public/execution"
+description: List workflow executions for a linked account.
+---
+
+List workflow executions (instances) for a linked account, paginated and filterable by workflow, app, status, date range, and more. Use it to build a run-history view or monitor recent activity.
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a314c54d4616e99e7fa5a02",
+      "name": "Execution for workflow 6a106ba44480b80424a65289",
+      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+      "environment": "test",
+      "status": "COMPLETED",
+      "associated_application": { "_id": "6992cc7dc124a392c80e9e9c", "name": "Hubspot", "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png" },
+      "associated_workflow": { "_id": "6a106ba44480b80424a65289", "name": "Daily Sync", "icon": "" },
+      "trigger_application_event": "Schedule",
+      "linked_account_id": "user_12345",
+      "config_id": "user_12345",
+      "type_of_execution": "ASYNC",
+      "createdAt": "2026-06-16T13:15:00.887Z"
+    }
+  ],
+  "totalDocs": 24742,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 2475,
+  "hasNextPage": true
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/execution?status=COMPLETED&limit=10" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/execution?limit=10" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

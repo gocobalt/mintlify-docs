@@ -1,0 +1,58 @@
+---
+title: Create Linked Account
+openapi: "POST /api/v2/public/linked-account"
+description: Create a new linked account for your customer.
+---
+
+Create a new linked account to represent one of your customers. Use a unique identifier from your own system (such as a user or account ID) as the `account_id`. Optionally seed a custom default-app integration and user-defined fields at creation time.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a3134fdc71d10070e78923e",
+  "account_id": "user_12345",
+  "name": "Acme Inc.",
+  "environment": "test",
+  "integrations": null
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "INVALID_LINKED_ACCOUNT_ID",
+  "message": "linked_account_id required"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://app.refold.ai/api/v2/public/linked-account" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_id": "YOUR_LINKED_ACCOUNT_ID",
+    "name": "Acme Inc."
+  }'
+```
+```bash cURL (seed credentials + UDF)
+curl -X POST "https://app.refold.ai/api/v2/public/linked-account" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "account_id": "YOUR_LINKED_ACCOUNT_ID",
+    "name": "Acme Inc.",
+    "your_app": { "auth_credentials": { "api_key": "YOUR_APP_API_KEY" } },
+    "udf": { "plan": "enterprise", "region": "us-east" }
+  }'
+```
+</RequestExample>

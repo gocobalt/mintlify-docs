@@ -1,0 +1,59 @@
+---
+title: Get All Config Fields
+openapi: "POST /api/v2/public/config/field"
+description: Get all configurable fields and workflows for an app's config.
+---
+
+Return the configured fields and workflows for an app's config on a linked account. This is a `POST` because field datasources may accept a payload when resolving options. Use it to render a configuration UI for the connected app.
+
+<ResponseExample>
+```json 200
+{
+  "slug": "hubspot",
+  "field_errors": [],
+  "fields": [
+    {
+      "id": "699fec7a5bd27ed2af7243ad",
+      "name": "Select",
+      "field_type": "select",
+      "required": false,
+      "multiple": true,
+      "hidden": false,
+      "options": [
+        { "name": "A", "value": "A" },
+        { "name": "B", "value": "B" },
+        { "name": "C", "value": "C" }
+      ],
+      "defaultValue": ""
+    }
+  ],
+  "workflows": []
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+```bash cURL (session token)
+curl -X POST "https://app.refold.ai/api/v2/public/config/field" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "slug: {slug}" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+</RequestExample>

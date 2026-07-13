@@ -6,6 +6,12 @@ api: get /api/v1/workflow/public/scheduled
 This API fetches all the scheduled jobs.
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Query Params
 <ParamField path="linked_account_id" type="string">
   Unique customer identification id. For Eg: markwood@some_email.com

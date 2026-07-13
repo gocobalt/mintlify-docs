@@ -1,0 +1,34 @@
+---
+title: Delete Linked Account
+openapi: "DELETE /api/v2/public/linked-account/{linked_account_id}"
+description: Permanently delete a linked account and all associated data.
+---
+
+Permanently delete a linked account. This revokes all of the account's integration tokens, removes any workflow installations tied to those integrations, deletes the account, clears its cache, and removes any access tokens issued to it.
+
+<Warning>
+  This is irreversible. In the `test` environment, deletion of the configured Refold test user is blocked.
+</Warning>
+
+<ResponseExample>
+```json 200
+{
+  "message": "User deleted successfully"
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error": "SERVER_ERROR",
+  "message": "Linked Account with account id user_99999 for org 6500a1b2c3d4e5f6a7b8c9d0 in environment test not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://app.refold.ai/api/v2/public/linked-account/{linked_account_id}" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

@@ -1,0 +1,138 @@
+---
+title: "Custom Actions"
+description: "Call an endpoint a connector doesn't ship with — as a one-off HTTP request, or a reusable named action your workflows drop in."
+---
+
+A connector ships with a curated set of [actions](/v3/connectors/supported-apps-actions), but a provider's API is almost always bigger than that set. When you need an endpoint that isn't built in, you have two ways to reach it:
+
+- **The app's HTTP action** — every connector ships with a built-in **HTTP action** that inherits the app's authentication, so you can call any of the provider's endpoints inside a workflow without re-authenticating. Best for a **one-off** call specific to a single workflow.
+- **Reusable custom action** — define the call **once** as a named action. It shows up alongside the connector's built-in actions, inherits the connector's authentication, and can be reused across every workflow.
+
+<Note>
+Don't confuse the app's HTTP action with the general [HTTP Request node](/v3/concepts/workflows/nodes/http) — that node is for calls that *don't* need the app's authentication. The app's HTTP action carries the connection's credentials automatically.
+</Note>
+
+The rest of this page is about building that second kind — a reusable custom action.
+
+## What a custom action is made of
+
+An identity, the inputs it accepts, and the request it makes:
+
+| Part | What it is |
+| --- | --- |
+| **Name** | The action's label, shown wherever it appears, including the workflow node. |
+| **Action ID** | The action's identifier (for example, `get_invoices`) — how it's referenced programmatically. |
+| **Description** | A short, builder-facing explanation of what the action does. |
+| **Fields** | The inputs the action accepts. Each becomes a variable you insert into the request, filled at run time. |
+| **Request** | The API call itself: method, URL, params, headers, and body. |
+
+### The request
+
+You build the request on the action's setup screen:
+
+- **Method + URL** — pick the **HTTP method**, then set the **Base URL** (for NetSuite, `https://<account>.suitetalk.api.netsuite.com`) and the **Endpoint** appended to it (e.g. `services/rest/record/v1/invoice`).
+- **Path Params / Query Params / Headers** — the key–value pairs the endpoint needs, each under its own tab.
+- **Pre-request Script** — optional logic that runs just before the request is sent.
+- **Schema** — describe the response shape so downstream nodes get typed fields.
+- **Body** — the payload, in the format you pick. Drop your input fields in with the **Insert Variable** control (the `(x)` icon) so their values flow into the request.
+
+<Note>
+Don't add authentication headers — the action inherits the connector's authentication, and Refold injects the customer's credentials when it runs. (For a call that needs different or no auth, use **Override Global Token Injection** below.)
+</Note>
+
+### Request options
+
+Toggle these as the endpoint requires:
+
+- **Pagination** — fetch every page and return the combined result, so your workflow never loops.
+- **Override Global Token Injection** — skip the connector's automatic auth-token injection for this action.
+- **Save to Bucket** — store the response in a storage bucket, for large payloads or files.
+- **Use Server Trust Store** / **Use mTLS** — TLS options for endpoints that need custom certificates or mutual TLS.
+
+## Build a custom action
+
+<Steps>
+  <Step title="Create the action">
+    In the connector, open **Resources → Actions**, click **+ Action**, give it a **Name** and **Action ID**, add a **Description**, and click **Create**.
+
+    <Frame>
+      <img src="/images/embedded/custom-actions/new-action.png" alt="The New Action dialog with a Name, Action ID, and Description" />
+    </Frame>
+  </Step>
+  <Step title="Build the request">
+    Choose the **method**, set the **Base URL** and **Endpoint**, and add any **params**, **headers**, and **body** under their tabs.
+  </Step>
+  <Step title="Add input fields">
+    In the **Fields** panel, click **Add Field** for each input the action accepts. Set its **Type** (Text, Email, Number, Textarea, URL, or JSON), a **Label** (what's shown), a **Name** (the key you'll reference), an optional **Placeholder** and **Description**, and whether it's **Required**.
+
+    <Frame>
+      <img src="/images/embedded/custom-actions/add-field.png" alt="The Add New Field dialog with Type, Label, Name, Placeholder, Description, and Required" />
+    </Frame>
+  </Step>
+  <Step title="Wire a field into the request">
+    **Save Action** and refresh so the field is available. Place your cursor where the value belongs — in the **Body** or a param's **Value** — click the **Insert Variable** control (the `(x)` icon), and pick your field to drop it in as a variable. At run time the action fills that spot with the value provided for the field.
+
+    <Frame>
+      <img src="/images/embedded/custom-actions/insert-variable.png" alt="Inserting a field as a variable into the request body via the Insert Variable picker" />
+    </Frame>
+  </Step>
+  <Step title="Set request options">
+    Turn on **Pagination** for paged endpoints, plus any other [request options](#request-options) the endpoint needs.
+  </Step>
+  <Step title="Test, then save">
+    Click **Test Action** to run it against a connected account and confirm the request, inputs, and response. When it looks right, **Save Action**. See [Testing](/v3/concepts/workflows/testing).
+  </Step>
+</Steps>
+
+## Use it in a workflow
+
+Once saved, the action appears as a **node** you can add to any [workflow](/v3/concepts/workflows/overview) on that connector. Drop it in, map your workflow data to its input fields, and the response flows on to the next node — Refold makes the call against the customer's [linked account](/v3/concepts/linked-account) using the connector's authentication.
+
+<Tip>
+A [datasource](/v3/native/configure/integration/dataslots#use-a-datasource) workflow can call a custom action to fetch live options for a config field — for example, an action that lists a customer's records, surfaced as a dropdown.
+</Tip>
+
+## Best practices
+
+<Tip>
+- **One action per endpoint** — keep each focused on a single request so it's easy to reuse.
+- **Name and describe for the builder** — the next person should know what it does from the name alone.
+- **Make inputs explicit** — expose values that vary as fields instead of hardcoding them.
+- **Don't add credentials** — let the action inherit the connector's authentication.
+- **Enable pagination for list endpoints** so workflows get complete results without looping.
+</Tip>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The action returns 401 / 403 (unauthorized)">
+    **Fix:** Confirm the connector's authentication is configured and the customer's linked account is connected. Don't add your own auth headers — the action inherits the connector's credentials. If the call genuinely needs different auth, use **Override Global Token Injection**.
+  </Accordion>
+  <Accordion title="The request returns 404 or hits the wrong URL">
+    **Fix:** Check that the **Base URL** and **Endpoint** combine into the full path the app expects (for NetSuite, `https://<account>.suitetalk.api.netsuite.com` + `services/rest/record/v1/invoice`), and that the **HTTP method** matches.
+  </Accordion>
+  <Accordion title="An input value isn't reaching the request">
+    **Fix:** Confirm the field is in the **Fields** panel and inserted with the **Insert Variable** control. If you just added it, **Save Action** and refresh so it appears in the variable list.
+  </Accordion>
+  <Accordion title="Only the first page of results comes back">
+    **Fix:** Turn on **Pagination**, set it up for the endpoint's pattern, and re-run **Test Action**.
+  </Accordion>
+</AccordionGroup>
+
+<Note>
+Custom apps support custom actions the same way, so you can define operations for an app Refold doesn't list yet.
+</Note>
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Supported apps & actions" icon="grid-2" href="/v3/connectors/supported-apps-actions">
+    The built-in actions a connector ships with.
+  </Card>
+  <Card title="HTTP Request node" icon="globe" href="/v3/concepts/workflows/nodes/http">
+    The general node for calls that don't need the app's authentication.
+  </Card>
+  <Card title="Workflows" icon="diagram-project" href="/v3/concepts/workflows/overview">
+    Add your action as a node and build the automation around it.
+  </Card>
+</CardGroup>

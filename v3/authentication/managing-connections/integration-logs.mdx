@@ -1,0 +1,73 @@
+---
+title: "Integration Logs"
+description: "See a timeline of every connection event for an app on a linked account: when it connected, reauthenticated, expired, failed, or was removed."
+---
+
+Integration logs give you a per-app timeline of a [linked account's](/v3/concepts/linked-account) connection lifecycle. For each app a customer connects, you can see how and when the connection was established, re-authorized, expired, failed, or removed. Use it to confirm a customer connected successfully, trace when a connection broke, and read the exact error an app returned.
+
+<Frame caption="The integration log timeline for a single app on a linked account.">
+  <img src="/images/platform/authentication/integration-logs-timeline.png" alt="Integration log timeline showing Integration Created, Reauthenticated, Connection Failed, and Integration Deleted events with timestamps" />
+</Frame>
+
+## What the timeline records
+
+Each entry is a single event in the life of one app on a linked account, with a timestamp. Success events are marked in green; expiry, failure, and removal events are marked in red.
+
+| Event | What it means | When it fires |
+|---|---|---|
+| **Integration Created** | The linked account connected to the app | A customer authorizes the app and a connection is established |
+| **Reauthenticated** | An existing connection was re-authorized | The customer [re-authenticates](/v3/authentication/managing-connections/re-authentication) after the connection expired or was revoked |
+| **Integration Expired** | The connection's authorization is no longer valid | A token expires or is revoked, so the connection stops working until the customer re-authenticates |
+| **Connection Failed** | A connection attempt or token operation failed | Authorization fails, or a token can't be obtained or refreshed |
+| **Integration Deleted** | The connection was removed | The integration is deleted or disconnected for the linked account |
+
+## View an integration's logs
+
+Integration logs are scoped to a single app within a linked account.
+
+<Steps>
+  <Step title="Open the linked account">
+    In the dashboard, go to **Accounts** and open the linked account you want to inspect. Its **Overview** lists every connected app under **Integrations**, each with its **Status** (for example, **Active** or **Expired**).
+  </Step>
+  <Step title="Open the integration's logs">
+    In the **Integrations** list, open the **⋮** (more options) menu on the app's row and select **Logs**. The timeline opens, listing every event for that integration, newest first.
+  </Step>
+</Steps>
+
+<Frame caption="In a linked account's Integrations list, open the app's ⋮ menu and select Logs.">
+  <img src="/images/platform/authentication/integration-logs-navigation.png" alt="A linked account Integrations list with an app's more-options menu open, showing Logs, Configure, and Delete" />
+</Frame>
+
+## Read an event
+
+Every event shows its type and a timestamp (date and time). Expand an **Integration Expired** or **Connection Failed** event to see the failure details, passed through from the app. The exact fields vary by provider. An OAuth failure, for example, typically includes a short `error` code and an `error_description`:
+
+```json Connection Failed details
+{
+  "error": "invalid_grant",
+  "error_description": "The authorization grant has expired or been revoked."
+}
+```
+
+Providers may include extra fields, such as error codes or trace and correlation IDs, that you can pass to their support when you need to investigate further.
+
+<Tip>
+  When a customer reports a connection that won't stay connected, check the timeline for a recent **Integration Expired** or **Connection Failed** event and read its details before asking them to reconnect.
+</Tip>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Connection status" icon="signal" href="/v3/authentication/managing-connections/connection-status">
+    Read whether a connection is currently healthy.
+  </Card>
+  <Card title="Re-authentication" icon="rotate" href="/v3/authentication/managing-connections/re-authentication">
+    Prompt a customer to reconnect an expired connection.
+  </Card>
+  <Card title="Token refresh" icon="key" href="/v3/authentication/managing-connections/token-refresh">
+    How Refold keeps connections alive.
+  </Card>
+  <Card title="Logs" icon="list" href="/v3/monitor/logs">
+    Workflow execution, event, webhook, and schedule logs.
+  </Card>
+</CardGroup>

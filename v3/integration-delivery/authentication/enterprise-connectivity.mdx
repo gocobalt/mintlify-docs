@@ -1,0 +1,67 @@
+---
+title: "Enterprise Connectivity"
+description: "Authenticate and reach enterprise systems behind a firewall, such as on-premise SAP, where the standard auth flow cannot connect over the public internet."
+---
+
+Standard auth flows assume Refold can reach the target system over the public internet. Enterprise systems often break that assumption. An on-premise SAP instance, a self-hosted database, or an app locked to an allowlisted network cannot be reached directly. In these cases you establish a connection path first, then run the normal auth flow over it.
+
+This page covers when that applies and the connectivity patterns to choose from. The exact path depends on the customer's network and the specific system, so confirm the approach with your Refold delivery contact before building.
+
+<Note>
+This is a delivery-project concern. For systems reachable over the internet, use the [standard authentication flows](/v3/integration-delivery/authentication/overview). No extra connectivity setup is needed.
+</Note>
+
+## When this applies
+
+Use enterprise connectivity when any of these are true:
+
+- **No public endpoint.** The system is only reachable inside the customer's network, like a classic on-premise SAP install.
+- **IP allowlisting.** The system rejects traffic from unknown sources.
+- **Credential residency.** Credentials or tokens must not leave the customer's environment.
+- **Corporate proxy or VPN.** A network boundary sits between the system and the internet.
+
+## Connectivity patterns
+
+Pick the lightest pattern the customer's security team will approve.
+
+<CardGroup cols={2}>
+  <Card title="IP allowlisting">
+    The simplest option when the system is internet-reachable but firewalled. The customer allowlists Refold's static egress addresses, then the standard auth flow runs unchanged.
+  </Card>
+  <Card title="VPN or proxy">
+    Refold connects through a customer-provided VPN or corporate proxy to reach an otherwise-private network.
+  </Card>
+  <Card title="On-premise connector">
+    For fully isolated systems, a connectivity component runs inside the customer's network and brokers requests outbound, with no inbound ports opened.
+  </Card>
+  <Card title="Bring your own vault" href="/v3/authentication/connection-flows/bring-your-vault">
+    Pair any pattern with your own vault so credentials never leave the customer's environment.
+  </Card>
+</CardGroup>
+
+<Note>
+The specific connectivity options Refold supports for a given system are confirmed during project scoping. Treat the patterns above as the menu to discuss, not a fixed feature list.
+</Note>
+
+## How an on-premise SAP connection comes together
+
+<Steps>
+  <Step title="Scope the network path">
+    Confirm with the customer's security team how the SAP instance can be reached (allowlist, VPN, or an in-network component) and which credentials SAP expects.
+  </Step>
+  <Step title="Establish connectivity">
+    Set up the chosen pattern above so Refold can reach the SAP endpoint. Verify reachability before touching auth.
+  </Step>
+  <Step title="Run the auth flow">
+    With the path in place, authorize the account using a [standard flow](/v3/integration-delivery/authentication/overview#standard-authentication). The result is an ordinary linked account.
+  </Step>
+  <Step title="Validate and monitor">
+    Confirm the connection in [project operations](/v3/integration-delivery/operations-and-monitoring/overview), then rely on the shared [management flows](/v3/authentication/overview#managing-connections) for refresh and re-auth.
+  </Step>
+</Steps>
+
+## See also
+
+- [Authenticating systems](/v3/integration-delivery/authentication/overview): standard flows for internet-reachable apps
+- [NetSuite and SAP example](/v3/integration-delivery/enterprise-examples/netsuite-sap): a full project that connects SAP
+- [Bring your own vault](/v3/authentication/connection-flows/bring-your-vault): keep credentials in the customer's environment

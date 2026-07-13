@@ -1,0 +1,51 @@
+---
+title: Get Linked Account
+openapi: "GET /api/v2/public/linked-account/{linked_account_id}"
+description: Retrieve details of a specific linked account by its ID.
+---
+
+Retrieve a single linked account by its `account_id`. Sensitive fields (`integrations[*].credentials`, `authTokens`, and `connections`) are stripped from the response.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6992cc7e9d38bc6a2ae28d12",
+  "associated_org": "6500a1b2c3d4e5f6a7b8c9d0",
+  "account_id": "user_12345",
+  "environment": "test",
+  "name": "Acme Inc.",
+  "udf": [
+    {
+      "key_name": "plan",
+      "key_value": "enterprise",
+      "_id": "6a0adc293670c4d294dd15cd",
+      "createdAt": "2026-05-18T09:30:17.525Z",
+      "updatedAt": "2026-05-18T09:30:17.525Z"
+    }
+  ],
+  "integrations": [
+    { "type": "hubspot", "name": "Hubspot", "app_id": null },
+    { "type": "slack", "name": "Slack", "app_id": null },
+    { "type": "custom", "name": "Acme CRM", "app_id": "6a05d19680458c9a09e79c2e" }
+  ],
+  "createdAt": "2026-05-22T11:24:06.840Z",
+  "updatedAt": "2026-05-25T04:37:50.064Z",
+  "__v": 2
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error": "SERVER_ERROR",
+  "message": "Linked Account with account id user_99999 for org 6500a1b2c3d4e5f6a7b8c9d0 in environment test not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/linked-account/{linked_account_id}" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

@@ -6,6 +6,12 @@ api: post /api/v2/public/session-token
 This API generates a session token to authenticate a linked account. 
 
 ## Request description
+
+#### Headers
+<ParamField header="x-api-key" type="string" required>
+  Organization API key, sent in the `x-api-key` header. Production keys start with `pk`, test keys with `tk`.
+</ParamField>
+
 #### Body Parameters
 <ParamField body="linked_account_id" type="string" required>
   Unique customer identification id. For Eg: markwood@some_email.com

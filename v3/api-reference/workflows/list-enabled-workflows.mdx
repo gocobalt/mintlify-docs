@@ -1,0 +1,51 @@
+---
+title: List Enabled Workflows
+openapi: "GET /api/v2/public/workflow/enabled"
+description: List the workflows currently enabled for a linked account.
+---
+
+List the workflows enabled across a linked account's installations. For each enabled workflow, the response includes its id, name, icon, the installation's `config_id`, and the populated application document.
+
+<Note>
+  This is scoped to a linked account, so it reflects that account's enabled workflows (its **private** workflows plus the **public** ones it has enabled).
+</Note>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "id": "6a057a07803e7107e790b596",
+    "name": "Lead Sync",
+    "description": "",
+    "icon": "",
+    "config_id": "user_12345",
+    "application": {
+      "_id": "6992cc7dc124a392c80e9e9c",
+      "name": "Hubspot",
+      "icon": "https://cobalt-app-logos.s3.ap-south-1.amazonaws.com/hubspot/logo.png",
+      "description": "HubSpot is your all-in-one stop for all of your marketing software needs."
+    }
+  }
+]
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow/enabled" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (session token)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow/enabled" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+```
+</RequestExample>

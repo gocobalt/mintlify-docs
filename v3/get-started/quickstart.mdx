@@ -1,0 +1,130 @@
+---
+title: "Quick Start"
+description: "Connect a real app and trigger your first integration through the Refold API in about 10 minutes."
+---
+
+Refold connects your product to third-party apps through linked accounts, connectors, and workflows. This quickstart runs that loop end to end: get an API key, configure an app, connect it to a linked account, and run your first integration through the API. Plan about 10 minutes.
+
+## Prerequisites
+
+- **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai). Don't have one? [Contact us](https://www.refold.ai/contact-us) to get set up.
+- **No third-party credentials needed.** This quickstart uses the **Playground app** (`playground_app`), a built-in test connector for running the full loop.
+
+<Note>
+  Every API call uses the base URL `https://app.refold.ai` and sends your API key in the `x-api-key` header. Account-scoped calls also send the customer's `linked_account_id` as a header.
+</Note>
+
+## Get your API key
+
+<Steps>
+  <Step title="Open Settings > Credentials">
+    In the [Refold Console](https://app.refold.ai/settings/credentials), go to **Settings > Credentials**.
+  </Step>
+  <Step title="Copy your key">
+    Copy your API key and export it as an environment variable so the commands below can read it.
+
+    ```bash
+    export REFOLD_API_KEY="your-api-key-here"
+    ```
+  </Step>
+</Steps>
+
+## Configure the Playground app
+
+Before a customer can connect an app, configure how Refold authenticates with it. The Playground app uses key-based auth.
+
+<Steps>
+  <Step title="Open the Playground app">
+    Go to **Apps > Playground app > Settings**.
+  </Step>
+  <Step title="Choose the auth method">
+    Select **Key-based**, add the **API key**, and click **Save**.
+  </Step>
+</Steps>
+
+<Note>
+  Real connectors may use OAuth 2.0 instead of key-based auth. See [Authentication](/v3/connectors/app-auth-modes) to set up an OAuth app for production.
+</Note>
+
+## Create a linked account
+
+A linked account represents one of your customers. Create one through the API. You choose the `linked_account_id`, then reuse it in every account-scoped call.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/linked-account \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "linked_account_id": "demo-user-1",
+    "name": "Demo User"
+  }'
+```
+
+```json Output
+{ "success": true }
+```
+
+## Connect the app
+
+Generate a [Connect portal](/v3/native/frontend/overview) URL for the linked account, then open it to connect the app.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
+
+```json Output
+{ "hosted_url": "https://app.refold.ai/connect/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+<Steps>
+  <Step title="Open the Connect portal">
+    Open the `hosted_url` from the response in your browser.
+  </Step>
+  <Step title="Connect the Playground app">
+    Find the **Playground app**, click **Connect**, and complete authentication.
+  </Step>
+</Steps>
+
+<Note>
+  The Connect portal is Refold's hosted connection UI. You can build your own with the [frontend SDKs](/v3/native/frontend/overview).
+</Note>
+
+## Trigger your first integration
+
+With the app connected, run a published workflow for the linked account through the workflow API. Pass the workflow's ID in the path and the Playground app's slug, `playground_app`, in the `slug` header.
+
+<Note>
+  The workflow must be **published** before you can run it. Get its ID from [List Workflows](/v3/api-reference/workflows/list-workflows) or the Console.
+</Note>
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/workflow/YOUR_WORKFLOW_ID/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "slug: playground_app" \
+  -H "Content-Type: application/json" \
+  -d '{ "payload": { "email": "jane@example.com" } }'
+```
+
+```json Output
+{
+  "message": "Workflow execution started",
+  "execution_id": "6a314c54d4616e99e7fa5a02"
+}
+```
+
+Refold acknowledges with an `execution_id` and starts the run. Open **Logs** in the Console to follow it. To get the workflow output inline instead, add the `sync_execution: true` header. For every option, see [Execute Workflow](/v3/api-reference/workflows/execute-workflow).
+
+## Choose your product
+
+You've run the core loop. Now pick the product that fits how you ship integrations.
+
+| Product | Who it's for |
+|---------|--------------|
+| [**Native**](/v3/products/what-is-native) | SaaS teams embedding third-party integrations inside their own product |
+| [**Integration Delivery**](/v3/integration-delivery/overview/overview) | Teams delivering bespoke enterprise integrations to their customers |
+| [**MCP**](/v3/products/what-is-mcp) | AI teams giving agents secure, governed access to enterprise systems |

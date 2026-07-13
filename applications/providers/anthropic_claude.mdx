@@ -1,0 +1,81 @@
+---
+title: "Connect"
+description: "Connect to your Anthropic Claude app for API Key"
+---
+
+Anthropic Claude is an API Key-based integration and does not require the setup of an app.
+
+To connect with the Anthropic Claude integration, you will need the following credentials:
+
+- API Key
+
+### Pre-requisites
+
+1. Anthropic account with API access.
+
+<Info>
+  If you haven't already created an API Key in Anthropic, you'd need to create one from the Anthropic Console.
+</Info>
+
+### Getting Credentials of Anthropic Claude
+
+To acquire the required credentials and connect, please follow the steps mentioned below:
+
+1. Log in to your [Anthropic Console](https://console.anthropic.com).
+2. From the left sidebar, go to **API Keys** section.
+
+<img
+  height="200"
+  src="/images/anthropic/anthropic_navigation.png"
+  alt="Navigation for API Key setup"
+/>
+
+3. Click on **Create Key** to generate a new API key.
+4. Provide a unique **Name** for your API key and click **Create Key**.
+5. Copy the **API Key** and click **Done**.
+
+<img
+  height="200"
+  src="/images/anthropic/anthropic_config.png"
+  alt="Creating Anthropic API Key"
+/>
+
+<Warning>
+  Keep your API Key confidential — don't share it with anybody. The API Key is only displayed once during creation, so make sure to copy and store it securely. If lost, you'll need to generate a new key.
+</Warning>
+
+#### Configuring credentials in Refold
+
+Navigate to the Refold hosted portal and enter the API Key when prompted during the Anthropic Claude connection setup.
+
+<img
+  height="200"
+  src="/images/anthropic/anthropic_refold.png"
+  alt="Setting up API Key in hosted portal"
+/>
+
+Provide the acquired API Key in the hosted portal and complete the connection.
+
+#### Actions and triggers
+
+Once the above setup is completed, you can create orchestrations of your use-cases using Anthropic Claude actions and triggers. Following are the set of Anthropic Claude actions and triggers supported by Refold.
+
+<Tabs>
+  <Tab title="Actions">
+    <AccordionGroup>
+      <Accordion title="Messages">
+        1. **Create Message** - Create a message in Anthropic Claude.
+      </Accordion>
+      <Accordion title="Text Completion">
+        2. **Create Text Completion** - Create a text completion in Anthropic Claude.
+      </Accordion>
+      <Accordion title="Others">
+        3. **HTTP Request** - Make HTTP API calls to any Anthropic Claude documented REST APIs.
+        4. **Incremental Sync** - Check for new data in the endpoint.
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="Triggers">
+    No triggers available for this application.
+  </Tab>
+</Tabs>

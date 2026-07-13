@@ -1,0 +1,53 @@
+---
+title: Update MCP Server
+openapi: "PUT /api/v2/public/mcp-servers/{mcp_server_id}"
+description: Update an MCP server's configuration.
+---
+
+Update an MCP server. This is patch-style — only the fields you send are written. Use it to attach apps, define chains (agents), add prompt suggestions, and set branding.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a314ee8d0aeb8165beacc6e",
+  "name": "Production CRM Server",
+  "description": "Updated description",
+  "associated_org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "agent_name": "CRM Assistant",
+  "primary_color": "#2D6CDF",
+  "suggestions": [],
+  "associated_apps": [],
+  "chains": [],
+  "notebooks": []
+}
+```
+```json 404
+{
+  "status_code": 404,
+  "http_error_type": "NOT_FOUND",
+  "error_code": "SERVER_ERROR",
+  "message": "MCPEntry not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (API key)
+curl -X PUT "https://app.refold.ai/api/v2/public/mcp-servers/{mcp_server_id}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Updated description",
+    "agent_name": "CRM Assistant",
+    "primary_color": "#2D6CDF"
+  }'
+```
+```bash cURL (session token)
+curl -X PUT "https://app.refold.ai/api/v2/public/mcp-servers/{mcp_server_id}" \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "description": "Updated description" }'
+```
+</RequestExample>

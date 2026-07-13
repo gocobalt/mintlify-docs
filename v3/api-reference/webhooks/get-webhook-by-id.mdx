@@ -1,0 +1,42 @@
+---
+title: Get Webhook by ID
+openapi: "GET /api/v2/public/webhook/{id}"
+description: Retrieve a single webhook by its ID.
+---
+
+Retrieve the full configuration of a single webhook by its ID.
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a313eda6d5528bdcf71ebac",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "is_enabled": true,
+  "webhook_events": ["Workflow Errored", "Connection Expired"],
+  "workflow_ids": [],
+  "webhook_url": "https://your-app.com/webhooks",
+  "webhook_body": "{{event}}",
+  "method": "POST",
+  "webhook_type": "default",
+  "createdAt": "2026-06-16T12:17:30.231Z",
+  "updatedAt": "2026-06-16T12:17:30.231Z",
+  "__v": 0
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "RESOURCE_NOT_FOUND",
+  "message": "Webhook not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/webhook/{id}" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

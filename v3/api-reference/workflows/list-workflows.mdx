@@ -1,0 +1,54 @@
+---
+title: List Workflows
+openapi: "GET /api/v2/public/workflow"
+description: List org-level, public, or private workflows.
+---
+
+List workflows. There are two kinds, and what you get back depends on scope:
+
+- **Public workflows** — org-level, tied to application slugs and available across the org. Returned when no linked account is in scope (and, by default, as the public workflows available to a linked account).
+- **Private workflows** — belong to a specific linked account. Returned when you pass `scope=private` together with a `linked_account_id`.
+
+In other words: a request authenticated as a linked account with `scope=private` returns that account's **private** workflows; otherwise you get **public** (org/slug-level) workflows.
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "69fdfe21957a1b5597aa04bd",
+      "name": "Daily Sync",
+      "published": true,
+      "slug": "hubspot"
+    }
+  ],
+  "schema": null,
+  "totalDocs": 2,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 1,
+  "hasNextPage": false
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (public workflows)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+```bash cURL (private workflows)
+curl -X GET "https://app.refold.ai/api/v2/public/workflow?scope=private" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

@@ -1,0 +1,34 @@
+---
+title: List Datastores
+openapi: "GET /api/v2/public/datastore/config/{slug}"
+description: List the datastore names in an app's config.
+---
+
+<Warning>
+  **Deprecated.** Datastores are read-only views of data written by workflow executions. For API-managed tables you can create, write, and query directly, use [Persistent Tables](/v3/api-reference/persistent-tables/list-tables) instead.
+</Warning>
+
+List the datastores available in an app's config for a linked account. Datastores are populated by workflow executions (a workflow writes records to a named datastore); this returns the names you can then read or search. If no workflow has written to a datastore yet, the response is an empty array (`[]`).
+
+<ResponseExample>
+```json 200
+["contacts", "synced_deals"]
+```
+```json 200 Empty
+[]
+```
+```json 404
+{
+  "message": "Server Error",
+  "error": "Config not found"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/datastore/config/{slug}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

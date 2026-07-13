@@ -1,0 +1,69 @@
+---
+title: "Authentication"
+description: "Connect your users' third-party accounts once, then reuse the same flows across Native, Integration Delivery, and MCP."
+---
+
+Authentication is how Refold turns a user's permission into a [linked account](/v3/concepts/linked-account): a stored, encrypted set of credentials that every connector, workflow, and MCP server can use without ever exposing the underlying tokens. Use it to connect your customers' apps once and let Refold keep those connections alive.
+
+The mechanics are the same across all three Refold products. You pick how the user authorizes (the connection flow), then Refold keeps the connection healthy over time (the management flows). What changes between products is *where* the user authenticates, not how it works underneath. This page is the shared reference; each product's section frames the experience for its own readers.
+
+## How it works
+
+1. You configure a connector's auth method (OAuth2, API key, or basic) in [App settings](/v3/connectors/app-auth-modes).
+2. Your user authorizes through one of the connection flows below.
+3. Refold stores the credentials as a linked account, encrypted at rest.
+4. Connectors, workflows, and MCP servers resolve those credentials internally at run time. They are never returned in inputs or outputs.
+5. Refold keeps the connection alive with token refresh and re-authentication, and records every event in auth logs.
+
+## Connection flows
+
+How a user first authorizes an account. These flows behave the same way across products. The detailed how-tos live under [Native frontend](/v3/native/frontend/overview), since that is where most teams build the connect experience.
+
+<CardGroup cols={2}>
+  <Card title="Hosted flow" href="/v3/authentication/connection-flows/hosted-flow">
+    Redirect to a Refold-hosted portal. The fastest path, with no frontend code.
+  </Card>
+  <Card title="React SDK flow" href="/v3/native/frontend/react-sdk-flow">
+    Drop Refold's connect component into your React app, with no redirect.
+  </Card>
+  <Card title="Build your own" href="/v3/authentication/connection-flows/build-your-own">
+    Drive the flow from your own UI with the JavaScript SDK for full control.
+  </Card>
+  <Card title="Importing existing auth" href="/v3/authentication/connection-flows/importing-existing-auth">
+    Bring credentials your users already authorized elsewhere into Refold.
+  </Card>
+</CardGroup>
+
+## Managing connections
+
+How Refold keeps an authorized account usable over its lifetime.
+
+<CardGroup cols={2}>
+  <Card title="Connection status" href="/v3/authentication/managing-connections/connection-status">
+    Read whether each linked account is connected, healthy, or needs action.
+  </Card>
+  <Card title="Token refresh" href="/v3/authentication/managing-connections/token-refresh">
+    Refold refreshes OAuth tokens automatically before they expire.
+  </Card>
+  <Card title="Re-authentication" href="/v3/authentication/managing-connections/re-authentication">
+    Prompt users to reconnect when a token is revoked or a scope changes.
+  </Card>
+  <Card title="Integration logs" href="/v3/authentication/managing-connections/integration-logs">
+    Inspect authentication events, refreshes, and failures.
+  </Card>
+</CardGroup>
+
+## Where authentication fits in each product
+
+The flows above are shared. Each product frames them for its own reader:
+
+| Product | Where the user authenticates | Start here |
+|---------|------------------------------|------------|
+| **Native** | Inside your own app's UI, the experience your customer sees | [Frontend auth flows](/v3/native/frontend/overview) |
+| **Integration Delivery** | Anywhere a connection can be made; enterprise systems may need special connectivity | [Authenticating systems](/v3/integration-delivery/authentication/overview) |
+| **MCP** | Inline in the agent chat, via the Server-URL token | [MCP authentication](/v3/authentication/mcp) |
+
+## See also
+
+- [Linked accounts](/v3/concepts/linked-account): the object every auth flow produces
+- [App settings: authentication](/v3/connectors/app-auth-modes): configure a connector's auth method, including multiple auth methods per connector

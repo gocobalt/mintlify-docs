@@ -1,0 +1,96 @@
+---
+title: "Embedding Security"
+description: "Keep your API key server-side, authenticate the frontend with session tokens, and scope every call to one linked account so the embedded connect experience stays secure."
+---
+
+When you embed integrations in your product, two kinds of credential are in play: your **Refold API key**, which can act for any of your customers, and a **session token**, which authorizes one customer's browser for a short time. Getting the boundary between them right is the core of embedding securely. The API key never leaves your backend, the frontend uses a session token, and every call is scoped to a single [linked account](/v3/concepts/linked-account).
+
+This page covers how to keep that boundary intact across the embedded connect flow. For Refold's platform-level controls (encryption, access controls, audit logging), see [Application security](https://www.refold.ai/security).
+
+## The two credentials
+
+Each credential authorizes a different actor, with a different blast radius. Use the right one in the right place.
+
+| Credential | Authorizes | Lives | Scope |
+| --- | --- | --- | --- |
+| **API key** | Your backend, acting as your whole account | Server-side only, never in the browser | All your customers and data |
+| **Session token** | One customer's frontend session | Generated server-side, passed to the browser | A single [linked account](/v3/concepts/linked-account), short-lived |
+
+The rule that follows from this table: a credential that can act for every customer must never reach code your customer can read.
+
+## Keep your API key server-side
+
+Your API key is sent in the `x-api-key` header and can make any account-scoped call for any customer. Treat it like a root credential.
+
+- **Call Refold from your backend only.** Run every API-key request from your server, never from frontend code, a mobile app, or anything shipped to a browser.
+- **Store it as a secret.** Keep it in a secrets manager or server environment variable, not in source control, a config file in your repo, or a client bundle.
+- **Use separate keys per environment.** Use a test key while building and a production key in production, so a leaked test key never touches real customer data.
+- **Rotate on exposure.** If a key may have leaked, rotate it in **Settings > Credentials** and update your backend.
+
+<Warning>
+Anyone with your API key can read and write data for every one of your customers. Never put it in frontend code, a public repository, a mobile binary, or a browser network request. If it leaks, rotate it immediately.
+</Warning>
+
+## Authenticate the frontend with session tokens
+
+The embedded connect experience runs in the customer's browser, where your API key cannot go. A [session token](/v3/api-reference/session-tokens/generate-session-token) bridges the gap: your backend mints it for one linked account, and the frontend uses it to run the connect flow.
+
+<Steps>
+  <Step title="Mint the token on your backend">
+    Call the [Generate session token](/v3/api-reference/session-tokens/generate-session-token) API from your server, authenticated with your API key, for a specific `linked_account_id`. The token comes back scoped to that customer.
+  </Step>
+  <Step title="Pass it to the frontend">
+    Hand the token to the browser and use it to render the connect experience, whether that's the [React SDK flow](/v3/native/frontend/react-sdk-flow), a [hosted flow](/v3/authentication/connection-flows/hosted-flow), or a [build-your-own](/v3/authentication/connection-flows/build-your-own) UI.
+  </Step>
+  <Step title="Refresh on expiry">
+    Session tokens are short-lived. Generate a fresh token for each new customer session instead of reusing or caching one.
+  </Step>
+</Steps>
+
+<Note>
+A session token is scoped to one linked account and expires (the [hosted flow](/v3/authentication/connection-flows/hosted-flow) generates a new connect URL per session). Generate it per customer, per session, on the server. Never share one token across customers.
+</Note>
+
+## Scope every call to one linked account
+
+Multi-tenant isolation depends on scoping. Each customer is a [linked account](/v3/concepts/linked-account), and every account-scoped call carries that customer's `linked_account_id`.
+
+- **Derive the linked account from your session, not from client input.** Map the authenticated user to their `linked_account_id` on your backend so a customer can never pass another customer's id.
+- **One linked account per customer.** Keep credentials and data isolated by giving each customer their own linked account rather than sharing one.
+- **Let Refold hold the tokens.** Customer OAuth and API credentials are stored encrypted against their linked account and used automatically. Your code never handles raw third-party tokens. See [token refresh](/v3/authentication/managing-connections/token-refresh).
+
+## Secure the embedded connect experience
+
+The connect flow itself runs in the browser, so apply standard frontend hygiene around it.
+
+- **Serve everything over HTTPS.** Mint tokens, load the connect UI, and make requests only over TLS.
+- **Don't log tokens.** Keep session tokens and connect URLs out of analytics, console logs, and error reports.
+- **Scope OAuth to what you need.** When configuring an app's auth, request the narrowest scopes your integration uses, so a connection grants the least access necessary.
+
+## Best practices
+
+<Steps>
+  <Step title="Keep the API key on the server">
+    Never ship it to a browser or mobile client; store it as a secret and rotate on exposure.
+  </Step>
+  <Step title="Use session tokens for the frontend">
+    Mint one per customer per session on your backend and let it expire.
+  </Step>
+  <Step title="Scope every call to one linked account">
+    Resolve the linked account from your authenticated session, never from client input.
+  </Step>
+  <Step title="Separate test and production credentials">
+    Use environment-specific keys so a test leak never touches real data.
+  </Step>
+  <Step title="Serve the connect flow over HTTPS and keep tokens out of logs">
+    Treat session tokens and connect URLs as secrets in the browser too.
+  </Step>
+</Steps>
+
+## See also
+
+- [Session tokens](/v3/api-reference/session-tokens/generate-session-token) : short-lived frontend credentials
+- [Generate session token](/v3/api-reference/session-tokens/generate-session-token) : the API your backend calls
+- [Auth overview](/v3/authentication/overview) : how Refold authenticates apps and customers
+- [Linked accounts](/v3/concepts/linked-account) : the per-customer scope every call carries
+- [Application security](https://www.refold.ai/security) : Refold's platform-level controls
