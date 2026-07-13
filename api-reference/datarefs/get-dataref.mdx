@@ -1,0 +1,42 @@
+---
+title: Get Dataref
+openapi: "GET /api/v2/public/dataref/{refName}"
+description: Get a dataref's records as a table.
+---
+
+Return a dataref's records reshaped as a tabular structure — `headers` plus `rows` — paginated by record ID.
+
+<ResponseExample>
+```json 200 With records
+{
+  "headers": ["record_id", "email", "stage"],
+  "rows": [
+    { "record_id": "1", "email": "jane@example.com", "stage": "qualified" }
+  ],
+  "page": 1,
+  "limit": 100,
+  "totalDocs": 1,
+  "totalPages": 1,
+  "hasNextPage": false
+}
+```
+```json 200 Empty
+{
+  "headers": ["record_id"],
+  "rows": [],
+  "page": 1,
+  "limit": 100,
+  "totalDocs": 0,
+  "totalPages": 0,
+  "hasNextPage": false
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/dataref/{refName}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

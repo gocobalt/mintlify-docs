@@ -1,0 +1,37 @@
+---
+title: Edit Table Group
+openapi: "PUT /api/v2/public/tables/group/edit"
+description: Bulk set or clear the group on multiple tables.
+---
+
+Set or clear the `group` label on multiple persistent tables at once. An empty `group` unsets the field.
+
+<ResponseExample>
+```json 200
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error_code": "SERVER_ERROR",
+  "message": "tableIds is required"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (set group)
+curl -X PUT "https://app.refold.ai/api/v2/public/tables/group/edit" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "tableIds": ["6a314fc3d396207fd2506a0a"], "group": "crm-tables" }'
+```
+```bash cURL (clear group)
+curl -X PUT "https://app.refold.ai/api/v2/public/tables/group/edit" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID" \
+  -H "Content-Type: application/json" \
+  -d '{ "tableIds": ["6a314fc3d396207fd2506a0a"], "group": "" }'
+```
+</RequestExample>

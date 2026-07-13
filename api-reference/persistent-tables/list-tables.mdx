@@ -1,0 +1,45 @@
+---
+title: List Tables
+openapi: "GET /api/v2/public/tables"
+description: List persistent tables for the org.
+---
+
+List the persistent tables in your organization and environment, paginated. Persistent tables are API-managed data tables (unlike datastores, which are written by workflow executions). Each table carries the `linked_account_id` it belongs to.
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a26a509ca55ea91ae063313",
+      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+      "linked_account_id": "user_12345",
+      "name": "leads",
+      "environment": "test",
+      "table_type": "persistent",
+      "is_deleted": false
+    }
+  ],
+  "totalDocs": 12,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 2,
+  "hasNextPage": true
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/tables?limit=10" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>

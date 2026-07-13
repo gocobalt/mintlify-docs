@@ -1,0 +1,33 @@
+---
+title: Get OAuth URL
+openapi: "GET /api/v2/public/linked-account/integration/oauth-url/{slug}"
+description: Get the OAuth authorization URL for an app.
+---
+
+Build the OAuth authorization URL for an app and linked account. Redirect the user to the returned `auth_url` to start the consent flow; after they approve, Refold completes the token exchange and attaches the integration to the linked account.
+
+The app must be an OAuth2 app. Some integrations require per-app prerequisite values supplied as query parameters — these vary by app.
+
+<ResponseExample>
+```json 200
+{
+  "auth_url": "https://app.hubspot.com/oauth/authorize?client_id=YOUR_CLIENT_ID&state=REDACTED_STATE&redirect_uri=https%3A%2F%2Fapp.refold.ai%2Fapi%2Fv1%2Fhubspot%2Fcallback&scope=crm.objects.owners.read%20oauth"
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/linked-account/integration/oauth-url/{slug}" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "linked_account_id: YOUR_LINKED_ACCOUNT_ID"
+```
+</RequestExample>

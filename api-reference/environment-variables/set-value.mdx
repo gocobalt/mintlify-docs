@@ -1,0 +1,52 @@
+---
+title: Set Variable Value
+openapi: "POST /api/v2/public/env/values"
+description: Set a scoped value for an environment-variable definition.
+---
+
+Upsert a scoped value for a variable definition. The value is validated against the definition's `var_format` and encrypted if the definition is marked encrypted. The scope is determined by what you pass: nothing for org scope, `linked_account_id` for linked-account scope, `workflow_id` for workflow scope.
+
+<Note>
+  For linked-account-scoped values you may instead authenticate with a session token (`Authorization: Bearer ...`); it is restricted to that account's scope.
+</Note>
+
+<ResponseExample>
+```json 200
+{
+  "_id": "6a314b06d396207fd24fb16b",
+  "variable_definition_id": "6a1401de41e63efd08fb3e54",
+  "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+  "environment": "test",
+  "linked_account_id": "user_12345",
+  "value": "MGNmZDM1NjJhM2U0ZmQzODU5OGU3N2NhNGJiYWNhMGU=",
+  "createdAt": "2026-06-16T13:09:26.023Z"
+}
+```
+```json 400
+{
+  "status_code": 400,
+  "http_error_type": "BAD_REQUEST",
+  "error": "SERVER_ERROR",
+  "message": "value does not match the variable format"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL (linked-account scope)
+curl -X POST "https://app.refold.ai/api/v2/public/env/values" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "variable_definition_id": "YOUR_DEFINITION_ID",
+    "value": "your-value",
+    "linked_account_id": "YOUR_LINKED_ACCOUNT_ID"
+  }'
+```
+```bash cURL (org scope)
+curl -X POST "https://app.refold.ai/api/v2/public/env/values" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "variable_definition_id": "YOUR_DEFINITION_ID", "value": "your-value" }'
+```
+</RequestExample>

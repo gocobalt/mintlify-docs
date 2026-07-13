@@ -1,0 +1,47 @@
+---
+title: List Variable Definitions
+openapi: "GET /api/v2/public/env/definitions"
+description: List environment-variable definitions for the org.
+---
+
+List the environment-variable *definitions* for your organization, paginated. A definition describes a variable's name, scope, format, and whether it's encrypted — the actual values are managed separately (see [Set Variable Value](/api-reference/environment-variables/set-value)).
+
+<ResponseExample>
+```json 200
+{
+  "docs": [
+    {
+      "_id": "6a159a9741e63efd0833773f",
+      "org_id": "6500a1b2c3d4e5f6a7b8c9d0",
+      "name": "API_BASE_URL",
+      "description": "Base URL for callbacks",
+      "scope": "org",
+      "var_format": "string",
+      "encrypted": false,
+      "createdAt": "2026-05-26T13:05:27.782Z",
+      "updatedAt": "2026-05-26T13:05:27.782Z"
+    }
+  ],
+  "totalDocs": 24,
+  "limit": 10,
+  "page": 1,
+  "totalPages": 3,
+  "hasNextPage": true
+}
+```
+```json 401
+{
+  "status_code": 401,
+  "http_error_type": "UNAUTHORIZED",
+  "error": "SERVER_ERROR",
+  "message": "Invalid Credentials"
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://app.refold.ai/api/v2/public/env/definitions?scope=org" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+</RequestExample>
