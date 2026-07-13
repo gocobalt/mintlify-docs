@@ -575,7 +575,12 @@ nav a[href="https://app.refold.ai"]:hover {
   color: var(--rf-base-400);
 }
 .dark .welcome-container .docs-footer { border-color: var(--rf-border-dark); }
-.welcome-container .docs-footer a { color: inherit; border: 0; text-decoration: none; }
+.welcome-container .docs-footer a { color: inherit; border: 0; text-decoration: none; transition: color 0.15s ease; }
+.welcome-container .docs-footer .footer-links { display: flex; align-items: center; gap: 20px; }
+.welcome-container .docs-footer .footer-links a:hover { color: var(--rf-base-500); }
+.dark .welcome-container .docs-footer .footer-links a:hover { color: var(--rf-base-100); }
+.welcome-container .docs-footer .footer-social { display: inline-flex; }
+.welcome-container .docs-footer .footer-social svg { width: 17px; height: 17px; display: block; }
 
 /* Welcome page — responsive */
 @media (max-width: 1024px) {
