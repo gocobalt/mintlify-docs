@@ -27,6 +27,35 @@ Enter your SMTP connection details, then click **Save**.
   username is already the email you want to send from, you can leave it blank.
 </Note>
 
+## Self-hosted deployments
+
+If you run Refold in your own cloud, configure SMTP here so the application can
+send its own **transactional emails** — password resets, one-time passcodes
+(OTP), user invitations, and similar system notifications. Without a working
+mail path, users can't complete flows that depend on these messages.
+
+Refold resolves SMTP settings in this order:
+
+<Steps>
+  <Step title="This page">
+    The SMTP server saved here is used first.
+  </Step>
+  <Step title="Deployment environment variables">
+    If nothing is configured here, Refold falls back to the SMTP details set in
+    the environment variables of the deployment itself.
+  </Step>
+  <Step title="No configuration">
+    If neither is present, no SMTP path exists and **emails are not triggered** —
+    password reset, OTP, and other transactional messages simply won't send.
+  </Step>
+</Steps>
+
+<Warning>
+  On a self-hosted deployment, set SMTP either on this page or in your
+  deployment's environment variables. If both are empty, the application sends
+  no email at all.
+</Warning>
+
 ## Send a test email
 
 Before relying on the configuration, verify it delivers.
