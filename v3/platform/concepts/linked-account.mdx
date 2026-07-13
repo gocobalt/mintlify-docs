@@ -161,6 +161,19 @@ tabs across the top to inspect each kind of activity.
     Polling activity for data refs and connectors that pull on a schedule.
     Open the **Polling** tab.
   </Accordion>
+  <Accordion title="Delta Cron Ledger" icon="scroll">
+    The ledger of **incremental (delta) sync** runs for this customer, one entry
+    per scheduled (cron) sync that pulled only what changed since the last run.
+    Each entry lists the **workflow**, **instance ID**, **config**, the **sync
+    window** it covered, and when it was **created**. Open the **Delta Cron
+    Ledger** tab and use **Filter** to narrow the entries. It stays empty until
+    an incremental sync has run for this account.
+  </Accordion>
+  <Accordion title="Data Refs" icon="arrow-right-arrow-left">
+    The [data refs](/v3/platform/concepts/workflows/nodes/data-ref-node) linked
+    to this account, each with its **Ref** name and its **Created** and
+    **Updated** times. Open the **Data Refs** tab.
+  </Accordion>
 </AccordionGroup>
 
 For the full reference on what each log type records, see
@@ -195,13 +208,20 @@ workflow needs values that differ between customers (a region, an account
 number, a feature flag). Workflows reference these by name at runtime, and
 Refold substitutes the linked account's value at execution time.
 
+<Note>
+Environment variables must first be defined in [**Workspace Settings →
+Environment Variables**](/v3/platform/platform-settings/workspace-settings/environment-variables).
+Once a variable exists there, you can set its value **per linked account** here
+for customers that need a different one.
+</Note>
+
 <Steps>
   <Step title="Open the linked account">
     Go to **Dashboard > Linked Accounts** and open the account.
   </Step>
   <Step title="Add a variable">
     In the detail panel on the right, click **+ Add** next to **Environment
-    Variables**, then enter a name and value.
+    Variables**, then enter a value for available variable. 
   </Step>
   <Step title="Reference it from a workflow">
     Use the variable name in any workflow node that needs the value. Refold
