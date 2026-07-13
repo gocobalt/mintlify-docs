@@ -19,14 +19,14 @@ A record almost never crosses systems unchanged. Mapping closes three gaps.
 
 When two systems hold the same data under different field names, let your customer line the fields up instead of hard-coding the match. Each customer's app is configured differently, so the mapping belongs to them.
 
-Collect the mapping with a **Map v2** [Dataslot](/v3/native/configure/integration/dataslots#map-v2) in the connector's Connect Portal. The customer matches each of their fields to the field your integration expects, for example their HubSpot contact properties to your contact schema. The saved mapping is stored on the linked account as an object keyed by left-hand value to right-hand value.
+Collect the mapping with a **Field Mapping** [Dataslot](/v3/native/configure/integration/dataslots#field-mapping) in the connector's Connect Portal. The customer matches each of their fields to the field your integration expects, for example their HubSpot contact properties to your contact schema. The saved mapping is stored on the linked account as an object keyed by left-hand value to right-hand value.
 
 Inside a workflow, the [data-mapper node](/v3/platform/concepts/workflows/nodes/data-mapper) applies that saved mapping to records as they pass through, so each customer's records are reshaped according to their own configuration.
 
-<Frame>{/* SCREENSHOT: a Map v2 field where the customer maps their app's fields to the integration's expected fields -> /images/embedded/move-data/field-mapping.png */}</Frame>
+<Frame>{/* SCREENSHOT: a Field Mapping field where the customer maps their app's fields to the integration's expected fields -> /images/embedded/move-data/field-mapping.png */}</Frame>
 
 <Tip>
-Use a Map v2 Dataslot whenever the correct field pairing varies by customer. Hard-code a mapping only when it is the same for everyone.
+Use a Field Mapping Dataslot whenever the correct field pairing varies by customer. Hard-code a mapping only when it is the same for everyone.
 </Tip>
 
 ## Transform values
@@ -56,10 +56,10 @@ Validate before a [write action](/v3/native/move-data/read-write#execute-a-write
 
 <CardGroup cols={2}>
   <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/platform/concepts/workflows/nodes/data-mapper">
-    Apply a saved Map v2 mapping to records inside a workflow.
+    Apply a saved Field Mapping mapping to records inside a workflow.
   </Card>
   <Card title="Dataslots" icon="list-check" href="/v3/native/configure/integration/dataslots">
-    Collect a per-customer field mapping with a Map v2 Dataslot.
+    Collect a per-customer field mapping with a Field Mapping Dataslot.
   </Card>
   <Card title="Read and write data" icon="bolt" href="/v3/native/move-data/read-write">
     Execute the read and write actions that mapping sits between.

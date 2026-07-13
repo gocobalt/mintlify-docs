@@ -17,7 +17,7 @@ A config field moves through three stages: you **define** it on the connector, y
 
 <Steps>
   <Step title="Add fields to the connector">
-    In the connector's **Connect Portal → Fields**, add a [Dataslot](/v3/native/configure/integration/dataslots), a Select, Text, Map v2, and so on, for each value you need from the customer.
+    In the connector's **Connect Portal → Fields**, add a [Dataslot](/v3/native/configure/integration/dataslots), a Select, Text, Field Mapping, and so on, for each value you need from the customer.
   </Step>
   <Step title="Group them into Pages">
     Organize related fields into [Pages](#pages) so the customer configures one focused set at a time.
@@ -66,7 +66,7 @@ After a customer connects, use the SDK (or the [config APIs](/v3/api-reference/c
 const config = await cobalt.config({
   slug: "hubspot",
   config_id: "config_123", // optional: defaults to the linked account ID
-  labels: {},              // optional: dynamic labels for Map v2 fields
+  labels: {},              // optional: dynamic labels for Field Mapping fields
 });
 ```
 
@@ -147,7 +147,7 @@ curl --request PUT \
 </CodeGroup>
 
 <Note>
-You can also set a single field's value with the [Update Config Field Value](/v3/api-reference/config-fields/update-field-value) API, the most reliable way to populate one field without resending the whole config. For a **Map v2** field the value is an object keyed by **label value → option value**; see [Map v2](/v3/native/configure/integration/dataslots#map-v2).
+You can also set a single field's value with the [Update Config Field Value](/v3/api-reference/config-fields/update-field-value) API, the most reliable way to populate one field without resending the whole config. For a **Field Mapping** field the value is an object keyed by **label value → option value**; see [Field Mapping](/v3/native/configure/integration/dataslots#field-mapping).
 </Note>
 
 ### Multiple configs per linked account

@@ -3,15 +3,15 @@ title: "Mapping fields"
 description: "Let each customer line up your data model against their connected app's fields, so data syncs to the right place without custom code per customer."
 ---
 
-A **mapping field** (the **Map v2** type) lets your customer match the fields in *your* product to the fields in *their* connected app. The customer sees two columns, your side and theirs, and lines up each value on one side with a value on the other. A workflow then applies the saved mapping to records, so the same connector syncs to every customer's field layout without bespoke code.
+A **Field Mapping** field lets your customer match the fields in *your* product to the fields in *their* connected app. The customer sees two columns, your side and theirs, and lines up each value on one side with a value on the other. A workflow then applies the saved mapping to records, so the same connector syncs to every customer's field layout without bespoke code.
 
 Use a mapping field whenever data has to move between your schema and a customer's, and the customer is the only one who knows how their fields are named. A classic case: matching your contact model (Name, Email, Phone) to the customer's HubSpot contact properties.
 
-<Frame>{/* SCREENSHOT: a Map v2 field a customer fills in, with your labels on the left and their app's properties on the right -> /images/embedded/field-types/mapping.png */}</Frame>
+<Frame>{/* SCREENSHOT: a Field Mapping field a customer fills in, with your labels on the left and their app's properties on the right -> /images/embedded/field-types/mapping.png */}</Frame>
 
 ## How it works
 
-A Map v2 field has two columns you configure independently:
+A Field Mapping field has two columns you configure independently:
 
 - **Left-hand side (LHS)**: your side of the mapping, the fields or labels your product uses.
 - **Right-hand side (RHS)**: the customer's side, the properties from their connected app.
@@ -30,8 +30,8 @@ Each column is either **static** (a fixed list you type) or **dynamic** (loaded 
 ## Build a mapping field
 
 <Steps>
-  <Step title="Add a Map v2 field">
-    In **Connect Portal → Fields**, add a field and set its type to **Map v2**, then edit it.
+  <Step title="Add a Field Mapping field">
+    In **Connect Portal → Fields**, add a field and set its type to **Field Mapping**, then edit it.
   </Step>
   <Step title="Configure the LHS column">
     Give the column a **Name** (its heading), set its **Type**, and supply its options. For a fixed list, choose **Select** and type the options. For account-specific values, check **Use Data Source** and pick a published [datasource workflow](/v3/native/configure/integration/field-types/datasource).
@@ -102,4 +102,4 @@ For a static LHS, the label `value`s are system-generated and stable, so you map
 - [Data Mapper node](/v3/platform/concepts/workflows/nodes/data-mapper): apply a saved mapping to records inside a workflow.
 - [Datasource fields](/v3/native/configure/integration/field-types/datasource): load a mapping column's options live from the connected account.
 - [Dependent fields](/v3/native/configure/integration/field-types/dependent): chain a mapping column behind an earlier selection.
-- [Dataslots](/v3/native/configure/integration/dataslots#map-v2): the Map v2 field in the full palette.
+- [Dataslots](/v3/native/configure/integration/dataslots#field-mapping): the Field Mapping field in the full palette.

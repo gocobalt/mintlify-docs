@@ -21,7 +21,7 @@ Field types fall into three groups: **basic inputs** for fixed values you alread
 | **JSON** | A structured JSON value | A default payload or a list of values the customer edits as JSON. |
 | **Select** | One (or several) choices from a list | A fixed set of options you type yourself, or live options when you back it with a [datasource](/v3/native/configure/integration/field-types/datasource). |
 | **[Datasource](/v3/native/configure/integration/field-types/datasource)** | A choice from a list pulled live from the connected app | Account-specific lists that change per customer, like pipelines, stages, vendors, or owners. |
-| **[Mapping (Map v2)](/v3/native/configure/integration/field-types/mapping)** | A mapping between your fields and the customer's fields | The customer lines up your data model against their connected app's properties. |
+| **[Field Mapping](/v3/native/configure/integration/field-types/mapping)** | A mapping between your fields and the customer's fields | The customer lines up your data model against their connected app's properties. |
 | **[Dependent](/v3/native/configure/integration/field-types/dependent)** | A choice that narrows based on another field | Cascading choices, where each selection filters the next (sheet, then worksheet, then headers). |
 | **[Rule engine](/v3/native/configure/integration/field-types/rule-engine)** | A set of conditional rules | The customer builds if-this-then-that rules in your config UI. |
 
@@ -40,7 +40,7 @@ A **Select** sits between basic and dynamic: type a fixed list of options yourse
 The remaining types pull live data or collect more than one value at a time. Each has its own page:
 
 - **[Datasource](/v3/native/configure/integration/field-types/datasource)** populates a Select's options from the customer's connected app, so each customer sees their own pipelines, stages, or vendors.
-- **[Mapping (Map v2)](/v3/native/configure/integration/field-types/mapping)** lets the customer map your data model to their app's fields, then a workflow applies the mapping with the [Data Mapper node](/v3/platform/concepts/workflows/nodes/data-mapper).
+- **[Field Mapping](/v3/native/configure/integration/field-types/mapping)** lets the customer map your data model to their app's fields, then a workflow applies the mapping with the [Data Mapper node](/v3/platform/concepts/workflows/nodes/data-mapper).
 - **[Dependent](/v3/native/configure/integration/field-types/dependent)** chains fields so a child field's options load only after its parent has a value.
 - **[Rule engine](/v3/native/configure/integration/field-types/rule-engine)** gives the customer a grid to build conditional rules, with optional code to vary the operators and values per choice.
 

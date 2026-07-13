@@ -25,7 +25,7 @@ Adding a Dataslot to a page creates a [config field](/v3/native/configure/integr
 </Steps>
 
 <Frame>
-  <img src="/images/embedded/config-fields/field-types.png" alt="The Dataslots tab: Static Dataslots (Text, Date, Email, Number, Select, JSON, Rule Engine, Map v2) and Dynamic Dataslots" />
+  <img src="/images/embedded/config-fields/field-types.png" alt="The Dataslots tab: Static Dataslots (Text, Date, Email, Number, Select, JSON, Rule Engine, Field Mapping) and Dynamic Dataslots" />
 </Frame>
 
 ## Field settings
@@ -38,8 +38,8 @@ Every Dataslot shares the same set of settings in the editor. Only the **Options
 | **Help Text** | Optional guidance shown beneath the field. |
 | **Required** | The customer must supply a value before they can save. |
 | **Hidden** | Hides the field from the customer, for values you set programmatically. |
-| **Allow Multiple** | Lets the customer pick more than one value. Available on **Select**, **Map v2** columns, and **Dynamic Dataslots**. |
-| **Use Data Source** | Loads a **Select** or **Map v2** column's options live from a published workflow instead of a fixed list. |
+| **Allow Multiple** | Lets the customer pick more than one value. Available on **Select**, **Field Mapping** columns, and **Dynamic Dataslots**. |
+| **Use Data Source** | Loads a **Select** or **Field Mapping** column's options live from a published workflow instead of a fixed list. |
 | **Default Value** | The value applied when the customer leaves the field empty. Its input matches the type (a date picker for Date, a JSON editor for JSON, and so on). |
 | **Cache** | Caches the resolved value so Refold doesn't refetch it on every run, useful for live options that rarely change. |
 | **Dependency** | Makes this field depend on another field, pick a field, and this one's options or visibility update with the parent's value. |
@@ -59,7 +59,7 @@ Every Dataslot shares the same set of settings in the editor. Only the **Options
 | **Date** | A calendar date | Date-picker default |
 | **JSON** | A structured JSON value | JSON default editor |
 | **Select** | One choice from a list | Static options or [Use Data Source](#use-a-datasource); Allow Multiple |
-| **Map v2** | A mapping between two columns | LHS / RHS columns, each typed independently |
+| **Field Mapping** | A mapping between two columns | LHS / RHS columns, each typed independently |
 | **Rule Engine** | Conditional logic | LHS options + Conditional Code |
 
 ### Text, Number, Email, Date
@@ -78,9 +78,9 @@ A **Select** shows a list the customer chooses from. In **Options**, either **ad
   <img src="/images/embedded/config-fields/select-field.png" alt="Editing a Select Dataslot with a static list of options and the Use Data Source / Allow Multiple toggles" />
 </Frame>
 
-### Map v2
+### Field Mapping
 
-A **Map v2** Dataslot lets the customer line up two lists, so a value on one side maps to a value on the other, for example, matching the customer's HubSpot contact properties to the fields your integration expects. It has two columns, **LHS** and **RHS**, each configured independently:
+A **Field Mapping** Dataslot lets the customer line up two lists, so a value on one side maps to a value on the other, for example, matching the customer's HubSpot contact properties to the fields your integration expects. It has two columns, **LHS** and **RHS**, each configured independently:
 
 - **Name**: the column heading.
 - **Type**: **Select** (a static list, or **Use Data Source**) or a **Dynamic Dataslot** (e.g. *Map Contact Properties*, *List Pipeline Stages*) that pulls live values from the connected account.
@@ -139,7 +139,7 @@ Reach for Rule Engine only when you need conditional rules whose operators or ri
 
 ## Use a Datasource
 
-When the Dynamic Dataslot you need isn't available, supply the live data yourself. On a **Select** or a **Map v2** column, check **Use Data Source**, then under **Select Data Source** pick one of your published **Application Workflows**. Each linked account then pulls data straight from their own connected account, their pipelines, their custom properties.
+When the Dynamic Dataslot you need isn't available, supply the live data yourself. On a **Select** or a **Field Mapping** column, check **Use Data Source**, then under **Select Data Source** pick one of your published **Application Workflows**. Each linked account then pulls data straight from their own connected account, their pipelines, their custom properties.
 
 ### Build the datasource workflow
 
@@ -211,7 +211,7 @@ Until a field's parent has a value, the dependent field returns no options, so t
     What config fields are for, how customers fill them, and how to manage them in code.
   </Card>
   <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/platform/concepts/workflows/nodes/data-mapper">
-    Apply a saved Map v2 mapping to records inside a workflow.
+    Apply a saved Field Mapping mapping to records inside a workflow.
   </Card>
   <Card title="Custom Actions" icon="bolt" href="/v3/platform/concepts/connector/custom-actions">
     Define connector actions your workflows and datasources can call.
