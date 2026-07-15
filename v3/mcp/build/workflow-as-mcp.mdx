@@ -3,9 +3,9 @@ title: "Workflows as Tools"
 description: "Expose a tested workflow as a single MCP tool so the agent calls one tool instead of orchestrating a sequence of separate actions"
 ---
 
-You can expose a [platform workflow](/v3/concepts/workflows/overview) as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
+You can expose a [platform workflow](/v3/workflows/overview) as a single MCP tool. The agent sends input, the workflow runs to completion, and the result comes back. The agent never touches the intermediate steps.
 
-Use a workflow when a process needs precise sequencing, error handling, or business logic. Use it instead of [letting the agent orchestrate](/v3/mcp/get-started/choose-your-pattern) the same process step by step, where sequencing and error handling become decisions the agent makes at runtime.
+Use a workflow when a process needs precise sequencing, error handling, or business logic. Use it instead of [letting the agent orchestrate](/v3/mcp/choose-your-pattern) the same process step by step, where sequencing and error handling become decisions the agent makes at runtime.
 
 ## When to use a workflow
 
@@ -55,7 +55,7 @@ Every workflow invocation is logged in [MCP Logs](/v3/mcp/operate/mcp-logs) with
 
 <Steps>
   <Step title="Build and test the workflow">
-    Build the [workflow](/v3/concepts/workflows/overview) in the Refold workflow builder with the steps, error handling, and validation it needs. Test it independently of MCP first.
+    Build the [workflow](/v3/workflows/overview) in the Refold workflow builder with the steps, error handling, and validation it needs. Test it independently of MCP first.
   </Step>
 
   <Step title="Add it to your MCP server">

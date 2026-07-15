@@ -56,7 +56,7 @@ On the **API Call** tab, Refold offers a few options for how the response is han
     **Default** returns the response as the API sends it, and is on for every API proxy. Choose **Stream** when you want to stream the response in chunks.
   </Accordion>
   <Accordion title="Save response to bucket">
-    Turn this on to store the response in a Refold-provided S3 bucket instead of returning it inline. Use it when you retrieve non-JSON payloads such as PDFs. The stored URL can be referenced by other nodes (for example, the [PDF node](/v3/concepts/workflows/nodes/pdf)).
+    Turn this on to store the response in a Refold-provided S3 bucket instead of returning it inline. Use it when you retrieve non-JSON payloads such as PDFs. The stored URL can be referenced by other nodes (for example, the [PDF node](/v3/workflows/nodes/pdf)).
   </Accordion>
   <Accordion title="Use public URL">
     <Warning>
@@ -73,12 +73,12 @@ On the **API Call** tab, Refold offers a few options for how the response is han
 
 ## Use an API proxy in a workflow
 
-Once created, an API proxy is available through your app (your default application) as an action node. Add it to a [workflow](/v3/concepts/workflows/overview) like any other node, map the workflow's data into its fields, and use its response in later steps. Because the action is defined once on your app, the same API proxy can run in as many workflows as you need.
+Once created, an API proxy is available through your app (your default application) as an action node. Add it to a [workflow](/v3/workflows/overview) like any other node, map the workflow's data into its fields, and use its response in later steps. Because the action is defined once on your app, the same API proxy can run in as many workflows as you need.
 
 <Frame>{/* SCREENSHOT: a workflow canvas with the app's API proxy action added as a node -> /images/embedded/backend/api-proxy-workflow.png */}</Frame>
 
 <Tip>
-For a one-off request inside a single workflow, the [HTTP node](/v3/concepts/workflows/nodes/http) may be simpler. Reach for an API proxy when the same call is reused across workflows or needs response streaming, bucket storage, or pagination.
+For a one-off request inside a single workflow, the [HTTP node](/v3/workflows/nodes/http) may be simpler. Reach for an API proxy when the same call is reused across workflows or needs response streaming, bucket storage, or pagination.
 </Tip>
 
 ## Next steps
@@ -87,13 +87,13 @@ For a one-off request inside a single workflow, the [HTTP node](/v3/concepts/wor
   <Card title="Your app and API keys" icon="key" href="/v3/connectors/my-app/overview">
     Where API proxies and your credentials live.
   </Card>
-  <Card title="Run a workflow" icon="diagram-project" href="/v3/concepts/workflows/overview">
+  <Card title="Run a workflow" icon="diagram-project" href="/v3/workflows/overview">
     Chain your API proxy with other steps and triggers.
   </Card>
   <Card title="Read and write data" icon="arrows-rotate" href="/v3/native/move-data/read-write">
     Execute connector actions against a customer's third-party app.
   </Card>
-  <Card title="HTTP node" icon="globe" href="/v3/concepts/workflows/nodes/http">
+  <Card title="HTTP node" icon="globe" href="/v3/workflows/nodes/http">
     Make a one-off request inside a single workflow.
   </Card>
 </CardGroup>

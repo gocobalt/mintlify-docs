@@ -5,7 +5,7 @@ description: "Connect a customer's Salesforce org, read records with SOQL, and w
 
 By the end of this recipe you will have a customer's Salesforce org connected through Refold, opportunities read out of it, and a contact written back into it, all from your backend.
 
-This recipe assumes you have run the [Quickstart](/v3/native/get-started/quickstart). It reuses that flow (create a linked account, connect the app, execute an action) and shows only what is specific to Salesforce. Salesforce is the connector slug `salesforce` and authenticates with OAuth 2.0.
+This recipe assumes you have run the [Quickstart](/v3/native/quickstart). It reuses that flow (create a linked account, connect the app, execute an action) and shows only what is specific to Salesforce. Salesforce is the connector slug `salesforce` and authenticates with OAuth 2.0.
 
 ## Prerequisites
 
@@ -30,7 +30,7 @@ Tell Refold how to authenticate with Salesforce before a customer connects.
 
 ## Step 2: Connect the customer's Salesforce
 
-Create a [linked account](/v3/native/get-started/linked-accounts) for the customer and generate a [Connect portal](/v3/native/frontend/overview) URL.
+Create a [linked account](/v3/native/linked-accounts) for the customer and generate a [Connect portal](/v3/native/frontend/overview) URL.
 
 ```bash cURL
 curl -X POST https://app.refold.ai/api/v2/public/connect-url \

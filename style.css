@@ -144,12 +144,20 @@ h1, h2, h3, h4, h5, h6,
    and dark modes (don't rely on Mintlify's default which can be too subtle). */
 #sidebar-content,
 [class*="sidebar"] { font-family: var(--rf-font-sans); }
-#sidebar-content h5,
-[class*="sidebar"] [class*="group-title"] {
+/* Top-level group headers — the real element is .sidebar-group-header (a <div>
+   wrapping an <h3.sidebar-title>); the old h5 / group-title selectors never
+   matched this theme, so these lost their intended styling. Render them as
+   small, muted, mono UPPERCASE section labels (Workato-style), so they clearly
+   read as dividers that outrank the bold sub-group toggles below them. */
+.sidebar-group-header {
   font-family: var(--rf-font-mono) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
   letter-spacing: 0.08em !important;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
+  color: var(--rf-base-400) !important;
 }
+.dark .sidebar-group-header { color: #8b93a1 !important; }
 #sidebar-content a {
   border-radius: 0 !important;
   font-family: var(--rf-font-sans);
@@ -172,6 +180,21 @@ h1, h2, h3, h4, h5, h6,
   background: var(--rf-charcoal-2) !important;
   color: var(--rf-lime-mist) !important;
   border-left-color: var(--rf-lime-mist);
+}
+
+/* Sub-group hierarchy — nested group headers render as <button aria-expanded>
+   and page links as <a>, but both default to weight 400 in the same grey, so a
+   reader can't tell which sub-group they're inside. Give the toggle buttons a
+   heavier weight and a stronger (near-ink) colour so headers read as headers.
+   Top-level groups aren't collapsible, so this targets only sub-groups. */
+#sidebar-content button[aria-expanded],
+[class*="sidebar"] button[aria-expanded] {
+  font-weight: 600 !important;
+  color: #1b1e23 !important;
+}
+.dark #sidebar-content button[aria-expanded],
+.dark [class*="sidebar"] button[aria-expanded] {
+  color: #e7e9ec !important;
 }
 
 /* Top tabs — electric-blue underline on active.

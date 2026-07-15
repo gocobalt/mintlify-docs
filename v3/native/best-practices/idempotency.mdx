@@ -9,7 +9,7 @@ There are two layers to get right: stopping a duplicate *event* from starting a 
 
 ## Built-in idempotency on event triggers
 
-For event-triggered workflows, Refold deduplicates at the source. Turn on [idempotency](/v3/concepts/workflows/idempotency) in the workflow's event trigger: Refold reads a key from each incoming event (from the **Header** or **Payload**, written as `{event:<key>}`) and ignores any repeat that carries the same key within the time window (5 minutes by default). A double-sent event never starts a second run.
+For event-triggered workflows, Refold deduplicates at the source. Turn on [idempotency](/v3/workflows/idempotency) in the workflow's event trigger: Refold reads a key from each incoming event (from the **Header** or **Payload**, written as `{event:<key>}`) and ignores any repeat that carries the same key within the time window (5 minutes by default). A double-sent event never starts a second run.
 
 Use a key that is unique per logical event and stable across retries, such as an upstream record or event ID. For everything that happens after the workflow starts (the writes into connected apps), apply the patterns below.
 
@@ -32,7 +32,7 @@ An **idempotency key** is a unique value you attach to a write so the receiving 
     Derive the key from something that identifies the logical operation, not the attempt. A natural identifier (an order ID, an event ID) means every retry of the same operation reuses the same key.
   </Step>
   <Step title="Send it on every attempt">
-    Pass the same key on the first call and on each retry. Pass it through to the app on the [HTTP request](/v3/concepts/workflows/nodes/http) or action that supports it.
+    Pass the same key on the first call and on each retry. Pass it through to the app on the [HTTP request](/v3/workflows/nodes/http) or action that supports it.
   </Step>
   <Step title="Trust the app's response">
     When the app recognizes the key, it returns the original result rather than creating a second record. The retry becomes a no-op.
@@ -47,8 +47,8 @@ Check the connected app's API docs for idempotency support. The header or field 
 
 When an app does not support idempotency keys, make the operation safe yourself: check before you write, or detect a duplicate after.
 
-- **Check before you create.** Look up the record by a natural key (email, external ID) first; create it only if the lookup returns nothing. Inside a workflow, use a [Rule node](/v3/concepts/workflows/nodes/rule) to branch on whether the lookup found a match.
-- **Track what you've processed.** Record the IDs of operations you've completed in a [Tables node](/v3/concepts/workflows/nodes/tables) and skip any ID you've already handled. This is especially useful for [event-driven and polling](/v3/concepts/workflows/overview) workflows where the same event can arrive more than once.
+- **Check before you create.** Look up the record by a natural key (email, external ID) first; create it only if the lookup returns nothing. Inside a workflow, use a [Rule node](/v3/workflows/nodes/rule) to branch on whether the lookup found a match.
+- **Track what you've processed.** Record the IDs of operations you've completed in a [Tables node](/v3/workflows/nodes/tables) and skip any ID you've already handled. This is especially useful for [event-driven and polling](/v3/workflows/overview) workflows where the same event can arrive more than once.
 - **Store the app's record ID on your side.** Once you create a record, save its ID against your own object so the next sync updates that record instead of creating a new one.
 
 <Warning>
@@ -85,9 +85,9 @@ An **upsert** updates a record if it exists and creates it if it doesn't, keyed 
 
 ## See also
 
-- [Workflow idempotency](/v3/concepts/workflows/idempotency) : the built-in event deduplication setting
+- [Workflow idempotency](/v3/workflows/idempotency) : the built-in event deduplication setting
 - [Error handling](/v3/native/best-practices/error-handling) : when and how to retry safely
 - [Rate limiting](/v3/native/best-practices/rate-limiting) : the throttling that triggers retries
-- [Tables node](/v3/concepts/workflows/nodes/tables) : store processed IDs to deduplicate
-- [Rule node](/v3/concepts/workflows/nodes/rule) : branch on whether a record already exists
+- [Tables node](/v3/workflows/nodes/tables) : store processed IDs to deduplicate
+- [Rule node](/v3/workflows/nodes/rule) : branch on whether a record already exists
 - [Read & write data](/v3/native/move-data/read-write) : the operations these patterns apply to

@@ -3,12 +3,12 @@ title: "Expose Workflows"
 description: "Let your customers enable, configure, and trigger Refold workflows from inside your embedded UI."
 ---
 
-Exposing a workflow is how you surface a platform-built automation to a customer so they can turn it on for their own account. You build the [workflow](/v3/concepts/workflows/overview) once on the platform, then this page covers the Native side: listing the workflows available to a customer, letting them enable one, collecting its [config fields](/v3/native/configure/integration/config-fields), and triggering it for their [linked account](/v3/concepts/linked-account).
+Exposing a workflow is how you surface a platform-built automation to a customer so they can turn it on for their own account. You build the [workflow](/v3/workflows/overview) once on the platform, then this page covers the Native side: listing the workflows available to a customer, letting them enable one, collecting its [config fields](/v3/native/configure/integration/config-fields), and triggering it for their [linked account](/v3/concepts/linked-account).
 
 A workflow is enabled per linked account. Enabling it for one customer never affects another, and a customer only ever sees the workflows you have published to them.
 
 <Note>
-This page does not cover building workflows. Triggers, nodes, and data mapping are defined once on the platform; see the [Workflows overview](/v3/concepts/workflows/overview). Here you only expose what is already built.
+This page does not cover building workflows. Triggers, nodes, and data mapping are defined once on the platform; see the [Workflows overview](/v3/workflows/overview). Here you only expose what is already built.
 </Note>
 
 ## How exposing a workflow works
@@ -17,7 +17,7 @@ A workflow surfaces to a customer through their **config**: the same object that
 
 <Steps>
   <Step title="Publish the workflow on the platform">
-    Build and publish the [workflow](/v3/concepts/workflows/overview) for the connector. Published workflows appear in the customer's config; unpublished ones do not.
+    Build and publish the [workflow](/v3/workflows/overview) for the connector. Published workflows appear in the customer's config; unpublished ones do not.
   </Step>
   <Step title="Read the customer's config">
     Fetch the config for the linked account. The response includes a `workflows` array, each with an `id`, `name`, `enabled` flag, and any [workflow-level config fields](/v3/native/configure/integration/config-fields#two-levels-of-config).
@@ -26,7 +26,7 @@ A workflow surfaces to a customer through their **config**: the same object that
     Render the workflow with a toggle and its fields, then save the customer's choices back to the config.
   </Step>
   <Step title="Trigger the workflow">
-    Once enabled, the workflow runs from its [trigger](/v3/concepts/workflows/overview): a connected-app event, a schedule, or an event your backend fires for the linked account.
+    Once enabled, the workflow runs from its [trigger](/v3/workflows/overview): a connected-app event, a schedule, or an event your backend fires for the linked account.
   </Step>
 </Steps>
 
@@ -98,7 +98,7 @@ The same `config()` and `updateConfig()` methods set application-level config fi
 
 ## Trigger an exposed workflow
 
-Enabling a workflow does not run it. Once it is enabled for a linked account, it runs from its [trigger](/v3/concepts/workflows/overview), which is set when the workflow is built:
+Enabling a workflow does not run it. Once it is enabled for a linked account, it runs from its [trigger](/v3/workflows/overview), which is set when the workflow is built:
 
 - **A connected-app event**, such as a new contact created in the customer's connected app.
 - **A schedule**, which runs the workflow at a set interval.
@@ -119,7 +119,7 @@ The trigger type is part of the workflow definition on the platform, not a Nativ
 
 ## See also
 
-- [Workflows overview](/v3/concepts/workflows/overview): build the automation on the platform
+- [Workflows overview](/v3/workflows/overview): build the automation on the platform
 - [Workflows (Native)](/v3/native/configure/integration/workflow): the Native-side summary
 - [Config fields](/v3/native/configure/integration/config-fields): collect the inputs a workflow needs
 - [React SDK](/v3/api-reference/sdks): the `<Config>` component reference

@@ -3,10 +3,10 @@ title: "Try API"
 description: "Fire real events and execute published workflows from the dashboard to validate them end to end."
 ---
 
-Try API runs a published [workflow](/v3/concepts/workflows/overview) the way a production trigger would, so you can validate the full path (the trigger, the workflow, and its actions against the connected app) without waiting for a real event to arrive. Fire an event or execute a Workflow API trigger against a [linked account](/v3/concepts/linked-account), then check the result in [Logs](/v3/monitor/logs).
+Try API runs a published [workflow](/v3/workflows/overview) the way a production trigger would, so you can validate the full path (the trigger, the workflow, and its actions against the connected app) without waiting for a real event to arrive. Fire an event or execute a Workflow API trigger against a [linked account](/v3/concepts/linked-account), then check the result in [Logs](/v3/monitor/logs).
 
 <Info>
-  Try API is for exercising **published** workflows from the dashboard. To test a draft node by node while you build it, use [Workflow Testing](/v3/concepts/workflows/testing) in the editor instead.
+  Try API is for exercising **published** workflows from the dashboard. To test a draft node by node while you build it, use [Workflow Testing](/v3/workflows/testing) in the editor instead.
 </Info>
 
 Try API works in both **test** and **production** environments.
@@ -14,7 +14,7 @@ Try API works in both **test** and **production** environments.
 ## Before you start
 
 - The app is connected for the [linked account](/v3/concepts/linked-account) you want to fire against.
-- The workflow has an [event](/v3/concepts/workflows/triggers/events) or [Workflow API](/v3/concepts/workflows/triggers/api-trigger) trigger in its start node and is **published**.
+- The workflow has an [event](/v3/workflows/triggers/events) or [Workflow API](/v3/workflows/triggers/api-trigger) trigger in its start node and is **published**.
 - The workflow is enabled for that linked account.
 
 ## Fire a trigger
@@ -60,6 +60,6 @@ Every fire or execution is recorded. Open [Logs](/v3/monitor/logs) and find the 
 
 ## See also
 
-- [Workflow Testing](/v3/concepts/workflows/testing): test a draft node by node in the editor.
+- [Workflow Testing](/v3/workflows/testing): test a draft node by node in the editor.
 - [Logs](/v3/monitor/logs): inspect execution history and per-node output.
 - [Reliability](/v3/monitor/reliability): handle errors and rate limits in production.

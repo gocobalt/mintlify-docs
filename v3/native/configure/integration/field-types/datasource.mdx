@@ -33,10 +33,10 @@ Building a datasource is two tasks: create the workflow that returns the options
     In the connector, add an [Application Workflow](/v3/native/configure/integration/workflow) and name it for what it returns, such as `Get Vendors`, so it's easy to find later. A datasource workflow needs no trigger, it's run on demand when the field loads.
   </Step>
   <Step title="Fetch the records">
-    Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/connectors/custom-actions), or an [HTTP Request](/v3/concepts/workflows/nodes/http) node against the connected app.
+    Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/connectors/custom-actions), or an [HTTP Request](/v3/workflows/nodes/http) node against the connected app.
   </Step>
   <Step title="Transform into name/value pairs">
-    Add a [Transform](/v3/concepts/workflows/nodes/transform) or [Custom Code](/v3/concepts/workflows/nodes/custom-code) node that reshapes each record into an object with exactly `name` (the label the customer sees) and `value` (the ID you use in your workflow).
+    Add a [Transform](/v3/workflows/nodes/transform) or [Custom Code](/v3/workflows/nodes/custom-code) node that reshapes each record into an object with exactly `name` (the label the customer sees) and `value` (the ID you use in your workflow).
 
     ```javascript Transform query
     {
@@ -51,7 +51,7 @@ Building a datasource is two tasks: create the workflow that returns the options
     </Warning>
   </Step>
   <Step title="Return the options">
-    End the workflow with a [Response](/v3/concepts/workflows/nodes/response) node containing the transformed list. Nothing connects after the Response node, it's the last step.
+    End the workflow with a [Response](/v3/workflows/nodes/response) node containing the transformed list. Nothing connects after the Response node, it's the last step.
   </Step>
   <Step title="Publish the workflow">
     **Publish** the workflow. An unpublished datasource workflow doesn't appear in the field's picker and won't run for customers.
@@ -96,7 +96,7 @@ Building a datasource is two tasks: create the workflow that returns the options
 
 <AccordionGroup>
   <Accordion title="The field shows no options">
-    Confirm the customer's [linked account](/v3/concepts/linked-account) is connected, the datasource workflow is **published**, and it ends in a [Response](/v3/concepts/workflows/nodes/response) node returning `name`/`value` pairs. Re-open the field after the connection completes.
+    Confirm the customer's [linked account](/v3/concepts/linked-account) is connected, the datasource workflow is **published**, and it ends in a [Response](/v3/workflows/nodes/response) node returning `name`/`value` pairs. Re-open the field after the connection completes.
   </Accordion>
   <Accordion title="Options render incorrectly">
     Each option must be an object with exactly `name` and `value`, no extra keys. Re-check the Transform query in your datasource workflow.

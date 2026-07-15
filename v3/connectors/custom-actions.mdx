@@ -9,7 +9,7 @@ A connector ships with a curated set of [actions](/v3/connectors/supported-apps-
 - **Reusable custom action** — define the call **once** as a named action. It shows up alongside the connector's built-in actions, inherits the connector's authentication, and can be reused across every workflow.
 
 <Note>
-Don't confuse the app's HTTP action with the general [HTTP Request node](/v3/concepts/workflows/nodes/http) — that node is for calls that *don't* need the app's authentication. The app's HTTP action carries the connection's credentials automatically.
+Don't confuse the app's HTTP action with the general [HTTP Request node](/v3/workflows/nodes/http) — that node is for calls that *don't* need the app's authentication. The app's HTTP action carries the connection's credentials automatically.
 </Note>
 
 The rest of this page is about building that second kind — a reusable custom action.
@@ -80,13 +80,13 @@ Toggle these as the endpoint requires:
     Turn on **Pagination** for paged endpoints, plus any other [request options](#request-options) the endpoint needs.
   </Step>
   <Step title="Test, then save">
-    Click **Test Action** to run it against a connected account and confirm the request, inputs, and response. When it looks right, **Save Action**. See [Testing](/v3/concepts/workflows/testing).
+    Click **Test Action** to run it against a connected account and confirm the request, inputs, and response. When it looks right, **Save Action**. See [Testing](/v3/workflows/testing).
   </Step>
 </Steps>
 
 ## Use it in a workflow
 
-Once saved, the action appears as a **node** you can add to any [workflow](/v3/concepts/workflows/overview) on that connector. Drop it in, map your workflow data to its input fields, and the response flows on to the next node — Refold makes the call against the customer's [linked account](/v3/concepts/linked-account) using the connector's authentication.
+Once saved, the action appears as a **node** you can add to any [workflow](/v3/workflows/overview) on that connector. Drop it in, map your workflow data to its input fields, and the response flows on to the next node — Refold makes the call against the customer's [linked account](/v3/concepts/linked-account) using the connector's authentication.
 
 <Tip>
 A [datasource](/v3/native/configure/integration/dataslots#use-a-datasource) workflow can call a custom action to fetch live options for a config field — for example, an action that lists a customer's records, surfaced as a dropdown.
@@ -129,10 +129,10 @@ Custom apps support custom actions the same way, so you can define operations fo
   <Card title="Supported apps & actions" icon="grid-2" href="/v3/connectors/supported-apps-actions">
     The built-in actions a connector ships with.
   </Card>
-  <Card title="HTTP Request node" icon="globe" href="/v3/concepts/workflows/nodes/http">
+  <Card title="HTTP Request node" icon="globe" href="/v3/workflows/nodes/http">
     The general node for calls that don't need the app's authentication.
   </Card>
-  <Card title="Workflows" icon="diagram-project" href="/v3/concepts/workflows/overview">
+  <Card title="Workflows" icon="diagram-project" href="/v3/workflows/overview">
     Add your action as a node and build the automation around it.
   </Card>
 </CardGroup>

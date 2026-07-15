@@ -3,16 +3,16 @@ title: "Logs"
 description: "Monitor executions, troubleshoot errors, and inspect every trigger, workflow, webhook, and schedule from one place."
 ---
 
-Logs record what ran on your platform and what happened at each step. Use them to monitor [workflow](/v3/concepts/workflows/overview) executions, troubleshoot errors down to the individual node, and inspect the triggers, webhooks, and schedules behind them. Open **Logs** in Refold and switch tabs by log type.
+Logs record what ran on your platform and what happened at each step. Use them to monitor [workflow](/v3/workflows/overview) executions, troubleshoot errors down to the individual node, and inspect the triggers, webhooks, and schedules behind them. Open **Logs** in Refold and switch tabs by log type.
 
 ## Log types
 
 | Tab | Records | Use it to |
 |---|---|---|
 | **Executions** | Every workflow run, with per-node input and output | Trace a run, find the failing node, and replay it |
-| **Events** | [Events](/v3/concepts/workflows/triggers/events) fired and the workflows they triggered | Confirm an event arrived and see what it started |
+| **Events** | [Events](/v3/workflows/triggers/events) fired and the workflows they triggered | Confirm an event arrived and see what it started |
 | **Webhooks** | [Webhook](/v3/connectors/my-app/webhooks) deliveries and their request/response data | Verify a webhook fired and inspect its payload |
-| **Schedules** | [Scheduled](/v3/concepts/workflows/triggers/schedule) workflows and their cron configuration | Check what's scheduled and whether it's active |
+| **Schedules** | [Scheduled](/v3/workflows/triggers/schedule) workflows and their cron configuration | Check what's scheduled and whether it's active |
 
 <Tip>
   For connection and sign-in activity, see [integration logs](/v3/authentication/managing-connections/integration-logs) and the [audit log](/v3/monitor/audit) instead.
@@ -40,12 +40,12 @@ The **Executions** tab shows every workflow run with full execution detail and r
 </AccordionGroup>
 
 <Warning>
-  Replaying or retrying re-executes the workflow's actions, making **real API calls** to the connected app. A replayed run can repeat side effects such as creating a record. See [idempotency](/v3/concepts/workflows/idempotency) for how to make repeats safe.
+  Replaying or retrying re-executes the workflow's actions, making **real API calls** to the connected app. A replayed run can repeat side effects such as creating a record. See [idempotency](/v3/workflows/idempotency) for how to make repeats safe.
 </Warning>
 
 ## Event logs
 
-The **Events** tab shows the [events](/v3/concepts/workflows/triggers/events) fired and the triggers they called. Filter by event name, status, and linked account ID. Each entry shows the workflows the event executed, the event URL, and the payload sent.
+The **Events** tab shows the [events](/v3/workflows/triggers/events) fired and the triggers they called. Filter by event name, status, and linked account ID. Each entry shows the workflows the event executed, the event URL, and the payload sent.
 
 <Note>
   The Workflows section of an event log is empty when no workflow was associated with that event.
@@ -57,7 +57,7 @@ The **Webhooks** tab lets you monitor [webhook](/v3/connectors/my-app/webhooks) 
 
 ## Schedule logs
 
-The **Schedules** tab gives visibility into [scheduled](/v3/concepts/workflows/triggers/schedule) workflows. Each entry shows:
+The **Schedules** tab gives visibility into [scheduled](/v3/workflows/triggers/schedule) workflows. Each entry shows:
 
 <CardGroup cols={2}>
   <Card title="Workflow name and ID">
@@ -76,6 +76,6 @@ The **Schedules** tab gives visibility into [scheduled](/v3/concepts/workflows/t
 
 ## See also
 
-- [Workflow testing](/v3/concepts/workflows/testing): validate workflows before they reach production.
+- [Workflow testing](/v3/workflows/testing): validate workflows before they reach production.
 - [Reliability](/v3/monitor/reliability): handle errors and rate limits in production.
-- [Idempotency](/v3/concepts/workflows/idempotency): make retries and replays safe to repeat.
+- [Idempotency](/v3/workflows/idempotency): make retries and replays safe to repeat.

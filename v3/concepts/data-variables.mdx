@@ -259,7 +259,7 @@ When you run a test on a node, its response fields appear as named variables in 
     </Frame>
   </Step>
   <Step title="Run the node if no response exists">
-    If the upstream node has no response yet, click **Run node** to perform a test execution. Workflow Testing prerequisites must be satisfied first. See [Workflow Testing](/v3/concepts/workflows/testing).
+    If the upstream node has no response yet, click **Run node** to perform a test execution. Workflow Testing prerequisites must be satisfied first. See [Workflow Testing](/v3/workflows/testing).
 
     {/* MEDIA-TODO (image): Screenshot of the Run node action when no test response is available. */}
     <Frame>
@@ -287,7 +287,7 @@ The `{{ }}` syntax is accepted in three places:
 
 ### HTTP Request node
 
-Substitute variables into the URL, headers, and body of an [HTTP Request](/v3/concepts/workflows/nodes/http) node.
+Substitute variables into the URL, headers, and body of an [HTTP Request](/v3/workflows/nodes/http) node.
 
 <CodeGroup>
 ```json URL Configuration
@@ -316,7 +316,7 @@ Substitute variables into the URL, headers, and body of an [HTTP Request](/v3/co
 
 ### Transform node
 
-Embed variables inside [Transform node](/v3/concepts/workflows/nodes/transform) JavaScript via string interpolation.
+Embed variables inside [Transform node](/v3/workflows/nodes/transform) JavaScript via string interpolation.
 
 ```javascript
 const transformedData = {
@@ -565,13 +565,13 @@ testConfigs.forEach(config => {
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Templating reference" icon="code" href="/v3/concepts/workflows/templating">
+  <Card title="Templating reference" icon="code" href="/v3/workflows/templating">
     Deep reference on `{{ }}` syntax, operators, and helpers.
   </Card>
   <Card title="Environment Variables" icon="gear" href="/v3/platform-settings/workspace-settings/environment-variables">
     Manage workspace-scoped variables in Settings.
   </Card>
-  <Card title="Workflow Testing" icon="vial" href="/v3/concepts/workflows/testing">
+  <Card title="Workflow Testing" icon="vial" href="/v3/workflows/testing">
     Run node tests so their responses become variables.
   </Card>
 </CardGroup>

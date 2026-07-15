@@ -3,7 +3,7 @@ title: "Monitoring"
 description: "Watch live native integrations: execution logs, connection health, and the errors and alerts that tell you a customer's integration broke."
 ---
 
-Monitoring a live native integration means knowing, at any moment, whether each customer's connection works and whether the calls running through it succeed. You watch two things: connection health (is the customer still authenticated) and execution health (are reads, writes, and [workflows](/v3/concepts/workflows/overview) succeeding). Refold records both, and webhooks push the events you care about to your backend so you do not have to poll.
+Monitoring a live native integration means knowing, at any moment, whether each customer's connection works and whether the calls running through it succeed. You watch two things: connection health (is the customer still authenticated) and execution health (are reads, writes, and [workflows](/v3/workflows/overview) succeeding). Refold records both, and webhooks push the events you care about to your backend so you do not have to poll.
 
 In production, the failure that hurts most is a connection that breaks silently: a customer's token expires, every call starts failing, and nobody notices until the customer complains. The signals below catch that before they do.
 
@@ -41,7 +41,7 @@ A broken connection makes every call for that customer fail until they reconnect
 
 ## Monitor execution
 
-Execution monitoring tells you whether the calls running through a connection are succeeding. For single actions, watch the response your backend gets. For [workflows](/v3/concepts/workflows/overview), watch the execution logs.
+Execution monitoring tells you whether the calls running through a connection are succeeding. For single actions, watch the response your backend gets. For [workflows](/v3/workflows/overview), watch the execution logs.
 
 Workflow execution logs (run history, per-node input and output, replay and retry) are a Platform surface. Use them to inspect any run:
 

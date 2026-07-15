@@ -5,12 +5,12 @@ description: "Connect a customer's NetSuite account and write records to it from
 
 By the end of this recipe you will have a customer's NetSuite account connected through Refold and a record created in it from your backend, the same loop your product runs for every customer.
 
-This recipe assumes you have already run the [Quickstart](/v3/native/get-started/quickstart). It reuses the same flow (create a linked account, connect the app, execute an action) and only shows what is specific to NetSuite. NetSuite is the connector slug `netsuite`.
+This recipe assumes you have already run the [Quickstart](/v3/native/quickstart). It reuses the same flow (create a linked account, connect the app, execute an action) and only shows what is specific to NetSuite. NetSuite is the connector slug `netsuite`.
 
 ## Prerequisites
 
 - **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai).
-- **The Quickstart loop, once.** You have created a [linked account](/v3/native/get-started/linked-accounts) and connected an app at least once, so the pattern below is familiar.
+- **The Quickstart loop, once.** You have created a [linked account](/v3/native/linked-accounts) and connected an app at least once, so the pattern below is familiar.
 - **NetSuite credentials.** NetSuite is a key-based connector, so the customer supplies credentials rather than running an OAuth redirect.
 
 ## Step 1: Configure the NetSuite app
@@ -34,7 +34,7 @@ NetSuite is key-based, so the customer enters credentials in the connect step in
 
 ## Step 2: Connect the customer's NetSuite
 
-Create a [linked account](/v3/native/get-started/linked-accounts) for the customer and generate a [Connect portal](/v3/native/frontend/overview) URL, exactly as in the Quickstart.
+Create a [linked account](/v3/native/linked-accounts) for the customer and generate a [Connect portal](/v3/native/frontend/overview) URL, exactly as in the Quickstart.
 
 ```bash cURL
 curl -X POST https://app.refold.ai/api/v2/public/connect-url \

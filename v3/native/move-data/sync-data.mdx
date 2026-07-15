@@ -3,13 +3,13 @@ title: "Sync Data"
 description: "Keep records aligned between your app and your customers' connected apps, with one-way and two-way sync patterns."
 ---
 
-A **sync** keeps records in agreement between your app and a customer's connected app, so a change on one side shows up on the other. Build a sync from the same pieces you already use to move data: [actions](/v3/native/move-data/read-write) to read and write, [triggers](/v3/concepts/workflows/triggers/overview) to decide when a sync runs, and [workflows](/v3/concepts/workflows/overview) to orchestrate the steps.
+A **sync** keeps records in agreement between your app and a customer's connected app, so a change on one side shows up on the other. Build a sync from the same pieces you already use to move data: [actions](/v3/native/move-data/read-write) to read and write, [triggers](/v3/workflows/triggers/overview) to decide when a sync runs, and [workflows](/v3/workflows/overview) to orchestrate the steps.
 
 This page covers the sync patterns and when to use each, plus how to choose what starts a sync. It is conceptual. The end-to-end build lives in the [Two-way sync recipe](/v3/native/recipes/two-way-sync).
 
 ## How sync works
 
-A sync is a workflow that runs on a [trigger](/v3/concepts/workflows/triggers/overview), reads records from a source, optionally maps them, and writes them to a destination.
+A sync is a workflow that runs on a [trigger](/v3/workflows/triggers/overview), reads records from a source, optionally maps them, and writes them to a destination.
 
 - **The source** is where the change originates, either your app or the connected app.
 - **The trigger** decides when the sync runs: an event from your app, a webhook from the connected app, or a schedule.
@@ -17,7 +17,7 @@ A sync is a workflow that runs on a [trigger](/v3/concepts/workflows/triggers/ov
 - **The destination** is where the records land, written with a connector [action](/v3/native/move-data/read-write).
 
 <Note>
-A sync built once on the Platform runs across all three Refold products. This page does not re-document workflow building. See [Workflows overview](/v3/concepts/workflows/overview).
+A sync built once on the Platform runs across all three Refold products. This page does not re-document workflow building. See [Workflows overview](/v3/workflows/overview).
 </Note>
 
 ## Sync patterns
@@ -34,13 +34,13 @@ Choose the pattern that matches where changes originate.
 
 Your app is the source of truth. When a record changes in your app, push it to the customer's connected app.
 
-Start the sync with an [event trigger](/v3/concepts/workflows/triggers/events): your backend fires an event when the record changes, and the workflow writes the change to the connected app with a write action.
+Start the sync with an [event trigger](/v3/workflows/triggers/events): your backend fires an event when the record changes, and the workflow writes the change to the connected app with a write action.
 
 ### One-way in
 
 The connected app is the source of truth. When a record changes there, pull it into your app.
 
-Start the sync with a [webhook trigger](/v3/concepts/workflows/triggers/webhook) if the app pushes change notifications, or a [schedule trigger](/v3/concepts/workflows/triggers/schedule) if it does not. The workflow reads the changed records and writes them into your app, often through an [API proxy](/v3/connectors/my-app/api-proxies) so the data lands on your own endpoint.
+Start the sync with a [webhook trigger](/v3/workflows/triggers/webhook) if the app pushes change notifications, or a [schedule trigger](/v3/workflows/triggers/schedule) if it does not. The workflow reads the changed records and writes them into your app, often through an [API proxy](/v3/connectors/my-app/api-proxies) so the data lands on your own endpoint.
 
 ### Two-way
 
@@ -56,15 +56,15 @@ The trigger you pick determines how fresh the synced data is and how much load y
 
 | Trigger | Starts the sync when | Reach for it when |
 | --- | --- | --- |
-| **[Event](/v3/concepts/workflows/triggers/events)** | Your backend fires an event | Your app is the source and you control when records change |
-| **[Webhook](/v3/concepts/workflows/triggers/webhook)** | The connected app sends a change notification | The app supports webhooks and you want near-real-time updates |
-| **[Schedule](/v3/concepts/workflows/triggers/schedule)** | A recurring time arrives | The app has no webhooks, or batching on a cadence is enough |
+| **[Event](/v3/workflows/triggers/events)** | Your backend fires an event | Your app is the source and you control when records change |
+| **[Webhook](/v3/workflows/triggers/webhook)** | The connected app sends a change notification | The app supports webhooks and you want near-real-time updates |
+| **[Schedule](/v3/workflows/triggers/schedule)** | A recurring time arrives | The app has no webhooks, or batching on a cadence is enough |
 
 <Tip>
 Prefer a webhook over a schedule when the app supports it. Webhooks sync only what changed, when it changed, instead of re-reading everything on a timer.
 </Tip>
 
-For the full list of trigger types and their configuration, see [Triggers overview](/v3/concepts/workflows/triggers/overview).
+For the full list of trigger types and their configuration, see [Triggers overview](/v3/workflows/triggers/overview).
 
 ## Best practices
 
@@ -92,7 +92,7 @@ For the full list of trigger types and their configuration, see [Triggers overvi
   <Card title="Data import recipe" icon="file-import" href="/v3/native/recipes/data-import">
     Bring a customer's existing records in on first connect.
   </Card>
-  <Card title="Triggers overview" icon="bolt" href="/v3/concepts/workflows/triggers/overview">
+  <Card title="Triggers overview" icon="bolt" href="/v3/workflows/triggers/overview">
     Every trigger type and how to configure it.
   </Card>
   <Card title="Read and write data" icon="arrow-right-arrow-left" href="/v3/native/move-data/read-write">

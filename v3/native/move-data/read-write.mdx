@@ -117,17 +117,17 @@ Write actions (create, update, delete) make real changes in the customer's app. 
 
 ## Single action or workflow
 
-A single action call is the right tool when one operation does the job. Reach for a [workflow](/v3/concepts/workflows/overview) when the job spans more than one step.
+A single action call is the right tool when one operation does the job. Reach for a [workflow](/v3/workflows/overview) when the job spans more than one step.
 
 | Use a single action when | Use a workflow when |
 | --- | --- |
 | You need one read or one write | You read, transform, then write in sequence |
 | Your backend drives the logic | You fan out to several apps or actions |
-| The call is synchronous and you want the result back | A [trigger](/v3/concepts/workflows/triggers/overview) (event, webhook, or schedule) should start the run |
+| The call is synchronous and you want the result back | A [trigger](/v3/workflows/triggers/overview) (event, webhook, or schedule) should start the run |
 | No mapping or validation is needed | You map and validate data between systems (see [Data mapping](/v3/native/move-data/data-mapping)) |
 
 <Note>
-A workflow is built once on the Platform and runs across all three Refold products. This page does not re-document workflow building. See [Workflows overview](/v3/concepts/workflows/overview).
+A workflow is built once on the Platform and runs across all three Refold products. This page does not re-document workflow building. See [Workflows overview](/v3/workflows/overview).
 </Note>
 
 ## See also
@@ -142,7 +142,7 @@ A workflow is built once on the Platform and runs across all three Refold produc
   <Card title="Execute Action API" icon="bolt" href="/v3/api-reference/applications/execute-action">
     Full request and response reference for executing an action.
   </Card>
-  <Card title="Workflows overview" icon="diagram-project" href="/v3/concepts/workflows/overview">
+  <Card title="Workflows overview" icon="diagram-project" href="/v3/workflows/overview">
     Orchestrate multi-step logic across apps and actions.
   </Card>
 </CardGroup>

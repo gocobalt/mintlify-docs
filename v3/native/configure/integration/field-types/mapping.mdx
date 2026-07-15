@@ -16,7 +16,7 @@ A Field Mapping field has two columns you configure independently:
 - **Left-hand side (LHS)**: your side of the mapping, the fields or labels your product uses.
 - **Right-hand side (RHS)**: the customer's side, the properties from their connected app.
 
-You decide where each column's options come from. The customer maps each LHS value to an RHS value, and Refold saves the result as an object keyed by **LHS value → RHS value** under the field's `id`. Inside a workflow, the [Data Mapper node](/v3/concepts/workflows/nodes/data-mapper) reads that mapping and applies it to records.
+You decide where each column's options come from. The customer maps each LHS value to an RHS value, and Refold saves the result as an object keyed by **LHS value → RHS value** under the field's `id`. Inside a workflow, the [Data Mapper node](/v3/workflows/nodes/data-mapper) reads that mapping and applies it to records.
 
 ## Static vs. dynamic columns
 
@@ -93,13 +93,13 @@ For a static LHS, the label `value`s are system-generated and stable, so you map
 <Tip>
 - **Name your LHS labels for the customer**, in their language, since the labels are what they map against.
 - **Use a Dynamic Dataslot for the RHS** where one exists, so the customer's real property names appear without you maintaining a list.
-- **Apply the mapping with the [Data Mapper node](/v3/concepts/workflows/nodes/data-mapper)** rather than reading the raw object yourself, it handles the transform per record.
+- **Apply the mapping with the [Data Mapper node](/v3/workflows/nodes/data-mapper)** rather than reading the raw object yourself, it handles the transform per record.
 - **Reach for [dependent fields](/v3/native/configure/integration/field-types/dependent)** when the RHS list depends on an earlier choice (an object, then its fields).
 </Tip>
 
 ## See also
 
-- [Data Mapper node](/v3/concepts/workflows/nodes/data-mapper): apply a saved mapping to records inside a workflow.
+- [Data Mapper node](/v3/workflows/nodes/data-mapper): apply a saved mapping to records inside a workflow.
 - [Datasource fields](/v3/native/configure/integration/field-types/datasource): load a mapping column's options live from the connected account.
 - [Dependent fields](/v3/native/configure/integration/field-types/dependent): chain a mapping column behind an earlier selection.
 - [Dataslots](/v3/native/configure/integration/dataslots#field-mapping): the Field Mapping field in the full palette.
