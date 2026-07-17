@@ -3,15 +3,15 @@ title: "Two-Way Data Sync"
 description: "Keep records in sync in both directions between your app and a customer's connected app."
 ---
 
-By the end of this recipe you will have records flowing both ways between your product and a customer's connected app: changes in your app push to the connected app, and changes in the connected app push back to you in near real time.
+By the end of this example you will have records flowing both ways between your product and a customer's connected app: changes in your app push to the connected app, and changes in the connected app push back to you in near real time.
 
-This recipe assumes you can already connect an app and execute an action (see the [Quickstart](/v3/native/quickstart)) and that you have built a [workflow](/v3/native/configure/integration/workflow) before. It reuses those building blocks and shows how to combine them into a sync. The example uses contacts; swap in any record type your connector supports.
+This example assumes you can already connect an app and execute an action (see the [Quickstart](/v3/native/quickstart)) and that you have built a [workflow](/v3/native/configure/integration/workflow) before. It reuses those building blocks and shows how to combine them into a sync. The example uses contacts; swap in any record type your connector supports.
 
 ## How two-way sync works
 
 A two-way sync is three workflows working together, not one. Each handles a different direction or moment:
 
-- **Initial sync** reads all existing records out of the connected app once, so both sides start from the same data. This is the [Data import recipe](/v3/native/recipes/data-import).
+- **Initial sync** reads all existing records out of the connected app once, so both sides start from the same data. This is the [Data import example](/v3/native/recipes/data-import).
 - **Outbound push** writes to the connected app whenever a record changes in your product. Your backend fires an [event](/v3/connectors/my-app/events); a workflow runs an action on the connected app.
 - **Inbound push** writes to your product whenever a record changes in the connected app. The app's webhook trigger starts a workflow; the workflow posts the change to your server through an [API Proxy](/v3/connectors/my-app/api-proxies).
 
@@ -21,7 +21,7 @@ Run the initial sync once per customer when they connect. Run the outbound and i
 
 ## Step 1: Seed both sides with an initial sync
 
-Before anything streams, both sides must agree on the starting data. Build the import workflow from the [Data import recipe](/v3/native/recipes/data-import) and run it once for the linked account. After it finishes, your database holds every existing record from the connected app.
+Before anything streams, both sides must agree on the starting data. Build the import workflow from the [Data import example](/v3/native/recipes/data-import) and run it once for the linked account. After it finishes, your database holds every existing record from the connected app.
 
 <Tip>
 Store the connected app's record ID alongside your own record in this step. You will need that mapping to avoid creating duplicates when changes flow back later.
@@ -102,8 +102,8 @@ Edit a contact in your app and watch it update in the connected app. Edit a cont
   <Card title="Sync data" icon="arrows-rotate" href="/v3/native/move-data/sync-data">
     The one-way and two-way sync patterns in depth.
   </Card>
-  <Card title="Data import recipe" icon="download" href="/v3/native/recipes/data-import">
-    Build the initial sync this recipe depends on.
+  <Card title="Data import example" icon="download" href="/v3/native/recipes/data-import">
+    Build the initial sync this example depends on.
   </Card>
   <Card title="Webhooks" icon="bell" href="/v3/connectors/my-app/webhooks">
     Receive and verify change events in your backend.

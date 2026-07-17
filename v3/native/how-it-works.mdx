@@ -1,9 +1,9 @@
 ---
-title: "How Native Works"
-description: "The architecture behind Native: how your app, Refold, and your customers' connected apps fit together, and what runs where."
+title: "How It Works"
+description: "The architecture behind Embedded Marketplace: how your app, Refold, and your customers' connected apps fit together, and what runs where."
 ---
 
-A Native integration connects three systems: your product, Refold, and the third-party apps your customers use. Your product owns the user experience and the data, Refold owns authentication and execution, and the third-party app owns the customer's data on the other side. Understanding which system does what is the fastest way to design an integration that is secure and easy to operate.
+An Embedded Marketplace integration connects three systems: your product, Refold, and the third-party apps your customers use. Your product owns the user experience and the data, Refold owns authentication and execution, and the third-party app owns the customer's data on the other side. Understanding which system does what is the fastest way to design an integration that is secure and easy to operate.
 
 This page is the mental model. The objects it references (linked accounts, connectors, workflows, config fields) are defined once on the platform and linked from here, so you can go deeper on any one of them without leaving the path.
 
@@ -58,7 +58,7 @@ Your API key carries full account access, so it stays on your backend. The front
 
 ## How the objects fit together
 
-The four objects below combine to turn one connector into a working, per-customer integration. Each is defined once on the platform; this is how they relate in a Native build.
+The four objects below combine to turn one connector into a working, per-customer integration. Each is defined once on the platform; this is how they relate in an Embedded Marketplace build.
 
 - **[Linked account](/v3/concepts/linked-account)** is the unit of tenancy. Every connection, credential, config value, and data call is scoped to a linked account, which keeps one customer's data isolated from another's.
 - **[Connector](/v3/connectors/supported-apps-actions)** is the third-party app and the set of actions Refold can run against it. You enable the connectors your customers can connect.
@@ -66,7 +66,7 @@ The four objects below combine to turn one connector into a working, per-custome
 - **[Workflow](/v3/workflows/overview)** is the automation that moves data. It reads config field values and connected-app data at run time, so the same workflow behaves correctly for every customer.
 
 <Note>
-Workflows are built and configured on the platform, not in Native. Native is where you embed the connect flow and [expose workflows](/v3/native/frontend/expose-workflow) to your customers. See [Workflows](/v3/native/configure/integration/workflow) for the Native-side view.
+Workflows are built and configured on the platform, not in Embedded Marketplace. Embedded Marketplace is where you embed the connect flow and [expose workflows](/v3/native/frontend/expose-workflow) to your customers. See [Workflows](/v3/native/configure/integration/workflow) for the Embedded Marketplace view.
 </Note>
 
 ## The end-to-end loop

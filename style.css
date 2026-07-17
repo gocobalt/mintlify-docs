@@ -57,6 +57,19 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Content column — the luma theme caps the article at 696px and positions it
+   with a computed left-margin (lg:ml-[calc(50vw-348px-14rem)]) that overrides
+   its own mx-auto, so on wide screens the text pins to the left with a large
+   empty gap before the "On this page" TOC. Widen the column and restore plain
+   centring within the main area. */
+@media (min-width: 1024px) {
+  #content-area {
+    max-width: 880px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 h1, h2, h3, h4, h5, h6,
 #content-area h1, #content-area h2, #content-area h3,
 #content-area h4, #content-area h5, #content-area h6 {
@@ -144,6 +157,15 @@ h1, h2, h3, h4, h5, h6,
    and dark modes (don't rely on Mintlify's default which can be too subtle). */
 #sidebar-content,
 [class*="sidebar"] { font-family: var(--rf-font-sans); }
+/* luma's sidebar is a fixed 224px (w-56) column, so long items wrap and crowd
+   the scroll gutter. Widen it and push the content's left offset to match so
+   the fixed nav doesn't overlap the article; exclude the full-bleed welcome
+   page. NOTE: don't pad #sidebar-content itself — that shrinks the inner
+   scroll area (#navigation-items) and makes the wrapping worse. */
+@media (min-width: 1024px) {
+  #sidebar-content { width: 17rem !important; }
+  body:not(:has(.welcome-container)) #body-content { padding-left: 17rem !important; }
+}
 /* Top-level group headers — the real element is .sidebar-group-header (a <div>
    wrapping an <h3.sidebar-title>); the old h5 / group-title selectors never
    matched this theme, so these lost their intended styling. Render them as
@@ -180,21 +202,6 @@ h1, h2, h3, h4, h5, h6,
   background: var(--rf-charcoal-2) !important;
   color: var(--rf-lime-mist) !important;
   border-left-color: var(--rf-lime-mist);
-}
-
-/* Sub-group hierarchy — nested group headers render as <button aria-expanded>
-   and page links as <a>, but both default to weight 400 in the same grey, so a
-   reader can't tell which sub-group they're inside. Give the toggle buttons a
-   heavier weight and a stronger (near-ink) colour so headers read as headers.
-   Top-level groups aren't collapsible, so this targets only sub-groups. */
-#sidebar-content button[aria-expanded],
-[class*="sidebar"] button[aria-expanded] {
-  font-weight: 600 !important;
-  color: #1b1e23 !important;
-}
-.dark #sidebar-content button[aria-expanded],
-.dark [class*="sidebar"] button[aria-expanded] {
-  color: #e7e9ec !important;
 }
 
 /* Top tabs — electric-blue underline on active.
@@ -243,11 +250,12 @@ button[aria-label*="copy" i],
   font-weight: 600;
 }
 
-/* Primary Mintlify buttons (topbar CTA, etc.) — square, charcoal/lime */
-button[class*="primary"],
-a[class*="primary"][class*="button"] {
-  border-radius: 0 !important;
-}
+/* NOTE: the topbar primary CTA (Dashboard) is styled by the robust
+   nav a[href="https://app.refold.ai"] rule below. A generic
+   button[class*="primary"] rule was removed — on the luma theme "primary"
+   appears in color utilities (bg-primary, text-primary) across many
+   elements (incl. sidebar links), so it over-matched and squared corners
+   of unrelated components. */
 
 /* Header "Dashboard" CTA — Mintlify renders navbar.primary as a transparent
    ghost button (light border + muted gray text), which disappears on the white
@@ -633,8 +641,8 @@ nav a[href="https://app.refold.ai"]:hover {
 .is-custom .mdx-content,
 [data-page="welcome"] #content-area,
 [data-page="welcome"] .mdx-content {
-  max-width: none;
-  padding: 0;
+  max-width: none !important;
+  padding: 0 !important;
 }
 
 /* ---------------------------------------------------------------------------
