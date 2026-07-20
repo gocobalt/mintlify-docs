@@ -46,7 +46,8 @@ Follow the steps below. The required and optional fields are called out at the s
 4. Enter the App **Name**, then in the **OAuth 2.0** section:
 - ✅ **Required — Authorization Code Grant:** check this box.
 - ⬜ **Leave Public Client unchecked.** This is what makes NetSuite issue the **Client Secret** that Refold's OAuth requires. (A public client is issued no secret, so the connection would fail.)
-5. ✅ **Required — Redirect URI:** open your [`Apps catalog`](https://app.refold.ai/applications) in **Refold** > search `Netsuite` > `Settings` > `Use your credentials` > copy the `Callback Url` (`https://app.refold.ai/api/v1/netsuite/callback`) and paste it into the `Redirect URI` field under **OAuth 2.0**.
+5. ✅ **Required — Redirect URI:** open your [`Apps catalog`](https://app.refold.ai/applications) in **Refold** > search `Netsuite` > `Settings` > select **OAuth 2.0** > copy the `Callback Url` (`https://app.refold.ai/api/v1/netsuite/callback`) and paste it into the `Redirect URI` field under **OAuth 2.0** in NetSuite.
+<img height="200" src="/images/Netsuite/netsuite_refold_callback.png" alt="Refold NetSuite app settings — OAuth 2.0 auth method and Callback URL"/>
 6. ✅ **Required — Scope:** check **REST Web Services** (`rest_webservices`) and **SuiteAnalytics Connect** (`suite_analytics`). *Optional:* **RESTlets** if you use RESTlet-based actions. Click `Save`.
 <img height="200" src="/images/Netsuite/netsuite_config.png" alt="Setting up Developer app"/>
 
@@ -65,7 +66,7 @@ Leaving **Public Client** unchecked is what makes NetSuite issue the **Client Se
 App settings page lets you configure the authentication settings for an `OAuth 2.0` based application. For your customers to provide you authorization to access their data,
 they would first need to install your application. This page lets you set up your application credentials.
 
-<img height="200" src="/images/Netsuite/netsuite_cobalt.png" alt="Setting up application client credentials"/>
+<img height="200" src="/images/Netsuite/netsuite_refold_credentials.png" alt="Refold NetSuite app settings — Client ID/Secret, Callback URL, Account ID, Single Webhook URL, and mandatory scopes"/>
 
 Provide the acquired Client ID and Client Secret under Settings of the app and save it.
 
@@ -74,10 +75,9 @@ Refold lets you configure what permissions to ask from your users while they ins
 section. 
 
 For some applications Refold sets **mandatory scopes** which cannot be removed. Additional scopes can be selected from the drop down. Refold also has the provision to add any 
-custom scopes supported by the respective platform.
-<img height="200" src="/images/Netsuite/netsuite_scopes.png" alt="OAuth Scopes"/>
+custom scopes supported by the respective platform. The **Permissions & Scopes** section is shown in the settings screenshot above.
 
-Once the scopes has been added to the application in Refold, go to your Netsuite account and update the scopes as added on Refold.
+Once the scopes have been added to the application in Refold, go to your Netsuite account and update the scopes as added on Refold.
 
 Select the OAuth App created for Refold > Click on `Edit` > Add the scopes as added in Refold > Click on `Save`. 
 
