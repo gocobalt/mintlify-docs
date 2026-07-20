@@ -24,17 +24,3 @@ There's no SDK method or API to refresh a token yourself, it's automatic. The ap
 Automatic refresh only fails when the refresh token itself is no longer valid, for example it expired, was revoked, or the customer uninstalled the app. Refold can't recover a connection on its own in those cases, so it sets `reauth_required` on the app and (if you subscribe) fires a **Connection Expired** webhook.
 
 That's the one case where the customer has to step in. Prompt them to reconnect. See [Re-authentication](/v3/authentication/managing-connections/re-authentication).
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Re-authentication" icon="rotate" href="/v3/authentication/managing-connections/re-authentication">
-    What to do when a token can't be refreshed.
-  </Card>
-  <Card title="Connection status" icon="signal" href="/v3/authentication/managing-connections/connection-status">
-    Read whether a customer's connection is healthy.
-  </Card>
-  <Card title="Frontend overview" icon="window" href="/v3/native/frontend/overview">
-    The connect flows that capture the tokens Refold refreshes.
-  </Card>
-</CardGroup>

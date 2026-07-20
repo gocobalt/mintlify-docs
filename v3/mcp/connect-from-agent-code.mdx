@@ -239,20 +239,3 @@ If the Server URL can't authenticate, the connection fails before any tool runs 
 | `403` | Token is invalid or expired, often after a rotation | Fetch the current URL from the dashboard and rebuild the agent |
 | `404` | The MCP server is disabled | Re-enable the server in the dashboard, or check the `<server_id>` in the URL |
 | `503` | Token validation is temporarily unavailable | Retry the request |
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Authentication" icon="lock" href="/v3/authentication/mcp">
-    Understand the token model, per-user URLs, and token revocation
-  </Card>
-  <Card title="Tools" icon="wrench" href="/v3/mcp/tools">
-    What each MCP tool returns once your agent is connected
-  </Card>
-  <Card title="Debugging" icon="bug" href="/v3/mcp/operate/debugging">
-    Inspect MCP calls with the MCP Inspector and logs
-  </Card>
-  <Card title="MCP Logs" icon="clipboard-list" href="/v3/mcp/operate/mcp-logs">
-    Trace every call your agent makes
-  </Card>
-</CardGroup>
