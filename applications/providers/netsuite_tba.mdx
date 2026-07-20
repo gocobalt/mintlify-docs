@@ -1,0 +1,91 @@
+---
+title: "Token-Based Authentication"
+sidebarTitle: "Token-Based Auth"
+description: "Connect NetSuite to Refold with Token-Based Authentication (Key-Based) — enable TBA, create an access token, and gather the five credentials."
+---
+
+Refold's **Key-Based** method uses NetSuite's **Token-Based Authentication (TBA)** and does not require an OAuth app. For how TBA compares with OAuth 2.0 — token lifetimes, re-authentication behavior, and 2FA-role limits — see the [NetSuite overview](/applications/providers/netsuite#authentication-at-a-glance).
+
+<Warning>
+**TBA is being deprecated for new integrations.** As of NetSuite **2027.1**, *new* integrations can no longer be created with TBA for SOAP/REST web services and RESTlets (existing integrations keep working). For a new connection, prefer [OAuth 2.0](/applications/providers/netsuite_oauth).
+</Warning>
+
+### Pre-requisites
+
+1. NetSuite account with `REST Web Services` enabled.
+<Tip>
+To enable REST Web Services, navigate to `Setup`> `Company` > `Enable Features` and tick the **REST Web Services** checkbox under `SuiteCloud` tab.
+</Tip>
+<img height="200" src="/images/Netsuite/netsuite_enable_rest.png" alt="Enabling REST Web Services in Netsuite"/>
+2. Token Based Auth Enabled in Linked Account's Netsuite.
+
+### Required Credentials of a Linked Account
+
+To successfully connect with the **NetSuite** integration, a Linked Account or an end-user will need to provide the following to connect:
+
+1. Account ID
+2. Consumer Key
+3. Consumer Secret
+4. Token ID
+5. Token Secret
+
+<img height="200" src="/images/Netsuite/netsuite_key_config.png" alt="Connect a Linked Account"/>
+
+### Enable Token Based Auth in NetSuite
+
+Before creating the credentials in NetSuite, you are required to enable Token Based Auth. Follow the steps given below:
+
+1. Navigate to `Setup` > `Company` > `Enable Features` in your Netsuite account.
+<img height="200" src="/images/Netsuite/netsuite_enable.png" alt="Enabling OAuth in Netsuite"/>
+2. Select the `SuiteCloud` tab present, scroll down and enable `Token-Based Authentication` checkbox under **Manage Authentication** section.
+
+### Getting Credentials of NetSuite
+
+To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+
+1. Log in to your Netsuite account with Admin permissions.
+2. To get your **Account ID**, navigate to `Setup` > `Company` > `Company Information` and copy the `Account ID` present there.
+<img height="200" src="/images/Netsuite/netsuite_navigation.png" alt="Navigating for Account ID"/>
+
+3. Click on `Setup` > `Integration` > `Manage Integrations` and choose `New`.
+<img height="200" src="/images/Netsuite/netsuite_create.png" alt="Navigating for App creation"/>
+4. Enter the App **Name**. On the **Authentication** tab, the only field that matters for Key-Based is under **Token-based Authentication**:
+- ✅ **Required — Token-Based Authentication:** check this box. Leave `TBA: Authorization Flow` unchecked (Refold uses a token you create manually, not the redirect flow), and leave the **OAuth 2.0** section untouched.
+<img height="200" src="/images/Netsuite/netsuite_create_token.png" alt="Creating Integration Credentials"/>
+5. Click on `Save` and copy the `Consumer Key` and `Consumer Secret` displayed under **Client Credentials** section.
+<img height="200" src="/images/Netsuite/netsuite_credentials2.png" alt="Getting Consumer Key and Secret"/>
+
+6. Navigate to **Setup**> **Users/Roles** > **Access Tokens** and click on `New`.
+<img height="200" src="/images/Netsuite/netsuite_navigate_token.png" alt="Navigation for Token Credentials"/>
+
+7. Click on `New My Access Token` > Select the Integration created above from the `Application Name` drop-down > Provide a `Token Name` and click on `Save`.
+<Note>
+Ensure you select the correct app in the Application Name drop-down. Create the token under a **dedicated integration user and role** scoped to least privilege — not a person's login (the token breaks if that user is deactivated) — and the role **can't require 2FA**. Access is governed entirely by this role; TBA has no scope checkboxes.
+</Note>
+8. Copy the `Token ID` and `Token Secret` displayed under **Token Id/Secret** section.
+<img height="200" src="/images/Netsuite/netsuite_credentials3.png" alt="Getting Token ID and Secret"/>
+
+The Linked Account or end-user now have all the credentials required to connect with NetSuite.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="'Invalid login' or 'Bad Request' — check the Account ID (realm) first">
+    NetSuite's account ID is **case-sensitive**, and the most common cause of `INVALID_LOGIN` / "Bad Request" is the wrong form:
+    - Enter the Account ID in Refold **exactly as it appears in Setup ▸ Company ▸ Company Information** — this is **uppercase** (e.g. `TD3089224`), and for a **sandbox** it includes the suffix (e.g. `TD3089224_SB1`).
+    - Internally the request host is lowercased (`td3089224…`), but the OAuth **`realm` must be the uppercase account ID** — a lowercased realm is rejected. Entering the value exactly as Company Information shows it covers both.
+
+    **Fastest way to find the cause:** open **Setup ▸ Users/Roles ▸ View Login Audit Trail** right after a failed attempt.
+    - If the attempt **doesn't appear at all**, the request never reached authentication — the Account ID / host is wrong.
+    - If it appears as a **failure**, the **Detail** column names the exact reason (invalid signature, token invalid, 2FA, and so on).
+    - If it shows **`Success`** but Refold still reports an error, authentication is fine — the problem is later in the connection, not your credentials.
+  </Accordion>
+  <Accordion title="Token created under Administrator (or a 2FA-required role) fails">
+    NetSuite **blocks TBA tokens for the Administrator role** (*"…except tokens for an Administrator role"*), and Administrator plus other highly privileged roles **require two-factor authentication (2FA)**, which the token flow can't satisfy. If Administrator was the only role in the token dropdown, that's the cause.
+
+    **Fix — use a dedicated custom role:**
+    1. **Setup ▸ Users/Roles ▸ Manage Roles ▸ New** — create a role (e.g. `Refold Integration`) with **Setup ▸ Log in using Access Tokens** (Full), **Setup ▸ REST Web Services** (Full), and the record permissions you need. Leave *Require Two-Factor Authentication* off.
+    2. Assign that role to your integration user (**Setup ▸ Users/Roles ▸ Manage Users** → the user's **Access** subtab).
+    3. Create the token at **Setup ▸ Users/Roles ▸ Access Tokens ▸ New**, selecting your integration as the **Application**, the user, and the new **Role**.
+  </Accordion>
+</AccordionGroup>
