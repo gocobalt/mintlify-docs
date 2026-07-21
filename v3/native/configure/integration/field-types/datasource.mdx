@@ -30,7 +30,7 @@ Building a datasource is two tasks: create the workflow that returns the options
 
 <Steps>
   <Step title="Add a workflow to the connector">
-    In the connector, add an [Application Workflow](/v3/native/configure/integration/workflow) and name it for what it returns, such as `Get Vendors`, so it's easy to find later. A datasource workflow needs no trigger, it's run on demand when the field loads.
+    In the connector, add an [Application Workflow](/v3/workflows/overview) and name it for what it returns, such as `Get Vendors`, so it's easy to find later. A datasource workflow needs no trigger, it's run on demand when the field loads.
   </Step>
   <Step title="Fetch the records">
     Add a node that retrieves the records you want to offer: a connector action, a [custom action](/v3/connectors/custom-actions), or an [HTTP Request](/v3/workflows/nodes/http) node against the connected app.
@@ -105,10 +105,3 @@ Building a datasource is two tasks: create the workflow that returns the options
     An unpublished workflow is hidden from **Use Data Source**. Publish it, then re-open the field editor.
   </Accordion>
 </AccordionGroup>
-
-## See also
-
-- [Dataslots](/v3/native/configure/integration/dataslots#use-a-datasource): the full Use Data Source flow and field palette.
-- [Mapping fields](/v3/native/configure/integration/field-types/mapping): back a mapping column with a datasource.
-- [Dependent fields](/v3/native/configure/integration/field-types/dependent): chain datasource-backed fields so each selection narrows the next.
-- [Config fields](/v3/native/configure/integration/config-fields): read and write field values from code.

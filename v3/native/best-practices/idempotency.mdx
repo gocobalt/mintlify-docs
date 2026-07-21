@@ -1,5 +1,5 @@
 ---
-title: "Idempotency"
+title: "Ensure Idempotency"
 description: "Make integration operations safe to retry so a repeated call never creates a duplicate record or a double effect."
 ---
 
@@ -82,12 +82,3 @@ An **upsert** updates a record if it exists and creates it if it doesn't, keyed 
     Only add aggressive [retry logic](/v3/native/best-practices/error-handling) once the operation underneath it is safe to repeat.
   </Step>
 </Steps>
-
-## See also
-
-- [Workflow idempotency](/v3/workflows/idempotency) : the built-in event deduplication setting
-- [Error handling](/v3/native/best-practices/error-handling) : when and how to retry safely
-- [Rate limiting](/v3/native/best-practices/rate-limiting) : the throttling that triggers retries
-- [Tables node](/v3/workflows/nodes/tables) : store processed IDs to deduplicate
-- [Rule node](/v3/workflows/nodes/rule) : branch on whether a record already exists
-- [Read & write data](/v3/native/move-data/read-write) : the operations these patterns apply to

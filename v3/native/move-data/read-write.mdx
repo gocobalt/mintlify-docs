@@ -1,6 +1,6 @@
 ---
 title: "Read and Write Data"
-description: "Read records from a customer's connected app and write changes back by executing actions from your backend."
+description: "Read records from a customer's connected app, write changes back, and import records in bulk by executing actions or workflows from your backend."
 ---
 
 An **action** is a single operation a [connector](/v3/connectors/supported-apps-actions) exposes against a connected app, such as fetching a contact or creating one. Execute an action to read records from a customer's app or to write changes back, using the credentials Refold already holds for that [linked account](/v3/concepts/linked-account).
@@ -126,23 +126,54 @@ A single action call is the right tool when one operation does the job. Reach fo
 | The call is synchronous and you want the result back | A [trigger](/v3/workflows/triggers/overview) (event, webhook, or schedule) should start the run |
 | No mapping or validation is needed | You map and validate data between systems (see [Data mapping](/v3/native/move-data/data-mapping)) |
 
+## Import records
+
+Importing is reading records out of a connected app and loading them into your product. There are two ways, chosen by volume:
+
+- **Direct execute** — for a one-off pull or a small set, call the [read action](#execute-a-read-action) above straight from your backend and write the results into your store. No workflow needed.
+- **Workflow import** — for bulk loads, paging, per-record fetches, or scheduled refreshes, build a [workflow](/v3/workflows/overview) that reads, reshapes, and delivers the records to your server in one run.
+
+<Note>
+Start with direct execute to prove the read works, then move to a workflow once you need paging, transformation, or a schedule.
+</Note>
+
+### Build a workflow import
+
+<Steps>
+  <Step title="Add the trigger">
+    Create a workflow with an **event trigger** (fire it from your backend when you want a refresh) or a **scheduled trigger** (refresh on a cadence). See [Workflows](/v3/workflows/overview).
+  </Step>
+  <Step title="Read the records">
+    Add the connected app's node and select its read or list action. If the app returns IDs only, loop over them and fetch each record, collecting the results.
+  </Step>
+  <Step title="Reshape into your schema">
+    Add a transform step to flatten and rename fields into the shape your backend expects. See [Map & Transform Data](/v3/native/move-data/data-mapping).
+  </Step>
+  <Step title="Deliver to your server">
+    Add an [API Proxy](/v3/connectors/my-app/api-proxies) node that POSTs the transformed records to your own endpoint.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: workflow canvas showing trigger -> read action -> transform -> API Proxy -> /images/embedded/move-data/data-import-workflow.png */}</Frame>
+
+Once the workflow is built and enabled for the linked account, fire its event to start a run:
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/event/hubspot \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "event": "Sync Contacts", "payload": {} }'
+```
+
+<Note>
+`Sync Contacts` is the event name you define on the workflow's trigger; the slug in the path (`hubspot`) is the connector. A scheduled trigger needs no event call.
+</Note>
+
+<Tip>
+For large imports: page through results until the cursor is exhausted, deliver records to your server in batches so one failure doesn't lose the whole run, and make your endpoint idempotent (upsert by the connected app's record ID) so a re-run doesn't create duplicates.
+</Tip>
+
 <Note>
 A workflow is built once on the Platform and runs across all three Refold products. This page does not re-document workflow building. See [Workflows overview](/v3/workflows/overview).
 </Note>
-
-## See also
-
-<CardGroup cols={2}>
-  <Card title="Sync data" icon="arrows-rotate" href="/v3/native/move-data/sync-data">
-    Keep records aligned between your app and connected systems, one-way or two-way.
-  </Card>
-  <Card title="Data mapping" icon="arrow-right-arrow-left" href="/v3/native/move-data/data-mapping">
-    Transform and validate data as it moves between systems.
-  </Card>
-  <Card title="Execute Action API" icon="bolt" href="/v3/api-reference/applications/execute-action">
-    Full request and response reference for executing an action.
-  </Card>
-  <Card title="Workflows overview" icon="diagram-project" href="/v3/workflows/overview">
-    Orchestrate multi-step logic across apps and actions.
-  </Card>
-</CardGroup>

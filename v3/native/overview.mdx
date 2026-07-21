@@ -1,12 +1,12 @@
 ---
 title: "Overview"
 sidebarTitle: "Overview"
-description: "Add third-party integrations to your product so your customers connect their own apps and your features act on their data."
+description: "Embed third-party integrations in your product — what Embedded Marketplace is, how it works, what runs where, and the per-customer loop."
 ---
 
-Embedded Marketplace is Refold's product for embedding third-party integrations inside your own SaaS product. Use it to let your customers connect the apps they already use (Salesforce, HubSpot, NetSuite, and [300+ more connectors](/v3/connectors/supported-apps-actions)) and to read, write, and sync their data from your features, without building or maintaining a separate integration for each app.
+Embedded Marketplace is Refold's product for embedding third-party integrations inside your own SaaS product. Use it to let your customers connect the apps they already use (Salesforce, HubSpot, NetSuite, and [300+ more connectors](/v3/connectors/supported-apps-actions)) and to read, write, and sync their data from your features — without building or maintaining a separate integration for each app.
 
-You ship the connect experience and the in-product settings. Refold handles authentication, token refresh, execution, and tenant isolation. No per-app OAuth code. No credential storage. No integration backend to operate.
+You ship the connect experience and the in-product settings. Refold handles authentication, token refresh, execution, and tenant isolation. No per-app OAuth code, no credential storage, no integration backend to operate.
 
 ## Who it's for
 
@@ -19,35 +19,86 @@ Embedded Marketplace is for product and engineering teams who want integrations 
 If you instead scope and deliver bespoke enterprise integrations one project at a time, use Integration Delivery. Embedded Marketplace is for self-serve, in-product integrations.
 </Info>
 
-## The embed model
+## The three systems
 
-An Embedded Marketplace integration has three moving parts that you wire together once and reuse for every customer:
+An Embedded Marketplace integration connects three systems, each owning a clear slice of the work. Understanding which system does what is the fastest way to design an integration that is secure and easy to operate.
 
-- **A [linked account](/v3/concepts/linked-account)** represents one of your customers. You create one per customer and scope every connection and data call to it.
-- **A [connector](/v3/connectors/supported-apps-actions)** is a supported third-party app. You enable the connectors your customers can connect to.
-- **A [workflow](/v3/workflows/overview)** is the automation that moves data between your app and a connected app. You build it once on the platform and expose it to customers.
+| System | Owns | Responsibility |
+| --- | --- | --- |
+| **Your product** | Your customers, your UI, your data | Embeds the connect flow, creates linked accounts, triggers data operations |
+| **Refold** | Auth, credentials, execution | Runs the connection flow, stores and refreshes tokens, signs and executes every request, isolates tenants |
+| **Third-party app** | The customer's account and data | Authorizes access and serves the read and write requests Refold makes on the customer's behalf |
 
-Customers connect an app through a [frontend flow](/v3/native/frontend/overview) you embed, fill in [config fields](/v3/native/configure/integration/config-fields) so the integration fits their account, and your product then reads and writes their data through Refold. For the full picture of what runs where, see [How it works](/v3/native/how-it-works).
+The key consequence: your product never handles a customer's third-party credentials. The customer authorizes the app, Refold stores the credential against that customer's [linked account](/v3/concepts/linked-account), and from then on your product references the linked account instead of any token.
 
-## The builder journey
+## Architecture at a glance
 
-Building an Embedded Marketplace integration follows the same path every time:
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#E2E8F0','primaryTextColor':'#1E293B','primaryBorderColor':'#64748B','lineColor':'#64748B','secondaryColor':'#E2E8F0','tertiaryColor':'#F1F5F9','tertiaryTextColor':'#1E293B'}}}%%
+flowchart LR
+  subgraph YOURS["Your product"]
+    FE["Frontend<br/>(connect flow + settings UI)"]
+    BE["Backend<br/>(API key, linked accounts)"]
+  end
+
+  subgraph REFOLD["Refold"]
+    AUTH["Auth + credential store"]
+    EXEC["Workflow + action execution"]
+  end
+
+  APP["Customer's third-party app<br/>(Salesforce, HubSpot, ...)"]
+
+  FE -->|"session token"| AUTH
+  BE -->|"API key (server-side)"| AUTH
+  BE -->|"trigger workflow / action"| EXEC
+  AUTH -->|"stored credential"| EXEC
+  EXEC -->|"signed request"| APP
+  APP -->|"data + events"| EXEC
+  EXEC -->|"webhooks"| BE
+```
+
+## What runs where
+
+Splitting the work across the three systems keeps your API key server-side and your customers' credentials with Refold.
+
+- **Your backend** holds your API key, creates one [linked account](/v3/concepts/linked-account) per customer, mints short-lived [session tokens](/v3/native/frontend/overview#before-you-start) for the frontend, triggers workflows and actions, and receives [webhooks](/v3/connectors/my-app/webhooks).
+- **Your frontend** runs the [connect flow](/v3/native/frontend/overview) and renders [config fields](/v3/native/configure/integration/config-fields), authenticated by a session token, not your API key.
+- **Refold** runs the connection and [auth flows](/v3/authentication/overview), stores and refreshes credentials, and executes every [workflow](/v3/workflows/overview) and action using the stored credential for the right linked account.
+- **The third-party app** authorizes the connection and serves the requests Refold makes on the customer's behalf.
+
+<Warning>
+Your API key carries full account access, so it stays on your backend. The frontend authenticates with a session token instead. Never expose your API key in the browser.
+</Warning>
+
+## The building blocks
+
+Four objects combine to turn one connector into a working, per-customer integration. Each is defined once on the platform; this is how they relate in an Embedded Marketplace build.
+
+- **[Linked account](/v3/concepts/linked-account)** is the unit of tenancy. Every connection, credential, config value, and data call is scoped to a linked account, which keeps one customer's data isolated from another's.
+- **[Connector](/v3/connectors/supported-apps-actions)** is the third-party app and the set of actions Refold can run against it. You enable the connectors your customers can connect.
+- **[Config fields](/v3/native/configure/integration/config-fields)** are the per-customer settings (which pipeline, which channel, which mapping) that let a single connector adapt to each customer's account. Customers fill them in when they connect or enable a workflow, and the values save against their linked account.
+- **[Workflow](/v3/workflows/overview)** is the automation that moves data. It reads config field values and connected-app data at run time, so the same workflow behaves correctly for every customer.
+
+<Note>
+Workflows are built and configured on the platform, not in Embedded Marketplace. Embedded Marketplace is where you embed the connect flow and [expose workflows](/v3/native/frontend/expose-workflow) to your customers.
+</Note>
+
+## The end-to-end loop
+
+Every customer follows the same loop:
 
 <Steps>
-  <Step title="Run the Quickstart">
-    Connect a real account and write data to it end to end in about 15 minutes. See the [Quickstart](/v3/native/quickstart).
+  <Step title="You create a linked account">
+    When a customer signs up or first opens your integrations area, your backend creates a [linked account](/v3/concepts/linked-account) with a stable ID.
   </Step>
-  <Step title="Embed the connect experience">
-    Let customers authorize their apps from inside your product. Choose a [frontend flow](/v3/native/frontend/overview): the hosted portal, the React SDK, or a build-your-own UI.
+  <Step title="The customer connects an app">
+    Your embedded [frontend flow](/v3/native/frontend/overview) sends the customer through the app's auth flow. Refold stores the credential against their linked account.
   </Step>
-  <Step title="Collect per-customer settings">
-    Add [config fields](/v3/native/configure/integration/config-fields) so one connector adapts to each customer's account without bespoke code.
+  <Step title="The customer configures the integration">
+    They fill in [config fields](/v3/native/configure/integration/config-fields) and enable the [workflows](/v3/native/frontend/expose-workflow) you offer. The values save against their linked account.
   </Step>
-  <Step title="Move data">
-    Read, write, and [sync data](/v3/native/move-data/read-write) between your product and your customers' connected apps.
-  </Step>
-  <Step title="Ship and operate">
-    Walk the [go-live checklist](/v3/native/ship-and-operate/go-live) and [monitor](/v3/native/ship-and-operate/monitoring) connection health in production.
+  <Step title="Your product moves data">
+    Your backend triggers actions and workflows. Refold executes them with the customer's stored credential and returns results, then keeps you informed through [webhooks](/v3/connectors/my-app/webhooks).
   </Step>
 </Steps>
 
@@ -57,19 +108,16 @@ Building an Embedded Marketplace integration follows the same path every time:
   <Card title="Quickstart" icon="rocket" href="/v3/native/quickstart">
     Take your first integration live end to end.
   </Card>
-  <Card title="How it works" icon="diagram-project" href="/v3/native/how-it-works">
-    The architecture and mental model behind the embed.
-  </Card>
-  <Card title="Frontend" icon="window" href="/v3/native/frontend/overview">
+  <Card title="Choose a Connect Flow" icon="window" href="/v3/native/frontend/overview">
     Embed the connect experience in your product.
   </Card>
-  <Card title="Configure" icon="sliders" href="/v3/native/configure/integration/config-fields">
-    Collect per-customer settings with config fields.
+  <Card title="Define Config Fields" icon="sliders" href="/v3/native/configure/integration/config-fields">
+    Collect per-customer settings.
   </Card>
-  <Card title="Move data" icon="arrows-rotate" href="/v3/native/move-data/read-write">
+  <Card title="Move Data" icon="arrows-rotate" href="/v3/native/move-data/read-write">
     Read, write, and sync data through Refold.
   </Card>
-  <Card title="Examples" icon="book-open" href="/v3/native/recipes/netsuite">
-    Follow end-to-end builds for real connectors.
+  <Card title="Build an Integration" icon="book-open" href="/v3/native/recipes/build-an-integration">
+    Follow the end-to-end build that works for any connector.
   </Card>
 </CardGroup>

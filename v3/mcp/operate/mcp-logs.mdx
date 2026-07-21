@@ -1,12 +1,12 @@
 ---
-title: "MCP Logs"
+title: "View MCP Logs"
 description: "Inspect every tool call your MCP server makes, with full request, response, and identity detail."
 ---
 
 MCP Logs is the audit trail for your MCP servers. Every tool call is recorded automatically, with no configuration required. Use logs to debug failing actions, trace a full agent session, monitor integration adoption, and satisfy compliance reviews.
 
 <Note>
-For authentication and access control details, see [Authentication](/v3/authentication/mcp). For the MCP server architecture and request lifecycle, see [How it works](/v3/mcp/how-it-works).
+For authentication and access control details, see [Authentication](/v3/authentication/mcp). For the MCP server architecture and request lifecycle, see [How it works](/v3/mcp/overview).
 </Note>
 
 ## How MCP Logs works
@@ -139,7 +139,7 @@ MCP Logs provides the raw material for compliance and governance reviews:
 - **Duration.** Milliseconds, for performance auditing.
 - **From where.** MCP client name, version, and transport metadata.
 
-For the broader security and data governance model, see [Security & compliance](/v3/mcp/operate/security-compliance).
+For the broader security and data governance model, see [MCP Security & Compliance](/v3/security/mcp).
 
 ## Exporting logs
 
@@ -148,10 +148,3 @@ Logs are viewable and filterable in the dashboard. For bulk export or programmat
 ## Rate limits
 
 The MCP server does not impose per-tool rate limits. Plan-level limits apply to overall request volume. Rate limits enforced by a third-party application (for example, Salesforce API governor limits) propagate back to the agent as `execution_error` entries, which you can find by filtering on status.
-
-## See also
-
-- [Debugging](/v3/mcp/operate/debugging): use MCP Inspector alongside logs to reproduce and diagnose issues
-- [Security & compliance](/v3/mcp/operate/security-compliance): tenant isolation, transport security, and data governance
-- [Authentication](/v3/authentication/mcp): how agents authenticate and how tokens are scoped
-- [Tools](/v3/mcp/tools): what each logged tool name corresponds to

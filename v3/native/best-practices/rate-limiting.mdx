@@ -1,5 +1,5 @@
 ---
-title: "Rate Limiting"
+title: "Handle Rate Limits"
 description: "Keep integrations within third-party and Refold rate limits using backoff, batching, and scheduling so calls succeed instead of getting throttled."
 ---
 
@@ -82,11 +82,3 @@ Retrying a throttled write without [idempotency](/v3/native/best-practices/idemp
     Pair retry logic with [idempotency](/v3/native/best-practices/idempotency) so a retried call never duplicates an effect.
   </Step>
 </Steps>
-
-## See also
-
-- [Error handling](/v3/native/best-practices/error-handling) : retries, try/catch, and surfacing failures to customers
-- [Idempotency](/v3/native/best-practices/idempotency) : make operations safe to retry
-- [Try & Catch node](/v3/workflows/nodes/try-catch-node) : retry policy and error recovery in workflows
-- [Delay node](/v3/workflows/nodes/delay) : pace work inside a workflow
-- [Read & write data](/v3/native/move-data/read-write) : the operations these limits apply to

@@ -3,7 +3,7 @@ title: "Tools Reference"
 description: "Every MCP tool exposed by a Refold server: parameters, return shapes, and availability conditions."
 ---
 
-The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/build/server-configuration). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose your pattern](/v3/mcp/choose-your-pattern).
+The tools an agent sees depend on which toggles are enabled on your [server configuration](/v3/mcp/build/server-configuration). For guidance on choosing between direct mode, agent mode, and skill tools, see [Choose an access pattern](/v3/mcp/build/server-configuration#choose-an-access-pattern).
 
 ## Tool availability
 
@@ -209,11 +209,3 @@ flowchart LR
 <Note>
 The tool descriptions instruct agents to follow this ordering and to call `EXECUTE_ACTION` only after `RESOLVE_ACTIONS` returns a plan. The ordering is guided by these descriptions, not enforced by a runtime check.
 </Note>
-
-## See also
-
-- [Architecture](/v3/mcp/how-it-works): how tools map to actions, workflows, and skills
-- [Choose your pattern](/v3/mcp/choose-your-pattern): when to use direct mode, agent mode, or skill tools
-- [Skills](/v3/mcp/build/skills): how agents discover and run multi-step procedures
-- [Authentication](/v3/authentication/mcp): the token model and access toggles
-- [MCP Logs](/v3/mcp/operate/mcp-logs): per-call audit trail with input and output

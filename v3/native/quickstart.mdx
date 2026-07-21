@@ -97,7 +97,7 @@ curl -X POST https://app.refold.ai/api/v2/public/connect-url \
 <Frame>{/* SCREENSHOT: Connect portal showing HubSpot with a Connect button, and the Connected state after auth -> /images/embedded/quickstart/connect-portal.png */}</Frame>
 
 <Note>
-To embed the flow inside your product instead of redirecting, mint a [session token](/v3/api-reference/session-tokens/generate-session-token) for the linked account on your backend and pass it to the [React SDK](/v3/native/frontend/react-sdk-flow). The token authenticates the frontend so your API key stays server-side.
+To embed the flow inside your product instead of redirecting, mint a [session token](/v3/api-reference/session-tokens/generate-session-token) for the linked account on your backend and pass it to the [React SDK](/v3/authentication/connection-flows/react-sdk-flow). The token authenticates the frontend so your API key stays server-side.
 </Note>
 
 ## Step 5: Write data to the connected app
@@ -147,7 +147,7 @@ Write actions (create, update, delete) make real changes in the connected app. T
 </Warning>
 
 <Tip>
-For multi-step logic (read, transform, then write, or fan out to several apps), run a [workflow](/v3/native/configure/integration/workflow) instead of a single action.
+For multi-step logic (read, transform, then write, or fan out to several apps), run a [workflow](/v3/workflows/overview) instead of a single action.
 </Tip>
 
 ## Step 6: Go live
@@ -159,7 +159,7 @@ You have run the full loop in test. To take it to production:
     Generate a production API key in **Settings > Credentials** and use real OAuth credentials for the app, not the shared test ones.
   </Step>
   <Step title="Embed the connect flow in your product">
-    Replace the hosted portal with the [React SDK](/v3/native/frontend/react-sdk-flow) or a [build-your-own](/v3/authentication/connection-flows/build-your-own) flow so customers connect without leaving your app.
+    Replace the hosted portal with the [React SDK](/v3/authentication/connection-flows/react-sdk-flow) or a [build-your-own](/v3/authentication/connection-flows/build-your-own) flow so customers connect without leaving your app.
   </Step>
   <Step title="Handle connection health">
     Subscribe to [webhooks](/v3/connectors/my-app/webhooks) and surface [connection status](/v3/authentication/managing-connections/connection-status) so customers can reconnect when a token expires.

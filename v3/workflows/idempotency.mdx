@@ -39,9 +39,3 @@ You configure idempotency on the workflow's event trigger. Refold extracts a val
 <Note>
 Pick a key that is stable across retries but unique per logical event, such as an upstream record ID or event ID. A value that changes on every send (like a timestamp) defeats deduplication.
 </Note>
-
-## See also
-
-- [Triggers](/v3/workflows/triggers/events): fire workflows from events
-- [Trigger event API](/v3/api-reference/events/trigger-event): send an event for a linked account
-- [Idempotency for Native](/v3/native/best-practices/idempotency): keeping writes safe to retry end to end

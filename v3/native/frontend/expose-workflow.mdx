@@ -1,5 +1,5 @@
 ---
-title: "Expose Workflows"
+title: "Expose Workflows to Linked Accounts"
 description: "Let your customers enable, configure, and trigger Refold workflows from inside your embedded UI."
 ---
 
@@ -55,7 +55,7 @@ function Integrations({ sessionToken }) {
 }
 ```
 
-See the [React SDK flow](/v3/native/frontend/react-sdk-flow) for setup, and the [React SDK reference](/v3/api-reference/sdks) for every prop.
+See the [React SDK flow](/v3/authentication/connection-flows/react-sdk-flow) for setup, and the [React SDK reference](/v3/api-reference/sdks) for every prop.
 
 ### With your own UI
 
@@ -116,11 +116,3 @@ The trigger type is part of the workflow definition on the platform, not a Nativ
 - **Collect a workflow's fields when they enable it**, not before. Workflow-level [config fields](/v3/native/configure/integration/config-fields#two-levels-of-config) belong to the workflow.
 - **Name workflows for the customer.** The `name` in the config is what they see.
 </Tip>
-
-## See also
-
-- [Workflows overview](/v3/workflows/overview): build the automation on the platform
-- [Workflows (Native)](/v3/native/configure/integration/workflow): the Native-side summary
-- [Config fields](/v3/native/configure/integration/config-fields): collect the inputs a workflow needs
-- [React SDK](/v3/api-reference/sdks): the `<Config>` component reference
-- [Events](/v3/connectors/my-app/events): fire an event to trigger a workflow

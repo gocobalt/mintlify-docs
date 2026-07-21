@@ -1,5 +1,5 @@
 ---
-title: "Error Handling"
+title: "Handle Errors"
 description: "Handle failures in actions and workflows so a single bad call recovers gracefully instead of breaking your customer's integration."
 ---
 
@@ -41,7 +41,7 @@ When the failing call runs inside a [workflow](/v3/workflows/overview), handle t
     On the Try & Catch node, configure the **Retry Policy** with an **Exponential** strategy, a delay, and a max-attempts cap so transient failures retry automatically before the catch branch runs.
   </Step>
   <Step title="Recover in the catch branch">
-    In the catch branch, provide a fallback: substitute a default value, queue the item in a [Tables node](/v3/workflows/nodes/tables) for later processing, or notify your team. Keep the catch branch simple so it does not fail too.
+    In the catch branch, provide a fallback: substitute a default value, route the failed record to a [Dead Letter Queue node](/v3/workflows/nodes/dead-letter-queue) for later reprocessing, or notify your team. Keep the catch branch simple so it does not fail too.
   </Step>
   <Step title="Read the error details">
     Use the error fields the node exposes (`error_message`, `failed_node_id`) to log or branch on what went wrong. Record errors even when you handle them, so you can debug later.
@@ -90,12 +90,3 @@ A failed integration is only actionable if the right person sees it. Match the a
     Auth failures to the customer, workflow failures to your team.
   </Step>
 </Steps>
-
-## See also
-
-- [Rate limiting](/v3/native/best-practices/rate-limiting) : backoff and retry for throttled calls
-- [Idempotency](/v3/native/best-practices/idempotency) : make retries safe from duplicates
-- [Try & Catch node](/v3/workflows/nodes/try-catch-node) : error handling and retry policy in workflows
-- [Re-authentication](/v3/authentication/managing-connections/re-authentication) : prompt a reconnect after an auth failure
-- [Connection status](/v3/authentication/managing-connections/connection-status) : read whether a connection is healthy
-- [Webhooks](/v3/connectors/my-app/webhooks) : get notified of connection and workflow failures

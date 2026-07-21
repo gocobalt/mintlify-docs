@@ -29,9 +29,3 @@ Retries, replays, and duplicate triggers can run the same workflow more than onc
 Third-party apps enforce their own API rate limits, and exceeding them returns errors that can fail a workflow. Design workflows that call high-volume APIs to stay within those limits and to handle rate-limit responses gracefully.
 
 {/* TODO: No source content exists for Refold's own rate-limiting behavior. The legacy rate-limiting and reliability pages on `main` are both "Coming Soon" stubs. Confirm with the team: does Refold apply platform-level rate limits or throttling on workflow execution / API calls? Are there configurable retry/backoff controls for rate-limited third-party calls? Document the specifics here once known. */}
-
-## See also
-
-- [Logs](/v3/monitor/logs): find and replay failed runs.
-- [Workflow testing](/v3/workflows/testing): catch failures before they reach production.
-- [Idempotency](/v3/workflows/idempotency): prevent duplicate side effects.

@@ -1,5 +1,5 @@
 ---
-title: "Testing"
+title: "Test Your Integration"
 description: "Verify a native integration end to end before shipping: actions, workflows, and the full connect-to-write loop against a test account."
 ---
 
@@ -102,7 +102,7 @@ The last level tests what a customer experiences: connecting an app and having y
 
 <Steps>
   <Step title="Run the connect flow as a customer">
-    Open your embedded connect experience (the [React SDK flow](/v3/native/frontend/react-sdk-flow), [hosted flow](/v3/authentication/connection-flows/hosted-flow), or your [own UI](/v3/authentication/connection-flows/build-your-own)) and connect the sandbox app from start to finish.
+    Open your embedded connect experience (the [React SDK flow](/v3/authentication/connection-flows/react-sdk-flow), [hosted flow](/v3/authentication/connection-flows/hosted-flow), or your [own UI](/v3/authentication/connection-flows/build-your-own)) and connect the sandbox app from start to finish.
   </Step>
   <Step title="Confirm the connected state renders">
     Check that your UI reads [connection status](/v3/authentication/managing-connections/connection-status) and shows the **Connected** state after auth succeeds.
@@ -136,10 +136,3 @@ The last level tests what a customer experiences: connecting an app and having y
     Cancelled connects, denied consent, expired tokens, and failed writes are what break in production. Force each one in test.
   </Step>
 </Steps>
-
-## See also
-
-- [Workflow testing](/v3/workflows/testing): the canonical guide to running and debugging a workflow node by node.
-- [Connection status](/v3/authentication/managing-connections/connection-status): read whether a test account is connected and healthy.
-- [Webhooks](/v3/connectors/my-app/webhooks): the events your backend subscribes to during an end-to-end test.
-- [Go-live checklist](/v3/native/ship-and-operate/go-live): what to verify once testing passes.

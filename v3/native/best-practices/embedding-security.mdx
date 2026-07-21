@@ -1,5 +1,5 @@
 ---
-title: "Embedding Security"
+title: "Secure the Embed"
 description: "Keep your API key server-side, authenticate the frontend with session tokens, and scope every call to one linked account so the embedded connect experience stays secure."
 ---
 
@@ -40,7 +40,7 @@ The embedded connect experience runs in the customer's browser, where your API k
     Call the [Generate session token](/v3/api-reference/session-tokens/generate-session-token) API from your server, authenticated with your API key, for a specific `linked_account_id`. The token comes back scoped to that customer.
   </Step>
   <Step title="Pass it to the frontend">
-    Hand the token to the browser and use it to render the connect experience, whether that's the [React SDK flow](/v3/native/frontend/react-sdk-flow), a [hosted flow](/v3/authentication/connection-flows/hosted-flow), or a [build-your-own](/v3/authentication/connection-flows/build-your-own) UI.
+    Hand the token to the browser and use it to render the connect experience, whether that's the [React SDK flow](/v3/authentication/connection-flows/react-sdk-flow), a [hosted flow](/v3/authentication/connection-flows/hosted-flow), or a [build-your-own](/v3/authentication/connection-flows/build-your-own) UI.
   </Step>
   <Step title="Refresh on expiry">
     Session tokens are short-lived. Generate a fresh token for each new customer session instead of reusing or caching one.
@@ -86,11 +86,3 @@ The connect flow itself runs in the browser, so apply standard frontend hygiene 
     Treat session tokens and connect URLs as secrets in the browser too.
   </Step>
 </Steps>
-
-## See also
-
-- [Session tokens](/v3/api-reference/session-tokens/generate-session-token) : short-lived frontend credentials
-- [Generate session token](/v3/api-reference/session-tokens/generate-session-token) : the API your backend calls
-- [Auth overview](/v3/authentication/overview) : how Refold authenticates apps and customers
-- [Linked accounts](/v3/concepts/linked-account) : the per-customer scope every call carries
-- [Application security](https://www.refold.ai/security) : Refold's platform-level controls

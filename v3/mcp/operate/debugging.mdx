@@ -1,5 +1,5 @@
 ---
-title: "Debugging"
+title: "Debug Tool Failures"
 description: "Isolate MCP tool failures with MCP Inspector and MCP Logs."
 ---
 
@@ -73,7 +73,7 @@ If the Inspector's **Tools** panel is empty or lists tools you didn't expect, th
 - **Mode.** A server runs in one mode at a time. In direct mode the Inspector lists one tool per configured action or workflow (named like `salesforce_list_contacts_action`). In agent mode it lists two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. If you see the meta-tools but expected per-action tools, or the reverse, the server is in the other mode. Toggle **Agent Mode** to switch.
 - **Enabled actions and skills.** Only the apps and actions you added to the server appear as tools, so add any missing action on the server's **Applications** tab. The skill tools `LOAD_SKILL` and `GET_KNOWLEDGE_INDEX` (which lists the server's skills) appear only when **Retrieve Skill** is on, in either mode.
 
-See [Server configuration](/v3/mcp/build/server-configuration) for where these toggles live and [How it works](/v3/mcp/how-it-works) for how each mode changes the tool list.
+See [Server configuration](/v3/mcp/build/server-configuration) for where these toggles live and [How it works](/v3/mcp/overview) for how each mode changes the tool list.
 
 ### Command-line usage
 
@@ -137,10 +137,3 @@ Downstream errors from third-party apps are never surfaced verbatim. The agent a
 ### Trace a full agent conversation
 
 Filter **MCP Logs** by **Session ID** to see every tool call from a single agent session in chronological order. This is the fastest way to understand what an agent actually did when it called several tools in sequence, for example `GET_KNOWLEDGE_INDEX` → `LOAD_SKILL` → `RESOLVE_ACTIONS` → `EXECUTE_ACTION` × 3.
-
-## See also
-
-- [MCP Logs](/v3/mcp/operate/mcp-logs): full field reference, filters, and compliance details
-- [Tools](/v3/mcp/tools): request and response shapes for every tool
-- [Connect from agent code](/v3/mcp/connect-from-agent-code): wiring the Server URL into your agent
-- [Authentication](/v3/authentication/mcp): token model and per-user Server URLs

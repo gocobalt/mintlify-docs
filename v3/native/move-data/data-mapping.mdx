@@ -1,5 +1,5 @@
 ---
-title: "Data Mapping"
+title: "Map & Transform Data"
 description: "Reshape and validate records so they fit the destination as data moves between your app and your customers' connected apps."
 ---
 
@@ -19,7 +19,7 @@ A record almost never crosses systems unchanged. Mapping closes three gaps.
 
 When two systems hold the same data under different field names, let your customer line the fields up instead of hard-coding the match. Each customer's app is configured differently, so the mapping belongs to them.
 
-Collect the mapping with a **Field Mapping** [Dataslot](/v3/native/configure/integration/dataslots#field-mapping) in the connector's Connect Portal. The customer matches each of their fields to the field your integration expects, for example their HubSpot contact properties to your contact schema. The saved mapping is stored on the linked account as an object keyed by left-hand value to right-hand value.
+Collect the mapping with a **Field Mapping** [field](/v3/native/configure/integration/field-types/mapping) in the connector's Connect Portal. The customer matches each of their fields to the field your integration expects, for example their HubSpot contact properties to your contact schema. The saved mapping is stored on the linked account as an object keyed by left-hand value to right-hand value.
 
 Inside a workflow, the [data-mapper node](/v3/workflows/nodes/data-mapper) applies that saved mapping to records as they pass through, so each customer's records are reshaped according to their own configuration.
 
@@ -38,8 +38,6 @@ The Platform provides nodes for this inside a workflow:
 - **[Transform](/v3/workflows/nodes/transform)** reshapes a payload declaratively, for example mapping an array of source records into the destination's field names.
 - **[Custom Code](/v3/workflows/nodes/custom-code)** handles logic a declarative transform cannot express, such as conditional formatting or lookups.
 
-This page does not re-document those nodes. See [Workflows overview](/v3/workflows/overview) for how to build and connect them.
-
 ## Validate before you write
 
 Check records on the way to the destination so a bad record never reaches the connected app. Validation is the difference between rejecting one malformed record and writing corrupt data into a customer's system.
@@ -51,20 +49,3 @@ Check records on the way to the destination so a bad record never reaches the co
 <Warning>
 Validate before a [write action](/v3/native/move-data/read-write#execute-a-write-action) runs. Write actions make real changes in the customer's app, so an invalid record that slips through is written, not caught.
 </Warning>
-
-## See also
-
-<CardGroup cols={2}>
-  <Card title="Data Mapper node" icon="arrow-right-arrow-left" href="/v3/workflows/nodes/data-mapper">
-    Apply a saved Field Mapping mapping to records inside a workflow.
-  </Card>
-  <Card title="Dataslots" icon="list-check" href="/v3/native/configure/integration/dataslots">
-    Collect a per-customer field mapping with a Field Mapping Dataslot.
-  </Card>
-  <Card title="Read and write data" icon="bolt" href="/v3/native/move-data/read-write">
-    Execute the read and write actions that mapping sits between.
-  </Card>
-  <Card title="Two-way sync example" icon="arrows-rotate" href="/v3/native/recipes/two-way-sync">
-    See mapping in a full sync build.
-  </Card>
-</CardGroup>

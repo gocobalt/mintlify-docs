@@ -1,3 +1,144 @@
 ---
 title: "Benchmarking"
+description: "Measured performance, capacity, and monthly infrastructure cost for a self-hosted (BYOC) Refold deployment — workflow throughput, cluster sizing, and an itemized AWS cost estimate."
 ---
+
+Refold runs entirely inside your own cloud account (BYOC) on a managed Kubernetes cluster. Workflow execution is powered by the **Workflow Executor** — a DAG orchestrator on top of [Temporal](#glossary) that runs each workflow as a directed-acyclic graph of node activities, with built-in batching, retries, and a recovery queue. This page gives the measured runtime metrics, the cluster capacity required, and an itemized monthly cost estimate, so you can size and budget a deployment.
+
+<Note>
+Figures are **measured on a representative deployment** and are indicative, not contractual. Verify current cloud rates for your region and validate against your own workload before committing capacity. For the high-level deployment shape and what you provision, see [Architecture overview](/v3/deployment/architecture/overview).
+</Note>
+
+## What was measured
+
+Metrics were captured on a representative **4-node cluster** (`m5.xlarge`) driving real workflow executions — loops, custom code, transforms, and connector calls — not synthetic ping tests. They characterize the runtime your workloads actually run on. All components run in your account; no data leaves your cloud boundary.
+
+## Workflow Executor runtime metrics
+
+The Workflow Executor engine under load on the representative cluster:
+
+| Metric | Value | Notes |
+| --- | --- | --- |
+| **Per-workflow wall-clock** | ~12 s | Full DAG start → finish (loop + code + connector) |
+| **DAGs completed (one load run)** | 884 | Thousands of node activities executed |
+| **Node throughput observed** | code ×1998 · rule ×1061 · response ×1267 · HubSpot ×358 · datamapper / http / csv | Single run |
+| **Executor pod utilization at load** | 1.44 of 2.0 vCPU | Headroom remaining; memory ~0.5 GiB of 4 GiB |
+| **Default batch concurrency** | 50 (max 100) | Configurable per workflow |
+| **Retries** | 3–5 attempts, exponential backoff + jitter | At the node-activity level |
+| **Delivery** | At-least-once; failed records → [DLQ](/v3/workflows/nodes/dead-letter-queue) | Mongo `dlqs` / `dlqmessages`, deduplicated |
+| **Workflow timeout** | 2 h base → 3 h with pagination | Configurable |
+
+**Scaling model.** Execution scales with the Workflow Executor + Temporal tier (Temporal runs 512 history shards; the executor processes DAGs concurrently at batch concurrency 50). At load the executor ran with substantial CPU/memory headroom and drained work cleanly, so it is **not** the bottleneck. The workflow ingest/accept path (`workflow-backend`) is a separate front door, sized independently.
+
+## Workflow throughput
+
+Sustained throughput measured end-to-end (real executions, 100% success up to the ceiling):
+
+| Tier | Nodes | Workflow executions / sec | Per-workflow latency |
+| --- | --- | --- | --- |
+| **Baseline** | 3 × m5.xlarge | ~8 / sec | ~12 s |
+| **Recommended** | 4 × m5.xlarge | ~8 / sec sustained (engine headroom to ~12) | ~12 s |
+
+<Warning>
+Both tiers sustain **~8 executions/sec end-to-end today**, because throughput is bound by the single-replica `workflow-backend` accept path (HPA max = 1), **not** by node count. The recommended 4-node tier adds engine, autoscale, and resilience headroom for the AI, connector, and async-worker tiers — it does not raise raw workflow/sec on its own. At ~12 s per workflow, ~8/sec is roughly **100 concurrent in-flight executions**. Beyond the ceiling, accept latency rises and excess requests are shed (back-pressure).
+</Warning>
+
+**To raise throughput beyond ~8/sec:**
+
+- **Scale the accept tier.** Increase `workflow-backend` replicas (HPA max) and CPU limit. Throughput rises roughly linearly per replica until the data tier (Mongo/Temporal) becomes the limit — projected ~2–3× before re-tuning; measurable on request.
+- **The executor already has headroom.** It ran at ~1.4 of 2.0 vCPU and drained cleanly, so the front-door accept path is the constraint, not execution.
+
+### Other measured rates
+
+Same cluster, other paths:
+
+| Measure | Rate | Notes |
+| --- | --- | --- |
+| **API reads — core** (`workflow-backend`, 1 replica) | ~105 req/s | Authenticated read; per-pod, CPU-bound |
+| **API reads — auth** (2 → 3 replicas) | ~150 req/s | HPA scaled to 3; ~50 req/s per replica |
+| **Bulk record processing** (transform) | ~3,300 records/sec | ~200k/min per stream; linear to ~20k records/exec |
+
+For a millions-record load, per-execution input is capped at ~3 MB, so records stream from the source in pages/batches (batch concurrency 50). At ~3,300 records/sec, ~1M records is ~5 min of pure compute per stream; the real limit is the source system's API rate (e.g. HubSpot/ERP), which Refold absorbs with automatic retry and back-off.
+
+## Cluster sizing
+
+Aggregate resource **requests** across all components are **~10.4 vCPU and ~36 GiB**. Persistent storage is **~136 GiB** (Temporal-Postgres 100 Gi, JuiceFS-meta 10 Gi, Workflow Executor 10 Gi, MongoDB 8 Gi, Redis 8 Gi).
+
+| Tier | Nodes | Cluster vCPU / RAM | Fits requests + headroom? |
+| --- | --- | --- | --- |
+| **Baseline** | 3 × m5.xlarge | 12 vCPU / 48 GiB | Yes (tight under peak) |
+| **Recommended** | 4 × m5.xlarge | 16 vCPU / 64 GiB | Yes, with autoscale headroom |
+
+`m5.xlarge` = 4 vCPU / 16 GiB. The node group autoscales 3 → 4 under load. Root volume is 80 GiB gp3 per node.
+
+## Monthly infrastructure cost
+
+Itemized estimate for **AWS ap-south-1, on-demand, 730 hrs/month**. Infrastructure only — excludes Refold licensing and outbound data transfer (workload-dependent).
+
+| Line item | Baseline (3 nodes) | Recommended (4 nodes) |
+| --- | --- | --- |
+| EC2 compute (m5.xlarge, on-demand) | $464 | $619 |
+| EKS control plane | $73 | $73 |
+| EBS gp3 (root + 136 Gi PVCs) | $34 | $42 |
+| Network Load Balancer | $25 | $25 |
+| S3 + EBS snapshots/backups | $30 | $30 |
+| **Total (on-demand)** | **~$626 / mo** | **~$789 / mo** |
+| **Total with 1-yr Compute Savings Plan** | **~$440 / mo** | **~$541 / mo** |
+| Indicative annual (on-demand) | ~$7,500 | ~$9,500 |
+
+Cost scales primarily with node count. The largest single-cluster production load Refold has run (~800K API calls/day, ~20 GB/day) sat within this 4-node envelope at ~60% CPU / 70% RAM.
+
+## Component inventory
+
+Every deployed workload, its role, replica count, and resource footprint (request → limit). This is the complete set behind the sizing and cost figures above.
+
+| Component | Role | Replicas | CPU req → lim | Mem req → lim |
+| --- | --- | --- | --- | --- |
+| `ingress-nginx` | Edge routing / TLS / single entry | 1 | 0.1 → – | 90Mi → – |
+| `auth-service` | Auth, orgs, linked accounts, tokens | 2 | 1 → 2 (ea) | 512Mi → 1Gi |
+| `workflow-backend` | Workflow API, execution accept/dispatch | 1 | 0.2 → 0.8 | 6.0Gi → 6.5Gi |
+| `integration-service` | Connector runtime (source/dest APIs) | 1 | 0.3 → 0.7 | 512Mi → 1.5Gi |
+| `audit-service-v2` | Event ingest, audit trail, DLQ API | 1 | 0.2 → 0.6 | 512Mi → 800Mi |
+| `frontend` | Web UI | 1 | 0.5 → 0.8 | 256Mi → 700Mi |
+| **Workflow Executor** | DAG execution engine (StatefulSet; pod `thanos`) | 1 | 1 → 2 | 3Gi → 4Gi |
+| `temporal-frontend` | Temporal gateway | 1 | 0.25 → 1 | 512Mi → 2Gi |
+| `temporal-history` | Temporal history shards (512) | 1 | 0.25 → 1 | 4Gi → 4.5Gi |
+| `temporal-matching` | Temporal task matching | 1 | 0.25 → 1 | 4Gi → 4.5Gi |
+| `temporal-worker` | Temporal system workflows | 1 | 0.25 → 1 | 4Gi → 4.5Gi |
+| `queue-workers` | Async job workers (BullMQ) | 3 | 0.5 → 1 (ea) | 600Mi → 1Gi |
+| `lambda-mono-service` | Custom-code / CSV execution | 3 | 0.2 → 0.6 (ea) | 1Gi → 3Gi |
+| `ai-python` (app/worker/grpc/knowledge) | AI nodes, agents, gRPC executor | 4 | 0.1–0.5 → 0.2–2 | 1Gi → 2–4Gi |
+| `MongoDB` (+arbiter) | Primary datastore | 1+1 | 0.5 → 1 | 800Mi → 1Gi |
+| `Redis` | Cache + queues | 1 | 0.3 → 0.5 | 1Gi → 1.5Gi |
+| `Temporal-Postgres` | Temporal persistence (100 Gi PVC) | 1 | 0.25 → 1 | 512Mi → 8Gi |
+| `JuiceFS-meta` | POSIX-over-S3 metadata (Redis) | 1 | 0.1 → 1 | 256Mi → 1Gi |
+| Observability | Prometheus, Grafana, Loki, Jaeger, Alertmanager | stack | varies | varies |
+
+## Assumptions & notes
+
+- **Prices are indicative** AWS ap-south-1 on-demand list rates (m5.xlarge ~$0.212/hr, EKS $0.10/hr, gp3 ~$0.091/GB-mo, NLB ~$0.0225/hr + LCU). Verify current rates for your region.
+- **Excludes** Refold licensing/subscription, outbound data transfer, NAT gateway hours, and any managed add-ons you elect.
+- **Right-sizing.** Requests total ~10.4 vCPU / 36 GiB; a 1-year Savings Plan or Graviton (`m7g`) instances can reduce compute 20–40%.
+- **Backups.** Hourly EBS snapshots of stateful volumes and tiered MongoDB/JuiceFS dumps to S3 are included in the S3/snapshots line; all stay in your account.
+- **Data residency.** Every component and all data remain inside your VPC/account boundary.
+
+## Glossary
+
+| Term | What it means |
+| --- | --- |
+| **Workflow Executor** | Refold's durable workflow engine — runs each workflow as a DAG on Temporal. Its in-cluster pod name is `thanos` (what you'll see in `kubectl`). |
+| **DAG** (Directed Acyclic Graph) | How a workflow is modelled: steps connected by dependencies with no loops. Independent branches run in parallel; dependent steps wait for their inputs. |
+| **Node / activity** | A single step in a workflow — an API call, a code block, a transform, a rule check. |
+| **Temporal** | Open-source durable-execution engine underneath the executor. Workflows survive pod restarts and failures and resume exactly where they left off. |
+| **BullMQ** | A Redis-backed job-queue library. Powers the async `queue-workers` that run background jobs, retries, and batching. |
+| **DLQ** (Dead-Letter Queue) | A holding store for records that fail every retry, so nothing is silently lost; failed records can be inspected and replayed. See the [Dead Letter Queue node](/v3/workflows/nodes/dead-letter-queue). |
+| **Batch concurrency** | How many record batches the executor processes in parallel (default 50, configurable). |
+| **Retry + backoff** | A failed step is retried automatically with exponentially increasing waits plus jitter, to recover transient errors without overwhelming the source. |
+| **StatefulSet** | A Kubernetes workload type for pods that need a stable identity and persistent disk (the executor and databases). |
+| **HPA** (Horizontal Pod Autoscaler) | Kubernetes mechanism that automatically adds or removes pod replicas based on CPU/memory load. |
+| **JuiceFS** | A POSIX filesystem backed by object storage (S3) — lets services read/write S3 as if it were a local disk. |
+| **gRPC** | A high-performance RPC protocol used for internal service-to-service calls (e.g. the AI executor). |
+| **EKS** | Amazon Elastic Kubernetes Service — AWS-managed Kubernetes. |
+| **NLB** | AWS Network Load Balancer — the single ingress entry point to the cluster. |
+| **EBS gp3** | AWS general-purpose SSD block storage — the persistent disk attached to stateful pods. |
+| **Observability stack** | Prometheus (metrics), Grafana (dashboards), Loki (logs), Jaeger (tracing), Alertmanager (alerts). |
