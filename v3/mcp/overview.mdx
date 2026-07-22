@@ -34,7 +34,7 @@ Once connected, an agent can:
 - **Discover skills** to find pre-built procedures for complex multi-step operations
 - **Work across multiple apps** in a single session (for example, read from Salesforce and write to SAP)
 
-Every tool call is authenticated and logged in [MCP Logs](/v3/mcp/operate/mcp-logs).
+Every tool call is authenticated and logged in [MCP Logs](/v3/mcp/operate/logs).
 
 ## Modes and layers
 
@@ -47,7 +47,7 @@ A server runs in one of two modes. Skills and workflows then layer onto whicheve
 
 <Note>Every client is an agent in both modes. "Agent mode" refers to where planning happens, on the server, not whether an agent is involved.</Note>
 
-**Skills** add pre-built procedures the agent can load in either mode. **Workflows** run server-side as one call. See [Choose an access pattern](/v3/mcp/build/server-configuration#choose-an-access-pattern) for the decision framework.
+**Skills** add pre-built procedures the agent can load in either mode. **Workflows** run server-side as one call. See [Choose an access pattern](/v3/mcp/build/server-config#choose-an-access-pattern) for the decision framework.
 
 ## Core MCP objects
 
@@ -73,7 +73,7 @@ When an agent connects, Refold reads the server's configuration and exposes the 
 | **Workflow** (`sync_leads`) | One tool that runs the whole workflow | A single call; steps, retries, and error paths stay server-side |
 | **Skill** | A loadable procedure | `GET_KNOWLEDGE_INDEX` to browse, `LOAD_SKILL` to load, when the Retrieve Skill toggle is on |
 
-How actions appear depends on the server's mode. In direct mode, every selected action and workflow is exposed as its own tool. In agent mode, actions and workflows are reached through `RESOLVE_ACTIONS` and `EXECUTE_ACTION` instead. See [Choose an access pattern](/v3/mcp/build/server-configuration#choose-an-access-pattern) for the trade-offs.
+How actions appear depends on the server's mode. In direct mode, every selected action and workflow is exposed as its own tool. In agent mode, actions and workflows are reached through `RESOLVE_ACTIONS` and `EXECUTE_ACTION` instead. See [Choose an access pattern](/v3/mcp/build/server-config#choose-an-access-pattern) for the trade-offs.
 
 ## Request lifecycle
 

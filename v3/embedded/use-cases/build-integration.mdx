@@ -1,0 +1,116 @@
+---
+title: "Build an Integration"
+description: "Connect a customer's third-party app and read and write their records end to end — the same loop your product runs for every connector."
+---
+
+This example walks the full loop your product runs for any connector: authenticate the app once, connect a customer, then read and write their data from your backend. It is provider-agnostic — swap in whichever connector you're integrating. Replace `<app>` in the calls below with your connector slug (for example `salesforce`, `netsuite`, or `hubspot`).
+
+It assumes you have run the [Quickstart](/v3/embedded/quickstart) once, so the create-linked-account → connect → execute pattern is familiar.
+
+## Step 1: Configure the app's authentication
+
+Tell Refold how to authenticate with the app before any customer connects. What the customer does to connect depends on the connector's auth mode:
+
+- **OAuth apps** (for example Salesforce, HubSpot): choose **OAuth 2.0** in the app's **Settings** and add your **Client ID** and **Client Secret**, or select **Use our credentials** to test with Refold's. The customer authorizes through an OAuth consent screen.
+- **Key-based apps** (for example NetSuite, Workday): the customer supplies account- or tenant-level credentials at connect time instead of an OAuth redirect. Add the credential fields the connector asks for.
+
+<Steps>
+  <Step title="Open the app settings">
+    In the [Refold Console](https://app.refold.ai), go to **Apps > _your app_ > Settings**.
+  </Step>
+  <Step title="Set the auth method">
+    Configure the OAuth credentials or the key-based fields as above, then click **Save**.
+  </Step>
+</Steps>
+
+<Note>
+The connect experience is the same whichever mode the app uses — only what the customer enters (an OAuth consent versus credential fields) differs. See [Authentication](/v3/connectors/app-auth-modes) for how a connector authenticates.
+</Note>
+
+## Step 2: Connect the customer's account
+
+Create a [linked account](/v3/embedded/linked-account-setup) for the customer and generate a [Connect portal](/v3/embedded/connect-flow) URL, exactly as in the Quickstart.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/connect-url \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{ "name": "Demo User" }'
+```
+
+```json Output
+{ "hosted_url": "https://connect.refold.ai/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." }
+```
+
+Open the `hosted_url`, find your app, and complete the connect step — an OAuth consent or entering credentials. A **Connected** tag appears when it succeeds.
+
+<Tip>
+To embed this flow in your own UI instead of redirecting to the hosted portal, see [Embed the connect flow](/v3/embedded/connect-flow).
+</Tip>
+
+## Step 3: List the actions the app supports
+
+Confirm the actions you need exist for the connector, and get their exact names and fields, before you call them.
+
+```bash cURL
+curl https://app.refold.ai/api/v2/integration-schema/<app>/actions \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1"
+```
+
+The response lists every action and its input fields. Use the exact action and field names it returns in the next steps. See [Read and Write Data](/v3/embedded/use-cases/read-write) for the full request and response shape.
+
+## Step 4: Read records
+
+Execute a read action to pull the customer's records into your product. Refold uses the stored credentials automatically, so no app tokens go in the request.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/<app>/actions/<read_action>/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+```json Output
+{ "success": true, "data": { "results": [ { "id": "51", "email": "jane@example.com" } ] } }
+```
+
+<Warning>
+Action names and response shapes vary by connector — some return flat records, others a deeply nested envelope. Confirm the real action from Step 3 and reshape the response before storing it. See [Map & Transform Data](/v3/embedded/use-cases/transform).
+</Warning>
+
+## Step 5: Write a record back
+
+Now write a record into the customer's account. The call is the same shape as a read, with a write action and the new values in the body.
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/<app>/actions/<write_action>/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstname": "Jane",
+    "lastname": "Doe",
+    "email": "jane@example.com"
+  }'
+```
+
+```json Output
+{ "success": true, "data": { "id": "1510721" } }
+```
+
+<Check>
+Open the customer's app. The new record is there, and your read returned their existing records. You just ran data both ways through Refold — the same loop works for every connector.
+</Check>
+
+<Warning>
+The action names and fields above are placeholders. Use the real ones from Step 3, and test against a sandbox account first — write actions make real changes in the customer's app.
+</Warning>
+
+## Take it further
+
+- **Import in bulk or on a schedule** — loop over many records and deliver them to your server. See [Import records](/v3/embedded/use-cases/read-write#import-records).
+- **Keep both sides in sync** — push changes both ways in near real time. See [Build a two-way sync](/v3/embedded/use-cases/sync#build-a-two-way-sync).
+- **Reshape data between systems** — map fields and validate before writing. See [Map & Transform Data](/v3/embedded/use-cases/transform).

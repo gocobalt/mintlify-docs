@@ -25,7 +25,7 @@ A DLQ node sits on the failure path of a workflow and records each failed item a
 
 <Steps>
   <Step title="Wrap the risky step">
-    Put the step that can fail — a write [action](/v3/native/move-data/read-write), an [HTTP Request](/v3/workflows/nodes/http), or a connector call — inside a [Try & Catch node](/v3/workflows/nodes/try-catch-node).
+    Put the step that can fail — a write [action](/v3/embedded/use-cases/read-write), an [HTTP Request](/v3/workflows/nodes/http), or a connector call — inside a [Try & Catch node](/v3/workflows/nodes/try-catch-node).
   </Step>
   <Step title="Route the catch branch to the DLQ node">
     Connect the catch branch to a Dead Letter Queue node. When the try block fails, the failing record and its error are handed to the DLQ instead of ending the run.
@@ -55,5 +55,5 @@ Reprocessing, retry policy, and the operational view of the queue are covered in
 
 - **Queue the record, not just the error.** Store the full input payload so a reprocessing run has everything it needs to retry.
 - **Pair with Try & Catch.** The DLQ captures what the catch branch hands it; without the try block the run fails before queuing.
-- **Make reprocessing idempotent.** A requeued write can run after the original partially succeeded — see [Idempotency](/v3/native/best-practices/idempotency) so a retry never duplicates a record.
+- **Make reprocessing idempotent.** A requeued write can run after the original partially succeeded — see [Idempotency](/v3/embedded/best-practices/idempotency) so a retry never duplicates a record.
 - **Fix the cause, then drain the queue.** Reprocess only after the underlying failure is resolved, or records will fail again and requeue.

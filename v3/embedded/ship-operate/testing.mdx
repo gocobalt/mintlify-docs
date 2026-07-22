@@ -1,0 +1,138 @@
+---
+title: "Test Your Integration"
+description: "Verify a native integration end to end before shipping: actions, workflows, and the full connect-to-write loop against a test account."
+---
+
+Testing a native integration means proving the loop your customers will run actually works: they connect an app, your backend reads or writes data, and any [workflows](/v3/workflows/overview) behave as expected. You test at three levels (a single action, a whole workflow, and the end-to-end flow) against a sandbox or test [linked account](/v3/concepts/linked-account) so no real customer data is touched.
+
+Test in this order: get one action working, then the workflow that uses it, then the full flow a customer sees. Each level builds on the one before, so a failure at the action level is easier to find than the same failure buried inside an end-to-end run.
+
+## The three levels of testing
+
+| Level | What you verify | Where you run it |
+| --- | --- | --- |
+| **Action** | A single read or write call returns the data or result you expect. | A `curl` or SDK call from your backend. |
+| **Workflow** | Triggers, nodes, branching, and error handling resolve correctly across a full run. | The Platform [workflow testing](/v3/workflows/testing) panel. |
+| **End-to-end** | A customer can connect an app and your product reads or writes through that connection. | Your product (or the [hosted flow](/v3/authentication/connection-flows/hosted-flow)) plus your backend. |
+
+<Note>
+Workflow internals (nodes, payloads, run logs) are owned by Platform. This page covers the Native angle: testing against a test linked account and the customer-facing flow. For node-by-node testing, follow [workflow testing](/v3/workflows/testing).
+</Note>
+
+## Set up a test linked account
+
+Every test runs against a [linked account](/v3/concepts/linked-account), and that account makes real calls to the third-party app. Use a sandbox or throwaway account so test runs never touch a customer's production data.
+
+<Steps>
+  <Step title="Create a test linked account">
+    Create a linked account with an id you reserve for testing, for example `test-user-1`. Reuse that `linked_account_id` in every test call.
+  </Step>
+  <Step title="Connect a sandbox app">
+    Connect the third-party app using a sandbox or trial account where the connector offers one. The fastest way to connect is to generate a [hosted flow](/v3/authentication/connection-flows/hosted-flow) connect URL and complete auth there.
+  </Step>
+  <Step title="Confirm the connection is healthy">
+    Read the [connection status](/v3/authentication/managing-connections/connection-status) for the account. Confirm `connected` is `true` and `reauth_required` is `false` before you run any action or workflow against it.
+  </Step>
+</Steps>
+
+<Warning>
+Tests use a real linked account, so write actions create real records, send real emails, and consume real rate limits. Point the account at a sandbox or test workspace whenever the connector supports one.
+</Warning>
+
+## Test an action
+
+Start with the smallest unit: a single action. Confirm a read returns the shape you expect before you test any write.
+
+<Steps>
+  <Step title="Test a read action first">
+    Run a read action (for example `get_contact`) so you can verify connectivity and the response shape without changing anything in the connected app.
+
+    ```bash cURL
+    curl https://app.refold.ai/api/v2/integration-schema/hubspot/actions/get_contact/execute \
+      -H "x-api-key: $REFOLD_API_KEY" \
+      -H "linked_account_id: test-user-1" \
+      -H "Content-Type: application/json" \
+      -d '{ "contact_id": "1510721" }'
+    ```
+  </Step>
+  <Step title="Test the write action">
+    Once reads work, run the write action and confirm the result in the connected app's sandbox.
+
+    ```bash cURL
+    curl -X POST https://app.refold.ai/api/v2/integration-schema/hubspot/actions/create_contact/execute \
+      -H "x-api-key: $REFOLD_API_KEY" \
+      -H "linked_account_id: test-user-1" \
+      -H "Content-Type: application/json" \
+      -d '{ "email": "test@example.com", "firstname": "Test", "lastname": "User" }'
+    ```
+
+    ```json Output
+    { "success": true, "data": { "id": "1510722" } }
+    ```
+  </Step>
+  <Step title="Test the failure cases">
+    Send inputs you expect to fail: a missing required field, an invalid id, an unauthenticated account. Confirm your backend handles each error response instead of crashing.
+  </Step>
+</Steps>
+
+<Check>
+Open the connected app's sandbox. The record you wrote is there, and your read action returned it. The action works.
+</Check>
+
+## Test a workflow
+
+If your integration runs a [workflow](/v3/workflows/overview) (multi-step logic, branching, or fan-out across apps), test the workflow as a unit before you wire it into the customer flow. The workflow editor runs your workflow against a real or mock payload and shows you the resolved input, output, and any error at every node.
+
+The mechanics (running a single node, mocking the trigger payload, reading the run log) are documented once on Platform. Use that page, and run your test against your test linked account:
+
+<Card title="Workflow testing" icon="vial" href="/v3/workflows/testing">
+  Run a workflow or a single node against a sample payload, then inspect each node's input, output, and errors.
+</Card>
+
+For Native specifically, cover these scenarios before shipping:
+
+- **The happy path.** Trigger the workflow with a realistic payload and confirm the expected record is created, updated, or returned in the connected app.
+- **Each branch.** If the workflow branches on a [Rule](/v3/workflows/nodes/rule) or [Switch](/v3/workflows/nodes/switch-case) node, feed one payload per branch and confirm the right path runs.
+- **Error handling.** Send a payload guaranteed to fail (bad id, missing field) and confirm any [Try/Catch](/v3/workflows/nodes/try-catch-node) branch behaves, and that a failure surfaces to your product rather than failing silently.
+- **A re-auth state.** Let the test account's token expire (or revoke it) and confirm the workflow surfaces the failure so your UI can prompt a [reconnect](/v3/authentication/managing-connections/connection-status).
+
+## Test the end-to-end flow
+
+The last level tests what a customer experiences: connecting an app and having your product read or write through that connection. Walk it exactly as a customer would.
+
+<Steps>
+  <Step title="Run the connect flow as a customer">
+    Open your embedded connect experience (the [React SDK flow](/v3/authentication/connection-flows/react-sdk), [hosted flow](/v3/authentication/connection-flows/hosted-flow), or your [own UI](/v3/authentication/connection-flows/build-your-own)) and connect the sandbox app from start to finish.
+  </Step>
+  <Step title="Confirm the connected state renders">
+    Check that your UI reads [connection status](/v3/authentication/managing-connections/connection-status) and shows the **Connected** state after auth succeeds.
+  </Step>
+  <Step title="Trigger a real read or write">
+    Drive the action your product runs for this integration (sync a record, fetch data, fire the workflow) and confirm the result lands in the connected app.
+  </Step>
+  <Step title="Confirm webhooks arrive">
+    Subscribe to [webhooks](/v3/connectors/my-app/webhooks) and confirm your backend receives the events you depend on, including the connection-expired event used to drive [re-authentication](/v3/authentication/managing-connections/re-authentication).
+  </Step>
+  <Step title="Test the unhappy paths">
+    Cancel the connect flow midway, deny the OAuth consent, and let a token expire. Confirm your product recovers gracefully from each.
+  </Step>
+</Steps>
+
+<Frame>{/* SCREENSHOT: the connect flow running in a test product, ending on a Connected state -> /images/embedded/operate/end-to-end-test.png */}</Frame>
+
+## Best practices
+
+<Steps>
+  <Step title="Keep one test account per connector">
+    Reserve a dedicated test `linked_account_id` (and a sandbox app account) per connector so test runs never collide with customer data.
+  </Step>
+  <Step title="Test reads before writes">
+    Verify connectivity and response shape with a read action before any write changes data in the connected app.
+  </Step>
+  <Step title="Keep a payload library">
+    Save one input payload per code path (success, missing field, rate-limited, deleted record) and re-run all of them before you publish a change.
+  </Step>
+  <Step title="Exercise the failure cases on purpose">
+    Cancelled connects, denied consent, expired tokens, and failed writes are what break in production. Force each one in test.
+  </Step>
+</Steps>

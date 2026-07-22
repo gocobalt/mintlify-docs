@@ -17,7 +17,7 @@ Every install is one of three models, which differ in who operates the **control
 | **Refold Managed (BYOC)** | Refold, inside your own cloud account | Data residency in your cloud without operating the platform yourself. |
 | **Self-Hosted** | You, in your own Kubernetes cluster | Full control over upgrades, networking, and the runtime. Highest ops burden. |
 
-See the [architecture overview](/v3/deployment/architecture/overview) for how Refold's services are structured across each model.
+See the [architecture overview](/v3/deployment/architecture) for how Refold's services are structured across each model.
 
 ## Install
 
@@ -46,17 +46,17 @@ For a self-hosted install you bring the infrastructure Refold runs against. The 
 | **PostgreSQL** | Backs durable workflow orchestration. |
 | **Object storage (S3 / GCS / MinIO)** | Files, exports, and generated artifacts. |
 
-You also need outbound network access to the third-party SaaS APIs your integrations call. See [Architecture](/v3/deployment/architecture/overview) for the full picture and [Benchmarking](/v3/deployment/architecture/benchmarking) for sizing.
+You also need outbound network access to the third-party SaaS APIs your integrations call. See [Architecture](/v3/deployment/architecture) for the full picture and [Benchmarking](/v3/deployment/benchmarking) for sizing.
 
 ## Configure
 
 Tune a deployment for your environment with the how-to guides:
 
 <CardGroup cols={2}>
-  <Card title="Set up OpenTelemetry" icon="chart-line" href="/v3/deployment/how-tos/setup-opentelemetry">
+  <Card title="Set up OpenTelemetry" icon="chart-line" href="/v3/deployment/setup-opentelemetry">
     Export traces and metrics for observability.
   </Card>
-  <Card title="Configure MinIO" icon="box" href="/v3/deployment/how-tos/storage-minio">
+  <Card title="Configure MinIO" icon="box" href="/v3/deployment/storage-minio">
     Use MinIO as your object-storage backend.
   </Card>
 </CardGroup>

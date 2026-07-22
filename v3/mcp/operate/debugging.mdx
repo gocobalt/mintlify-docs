@@ -6,7 +6,7 @@ description: "Isolate MCP tool failures with MCP Inspector and MCP Logs."
 When an agent doesn't see the tools you expect, or a tool call fails silently, MCP Inspector and MCP Logs cover most cases:
 
 - **[MCP Inspector](https://github.com/modelcontextprotocol/inspector)** connects to your Refold MCP server before you wire it into an agent, lists its tools, and lets you call them with any input.
-- **[MCP Logs](/v3/mcp/operate/mcp-logs)** is the audit panel in the Refold dashboard. It shows every tool call your agent made, the exact input it sent, and what came back.
+- **[MCP Logs](/v3/mcp/operate/logs)** is the audit panel in the Refold dashboard. It shows every tool call your agent made, the exact input it sent, and what came back.
 
 Use MCP Inspector to verify the server is healthy. Use MCP Logs to trace what the agent actually did once it's running.
 
@@ -73,7 +73,7 @@ If the Inspector's **Tools** panel is empty or lists tools you didn't expect, th
 - **Mode.** A server runs in one mode at a time. In direct mode the Inspector lists one tool per configured action or workflow (named like `salesforce_list_contacts_action`). In agent mode it lists two meta-tools, `RESOLVE_ACTIONS` and `EXECUTE_ACTION`. If you see the meta-tools but expected per-action tools, or the reverse, the server is in the other mode. Toggle **Agent Mode** to switch.
 - **Enabled actions and skills.** Only the apps and actions you added to the server appear as tools, so add any missing action on the server's **Applications** tab. The skill tools `LOAD_SKILL` and `GET_KNOWLEDGE_INDEX` (which lists the server's skills) appear only when **Retrieve Skill** is on, in either mode.
 
-See [Server configuration](/v3/mcp/build/server-configuration) for where these toggles live and [How it works](/v3/mcp/overview) for how each mode changes the tool list.
+See [Server configuration](/v3/mcp/build/server-config) for where these toggles live and [How it works](/v3/mcp/overview) for how each mode changes the tool list.
 
 ### Command-line usage
 
@@ -107,7 +107,7 @@ npx @modelcontextprotocol/inspector --cli \
 
 ## MCP Logs
 
-Once your agent is running, every tool call is captured in **Maintain > MCP Logs**. See [MCP Logs](/v3/mcp/operate/mcp-logs) for the full field reference, filters, and compliance details.
+Once your agent is running, every tool call is captured in **Maintain > MCP Logs**. See [MCP Logs](/v3/mcp/operate/logs) for the full field reference, filters, and compliance details.
 
 ### A tool call returned nothing useful
 

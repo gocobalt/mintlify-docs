@@ -1,0 +1,161 @@
+---
+title: "Sync Data"
+description: "Keep records aligned between your app and your customers' connected apps — one-way and two-way patterns, plus a worked two-way build."
+---
+
+A **sync** keeps records in agreement between your app and a customer's connected app, so a change on one side shows up on the other. Build a sync from the same pieces you already use to move data: [actions](/v3/embedded/use-cases/read-write) to read and write, [triggers](/v3/workflows/triggers/overview) to decide when a sync runs, and [workflows](/v3/workflows/overview) to orchestrate the steps.
+
+This page covers the sync patterns and when to use each, how to choose what starts a sync, and a worked two-way build you can follow end to end.
+
+## How sync works
+
+A sync is a workflow that runs on a [trigger](/v3/workflows/triggers/overview), reads records from a source, optionally maps them, and writes them to a destination.
+
+- **The source** is where the change originates, either your app or the connected app.
+- **The trigger** decides when the sync runs: an event from your app, a webhook from the connected app, or a schedule.
+- **The mapping** reshapes records so they fit the destination's fields. See [Map & Transform Data](/v3/embedded/use-cases/transform).
+- **The destination** is where the records land, written with a connector [action](/v3/embedded/use-cases/read-write).
+
+## Sync patterns
+
+Choose the pattern that matches where changes originate.
+
+| Pattern | Direction | Use when |
+| --- | --- | --- |
+| **One-way out** | Your app to the connected app | Your app owns the record and the third-party system mirrors it |
+| **One-way in** | The connected app to your app | The third-party system owns the record and your app mirrors it |
+| **Two-way** | Both directions | Either side can change a record and both must stay current |
+
+### One-way out
+
+Your app is the source of truth. When a record changes in your app, push it to the customer's connected app.
+
+Start the sync with an [event trigger](/v3/workflows/triggers/events): your backend fires an event when the record changes, and the workflow writes the change to the connected app with a write action.
+
+### One-way in
+
+The connected app is the source of truth. When a record changes there, pull it into your app.
+
+Start the sync with a [webhook trigger](/v3/workflows/triggers/webhook) if the app pushes change notifications, or a [schedule trigger](/v3/workflows/triggers/schedule) if it does not. The workflow reads the changed records and writes them into your app, often through an [API proxy](/v3/connectors/my-app/api-proxies) so the data lands on your own endpoint.
+
+### Two-way
+
+Both sides can change a record. Run both directions: one workflow pushes your changes out, another pulls the connected app's changes in. Its main risk is echo loops, which the [worked build below](#build-a-two-way-sync) shows how to prevent.
+
+## Choose what starts a sync
+
+The trigger you pick determines how fresh the synced data is and how much load you place on the connected app.
+
+| Trigger | Starts the sync when | Reach for it when |
+| --- | --- | --- |
+| **[Event](/v3/workflows/triggers/events)** | Your backend fires an event | Your app is the source and you control when records change |
+| **[Webhook](/v3/workflows/triggers/webhook)** | The connected app sends a change notification | The app supports webhooks and you want near-real-time updates |
+| **[Schedule](/v3/workflows/triggers/schedule)** | A recurring time arrives | The app has no webhooks, or batching on a cadence is enough |
+
+<Tip>
+Prefer a webhook over a schedule when the app supports it. Webhooks sync only what changed, when it changed, instead of re-reading everything on a timer.
+</Tip>
+
+For the full list of trigger types and their configuration, see [Triggers overview](/v3/workflows/triggers/overview).
+
+## Build a two-way sync
+
+A two-way sync is three workflows working together, not one — each handles a different direction or moment. This build uses contacts; swap in any record type your connector supports. It assumes you can already connect an app and execute an [action](/v3/embedded/use-cases/read-write), and have built a [workflow](/v3/workflows/overview) before.
+
+- **Initial sync** reads all existing records out of the connected app once, so both sides start from the same data. Build it from [Import records](/v3/embedded/use-cases/read-write#import-records) and run it once per customer when they connect.
+- **Outbound push** writes to the connected app whenever a record changes in your product.
+- **Inbound push** writes to your product whenever a record changes in the connected app.
+
+<Note>
+Run the initial sync once per customer when they connect; run the outbound and inbound workflows continuously after that. Keeping the directions separate is what makes the sync debuggable — each has its own logs.
+</Note>
+
+### Step 1: Seed both sides with an initial sync
+
+Before anything streams, both sides must agree on the starting data. Run the [import build](/v3/embedded/use-cases/read-write#import-records) once for the linked account. After it finishes, your database holds every existing record from the connected app.
+
+<Tip>
+Store the connected app's record ID alongside your own record here. You need that mapping to avoid creating duplicates when changes flow back later.
+</Tip>
+
+### Step 2: Push your changes out to the connected app
+
+When a record changes in your product, send an [event](/v3/connectors/my-app/events) so a workflow writes the change to the connected app.
+
+<Steps>
+  <Step title="Build the outbound workflow">
+    In the connector's [workflows](/v3/workflows/overview), create a workflow with an **event trigger** and a node that runs the connected app's create-or-update action with the payload from the event.
+  </Step>
+  <Step title="Fire the event from your backend">
+    When a user edits a record in your app, fire the event for that linked account.
+  </Step>
+</Steps>
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/public/event/salesforce \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event": "Contact Updated",
+    "payload": {
+      "id": "internal-42",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane@example.com"
+    }
+  }'
+```
+
+<Note>
+`Contact Updated` is the event name you define on the workflow's trigger. The event slug in the path (`salesforce`) is the connector the workflow belongs to.
+</Note>
+
+### Step 3: Push the connected app's changes back to you
+
+When a record changes in the connected app, run a workflow that posts the change to your server.
+
+<Steps>
+  <Step title="Use the app's webhook as the trigger">
+    Create a workflow whose trigger is the connected app's change event, for example a **Contact Created** or **Contact Updated** webhook. The workflow receives the changed record as its payload.
+  </Step>
+  <Step title="Post the change to your server">
+    Add an [API Proxy](/v3/connectors/my-app/api-proxies) node that POSTs the payload to your own endpoint, so your backend can upsert the record.
+  </Step>
+  <Step title="Upsert by the stored ID">
+    In your endpoint, look up the record by the connected app's ID you stored in Step 1 and update it, or create it if it is new.
+  </Step>
+</Steps>
+
+<Warning>
+Not every connector emits change webhooks. If yours does not, poll on a [schedule trigger](/v3/workflows/triggers/schedule) instead: run the import workflow on a cadence and reconcile against your stored data.
+</Warning>
+
+### Step 4: Prevent sync loops
+
+A naive two-way sync echoes its own writes: your outbound push triggers the app's webhook, which pushes the same change back, which can trigger another outbound push. Break the loop:
+
+- **Compare before writing.** On each side, skip the write if the incoming value matches what you already have.
+- **Track a last-modified timestamp** and ignore changes older than the one you last applied.
+- **Tag writes you originate** where the connected app supports it, then skip inbound events that carry your tag.
+
+<Check>
+Edit a contact in your app and watch it update in the connected app. Edit a contact in the connected app and watch it update in yours. Confirm a single edit does not bounce back and forth.
+</Check>
+
+## Best practices
+
+<Steps>
+  <Step title="Pick one source of truth per field">
+    Decide which side owns each field before you build. Conflicting owners are the root of most sync bugs.
+  </Step>
+  <Step title="Sync incrementally">
+    Read only records changed since the last run, using a timestamp or cursor, instead of re-reading the whole dataset every time.
+  </Step>
+  <Step title="Guard against loops in two-way sync">
+    Mark records you write so an inbound change notification for your own write is ignored.
+  </Step>
+  <Step title="Map and validate before you write">
+    Reshape and check records on the way to the destination so a bad record does not reach the connected app. See [Map & Transform Data](/v3/embedded/use-cases/transform).
+  </Step>
+</Steps>
