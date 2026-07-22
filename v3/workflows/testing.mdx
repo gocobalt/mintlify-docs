@@ -1,0 +1,205 @@
+---
+title: "Workflow Testing"
+description: "Run, inspect, and debug a workflow before promoting it to production."
+---
+
+Workflow testing runs your workflow against a real or mock payload from inside the editor, so you can confirm each node behaves correctly before any production event triggers it. You feed in an input, execute the workflow (or a single node), and inspect the resolved input, output, and any errors at every step.
+
+Use testing while you build to catch broken templating, bad mappings, expired credentials, and unhandled edge cases early.
+
+{/* MEDIA-TODO (image): Annotated screenshot of the workflow editor highlighting the Testing button in the side menu and a node showing the Input/Output tab. */}
+<Frame>
+  {/* NEEDS INPUT: hero screenshot of workflow editor in test mode */}
+</Frame>
+
+## Before you test
+
+You need two things in place before a test run executes:
+
+<AccordionGroup>
+  <Accordion title="A Linked Account for the integration" defaultOpen="true">
+    Tests run against a real [Linked Account](/v3/concepts/linked-account) so any API calls inside the workflow hit the actual third-party app. Pick one from the Testing panel under the Prerequisites section. {/* NEEDS INPUT: confirm panel name in v3 UI is still "Testing" and section heading is still "Prerequisites" */}
+
+    If the account is unauthenticated or its token has expired, the editor shows a warning. Click **Authorize Application** to reconnect. {/* NEEDS INPUT: confirm button label in v3 */}
+
+    Once the account is connected, the status changes to **Connected**.
+  </Accordion>
+
+  <Accordion title="A sample input payload" defaultOpen="true">
+    Every workflow needs an input to run. The editor auto-loads a sample payload based on the workflow's trigger (event, webhook, schedule, or API call). Edit the JSON to match the shape of the payload you expect in production.
+
+    Use **Reset** to restore the auto-generated sample. {/* NEEDS INPUT: confirm reset button exists and label */}
+  </Accordion>
+</AccordionGroup>
+
+Click **Save** after configuring the Linked Account and payload. The workflow is now ready to test. {/* NEEDS INPUT: confirm Save button location relative to the Testing panel */}
+
+## Run a test from the workflow editor
+
+You can test a single node in isolation or execute the full workflow end-to-end.
+
+### Test a single node
+
+Use this when you want to verify one node's logic without running everything upstream.
+
+<Steps>
+  <Step title="Open the node">
+    Click the node you want to test in the canvas.
+  </Step>
+  <Step title="Switch to the Input/Output tab">
+    Inside the node's side panel, open the **Input/Output** tab. {/* NEEDS INPUT: confirm tab is named "Input/Output" in v3 */}
+  </Step>
+  <Step title="Click Run Node">
+    Press **Run Node**. Refold resolves any variables referenced by the node using the sample payload and previously-tested upstream nodes, then executes that node against the Linked Account.
+
+    A checkmark appears on the node once it succeeds. The resolved input, the raw output, and any error returned by the call all render in the same panel.
+  </Step>
+</Steps>
+
+<Warning>
+  Single-node testing is not supported for Group nodes or paginated loops. Test these by running the full workflow instead. {/* NEEDS INPUT: confirm Group node and Pagination restrictions still apply in v3 */}
+</Warning>
+
+{/* MEDIA-TODO (image): Screenshot of a node's Input/Output tab after a successful Run Node, showing the green check on the node. */}
+<Frame>
+  {/* NEEDS INPUT: screenshot of node Input/Output panel after a test run */}
+</Frame>
+
+### Test the entire workflow
+
+<Steps>
+  <Step title="Open the Testing panel">
+    Click the **Testing** button in the editor side menu.
+  </Step>
+  <Step title="Confirm the payload and Linked Account">
+    Verify the prerequisites section shows a connected account and the payload you want to send in.
+  </Step>
+  <Step title="Click Execute Workflow">
+    Press **Execute Workflow**. {/* NEEDS INPUT: confirm exact button label "Execute Workflow" in v3 */} Refold runs the workflow start to finish and writes a Run log capturing the input and output of every node.
+  </Step>
+  <Step title="Inspect the run">
+    Open the Run log to step through each node's resolved input, output, and timing. Switch between past runs from the same panel to compare executions.
+  </Step>
+</Steps>
+
+## Mock the trigger payload
+
+You rarely have a clean production event handy while building. To simulate one:
+
+- **Edit the auto-loaded payload directly** in the Testing panel. The shape mirrors what the trigger would send at runtime, so you can replace IDs, change field values, or add extra keys before running. {/* NEEDS INPUT: confirm the editor lets you freely edit the JSON, not just fill predefined fields */}
+- **Reset to the default** to get a fresh template if your edits drift too far.
+- **Save multiple payloads** if your workflow supports it, so you can re-run the same fixture later. {/* NEEDS INPUT: confirm whether Refold supports saving / naming multiple test payloads per workflow */}
+
+### Override variables and environment values
+
+{/* NEEDS INPUT: confirm whether Refold exposes a way to override environment variables, secrets, or project-level config specifically for a test run. The following is written conservatively; replace once confirmed. */}
+
+If your workflow reads from project-level variables or secrets, those values still apply during a test run. To test against different values:
+
+- Update the variable in your project settings before running, then revert.
+- Hard-code the value into the test payload and reference it from there for the duration of the test.
+
+<Note>
+  A first-class "override for this test run only" UI may not exist yet. Confirm with your Refold contact before relying on one.
+</Note>
+
+## Inspect node-level results
+
+Every test run produces a per-node breakdown. For each node you can see:
+
+| Field | What it shows |
+| --- | --- |
+| **Input** | The fully resolved payload sent into the node after all variables and templates evaluate. |
+| **Output** | The raw response the node returned (API response body, function return value, mapped object). |
+| **Error** | The error message and (where available) the upstream HTTP status, retry count, and stack trace. {/* NEEDS INPUT: confirm what error metadata is surfaced */} |
+| **Timing** | How long the node took to execute. {/* NEEDS INPUT: confirm timing is shown per node in v3 */} |
+
+Open results in two places:
+
+- **On the node itself**, via the **Input/Output** tab, for the most recent run.
+- **In the Run log** opened from the Testing panel, for any historical run during this editing session. {/* NEEDS INPUT: confirm Run logs persist across editor sessions or only for the current session */}
+
+{/* MEDIA-TODO (image): Side-by-side of node Input/Output tab and the Run log panel showing the same execution. */}
+<Frame>
+  {/* NEEDS INPUT: screenshot comparing node panel and Run log views */}
+</Frame>
+
+## Re-run with a previous input
+
+{/* NEEDS INPUT: confirm Refold supports replaying a previous test run with its original input. The behavior below is the conservative default; update if the UI exposes a dedicated "Re-run" action. */}
+
+To replay an earlier test:
+
+<Steps>
+  <Step title="Open the Run log">
+    From the Testing panel, switch to the run you want to replay.
+  </Step>
+  <Step title="Copy the input">
+    Copy the resolved input from the trigger node back into the payload editor.
+  </Step>
+  <Step title="Execute again">
+    Click **Execute Workflow** to run with the same input.
+  </Step>
+</Steps>
+
+<Tip>
+  If your workflow editor exposes a **Re-run** button on past runs, use that instead of copying the payload manually. {/* NEEDS INPUT: confirm whether a one-click Re-run exists */}
+</Tip>
+
+## Promote a tested workflow to production
+
+A passing test does not by itself activate the workflow for production events. To ship it:
+
+<Steps>
+  <Step title="Resolve any pending changes">
+    Make sure all node-level edits are saved. Unsaved changes do not publish.
+  </Step>
+  <Step title="Publish the workflow">
+    Click **Publish** (or the equivalent action) in the editor. {/* NEEDS INPUT: confirm the exact publish action name. Some Refold workflows may use "Activate", "Deploy", or a toggle. */} Refold promotes the current draft so that incoming trigger events run against it.
+  </Step>
+  <Step title="Verify in production">
+    Trigger one real event and check the run in your [workflow run history](/v3/workflows/overview). {/* NEEDS INPUT: confirm the run-history page path */}
+  </Step>
+</Steps>
+
+<Warning>
+  Publishing replaces the live version. If you need to roll back, keep a copy of the previous workflow JSON or use Refold's version history if available. {/* NEEDS INPUT: confirm whether workflow version history / rollback exists in v3 */}
+</Warning>
+
+## Testing patterns and fixtures
+
+A few patterns that hold up as workflows grow:
+
+- **One payload per code path.** Keep a short library of input payloads, one for each branch your workflow takes (success, missing-field, rate-limited, deleted record). Run each before publishing.
+- **Test downstream first.** When debugging a multi-node failure, run the failing node in isolation with a hand-crafted input. This isolates whether the bug is in the node or in upstream data.
+- **Use Log nodes as breakpoints.** Drop [Log nodes](/v3/workflows/nodes/log-node) between steps to checkpoint intermediate values during a full-workflow run.
+- **Wrap risky calls in Try/Catch.** Test the catch branch by feeding a payload guaranteed to fail (bad ID, missing field). See [Try/Catch nodes](/v3/workflows/nodes/try-catch-node).
+- **Mock external IDs explicitly.** Don't depend on auto-generated IDs from your Linked Account's sandbox: hard-code stable IDs into the test payload so re-runs are reproducible.
+
+## Common gotchas
+
+<AccordionGroup>
+  <Accordion title="Node shows a checkmark but the workflow still fails end-to-end">
+    A node-level checkmark only means that node ran successfully with the sample input you provided. The same node can still fail when upstream nodes produce a differently-shaped payload at runtime. Always run a full **Execute Workflow** before publishing.
+  </Accordion>
+
+  <Accordion title="Variables resolve to empty strings or `undefined`">
+    Templated variables reference outputs of upstream nodes. If you haven't run those upstream nodes yet (or you cleared their output), references resolve to nothing. Run each upstream node once, or run the full workflow, to populate the values.
+  </Accordion>
+
+  <Accordion title="Linked Account auth expired mid-test">
+    Tokens stored on the Linked Account can expire between test runs. If a node returns a 401, reopen the Testing panel and reauthorize before re-running.
+  </Accordion>
+
+  <Accordion title="Group nodes and paginated loops don't show output">
+    Single-node testing isn't supported for Group nodes or pagination. Run the full workflow to exercise these. {/* NEEDS INPUT: confirm this restriction in v3 */}
+  </Accordion>
+
+  <Accordion title="Test runs hit real third-party APIs">
+    Because tests use a real Linked Account, they create real records, send real emails, and consume real rate limits. Point your Linked Account at a sandbox or test workspace whenever the integration supports one.
+  </Accordion>
+
+  <Accordion title="The payload editor rejects valid JSON">
+    Trailing commas and single quotes aren't valid JSON. If the editor refuses to save, paste the payload through a JSON validator first.
+  </Accordion>
+</AccordionGroup>

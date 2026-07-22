@@ -1,0 +1,50 @@
+---
+title: "Overview"
+description: "How Refold gives you visibility into every integration run, mechanisms to recover from failures, and a complete audit trail — so you can operate in production with confidence."
+---
+
+Observability and auditability are how you operate integrations in production with confidence: see what every run did, recover cleanly when something fails, and keep a record of who changed what. Refold captures all three automatically. This page maps the tools and points to where each is documented.
+
+## See what's happening
+
+Every action and workflow run is recorded, so you can trace exactly what happened and re-run it if needed.
+
+<CardGroup cols={2}>
+  <Card title="Logs" icon="list-timeline" href="/v3/observability/logs">
+    Execution history with per-node input and output. Retry a failed node or replay a whole run.
+  </Card>
+  <Card title="Try API" icon="play" href="/v3/observability/try-api">
+    Call any action against a linked account from the dashboard to confirm behavior before you ship.
+  </Card>
+</CardGroup>
+
+## Recover from failures
+
+Integrations fail in expected ways — a third-party API errors, a call is rate limited, or a run repeats. Refold gives you the mechanisms to recover without losing data.
+
+<CardGroup cols={2}>
+  <Card title="Dead Letter Queue" icon="inbox" href="/v3/observability/dead-letter-queue">
+    Capture failed records and reprocess them, so nothing is silently lost.
+  </Card>
+  <Card title="Autopilot" icon="wand-magic-sparkles" href="/v3/observability/autopilot">
+    Automatically detect a workflow's failure points and build repairs so the same failure is prevented.
+  </Card>
+</CardGroup>
+
+Build resilience into the workflows themselves with the patterns documented in Embedded Marketplace and Workflows:
+
+- **[Handle Errors](/v3/embedded/best-practices/error-handling)** — classify failures and catch them with a [Try & Catch node](/v3/workflows/nodes/try-catch-node).
+- **[Ensure Idempotency](/v3/embedded/best-practices/idempotency)** — make retries and replays safe so repeats don't duplicate work (see also [workflow idempotency](/v3/workflows/idempotency)).
+- **[Handle Rate Limits](/v3/embedded/best-practices/rate-limits)** — back off and batch so high-volume calls stay within third-party limits.
+
+## Audit and compliance
+
+<CardGroup cols={1}>
+  <Card title="Audit" icon="clipboard-check" href="/v3/observability/audit">
+    A record of configuration changes, user actions, and platform activity across your account.
+  </Card>
+</CardGroup>
+
+<Note>
+For live customer-connection health — auth failures, reconnect prompts, and the webhooks that drive them — see [Monitor Live Integrations](/v3/embedded/ship-operate/monitoring).
+</Note>

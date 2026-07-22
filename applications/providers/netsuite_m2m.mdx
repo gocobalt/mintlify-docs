@@ -1,0 +1,84 @@
+---
+title: "Client Credentials (M2M)"
+sidebarTitle: "Client Credentials (M2M)"
+description: "Set up NetSuite OAuth 2.0 machine-to-machine auth for Refold — enable the grant, generate a certificate, map it in NetSuite, and hand the credential to Refold."
+---
+
+The **Client Credentials (Machine-to-Machine)** grant authenticates with a **certificate-signed JWT** instead of a user login — so there's **no refresh token and no re-authentication**, only certificate rotation. It's the OAuth 2.0 successor to Token-Based Auth for unattended, server-to-server integrations. For how it compares with the other methods, see the [NetSuite overview](/applications/providers/netsuite#authentication-at-a-glance).
+
+### Integration record settings (M2M)
+
+On the integration record's **Authentication** tab (`Setup ▸ Integration ▸ Manage Integrations ▸ New`), work in the **OAuth 2.0** section.
+
+**Required**
+- **Client Credentials (Machine to Machine) Grant** — check it. Enables the 2-legged M2M flow.
+- **Scope ▸ REST Web Services** (`rest_webservices`) and **Scope ▸ SuiteAnalytics Connect** (`suite_analytics`) — both mandatory.
+
+**Optional**
+- **Authorization Code Grant** — enable it on the same record only if you also want the user flow; the two grants coexist.
+- **Scope ▸ RESTlets** (`restlets`) — only if you use RESTlet-based actions.
+
+There is **no client secret** for M2M — authentication is via the certificate you map below. **Public Client** has no effect here (M2M is always confidential), so leave it unchecked. After saving, copy the **Client ID (Consumer Key)**.
+
+### Set up the certificate
+
+Setup has three parts: generate a key pair, map the public certificate in NetSuite, and give the credential to Refold.
+
+<Steps>
+  <Step title="Generate a certificate and private key">
+    Create a self-signed X.509 certificate and matching private key. NetSuite accepts **RSA** and **EC (elliptic-curve)** keys, and the JWT must be signed with one of its supported algorithms (**PS256, RS256, ES256, ES384, ES512**). Pick whichever your stack prefers:
+
+    <CodeGroup>
+    ```bash RSA (PS256)
+    openssl req -new -x509 -newkey rsa:4096 \
+      -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:64 -sha256 \
+      -keyout private.pem -out public.pem -nodes -days 730
+    ```
+
+    ```bash EC · prime256v1 (ES256)
+    openssl req -new -x509 -newkey ec:<(openssl ecparam -name prime256v1) \
+      -sha256 -keyout private.pem -out public.pem -nodes -days 730
+    ```
+
+    ```bash EC · secp384r1 (ES384)
+    openssl req -new -x509 -newkey ec:<(openssl ecparam -name secp384r1) \
+      -sha384 -keyout private.pem -out public.pem -nodes -days 730
+    ```
+
+    ```bash EC · secp521r1 (ES512)
+    openssl req -new -x509 -newkey ec:<(openssl ecparam -name secp521r1) \
+      -sha512 -keyout private.pem -out public.pem -nodes -days 730
+    ```
+    </CodeGroup>
+
+    - `public.pem` — the **public certificate** you upload to NetSuite.
+    - `private.pem` — the **private key** you keep secure and use to sign the JWT assertion.
+    - `-days 730` sets a **2-year** validity; set it to match your rotation policy and record the expiry.
+
+    NetSuite enforces specific key/algorithm requirements and only a fixed set of EC curves — see NetSuite's [certificate conditions](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162686838198.html#subsect_162755332391) and [supported curves](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162790605110.html).
+
+    <Warning>
+    **Never upload the private key to NetSuite** — NetSuite only takes the public certificate. If the private key leaks, revoke the certificate mapping and issue a new pair.
+    </Warning>
+  </Step>
+  <Step title="Map the certificate in NetSuite">
+    Go to **Setup ▸ Integration ▸ OAuth 2.0 Client Credentials (M2M) Setup** and click **Create New**. In the popup, select:
+    - **Entity** — the NetSuite (integration) user the connection runs as.
+    - **Role** — the role whose permissions the connection inherits (scope to least privilege; it can't require 2FA).
+    - **Application** — the integration record you created above.
+    - **Certificate** — upload `public.pem` (public part only).
+
+    Save. NetSuite generates a **Certificate ID**, which is used as the JWT `kid`. Copy it.
+
+    <Note>
+    You can keep up to **five active certificates per integration record** (revoked/expired ones don't count) — enough to rotate with zero downtime.
+    </Note>
+  </Step>
+  <Step title="Provide the credential to Refold">
+    In Refold's NetSuite settings, provide the **Client ID**, the **Certificate ID**, and the **private key**. Refold signs a JWT assertion with the private key and exchanges it for short-lived access tokens automatically — no user interaction.
+  </Step>
+</Steps>
+
+<Tip>
+**Rotate before expiry.** M2M never needs a user re-login, but the certificate does expire. Because NetSuite allows up to five active certificates, add and map a replacement ahead of the expiry date, switch Refold to the new Certificate ID/key, then revoke the old one — no downtime.
+</Tip>

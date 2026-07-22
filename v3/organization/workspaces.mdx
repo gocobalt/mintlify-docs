@@ -1,0 +1,133 @@
+---
+title: "Create & Manage Workspaces"
+description: "What a workspace is, how to create and switch between them, set a primary, and edit the current workspace's overview details."
+---
+
+A **workspace** is an isolated Refold environment: its own integrations,
+linked accounts, users, and settings. Use multiple workspaces when you need
+hard separation between products, customers, or environments (production
+versus staging), and keep one as your **primary** for billing and
+single-sign-on routing.
+
+Open the workspace switcher from the workspace name in the bottom-left of the
+dashboard, or jump directly to the listing page.
+
+## All workspaces
+
+The **All workspaces** page shows every workspace you have access to as a
+card grid. Each card carries the workspace name, type, environment, region,
+seat count, and a switch action.
+
+{/* MEDIA-TODO (image): screenshot of the All workspaces page showing 3 workspace
+    cards (Empty Space, Coupa, Ralph Lauren) plus the Create new workspace card. */}
+<Frame caption="All workspaces">
+  <img src="/images/PLACEHOLDER.png" alt="All workspaces page with workspace cards" />
+</Frame>
+
+### What each field means
+
+| Field | What it shows |
+|---|---|
+| **Type** | The workspace category: `ISV / SaaS Provider` or `Enterprise Customer`. The type controls which Refold features are available. |
+| **PRIMARY** tag | Marks the workspace Refold treats as your account's default for billing and SSO routing. There's exactly one primary. |
+| **ENV** | The deployment environment (`Production`, `Staging`). |
+| **REGION** | The AWS region the workspace is hosted in (`us-east-1`). |
+| **SEATS** | The number of user seats the workspace's plan allows. |
+
+{/* NEEDS INPUT: confirm the exact list of workspace types (the screenshot
+    shows "ISV / SaaS Provider" and "Enterprise Customer"; are there others?),
+    and confirm the rules around the PRIMARY tag (who can change it, what
+    happens when it moves). */}
+
+## Switch workspaces
+
+<Steps>
+  <Step title="Open All workspaces">
+    Click the workspace name in the bottom-left corner of the dashboard, then
+    select **All workspaces**.
+  </Step>
+  <Step title="Click Switch to Workspace">
+    On the card for the workspace you want, click **Switch to Workspace**.
+    Refold reloads the dashboard scoped to that workspace.
+  </Step>
+</Steps>
+
+Your current workspace shows **Current Workspace** on its card instead of a
+switch link.
+
+## Create a workspace
+
+<Steps>
+  <Step title="Open the Create card">
+    On **All workspaces**, click the **+ Create Workspace** button in the
+    top-right, or click the **Create new workspace** card at the end of the
+    grid.
+  </Step>
+  <Step title="Pick a type and environment">
+    {/* NEEDS INPUT: list the exact fields in the Create Workspace form
+        (name, type, region, environment, seat allocation, billing). */}
+    Set the workspace **Name**, **Type**, **Region**, and **Environment**.
+  </Step>
+  <Step title="Create">
+    Click **Create**. Refold provisions the workspace and adds it to your
+    listing. Switch into it to start configuring.
+  </Step>
+</Steps>
+
+<Note>
+  Creating a workspace allocates seats from your plan. Confirm seat
+  availability before you start.
+</Note>
+
+## Primary workspace
+
+The **PRIMARY** tag marks the workspace Refold uses as your account's
+default. It's the workspace billing belongs to, and it's the one SSO
+routes to when no specific workspace is named in the sign-in URL.
+
+{/* NEEDS INPUT: how does a user change which workspace is primary?
+    Is it a settings toggle, a support request, or fixed at create time? */}
+
+## Workspace overview settings
+
+The **Overview** page holds the high-level metadata for a workspace: its
+display name, the URL slug used in dashboard links, the workspace ID used in
+API calls, the contact email, the logo, and the subscription tier. Open it
+from **Settings > Organization > Overview**.
+
+### Edit workspace details
+
+<Steps>
+  <Step title="Open Overview">
+    Go to **Settings > Organization > Overview**.
+  </Step>
+  <Step title="Update fields">
+    Edit any of **Name**, **Website**, or **Logo** (paste a public image URL).
+  </Step>
+  <Step title="Save">
+    Click **Save**. Changes apply across the workspace immediately.
+  </Step>
+</Steps>
+
+{/* MEDIA-TODO (image): screenshot of Settings > Organization > Overview showing
+    Name, Website, Email, Logo, Slug, and ID fields. */}
+<Frame caption="Workspace overview">
+  <img src="/images/PLACEHOLDER.png" alt="Organization overview with name, website, email, logo, slug, and ID fields" />
+</Frame>
+
+### Fields explained
+
+| Field | What it does |
+|---|---|
+| **Name** | Display name shown in the dashboard, in invitation emails, and on the workspace switcher. |
+| **Website** | Public URL of your company. Used in customer-facing flows like the Connect Portal. |
+| **Email** | Workspace contact address. Refold sends billing and admin notifications here. To change it, click **Contact support**. |
+| **Logo** | Public URL of an image used as the workspace avatar wherever the workspace name appears. |
+| **Slug** | URL-safe identifier used in dashboard URLs (`refold-8301`). Read-only; copy it with the icon at the right of the field. |
+| **ID** | Internal workspace identifier used in API requests and webhook payloads. Read-only; copy with the icon at the right of the field. |
+
+### Subscription tier
+
+The badge under the workspace logo in the right column shows your tier
+(for example, **Enterprise**). To change tiers, contact your account
+representative or use **Contact support** under the email field.

@@ -1,14 +1,14 @@
 ---
 title: "Quick Start"
-description: "Connect a real app and trigger your first integration through the Refold API in about 10 minutes."
+description: "Connect a NetSuite account, fetch data from it, and run a workflow through the Refold API in about 10 minutes."
 ---
 
-Refold connects your product to third-party apps through linked accounts, connectors, and workflows. This quickstart runs that loop end to end: get an API key, configure an app, connect it to a linked account, and run your first integration through the API. Plan about 10 minutes.
+Refold connects your product to third-party apps through [linked accounts](/v3/concepts/linked-account), connectors, actions, and workflows. This quickstart runs that loop end to end with **NetSuite**: get an API key, connect an account, fetch data from it, and run a workflow. Plan about 10 minutes.
 
 ## Prerequisites
 
 - **A Refold account.** Log in at [app.refold.ai](https://app.refold.ai). Don't have one? [Contact us](https://www.refold.ai/contact-us) to get set up.
-- **No third-party credentials needed.** This quickstart uses the **Playground app** (`playground_app`), a built-in test connector for running the full loop.
+- **A NetSuite account.** Use a sandbox account for this walkthrough; you'll connect it with key-based authentication (covered below).
 
 <Note>
   Every API call uses the base URL `https://app.refold.ai` and sends your API key in the `x-api-key` header. Account-scoped calls also send the customer's `linked_account_id` as a header.
@@ -29,26 +29,17 @@ Refold connects your product to third-party apps through linked accounts, connec
   </Step>
 </Steps>
 
-## Configure the Playground app
+## Choose an authentication method
 
-Before a customer can connect an app, configure how Refold authenticates with it. The Playground app uses key-based auth.
-
-<Steps>
-  <Step title="Open the Playground app">
-    Go to **Apps > Playground app > Settings**.
-  </Step>
-  <Step title="Choose the auth method">
-    Select **Key-based**, add the **API key**, and click **Save**.
-  </Step>
-</Steps>
+Refold supports multiple authentication methods per application, so you choose what to offer. For this walkthrough, use **key-based authentication** — it's the quickest because it needs **no app-level configuration**. The customer supplies their NetSuite credentials directly in the Connect portal when they connect (next step).
 
 <Note>
-  Real connectors may use OAuth 2.0 instead of key-based auth. See [Authentication](/v3/connectors/app-auth-modes) to set up an OAuth app for production.
+NetSuite also supports **OAuth 2.0** and **M2M**, which *do* require app-level setup (client ID and secret, and so on). Offer whichever your customers prefer — see the [NetSuite connector docs](/applications/providers/netsuite).
 </Note>
 
 ## Create a linked account
 
-A linked account represents one of your customers. Create one through the API. You choose the `linked_account_id`, then reuse it in every account-scoped call.
+A linked account represents one of your customers. Create one through the API — you choose the `linked_account_id`, then reuse it in every account-scoped call.
 
 ```bash cURL
 curl -X POST https://app.refold.ai/api/v2/public/linked-account \
@@ -64,9 +55,9 @@ curl -X POST https://app.refold.ai/api/v2/public/linked-account \
 { "success": true }
 ```
 
-## Connect the app
+## Connect NetSuite
 
-Generate a [Connect portal](/v3/native/frontend/overview) URL for the linked account, then open it to connect the app.
+Generate a [Connect portal](/v3/embedded/connect-flow) URL for the linked account, then open it to authenticate the account.
 
 ```bash cURL
 curl -X POST https://app.refold.ai/api/v2/public/connect-url \
@@ -84,18 +75,51 @@ curl -X POST https://app.refold.ai/api/v2/public/connect-url \
   <Step title="Open the Connect portal">
     Open the `hosted_url` from the response in your browser.
   </Step>
-  <Step title="Connect the Playground app">
-    Find the **Playground app**, click **Connect**, and complete authentication.
+  <Step title="Authenticate NetSuite">
+    Find **NetSuite** and enter your NetSuite credentials — with key-based auth, they're supplied right here in the portal. Complete the connection and a **Connected** badge appears.
   </Step>
 </Steps>
 
 <Note>
-  The Connect portal is Refold's hosted connection UI. You can build your own with the [frontend SDKs](/v3/native/frontend/overview).
+  The Connect portal is Refold's hosted connection UI. You can build your own with the [frontend SDKs](/v3/embedded/connect-flow).
 </Note>
 
-## Trigger your first integration
+## Fetch data from NetSuite
 
-With the app connected, run a published workflow for the linked account through the workflow API. Pass the workflow's ID in the path and the Playground app's slug, `playground_app`, in the `slug` header.
+With the account connected, read data straight from the customer's NetSuite. Refold uses the stored credentials automatically, so no NetSuite tokens go in the request.
+
+First, list the actions to find the one you need and its exact ID:
+
+```bash cURL
+curl https://app.refold.ai/api/v2/integration-schema/netsuite/actions \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1"
+```
+
+Then execute a read action to fetch records. For example, **Get List Of Records Invoice** (`get_list_of_records_invoice`) returns the account's invoices:
+
+```bash cURL
+curl -X POST https://app.refold.ai/api/v2/integration-schema/netsuite/actions/get_list_of_records_invoice/execute \
+  -H "x-api-key: $REFOLD_API_KEY" \
+  -H "linked_account_id: demo-user-1" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+```json Output
+{
+  "success": true,
+  "data": {
+    "items": [
+      { "id": "1024", "tranId": "INV-1024", "entity": "Acme Corp", "total": 4800.00, "status": "open" }
+    ]
+  }
+}
+```
+
+## Run a workflow
+
+A single action is one call; a [workflow](/v3/workflows/overview) chains steps — read, transform, then write, or fan out across several apps. Run a published workflow for the linked account through the workflow API. Pass the workflow's ID in the path and the connector slug, `netsuite`, in the `slug` header.
 
 <Note>
   The workflow must be **published** before you can run it. Get its ID from [List Workflows](/v3/api-reference/workflows/list-workflows) or the Console.
@@ -105,9 +129,9 @@ With the app connected, run a published workflow for the linked account through 
 curl -X POST https://app.refold.ai/api/v2/public/workflow/YOUR_WORKFLOW_ID/execute \
   -H "x-api-key: $REFOLD_API_KEY" \
   -H "linked_account_id: demo-user-1" \
-  -H "slug: playground_app" \
+  -H "slug: netsuite" \
   -H "Content-Type: application/json" \
-  -d '{ "payload": { "email": "jane@example.com" } }'
+  -d '{ "payload": { "invoice_id": "1024" } }'
 ```
 
 ```json Output
@@ -117,14 +141,13 @@ curl -X POST https://app.refold.ai/api/v2/public/workflow/YOUR_WORKFLOW_ID/execu
 }
 ```
 
-Refold acknowledges with an `execution_id` and starts the run. Open **Logs** in the Console to follow it. To get the workflow output inline instead, add the `sync_execution: true` header. For every option, see [Execute Workflow](/v3/api-reference/workflows/execute-workflow).
+Refold acknowledges with an `execution_id` and starts the run. Open **Logs** in the Console to follow it, or add the `sync_execution: true` header to get the output inline. For every option, see [Execute Workflow](/v3/api-reference/workflows/execute-workflow).
 
 ## Choose your product
 
-You've run the core loop. Now pick the product that fits how you ship integrations.
+You've run the core loop — connect an app, fetch data, and run a workflow. To go deeper or apply this to any connector, follow [Build an Integration](/v3/embedded/use-cases/build-integration). Then pick the product that fits how you ship integrations.
 
 | Product | Who it's for |
 |---------|--------------|
-| [**Native**](/v3/products/what-is-native) | SaaS teams embedding third-party integrations inside their own product |
-| [**Integration Delivery**](/v3/integration-delivery/overview/overview) | Teams delivering bespoke enterprise integrations to their customers |
-| [**MCP**](/v3/products/what-is-mcp) | AI teams giving agents secure, governed access to enterprise systems |
+| [**Embedded Marketplace**](/v3/embedded/overview) | SaaS teams embedding third-party integrations inside their own product |
+| [**MCP**](/v3/mcp/overview) | AI teams giving agents secure, governed access to enterprise systems |

@@ -1,0 +1,59 @@
+---
+title: "Dead Letter Queue Node"
+description: "Capture records that fail inside a workflow into a durable queue so nothing is lost and every failure can be reprocessed later."
+sidebarTitle: "Dead Letter Queue"
+---
+
+The **Dead Letter Queue (DLQ)** node captures records that fail during a workflow run and holds them in a durable queue instead of dropping them. When a step errors, you route the failing record to the DLQ node, which stores the original payload alongside the error so the record survives the failure. A separate reprocessing workflow can then re-run those records once the underlying cause is fixed, so even data that failed the first time still reaches the target system.
+
+Use a DLQ whenever losing a record is unacceptable — payments, orders, invoices, or any write whose failure needs a second attempt rather than a silent drop.
+
+<Info>
+The DLQ node pairs with the [Try & Catch node](/v3/workflows/nodes/try-catch-node). Wrap the error-prone step in a try block and route its catch branch to the DLQ node, so a failure is caught and queued instead of failing the whole run.
+</Info>
+
+## When to use
+
+- Preserve records that fail a write so none are lost to a transient error.
+- Collect failures for a step that depends on an external system that may be down or rate-limited.
+- Separate the failure path from the happy path, so a single bad record never blocks the rest of a batch.
+- Build guaranteed eventual delivery: queue failures now, reprocess them once the cause is resolved.
+
+## How it works
+
+A DLQ node sits on the failure path of a workflow and records each failed item as a queue entry.
+
+<Steps>
+  <Step title="Wrap the risky step">
+    Put the step that can fail — a write [action](/v3/embedded/use-cases/read-write), an [HTTP Request](/v3/workflows/nodes/http), or a connector call — inside a [Try & Catch node](/v3/workflows/nodes/try-catch-node).
+  </Step>
+  <Step title="Route the catch branch to the DLQ node">
+    Connect the catch branch to a Dead Letter Queue node. When the try block fails, the failing record and its error are handed to the DLQ instead of ending the run.
+  </Step>
+  <Step title="Capture the record and the error">
+    The DLQ node stores the original input payload together with the error detail (message and failed node), so you keep both what to retry and why it failed.
+  </Step>
+  <Step title="Let the happy path continue">
+    Records that succeed flow on through the workflow as normal. Only failures land in the queue.
+  </Step>
+</Steps>
+
+<Warning>
+A record only reaches the DLQ if its failure is caught. Make sure the failing step is inside a Try & Catch (or on an explicit error path) — an uncaught error fails the whole run before the DLQ node executes.
+</Warning>
+
+## Reprocess failed records
+
+Capturing failures is only half of guaranteed delivery — you then reprocess them. Queued records are re-run by a reprocessing workflow once the cause is fixed (the app comes back up, a bad value is corrected, a limit resets), so they reach the target system on a later attempt.
+
+Reprocessing, retry policy, and the operational view of the queue are covered in the operate docs:
+
+- **[Dead Letter Queue](/v3/observability/dead-letter-queue)** — inspect captured failures and reprocess them so no record is lost.
+- **[Autopilot](/v3/observability/autopilot)** — automatically identify a workflow's failure points and build repair mechanisms so the same failure is prevented going forward.
+
+## Best practices
+
+- **Queue the record, not just the error.** Store the full input payload so a reprocessing run has everything it needs to retry.
+- **Pair with Try & Catch.** The DLQ captures what the catch branch hands it; without the try block the run fails before queuing.
+- **Make reprocessing idempotent.** A requeued write can run after the original partially succeeded — see [Idempotency](/v3/embedded/best-practices/idempotency) so a retry never duplicates a record.
+- **Fix the cause, then drain the queue.** Reprocess only after the underlying failure is resolved, or records will fail again and requeue.

@@ -1,162 +1,214 @@
 ---
-title: Key Based Connect
-description: Connect with the Linked Account's NetSuite account.
+title: "NetSuite"
+sidebarTitle: "Overview"
+description: "How Refold connects to NetSuite — compare Token-Based Auth, OAuth 2.0 (Authorization Code), and Client Credentials (M2M), then pick a setup path."
 ---
-<Note>
-NetSuite is an **API Key** based integration and does not require the setup of an app.
-</Note>
 
-### Pre-requisites
+Refold connects to NetSuite through its **REST web services**. There are several ways to authenticate — pick one by weighing **how much setup effort** it takes against **how long the connection stays authenticated** before someone has to re-authorize.
 
-1. NetSuite account with `REST Web Services` enabled.
-<Tip>
-To enable REST Web Services, navigate to `Setup`> `Company` > `Enable Features` and tick the **REST Web Services** checkbox under `SuiteCloud` tab.
-</Tip>
-<img height="200" src="/images/Netsuite/netsuite_enable_rest.png" alt="Enabling REST Web Services in Netsuite"/>
-2. Token Based Auth Enabled in Linked Account's Netsuite.
+## Authentication at a glance
 
-### Required Credentials of a Linked Account
+| Method | Underlying standard | Credentials Refold stores | User effort | Authentication lifetime |
+|---|---|---|---|---|
+| **Key-Based (TBA)** | OAuth 1.0a (signed requests) | Account ID · Consumer Key/Secret · Token ID/Secret | **Medium** — create an integration record and an access token under a dedicated role | **No expiry** — tokens stay valid until revoked |
+| **OAuth 2.0 — Authorization Code** | OAuth 2.0, 3-legged (confidential client) | Client ID/Secret · Account ID | **Lowest** — the user consents through the OAuth prompt | Re-auth each **Refresh Token Validity** window (default 168 h / 7 days, settable up to 30 days) |
+| **Client Credentials (M2M)** | OAuth 2.0, 2-legged (JWT signed by a certificate) | Client ID · Certificate ID · private key | **Highest** — create an integration record **and** generate + map a certificate | Bounded by **certificate validity** (up to ~2 years), then rotate — no user re-auth |
 
-To successfully connect with the **NetSuite** integration, a Linked Account or an end-user will need to provide the following to connect:
+<Info>
+Rule of thumb: **lowest effort → OAuth Authorization Code** (but users re-authorize periodically); **longest unattended life → Key-Based or M2M** (more setup, little-to-no re-auth). The [in-depth comparison](#in-depth-token-lifetimes-and-re-authentication) below explains the token mechanics behind each.
+</Info>
 
-1. Account ID
-2. Consumer Key
-3. Consumer Secret
-4. Token ID
-5. Token Secret
+## Set up your connection
 
-<img height="200" src="/images/Netsuite/netsuite_key_config.png" alt="Connect a Linked Account"/>
+Pick a method and follow its setup guide:
 
-### Enable Token Based Auth in NetSuite
+<CardGroup cols={3}>
+  <Card title="Token-Based Auth (Key-Based)" icon="key" href="/applications/providers/netsuite_tba">
+    Enable TBA and create an access token. Suits existing unattended integrations; not available for *new* integrations after NetSuite 2027.1.
+  </Card>
+  <Card title="OAuth 2.0" icon="shield-halved" href="/applications/providers/netsuite_oauth">
+    Create an OAuth client, set scopes, and configure credentials — the user consents through the OAuth prompt.
+  </Card>
+  <Card title="Client Credentials (M2M)" icon="robot" href="/applications/providers/netsuite_m2m">
+    Certificate-signed machine-to-machine auth — no recurring login, no refresh token.
+  </Card>
+</CardGroup>
 
-Before creating the credentials in NetSuite, you are required to enable Token Based Auth. Follow the steps given below:
+## In depth: token lifetimes and re-authentication
 
-1. Navigate to `Setup` > `Company` > `Enable Features` in your Netsuite account.
-<img height="200" src="/images/Netsuite/netsuite_enable.png" alt="Enabling OAuth in Netsuite"/>
-2. Select the `SuiteCloud` tab present, scroll down and enable `Token-Based Authentication` checkbox under **Manage Authentication** section.
+NetSuite's OAuth 2.0 grant types behave very differently around **token expiry and re-authentication** — the difference matters most for unattended, always-on integrations, where some methods run for years without human involvement while others force a periodic re-login.
 
+### Method comparison
 
-### Getting Credentials of NetSuite
+| | Key-Based (TBA) | OAuth 2.0 — Authorization Code | Client Credentials (M2M) |
+|---|---|---|---|
+| **Underlying standard** | OAuth 1.0a; every request HMAC-signed | OAuth 2.0, 3-legged (confidential client) | OAuth 2.0, 2-legged; JWT signed with a certificate |
+| **A user must log in to authorize?** | No — an admin generates tokens once | **Yes** — an end user authorizes via redirect | No — machine-to-machine |
+| **Credentials Refold stores** | Account ID, Consumer Key/Secret, Token ID/Secret | Client ID/Secret, Account ID + issued tokens | Client ID + Certificate ID + private key |
+| **Access-token lifetime** | **Never expires** | ~60 minutes | ~60 minutes |
+| **Refresh token** | None (not needed) | Yes | None |
+| **Re-authentication interval** | Never (until the token is revoked) | Every **Refresh Token Validity** window — default **168 h (7 days)**, editable **1–720 h (30 days)**; not extended by workflow activity | Never — bounded by certificate validity |
+| **How tokens renew** | No renewal — the token is static | Refold auto-refreshes access tokens; a fresh authorization is needed when the Refresh Token Validity window lapses | Refold auto-mints access tokens from the certificate; no user involved |
+| **Manual re-authentication** | Only if the token is revoked, or the user/role is disabled | Every Refresh Token Validity window (raise toward 720 h to reduce) | **Never** while the certificate is valid |
+| **Credential rotation** | Manual, at your discretion (tokens don't expire) | Rotate the client secret manually | **Rotate the certificate before it expires** |
+| **Works with 2FA-required roles** | **No** | Yes | N/A (no user; runs under a machine role) |
+| **Best for** | Existing unattended integrations (legacy) | User-attended connections acting as a specific user | New unattended, server-to-server integrations |
 
-To acquire the required credentials and connect a Linked Account, please follow the steps mentioned below:
+### What to watch out for
 
-1. Log in to your Netsuite account with Admin permissions.
-2. To get your **Account ID**, navigate to `Setup` > `Company` > `Company Information` and copy the `Account ID` present there.
-<img height="200" src="/images/Netsuite/netsuite_navigation.png" alt="Navigating for Account ID"/>
+<AccordionGroup>
+  <Accordion title="Key-Based / TBA — tokens never expire (a benefit and a liability)">
+    - **No re-auth, ever** — because TBA tokens don't expire, the connection never needs a human to log back in. This is why it has been the default for unattended integrations.
+    - **A leaked token stays valid until you revoke it.** There's no automatic expiry to contain the blast radius, so treat the Token ID/Secret as long-lived secrets and **rotate them deliberately** on a schedule.
+    - **Tied to a user + role.** The token is bound to the NetSuite user and role it was created under. If that employee is deactivated or the role changes, the token breaks — use a dedicated integration user, not a person's login.
+    - **Cannot be used with roles that require 2FA.**
+  </Accordion>
+  <Accordion title="OAuth 2.0 Authorization Code — re-authentication timing">
+    Refold connects as a **confidential client** (Client ID + Client Secret). Its re-authentication interval is governed by **Refresh Token Validity** on the NetSuite integration record — **default 168 h (7 days)**, editable **up to 720 h (30 days)**. The refresh token expires at the end of that window and **isn't extended by workflow activity**, so the connection needs a fresh authorization each interval.
 
-3. Click on `Setup` > `Integration` > `Manage Integrations` and choose `New`.
-<img height="200" src="/images/Netsuite/netsuite_create.png" alt="Navigating for App creation"/>
-4. Enter the App **Name** and under `Authentication`, uncheck the `TBA: Authorization Flow` under **Token-based authentication** and then disable `Authorization Code Grant` checkbox under **OAuth 2.0**.
-<img height="200" src="/images/Netsuite/netsuite_create_token.png" alt="Creating Integration Credentials"/>
-5. Click on `Save` and copy the `Consumer Key` and `Consumer Secret` displayed under **Client Credentials** section.
-<img height="200" src="/images/Netsuite/netsuite_credentials2.png" alt="Getting Consumer Key and Secret"/>
+    - **Reduce how often users re-authenticate** by raising **Refresh Token Validity** toward its 720-hour (30-day) maximum. To avoid recurring logins entirely, use **Client Credentials (M2M)**, which has no refresh token and no periodic re-authentication.
+    - **Re-authorizing is not the same as issuing new client credentials.** Recovering a lapsed connection just means the user re-runs the connect flow (log in + consent); Refold reuses the **same Client ID/Secret**. You only generate new credentials if you deliberately reset or rotate them in NetSuite.
+  </Accordion>
+  <Accordion title="OAuth 2.0 Client Credentials / M2M — no re-auth, but rotate the certificate">
+    - **No refresh token, no recurring re-authentication.** After a one-time certificate setup, Refold mints a fresh access token from a signed JWT whenever it needs one — so day-to-day operation runs unattended, with no periodic user login. It's the OAuth 2.0 successor to TBA for machine integrations.
+    - **The certificate is the thing that expires.** NetSuite client-credential certificates have an expiry, so the one manual task is **rotating the certificate before it lapses** — an expired certificate takes the integration down. Track the expiry date and rotate ahead of it.
+    - Permissions come from the **machine role** mapped to the client, not from an end user.
+    - Full setup — certificate generation and mapping — is on the [Client Credentials (M2M) page](/applications/providers/netsuite_m2m).
+  </Accordion>
+</AccordionGroup>
 
-6. Navigate to **Setup**> **Users/Roles** > **Access Tokens** and click on `New`.
-<img height="200" src="/images/Netsuite/netsuite_navigate_token.png" alt="Navigation for Token Credentials"/>
+### FAQ
 
-7. Click on `New My Access Token` > Select the Integration created above from the `Application Name` drop-down > Provide a `Token Name` and click on `Save`.
-<Note>
-Ensure that you selected the correct app in the Application Name drop-down.
-</Note>
-8. Copy the `Token ID` and `Token Secret` displayed under **Token Id/Secret** section.
-<img height="200" src="/images/Netsuite/netsuite_credentials3.png" alt="Getting Token ID and Secret"/>
+<AccordionGroup>
+  <Accordion title="Why did my OAuth connection expire after ~7 days even though workflows were running?">
+    Refold's OAuth is a **confidential** client, so the re-auth interval is set by **Refresh Token Validity** on the NetSuite integration record — the token expires at that window regardless of activity. It **defaults to 168 h (7 days)**. **Raise it toward 720 h (30 days)** to re-authenticate less often, or use **[Client Credentials (M2M)](/applications/providers/netsuite_m2m)** for no periodic re-auth.
+  </Accordion>
+  <Accordion title="Do I need to regenerate credentials when a connection expires?">
+    No — just **re-authorize**: the user re-runs the connect flow and Refold gets fresh tokens using your existing Client ID/Secret. Only **generate new credentials** (and update them in Refold) if the credential *itself* changes — you reset the Consumer Key/Secret on the integration record, or rotate the M2M certificate.
+  </Accordion>
+</AccordionGroup>
 
-The Linked Account or end-user now have all the credentials required to connect with NetSuite.
+<Warning>
+**Plan for NetSuite's TBA deprecation.** As of NetSuite **2027.1**, *new* integrations can no longer be created with TBA for SOAP/REST web services and RESTlets (existing integrations keep working). For a new NetSuite connection, prefer **OAuth 2.0**, or **Client Credentials (M2M)** for unattended workloads.
+</Warning>
 
-#### Actions and triggers
-Once the above setup is completed, you can create orchestrations of your use-cases using NetSuite actions and triggers. Following are the set of NetSuite actions and triggers
-supported by Refold.
+<Info>
+Whichever method you choose, Refold acts under the **role** the token or OAuth client runs as. That role's permissions and subsidiary restrictions determine exactly which records Refold can read and write — scope the role to least privilege.
+</Info>
+
+## Actions &amp; triggers
+
+Once the connection is set up, you can orchestrate NetSuite in your workflows. Refold exposes two families of actions — **curated actions** for common records, and **generic record operations** that cover NetSuite's full SuiteTalk REST record catalog — plus utility actions and record triggers.
 
 <Tabs>
-  <Tab title="Actions">
+  <Tab title="Curated actions">
+  Purpose-built actions for the records teams use most.
   <AccordionGroup>
-  <Accordion title="Accounts">
-     1. **Get Accounts** - Get all accounts in Netsuite.
-     2. **Create Account** - Create a new account in Netsuite.
-     3. **Update Account** - Update an account in Netsuite.
+     <Accordion title="Accounts">
+     - **Get Account** — list accounts (filtering + pagination).
+     - **Get Account By Id** — fetch a single account.
+     - **Create Account** — create an account.
+     - **Update Account** — update an account.
      </Accordion>
-     <Accordion title="Boms">
-     4. **Get Boms** - Get all Boms in Netsuite.
-     5. **Create Boms** - Create a new Bom in Netsuite.
-     6. **Update Boms** - Update an Bom in Netsuite.
-     7. **Get Bom by ID** - Get a Bom by ID in Netsuite.
-      </Accordion>
-     <Accordion title="Campaigns">
-     8. **Create Campaign** - Create a campaign in Netsuite.
-     9. **Get Campaigns** - Get Campaign list in Netsuite.
-     10. **Update Campaign** - Update a campaign in Netsuite.
-     11. **Delete Campaign** - Delete a campaign in Netsuite.
-      </Accordion>
-     <Accordion title="Contacts">
-     12. **Create Contact** - Create a contact in Netsuite.
-     13. **Get Contact** - Get all contacts in Netsuite.
-     14. **Update Contact** - Update a contact in Netsuite.
-      </Accordion>
-     <Accordion title="Currency">
-     15. **Get Currency** - List all currencies in Netsuite.
-     16. **Create Currency** - Create a currency in Netsuite.
-     17. **Get Currency By Id** - Get a currency by ID in Netsuite.
-     18. **Update Currency** - Update a currency in Netsuite.
-     </Accordion>
-     <Accordion title="Customer">
-     19. **Get Customers** - Get all customers in Netsuite.
-     20. **Create Customer** - Create a customer in Netsuite.
-     21. **Get Customer By Id** - Get a customer by ID in Netsuite.
-     22. **Update Customer** - Update a customer in Netsuite.
-     </Accordion>
-     <Accordion title="Departments">
-     23. **Get Departments** - List all departments in Netsuite.
-      </Accordion>
-     <Accordion title="Employees">
-     24. **Get Employees** - Get all employees in Netsuite.
-     25. **Create Employee** - Create an employee in Netsuite.
-     26. **Update Employee** - Update an employee in Netsuite.
-     27. **Delete Employee** - Delete an employee in Netsuite.
-      </Accordion>
-     <Accordion title="Inventory Items">
-     28. **Get Inventory Item** - Get all inventory items in Netsuite.
-     29. **Create Inventory Item** - Create an inventory item in Netsuite.
-     30. **Update Inventory Item** - Update an inventory item in Netsuite.
-    </Accordion>
-     <Accordion title="Invoice">
-     31. **Get Invoices* - Get all invoices in Netsuite.
-    </Accordion>
-     <Accordion title="Opportunities">
-     32. **Get Opportunities** - Get all opportunities in Netsuite.
-     33. **Create Opportunity** - Create an opportunity in Netsuite.
-     34. **Update Opportunity** - Update an opportunity in Netsuite.
-     35. **Delete Opportunity** - Delete an opportunity in Netsuite.
-    </Accordion>
-     <Accordion title="Sales Record">
-     36. **Get Sales Record** - Get all sales records in Netsuite.
-     37. **Create Create Sales Record** - Create a sales record in Netsuite.
-     38. **Get Sales Record By Id** - Get a Sales record by ID in Netsuite.
-     39. **Update Sales Record** - Update sales record in Netsuite.
-     </Accordion>
-     <Accordion title="Subsidiary">
-     40. **Get Subsidiary** - Get all subsidiaries in Netsuite.
-     41. **Get Subsidiary By Id** - Get a subsidiary by ID in Netsuite.
-     </Accordion>
-     <Accordion title="Tasks">
-     42. **Create Task** - Create a task in Netsuite.
-     43. **Get Tasks** - Get all tasks in Netsuite.
-     44. **Update Task** - Update task in Netsuite.
-     45. **Delete Task** - Delete task in Netsuite.
-    </Accordion>
-     <Accordion title="Timesheets">
-     46. **Get Timesheets** - Get all Timesheets in Netsuite.
+     <Accordion title="Customers">
+     - **Get Customer** — list customers.
+     - **Get Customer By Id** — fetch a customer by internal ID.
+     - **Get Customer By Entity or External Id** — fetch by entity/external ID.
+     - **Create Customer** — create a customer.
+     - **Update Customer** — update a customer.
      </Accordion>
      <Accordion title="Vendors">
-     47. **Create Vendor** - Create a vendor in Netsuite.
-     48. **Delete Vendor** - Delete a vendor in Netsuite.
+     - **Get Vendors** — list vendors.
+     - **Get Vendor By Id** — fetch a single vendor.
+     - **Create Vendor** — create a vendor.
+     - **Delete Vendor** — delete a vendor.
      </Accordion>
-     <Accordion title="Others">
-     39. **HTTP Request** - Make HTTP API calls to any NetSuite documented REST APIs.
-      </Accordion>
-    </AccordionGroup>
+     <Accordion title="Contacts">
+     - **Get Contact** — list contacts.
+     - **Get Contact By Id** — fetch a single contact.
+     - **Create Contact** — create a contact.
+     - **Update Contact** — update a contact.
+     </Accordion>
+     <Accordion title="Invoices">
+     - **Get Invoices** — list invoices.
+     - **Get Invoice By Id** — fetch a single invoice.
+     - **Get Invoice By External Id** — fetch by external ID.
+     - **Create Invoice** — create an invoice.
+     </Accordion>
+     <Accordion title="Sales Records (Sales Orders)">
+     - **Get Sales Record** — list sales records.
+     - **Get Sales Record By Id** — fetch by internal ID.
+     - **Get Sales Record By External Id** — fetch by external ID.
+     - **Create Sales Record** — create a sales record.
+     - **Update Sales Record** — update a sales record.
+     </Accordion>
+     <Accordion title="Opportunities">
+     - **Get Opportunity** — list opportunities.
+     - **Create Opportunity** — create an opportunity.
+     - **Update Opportunity** — update an opportunity.
+     - **Delete Opportunity** — delete an opportunity.
+     </Accordion>
+     <Accordion title="Campaigns">
+     - **Get Campaigns** — list campaigns.
+     - **Create Campaign** — create a campaign.
+     - **Update Campaign** — update a campaign.
+     - **Delete Campaign** — delete a campaign.
+     </Accordion>
+     <Accordion title="Employees">
+     - **Get Employee** — list employees.
+     - **Create Employee** — create an employee.
+     - **Update Employee** — update an employee.
+     - **Delete Employee** — delete an employee.
+     </Accordion>
+     <Accordion title="Projects &amp; Tasks">
+     - **Jobs** — Get Jobs, Get Job By Id, Create Job, Update Job, Delete Job.
+     - **Job Status** — Get, Get By Id, Create, Update, Upsert, Delete.
+     - **Project Task** — Get, Get By Id, Create, Update, Upsert, Delete.
+     - **Tasks** — Get Task, Create Task, Update Task, Delete Task.
+     - **Timesheets** — Get Timesheet.
+     </Accordion>
+     <Accordion title="Items, BOMs &amp; Currency">
+     - **Inventory Items** — Get, Get By Id, Create, Update.
+     - **BOMs** — Get, Get By Id, Create, Update.
+     - **Currency** — Get, Get By Id, Create, Update.
+     </Accordion>
+     <Accordion title="Reference data">
+     - **Subsidiaries** — Get Subsidiary, Get Subsidiary By Id.
+     - **Departments** — Get Department.
+     </Accordion>
+     <Accordion title="SuiteQL &amp; Metadata">
+     - **SuiteQL Queries** — run a custom SuiteQL query for SQL-like reads.
+     - Prebuilt SuiteQL helpers — **List Customers / Items / Subsidiaries / Locations using SuiteQL**.
+     - **Get Metadata Catalog** — schema (fields, custom fields, sublists) for a record type; useful for discovering custom fields.
+     </Accordion>
+  </AccordionGroup>
   </Tab>
-  
+
+  <Tab title="Generic record operations">
+  Beyond the curated set, Refold exposes the **full SuiteTalk REST record catalog** — the same standard operations across 150+ NetSuite record types (invoices, sales orders, purchase orders, journal entries, vendor bills, item fulfillments, subscriptions, and many more):
+
+  - **Get List Of Records** — list records of a type.
+  - **Get Record** — fetch a record by ID.
+  - **Insert Record** — create a record.
+  - **Insert Or Update Record** — upsert by external ID.
+  - **Update Record** — update a record.
+  - **Remove Record** — delete a record.
+  - **Transform To…** — convert one record into a related one (e.g. Sales Order → Invoice / Item Fulfillment, Purchase Order → Vendor Bill / Item Receipt, Opportunity → Estimate).
+  - **Execute SuiteQL** — run arbitrary SuiteQL against `/query/v1/suiteql`.
+
+  <Tip>
+  Use curated actions for the common records; drop to generic record operations (or **HTTP Request**) for any record type or endpoint not covered by a named action.
+  </Tip>
+  </Tab>
+
+  <Tab title="Utility actions">
+     - **HTTP Request** — call any documented NetSuite REST endpoint directly.
+     - **Incremental Sync** — poll an endpoint for new/changed data.
+  </Tab>
+
   <Tab title="Triggers">
-        There are no triggers in this application.
+     Webhook triggers fire your workflow on NetSuite events:
+     - **Sales Order Created** — a sales order is created.
+     - **Sales Order Updated** — a sales order is updated.
   </Tab>
 </Tabs>

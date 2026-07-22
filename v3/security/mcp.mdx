@@ -1,0 +1,46 @@
+---
+title: "MCP Security & Compliance"
+sidebarTitle: "MCP Security"
+description: "How Refold MCP isolates tenants, secures transport, and handles data on managed infrastructure."
+---
+
+Every Refold MCP request resolves to exactly one tenant, runs over TLS, and executes on Refold's managed infrastructure. Every tool call is logged automatically to an audit trail that cannot be disabled. Use this page for security reviews, compliance evaluations, and architecture assessments.
+
+For how agents authenticate and how you scope and revoke their access, see [Authentication](/v3/authentication/mcp).
+
+## Tenant isolation
+
+Each MCP server is multi-tenant by design. Each Server URL carries one token that maps to one linked account, and that mapping is the tenant boundary. Refold validates the token on every request and scopes everything that follows to that single tenant.
+
+Refold enforces this at every layer:
+
+| Guarantee | What it means |
+|-----------|---------------|
+| **Each request is scoped to one tenant** | Every request resolves its identity from the token you present, and that identity is fixed for the life of the request. |
+| **Sessions never share state** | Two concurrent sessions never share identity or tool state, and neither is cached across requests. |
+| **Tools are resolved per request** | The actions an agent can see and call are resolved fresh on each request, based on the authenticated identity. |
+| **Data is partitioned per tenant** | Audit records, tool outputs, and execution metadata are partitioned per tenant, and queries are always scoped to that tenant. |
+
+<Info>
+Because the MCP server is stateless, nothing from one session carries into another: there is no identity or tool state to leak, so the per-tenant guarantees above hold even under heavy concurrency.
+</Info>
+
+## Transport security
+
+| Property | Detail |
+|----------|--------|
+| **Protocol** | MCP specification `2025-11-25` over Streamable HTTP |
+| **Encryption** | TLS 1.2+ for all connections (agent-to-Refold, internal Refold traffic, and Refold-to-third-party apps) |
+| **Transport mode** | Stateless HTTP (no persistent WebSocket connections) |
+
+## Data handling
+
+Refold manages OAuth tokens and API keys for connected applications on behalf of linked accounts. These third-party credentials are encrypted at rest with AES-256 field-level encryption, and they are never exposed in MCP tool inputs, outputs, or audit logs. The tools an agent calls never receive raw credentials. Refold resolves them internally when an action executes.
+
+## Audit logging
+
+Every MCP tool call is logged automatically, and logging cannot be disabled. See [MCP Logs](/v3/mcp/operate/logs) for what is captured, the audit guarantees, and how to filter and search records.
+
+## Deployment
+
+Refold MCP servers run on Refold's managed infrastructure.

@@ -1,0 +1,18 @@
+---
+title: "Dead Letter Queue"
+description: "Capture workflow failures in a dead letter queue and reprocess them so no record is lost."
+---
+
+<Note>
+  This page is a placeholder — the capability is live; docs are being authored by the team.
+</Note>
+
+Error-prone steps are wrapped in a try/catch and routed to a **dead letter queue (DLQ)** node that collects every failed record. A reprocessing workflow can then re-run those failures, so even data that failed the first time still reaches the target system. For how failures are captured inside a workflow, see the [Dead Letter Queue node](/v3/workflows/nodes/dead-letter-queue).
+
+## What this page will cover
+
+- What a dead letter queue is and when to use one
+- Wrapping error-prone steps in a try/catch
+- The dead letter queue node — how failures are collected
+- Reprocessing failed records with a workflow
+- Guaranteeing eventual delivery to the target system

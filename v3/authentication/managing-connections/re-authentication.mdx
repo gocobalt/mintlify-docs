@@ -5,7 +5,7 @@ description: "Detect when a customer's connection stops working and prompt them 
 
 **Re-authentication** is what happens when Refold can no longer act on a customer's behalf and needs them to authorize the app again. Refold flags the connection with **`reauth_required`** and can fire a **Connection Expired** webhook; you respond by prompting the customer to reconnect.
 
-You'll need this when a customer's credentials expire, their token is revoked, or they uninstall the app. This page assumes the customer already has a [linked account and a connected app](/v3/native/frontend/overview); it covers recovering a connection that broke, not the first connect.
+You'll need this when a customer's credentials expire, their token is revoked, or they uninstall the app. This page assumes the customer already has a [linked account and a connected app](/v3/embedded/connect-flow); it covers recovering a connection that broke, not the first connect.
 
 ## When a connection needs re-auth
 
@@ -61,7 +61,7 @@ There are two ways to know a connection has expired, use whichever fits your pro
 
 How the customer reconnects depends on the flow you use:
 
-- **Hosted flow and React SDK flow**: re-auth is handled for you. When a connection has expired, the customer is automatically prompted to reconnect inside the [hosted portal](/v3/authentication/connection-flows/hosted-flow) or the [React connect component](/v3/native/frontend/react-sdk-flow).
+- **Hosted flow and React SDK flow**: re-auth is handled for you. When a connection has expired, the customer is automatically prompted to reconnect inside the [hosted portal](/v3/authentication/connection-flows/hosted-flow) or the [React connect component](/v3/authentication/connection-flows/react-sdk).
 - **Build your own**: when `reauth_required` is `true`, call `cobalt.connect()` with the app slug again, exactly as you did for the first connection. See [Build your own](/v3/authentication/connection-flows/build-your-own).
 
 <CodeGroup>
@@ -86,17 +86,3 @@ Once the customer finishes, re-fetch the application object, `reauth_required` r
 <Note>
 Re-authentication reuses the same connect flow as the first authorization, there's no separate "reconnect" method. The only difference is that the customer already has a linked account, so their existing config is preserved.
 </Note>
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Connection status" icon="signal" href="/v3/authentication/managing-connections/connection-status">
-    Read `reauth_required` and render the right state.
-  </Card>
-  <Card title="Token refresh" icon="key" href="/v3/authentication/managing-connections/token-refresh">
-    How Refold avoids most re-auth by refreshing tokens automatically.
-  </Card>
-  <Card title="Frontend overview" icon="window" href="/v3/native/frontend/overview">
-    The connect flows you re-run to reconnect.
-  </Card>
-</CardGroup>

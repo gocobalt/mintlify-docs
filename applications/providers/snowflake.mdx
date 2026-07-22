@@ -23,6 +23,10 @@ Snowflake supports three **mutually exclusive** authentication methods. You pick
 You must provide the **complete set of fields required for exactly one method** (see the tables below). Leaving out a field that's required for your chosen method, or mixing fields from two methods, will cause the connection to fail.
 </Warning>
 
+<Info>
+A future release of Refold will **segregate the individual authentication methods** into their own selection, so you'll choose a method up front and see only that method's required fields. Until then, follow the per-method field tables below.
+</Info>
+
 ## Required fields by method
 
 <Tabs>
@@ -215,19 +219,109 @@ Once connected, the connector shows a green **Connected** badge on the Settings 
 
 ## Actions and triggers
 
-In Refold, you can build orchestrations of your use cases using Snowflake actions and triggers. The following are supported:
+Snowflake exposes **two distinct categories of actions** that use different underlying APIs and support different authentication methods. They can't be swapped — "query data in a table" is a **SQL action**, while "create a database, warehouse, or user" is a **REST action**.
+
+| Category | What it does | Underlying API | Works with |
+|----------|--------------|----------------|------------|
+| **REST actions** | Manage Snowflake objects — databases, schemas, tables, warehouses, users, roles, grants, tasks, and more | Snowflake REST API v2 (`/api/v2`) | JWT Key-Pair, M2M OAuth |
+| **SQL actions** | Read and write data inside tables | `snowflake-sdk` (SQL) | JWT Key-Pair, M2M OAuth, **Username/Password** |
+
+<Warning>
+**Username/Password authentication works for SQL actions only.** REST actions require a token-based method (**JWT Key-Pair** or **M2M OAuth**). A username/password connection sets no authorization header, so every REST action fails with a 401/403. Connect with JWT Key-Pair or M2M OAuth if you need REST actions.
+</Warning>
 
 <Tabs>
-  <Tab title="Actions">
+  <Tab title="REST actions">
+  Manage Snowflake objects through the Snowflake REST API v2. These require **JWT Key-Pair** or **M2M OAuth** — they do **not** work with Username/Password. `database`, `warehouse`, `role`, and `schema` are passed per action as parameters, not from the connection.
+
   <AccordionGroup>
-  <Accordion title="Statements">
-     1. **Create Statement** - Create a SQL statement in Snowflake.
-     2. **Get Statement** - Retrieve the result of a SQL statement execution in Snowflake.
-     3. **Cancel Statement** - Cancel an ongoing SQL statement in Snowflake.
+    <Accordion title="Databases">
+    Top-level container for schemas and tables.
+
+    Create, Create from Share, Clone, Read, List, Delete, Undrop, Replicate (enable / disable / refresh), Failover (enable / disable), Set Primary.
     </Accordion>
-    <Accordion title="Others">
-     4. **HTTP Request** - Make HTTP API calls to any Snowflake documented REST APIs.
-  </Accordion>
+    <Accordion title="Schemas">
+    A namespace within a database that groups tables, views, stages, streams, and tasks.
+
+    Create, Clone, Read, List, Delete, Undrop.
+    </Accordion>
+    <Accordion title="Tables">
+    A structured data storage object inside a schema.
+
+    Create (standard, clone, like, as-select, from-template), Create-or-Alter, Read, List, Delete, Swap, Undrop, Resume / Suspend recluster.
+    </Accordion>
+    <Accordion title="Views">
+    A saved SELECT query stored as a named object.
+
+    Create, Read, List, Delete.
+    </Accordion>
+    <Accordion title="Dynamic Tables">
+    A table whose contents are automatically refreshed by a query on a schedule.
+
+    Create, Clone, Read, List, Delete, Undrop, Refresh, Swap, Resume / Suspend refreshes, Resume / Suspend recluster.
+    </Accordion>
+    <Accordion title="Streams">
+    A change-tracking object that records INSERT, UPDATE, and DELETE changes on a source table.
+
+    Create, Clone, Read, List, Delete.
+    </Accordion>
+    <Accordion title="Stages">
+    A named storage location (internal or external S3 / GCS / Azure) for loading and unloading data files.
+
+    Create, Read, List, Delete, List files, Generate presigned URL.
+    </Accordion>
+    <Accordion title="Pipes">
+    A Snowpipe object that automates continuous data loading from a stage into a table.
+
+    Create, Read, List, Delete, Refresh.
+    </Accordion>
+    <Accordion title="Tasks">
+    A scheduled SQL statement or stored procedure executed automatically by Snowflake.
+
+    Create, Alter, Read, List, Delete, Execute, Resume, Suspend, Get dependent tasks, Get graph runs (current & completed).
+    </Accordion>
+    <Accordion title="Users">
+    A Snowflake user account. Read/write typically requires the `ACCOUNTADMIN` or `SECURITYADMIN` role.
+
+    Create, Alter, Read, List, Delete, Grant / Revoke roles, List grants.
+    </Accordion>
+    <Accordion title="Roles">
+    A collection of privileges that can be granted to users or other roles.
+
+    Create, List, Delete, Grant / Revoke privileges, Grant / Revoke future privileges, List grants.
+    </Accordion>
+    <Accordion title="Warehouses">
+    A virtual compute cluster that executes queries — started, stopped, and resized independently.
+
+    Create, Alter, Read, List, Delete, Resume, Suspend, Rename, Abort queries, Use as session warehouse, Adaptive enable / disable.
+    </Accordion>
+    <Accordion title="Grants">
+    An assignment of privileges on a securable (database, schema, table, and so on) to a role.
+
+    Grant, Revoke, Revoke grant option, Grant future privileges, Revoke future privileges, Revoke future grant option, List grants.
+    </Accordion>
+  </AccordionGroup>
+  </Tab>
+
+  <Tab title="SQL actions">
+  Read and write data inside tables via the Snowflake SDK. These work with **all three** authentication methods, including **Username/Password**. They use the connection's `database`, `warehouse`, `role`, and `schema` (`schema` defaults to `PUBLIC`).
+
+  <AccordionGroup>
+    <Accordion title="Table data (snowflake-sdk)">
+    Read from and write to any existing Snowflake table using SQL statements.
+
+    - **Select from table** — read rows; supports WHERE, JOIN, GROUP BY, HAVING, ORDER BY, LIMIT, OFFSET.
+    - **Insert into table** — insert single or batch rows.
+    - **Update record** — update rows (requires a WHERE clause).
+    - **Delete record** — delete rows (WHERE clause mandatory).
+    - **Bulk insert** — insert in batches with a configurable batch size and transaction support.
+    - **Bulk update** — multi-row update using CASE statements.
+    - **Insert data using file** — bulk-load rows from a file URL.
+    - **Create table** — full DDL with columns, constraints, and clustering.
+    - **Drop table** — drop a table (uses IF EXISTS).
+    - **Run query** — execute an arbitrary raw SQL statement (read or write).
+    - **Health check** — ping the connection.
+    </Accordion>
   </AccordionGroup>
   </Tab>
 

@@ -101,7 +101,7 @@ API to provision them programmatically.
 
 After a customer authenticates, you can adjust the configuration for any of
 their connected applications. For example, set field values or enable and
-disable specific [workflows](/v3/concepts/workflows/overview) for that customer.
+disable specific [workflows](/v3/workflows/overview) for that customer.
 
 <Steps>
   <Step title="Open the integration's configuration">
@@ -170,21 +170,21 @@ tabs across the top to inspect each kind of activity.
     an incremental sync has run for this account.
   </Accordion>
   <Accordion title="Data Refs" icon="arrow-right-arrow-left">
-    The [data refs](/v3/concepts/workflows/nodes/data-ref-node) linked
+    The [data refs](/v3/workflows/nodes/data-ref-node) linked
     to this account, each with its **Ref** name and its **Created** and
     **Updated** times. Open the **Data Refs** tab.
   </Accordion>
 </AccordionGroup>
 
 For the full reference on what each log type records, see
-[Logs](/v3/monitor/logs).
+[Logs](/v3/observability/logs).
 
 ## Personal access tokens
 
 A **personal access token** (PAT) is a long-lived **bearer token** scoped to a
 single linked account, used to authenticate API calls that act as that one
 customer without exposing your platform API key. Unlike a [session
-token](/v3/native/get-started/linked-accounts#mint-a-session-token) —
+token](/v3/embedded/linked-account-setup#mint-a-session-token) —
 the standard bearer token, which is short-lived (around 7 days) — a **PAT never
 expires**.
 
@@ -224,7 +224,7 @@ Refold substitutes the linked account's value at execution time.
 
 <Note>
 Environment variables must first be defined in [**Workspace Settings →
-Environment Variables**](/v3/platform-settings/workspace-settings/environment-variables).
+Environment Variables**](/v3/organization/environment-variables).
 Once a variable exists there, you can set its value **per linked account** here
 for customers that need a different one.
 </Note>
@@ -242,20 +242,3 @@ for customers that need a different one.
     resolves it per linked account at execution time.
   </Step>
 </Steps>
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Auth flows" icon="key" href="/v3/authentication/overview">
-    Let customers connect their own accounts.
-  </Card>
-  <Card title="Logs" icon="clipboard-list" href="/v3/monitor/logs">
-    Understand each log type Refold records.
-  </Card>
-  <Card title="Workflows" icon="diagram-project" href="/v3/concepts/workflows/overview">
-    Automate what happens after a customer connects.
-  </Card>
-  <Card title="API reference" icon="code" href="/v3/api-reference/linked-accounts/create-linked-account">
-    Create, update, and delete linked accounts programmatically.
-  </Card>
-</CardGroup>

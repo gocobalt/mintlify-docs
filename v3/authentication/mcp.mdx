@@ -89,7 +89,7 @@ A token authenticates the agent; the MCP server's configuration decides what tha
 | **Skill access** | Toggle **Retrieve Skill** to control whether agents can discover and load skills |
 | **Per-user scoping** | Each linked account gets a unique token, so each user connects with a different URL |
 
-For where these toggles live in the dashboard, see [Server configuration](/v3/mcp/build/server-configuration). For how the modes change what the agent sees, see [How it works](/v3/mcp/get-started/how-it-works).
+For where these toggles live in the dashboard, see [Server configuration](/v3/mcp/build/server-config). For how the modes change what the agent sees, see [How it works](/v3/mcp/overview).
 
 ## Revoke access
 
@@ -101,12 +101,3 @@ When a Server URL leaks or you need to cut off a user, revoke at the linked-acco
 | **Revoke everywhere** | Delete the linked account | Revokes all of that end user's tokens across every MCP server they were connected to. |
 
 Because token state is checked on every request, revocation takes effect on the next call. There is no cached validation window to wait out.
-
-## See also
-
-- [Linked accounts](/v3/concepts/linked-account): the account and credential model MCP authentication builds on
-- [Connectors](/v3/connectors/supported-apps-actions): where the underlying OAuth and API-key credentials are configured
-- [Hosted auth flow](/v3/authentication/connection-flows/hosted-flow): how end users connect their accounts in the first place
-- [Server configuration](/v3/mcp/build/server-configuration): where to set the app, action, and mode toggles
-- [Security & compliance](/v3/mcp/operate/security-compliance): tenant isolation, transport security, and data handling
-- [MCP Logs](/v3/mcp/operate/mcp-logs): the audit trail for every authenticated tool call

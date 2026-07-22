@@ -1,12 +1,27 @@
 ---
 title: "Setup"
-description: "Connect to your Databricks app for OAuth or API Key"
+description: "Connect to your Databricks app with a Personal Access Token, OAuth 2.0 (PKCE), or OAuth Client Credentials (M2M)"
 ---
 
-Databricks supports two authentication methods. Choose the one that best fits your use case:
+Databricks supports three authentication methods. Choose the one that best fits your use case:
 
-- **API Key Authentication** - Best for internal integrations using a Personal Access Token
-- **OAuth 2.0 Authentication** - Best for end-user authorization using PKCE (no client secret required)
+- **API Key Authentication** — Best for internal integrations using a Personal Access Token
+- **OAuth 2.0 (Authorization Code with PKCE)** — Best for end-user authorization; no client secret required
+- **OAuth 2.0 Client Credentials (M2M)** — Best for unattended, service-to-service access using a Service Principal
+
+## Authentication at a glance
+
+Before you pick a method, here is how each behaves in production — how much effort a connection takes to set up and keep alive, and how long it stays authenticated before someone has to act. Lifetimes below reflect [Databricks' own token defaults](https://docs.databricks.com/aws/en/admin/access-control/tokens).
+
+| Method | Underlying standard | Credentials Refold stores | User effort | Authentication lifetime & re-auth |
+| --- | --- | --- | --- | --- |
+| **API Key** | Personal Access Token (bearer) | PAT + Base URL | **High, recurring** — a user generates the token by hand and must enter a new one each time it expires | You set the lifetime when creating the token (Databricks default max **730 days / 2 years**; workspace admins can enforce shorter with a max-token-lifetime policy). Tokens **unused for 90+ days are auto-revoked**, and Databricks emails ~7 days before expiry. When a token expires or is revoked, the connection fails until a new one is supplied. |
+| **OAuth 2.0 (Authorization Code + PKCE)** | OAuth 2.0 auth-code with PKCE (no client secret) | End-user access + refresh tokens; Client ID + Workspace URL at the app level | **Low** — the end user authorizes once in the connect flow; no secrets for them to manage | Access tokens last **1 hour**; Refold refreshes them automatically using single-use refresh tokens (each refresh rotates the token). The connection stays alive as long as it is used and access is not revoked. Re-auth is needed only if the user revokes access or the refresh token is invalidated. |
+| **OAuth 2.0 Client Credentials (M2M)** | OAuth 2.0 client-credentials (Service Principal) | Client ID + Client Secret + Base URL | **Low, no end user** — an admin sets up the service principal once; unattended thereafter | Refold mints a fresh **1-hour** access token on demand from the client secret, with no human involvement. The **client secret** is valid for up to **2 years** (max 730 days, set when generated; up to 5 secrets per principal for rotation). Rotate or replace the secret before it expires, or the connection breaks. |
+
+<Note>
+**Rule of thumb.** For hands-off, long-lived service access, prefer **M2M** — no end user, no interactive refresh, and a secret that lasts up to two years. For access scoped to a specific end user, prefer **OAuth (PKCE)** — one consent, then automatic refresh. Use an **API Key** only for quick internal setups; it carries the most ongoing maintenance because tokens expire and must be replaced by hand.
+</Note>
 
 ## API Key Authentication
 
@@ -60,7 +75,7 @@ The Linked Account or end-user now have all the credentials required to connect 
 
 ---
 
-## OAuth 2.0 Authentication
+## OAuth 2.0 (Authorization Code with PKCE) Authentication
 
 To setup your Databricks app in Refold for OAuth, you will need the following credentials from your Databricks account console:
 
@@ -136,6 +151,69 @@ For some applications Refold sets **mandatory scopes** which cannot be removed. 
 <Warning>
   If you are facing scopes missing or invalid scope error, make sure the scopes selected in Refold match those configured in your Databricks app connection. And, ensure you are not passing any custom scope not supported by the platform.
 </Warning>
+
+---
+
+## OAuth 2.0 Client Credentials (M2M) Authentication
+
+Databricks supports Machine-to-Machine (M2M) authentication using a **Service Principal** with the OAuth 2.0 **Client Credentials** grant. Use it for unattended, service-to-service access where no end user is present to authorize.
+
+To connect a Linked Account using M2M, you will need:
+
+- Client ID
+- Client Secret
+- Workspace Base URL
+
+<Info>
+  Unlike the PKCE method, M2M uses a **client secret** and authenticates as a **Service Principal** rather than on behalf of an end user. Create the service principal in the Databricks **Account Console** as an **Account Admin**.
+</Info>
+
+### Getting M2M Credentials of Databricks
+
+#### 1. Create a Service Principal
+
+1. Log in to the **Databricks Account Console** as an **Account Admin**.
+2. In the left sidebar, navigate to **User Management → Service Principals**.
+3. Click **Add Service Principal**.
+4. Enter a name for the service principal and click **Add**.
+
+#### 2. Assign Roles
+
+1. Open the newly created service principal.
+2. Navigate to the **Roles** tab.
+3. Assign the required account roles as appropriate for your use case.
+
+#### 3. Grant Workspace Access
+
+1. Navigate to **Workspaces** and select the workspace you want the service principal to access.
+2. Open the **Permissions** tab and click **Add Permissions**.
+3. Search for the service principal you created, assign the required permissions (for example, **User** or any other role your application needs), and save the changes.
+
+#### 4. Generate OAuth Credentials
+
+1. Navigate to **User Management → Service Principals** and select your service principal.
+2. Open the **Credentials** tab and click **Generate Secret**.
+3. Copy and securely store the **Client ID** and **Client Secret**.
+
+<Warning>
+  The client secret is displayed only once. Store it securely before closing the dialog. If lost, you will need to generate a new secret.
+</Warning>
+
+#### 5. Obtain the Workspace Base URL
+
+Open your Databricks workspace. The workspace URL looks similar to `https://dbc-xxxxxxxx-xxxx.cloud.databricks.com`. Copy it — this is your **Base URL**.
+
+#### Configuring M2M credentials in Refold
+
+Enter the following values into the Databricks connection configuration in the hosted portal, then save:
+
+| Field | Value |
+| --- | --- |
+| Base URL | Your Databricks workspace URL |
+| Client ID | Generated Client ID |
+| Client Secret | Generated Client Secret |
+
+Once these values are provided, the connector authenticates using the **OAuth 2.0 Client Credentials (M2M)** flow.
 
 ---
 

@@ -1,0 +1,150 @@
+---
+title: "View MCP Logs"
+description: "Inspect every tool call your MCP server makes, with full request, response, and identity detail."
+---
+
+MCP Logs is the audit trail for your MCP servers. Every tool call is recorded automatically, with no configuration required. Use logs to debug failing actions, trace a full agent session, monitor integration adoption, and satisfy compliance reviews.
+
+<Note>
+For authentication and access control details, see [Authentication](/v3/authentication/mcp). For the MCP server architecture and request lifecycle, see [How it works](/v3/mcp/overview).
+</Note>
+
+## How MCP Logs works
+
+Every request your MCP server handles writes one log entry before the call returns. Logs are append-only. You cannot edit or delete individual records.
+
+Key characteristics:
+
+- **Retention.** Records are kept according to your plan's retention period. Contact your account team for your current retention window and longer-retention options on enterprise plans.
+- **Payload capture.** Request inputs are captured up to 32 KB and response outputs up to 64 KB. Truncation is flagged in the record.
+- **Downstream errors.** Errors from third-party APIs (Salesforce, SAP, and others) are not exposed verbatim. The agent and the detail panel both show the same clean, user-facing message, not the raw upstream error.
+
+Access logs in the Refold dashboard under **Maintain > MCP Logs**.
+
+<Frame>
+  <img src="/images/mcp-logs-list.png" alt="MCP Logs list showing tool calls with status, application, client, and duration" />
+</Frame>
+
+## What gets logged
+
+Each log entry captures the following fields.
+
+### Summary fields
+
+| Field | Description |
+|-------|-------------|
+| **Status** | `success`, `pending`, `validation_error`, or `execution_error` |
+| **Tool** | Which MCP tool was called (for example, `EXECUTE_ACTION`, `RESOLVE_ACTIONS`, `LOAD_SKILL`, or a direct-mode tool name) |
+| **Action** | The specific action or workflow that was executed (for execution calls) |
+| **Application** | Which app the call targeted |
+| **Client** | Which MCP client made the call (for example, Claude Desktop, Cursor) |
+| **Duration** | How long the call took, in milliseconds |
+| **Timestamp** | When the call started |
+
+### Detail panel
+
+Click any log entry to open the detail panel.
+
+<Frame>
+  <img src="/images/mcp-logs-detail.png" alt="Audit detail panel showing request payload, metadata, and response" />
+</Frame>
+
+The detail panel shows four groups of fields:
+
+**Request and response**
+- Full JSON input the agent sent to the tool
+- Full output returned by the tool (truncated at 64 KB for large responses)
+
+**Identity**
+- Linked account ID
+- MCP server ID
+- Organization ID
+- Environment (`test` / `production`)
+
+**Execution target** (for `EXECUTE_ACTION` and direct-mode tools)
+- Application slug
+- Action or workflow ID
+- Target type (`action` or `workflow`)
+
+**Client and transport metadata**
+- MCP client name and version
+- Protocol version
+- Transport type (`streamable-http`)
+- Session ID
+- Request ID
+
+### Sample record
+
+A single log record looks like this. Fields use the same shape across direct-mode and agent-mode tools.
+
+```json Log record
+{
+  "status": "success",
+  "tool": "EXECUTE_ACTION",
+  "action": "salesforce_create_record_action",
+  "application": "salesforce",
+  "identity": {
+    "organization": "acme-inc",
+    "linkedAccount": "acme-prod-01",
+    "server": "acme-crm-agent",
+    "environment": "production"
+  },
+  "request": {
+    "object": "Lead",
+    "fields": { "Company": "Acme", "Email": "jordan@acme.com" }
+  },
+  "response": {
+    "success": true,
+    "data": { "id": "00Q5g00000ABCDE" }
+  },
+  "client": {
+    "name": "Claude Desktop",
+    "version": "1.4.0",
+    "transport": "streamable-http"
+  },
+  "durationMs": 412,
+  "timestamp": "2026-06-28T14:03:11.482Z"
+}
+```
+
+## Filtering logs
+
+Use the filter bar to narrow the log view.
+
+| Filter | Use case |
+|--------|----------|
+| **Status** | Find all failed calls (`execution_error`, `validation_error`) |
+| **Linked Account** | See all activity for a specific end user |
+| **Application** | Filter to a specific app (for example, all Salesforce calls) |
+| **Tool & Action** | Find calls to a specific tool or downstream action |
+
+## Common use cases
+
+**Debug a failing action.** Filter by `execution_error` or `validation_error`. The detail panel shows the exact input payload the agent sent and the error returned. Start here when an end user reports that an agent couldn't complete a task.
+
+**Trace agent activity.** Filter by linked account to see every tool call from one end user in chronological order. Each `GET_KNOWLEDGE_INDEX`, `LOAD_SKILL`, `RESOLVE_ACTIONS`, and `EXECUTE_ACTION` call is recorded with its start time and duration, so you can see what the agent did, in what order, and how long each step took.
+
+**Monitor adoption.** Filter by application or MCP server to see which integrations agents use most, how often they fail, and where response times are slow.
+
+**Security review.** Filter by linked account to audit what a specific user's agent accessed. Each log entry includes the full identity chain: organization, linked account, environment, and server.
+
+## Compliance
+
+MCP Logs provides the raw material for compliance and governance reviews:
+
+- **Who.** Every record ties to a specific linked account and organization.
+- **What was requested.** Full input payloads captured up to 32 KB.
+- **What was returned.** Full output payloads captured up to 64 KB, with truncation flagged.
+- **When.** Each record carries a start timestamp with millisecond precision.
+- **Duration.** Milliseconds, for performance auditing.
+- **From where.** MCP client name, version, and transport metadata.
+
+For the broader security and data governance model, see [MCP Security & Compliance](/v3/security/mcp).
+
+## Exporting logs
+
+Logs are viewable and filterable in the dashboard. For bulk export or programmatic access, contact your account team.
+
+## Rate limits
+
+The MCP server does not impose per-tool rate limits. Plan-level limits apply to overall request volume. Rate limits enforced by a third-party application (for example, Salesforce API governor limits) propagate back to the agent as `execution_error` entries, which you can find by filtering on status.
