@@ -13,7 +13,6 @@ rss: true
 **New Features**
 
 - **Trigger Idempotency**: Opt-in idempotency on triggers prevents duplicate workflow executions when the same event is delivered more than once. Duplicate events are recorded with a new `DUPLICATE` status instead of triggering another run.
-- **Per-Tenant Rate Limiting**: Requests can now be rate-limited per organization and environment using a token-bucket model, with over-budget requests returning HTTP 429. Disabled by default; fail-open behavior ensures API availability during any backing infrastructure disruption.
 - **Custom Output Field Picker**: The workflow builder Custom Output configuration replaces the free-form text list with a checkbox picker driven by the node's actual test response, with an inline Run Node action, encrypt pills, and preservation of saved fields absent from the latest response.
 - **Connect Portal Field Editing**: Add fields to the Connect Portal faster with a new Add Fields CTA, an empty-state ghost row, and drag-and-drop of dataslot cards from the palette onto the fields list.
 - **Connections Workflow Search**: Search workflows by name and alias across Shared and Private views on the connections page, with a contextual empty state and clear control.
