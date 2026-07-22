@@ -12,35 +12,26 @@ rss: true
 
 **New Features**
 
-- **Universal Connector**: Connect to any API-backed service and run its actions inside workflows, with authentication, execution, and lifecycle management handled end-to-end. Deleting a Universal Connector now cascades cleanly, purging its connections and associated chat memory.
 - **Trigger Idempotency**: Opt-in idempotency on triggers prevents duplicate workflow executions when the same event is delivered more than once. Duplicate events are recorded with a new `DUPLICATE` status instead of triggering another run.
 - **Per-Tenant Rate Limiting**: Requests can now be rate-limited per organization and environment using a token-bucket model, with over-budget requests returning HTTP 429. Disabled by default; fail-open behavior ensures API availability during any backing infrastructure disruption.
 - **Custom Output Field Picker**: The workflow builder Custom Output configuration replaces the free-form text list with a checkbox picker driven by the node's actual test response, with an inline Run Node action, encrypt pills, and preservation of saved fields absent from the latest response.
 - **Connect Portal Field Editing**: Add fields to the Connect Portal faster with a new Add Fields CTA, an empty-state ghost row, and drag-and-drop of dataslot cards from the palette onto the fields list.
-- **Legacy Connect Portal Access**: A new "Connect Portal" sidebar entry (tagged Legacy) provides access to the previous configuration UI under the redesigned URL space.
 - **Connections Workflow Search**: Search workflows by name and alias across Shared and Private views on the connections page, with a contextual empty state and clear control.
 - **Incremental Sync Ledger**: An account-level sync ledger tab replaces the per-workflow delta cron screen, with workflow, config, and date filters and split workflow/instance columns.
-- **Integration Graph Review Queue**: Org-wide and per-app pending-review queues let you approve or reject artifacts, with confidence-score color coding, source metadata, and library counts in the sidebar.
 - **Public Workflow Group Field**: The public workflow list response now includes the workflow's `group` field.
 
 **Improvements**
 
 - **Private Workflows View**: Folder grouping, application icon and name on each item, and a search-aware empty state.
-- **Default AI Chat View**: The instance panel now defaults to AI chat when supported, with agent-specific starter prompts on new session chats.
 - **Workflow Settings Consolidation**: Workflow metadata is now shown directly in the settings tab, replacing the separate workflow-details sidebar panel.
 - **MCP Logs Unification**: Global MCP logs and per-server audit logs now use the shared catalog and table layout, with a toolbar aligned to project executions, an export button, and a reusable detail panel.
-- **New Field Modal Prefill**: Editing an existing field now prefills its saved values in the field modal.
 - **Custom Output Array Handling**: Custom Output now recurses into arrays of objects with wildcard selectors, hides system envelope fields, and unwraps the test envelope so saved paths match production.
-- **Start Node Payload Retention**: Start-node payloads are now retained in the UI after saving.
-- **Project-Scoped Workflow Listing**: Project ID is now included when listing project-scoped workflows.
 - **Linked Account Deletion**: Resolved a double URL-encoding issue that could affect linked account deletion.
 - **Terminate Semantics in Loops**: In a loop, `terminate_with_error` now sets the instance to ERRORED and `terminate_with_success` reports the batch as completed without propagating as a terminate — matching pre-revamp behavior across subflow and try-catch contexts.
 - **Try-Catch with Terminate Iteration**: `terminate_iteration` with the success toggle no longer runs the wrapping try-catch's try-success nodes, correctly ending only the iteration.
 - **Transient Integration Retries**: Transient upstream failures (429s, 5xx, connection resets) are now retried at the orchestration layer with each attempt visible in the workflow execution history. Retryable status codes are configurable.
 - **Archive Read Compatibility**: The archive read path auto-detects packed and legacy formats, so previously archived instances remain readable after the storage layout upgrade.
 - **Detailed Authorization Errors**: 403 responses on role-lacking access now include structured detail explaining which permission is missing.
-- **Environment Propagation**: The active environment is now consistently propagated from the session token into request headers.
-- **Universal Connector Templating**: Universal Connector templating is unified on the `{{application.var.*}}` syntax, with a clear error surfaced when an OAuth `client_id` is missing.
 
 **Integration Updates**
 
