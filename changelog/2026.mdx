@@ -13,7 +13,6 @@ rss: true
 **New Features**
 
 - **Universal Connector**: Build connector workflows and dataslots that appear alongside apps in the integrations catalog, with a kind discriminator distinguishing universal connectors from native apps.
-- **Pagination Engine**: A shared pagination engine now powers connector actions end-to-end, with connector-definition persistence and a synthetic CheckPagination probe for verifying pagination configurations before use.
 - **OpenAPI Spec Ingestion**: Upload or link an OpenAPI spec (with 3.1 tolerance) to bootstrap connector actions, with a URL content preview before ingest.
 - **Transformation Node**: A new Transformation node in the workflow builder with a capturable policy configuration for shaping data between steps.
 - **Email Change via Magic Links**: Change your account email through a magic-link confirmation flow, with the change verified on both the old and new addresses.
@@ -25,7 +24,6 @@ rss: true
 **Improvements**
 
 - **v2 Action-Field Templating**: Action field templating now resolves references by name with legacy parity preserved, so existing workflows continue to behave identically while new workflows get clearer name-based resolution.
-- **Case-Insensitive Workflow Search**: Workflow search now matches on case-insensitive substrings across names.
 - **Public / Private Execution Log Filters**: Execution logs can be filtered to show public or private workflows separately.
 - **Application-Scoped Error Hashes**: Error grouping and deduplication now scope to the owning application, avoiding cross-app collisions.
 - **Autopilot Notification Gating**: Autopilot notifications on new Recovery Queue entries can now be gated per queue.
@@ -35,7 +33,6 @@ rss: true
 - **Linked Account Renaming**: Linked accounts can now be renamed after creation.
 - **Field Info Popovers**: Action and connector fields now expose info popovers with copyable example values.
 - **Data Converter Guidance**: The Data Converter now includes descriptive subtext and mockup-parity previews for each conversion type.
-- **Masked Webhook Auth Values**: Saved webhook authentication values are now masked in the UI to prevent inadvertent exposure.
 - **Spreadsheet Navigation for AI Builder**: The AI builder now includes a spreadsheet navigation guide with live tools for reading `.xlsx` and `.csv` content during a session.
 - **Atomic Knowledge Updates**: Knowledge base updates are now applied atomically, and knowledge-extraction scan counts are reported back to the session.
 - **Log Export Custom Columns**: Log exports now include custom columns configured on the log view.
