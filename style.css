@@ -251,12 +251,9 @@ body:has(#hide-on-this-page) #table-of-contents {
 }
 
 /* TOC (right rail) */
-/* Inactive entries must render muted gray. Mintlify's hosted renderer colors
-   changelog <Update> label anchors with the primary color by default (so every
-   date in "On this page" shows blue on the live site); the local CLI does not.
-   Force the muted color explicitly so inactive entries match across versions,
-   in both light and dark modes. The active rule below has higher specificity
-   and keeps the current entry blue. */
+/* Inactive entries must render muted gray. In light mode the hosted renderer
+   leaves inactive "On this page" links to inherit the link color (blue), so
+   force the muted color explicitly across light and dark modes. */
 [class*="on-this-page"] a,
 [class*="toc"] a {
   font-family: var(--rf-font-sans);
@@ -267,13 +264,25 @@ body:has(#hide-on-this-page) #table-of-contents {
 .dark [class*="toc"] a {
   color: var(--rf-base-300) !important;
 }
-[class*="on-this-page"] a[class*="active"],
-[class*="toc"] a[class*="active"] {
+/* Active entry. The hosted renderer marks the current item on the parent
+   <li data-active="true">; older/local renderers add an "active" class token on
+   the link itself. Match both.
+   IMPORTANT: use [class~="active"] (whole space-separated token), NEVER
+   [class*="active"] (substring). Hosted anchors carry Tailwind arbitrary-variant
+   classes such as `[li:not([data-active])>&:hover]:text-gray-900` and
+   `[[data-active]>&]:text-primary` whose names literally contain the substring
+   "active", so [class*="active"] matched EVERY entry and painted them all blue. */
+[class*="on-this-page"] a[class~="active"],
+[class*="toc"] a[class~="active"],
+[class*="on-this-page"] li[data-active="true"] > a,
+[class*="toc"] li[data-active="true"] > a {
   color: var(--rf-electric-blue) !important;
   font-weight: 600;
 }
-.dark [class*="on-this-page"] a[class*="active"],
-.dark [class*="toc"] a[class*="active"] {
+.dark [class*="on-this-page"] a[class~="active"],
+.dark [class*="toc"] a[class~="active"],
+.dark [class*="on-this-page"] li[data-active="true"] > a,
+.dark [class*="toc"] li[data-active="true"] > a {
   color: var(--rf-electric-blue-light) !important;
 }
 
