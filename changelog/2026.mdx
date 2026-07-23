@@ -4,16 +4,15 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
-<Update label="July 1, 2026" description="v3.7.12 · Universal Connector execution, MongoDB node, DLQ & Workday auth expansion">
+<Update label="July 1, 2026" description="v3.7.12 · MongoDB node, DLQ & Workday auth expansion">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**Universal Connector execution goes live with a dedicated node type, a new Dead-Letter Queue area for capturing and inspecting failed messages, expanded Workday connection options, and a public API for updating private workflows.**
+**A new Dead-Letter Queue area for capturing and inspecting failed messages, expanded Workday connection options, and a public API for updating private workflows.**
 
 **New Features**
 
-- **Dead-Letter Queue**: A new project-level DLQ area with a queue list, detail view, message drawer, and infinite-loading records. Define custom columns on a DLQ and attach column values when sending messages.
-- **Universal Connector Execution**: Universal Connector actions can now be executed directly from workflows via a dedicated node type, with `{{application.var.*}} `templating, connection auth resolution, and one-shot execution outside the standard instance path.
+- **Dead-Letter Queue**: A new DLQ area with a queue list, detail view, message drawer, and infinite-loading records. Define custom columns on a DLQ and attach column values when sending messages.
 - **MongoDB Workflow Node**: A dedicated MongoDB node type is now available in the workflow builder alongside the MongoDB connector.
 - **Node Auto-Fill**: A new auto-fill button on workflow nodes uses AI assistance to populate configuration fields faster.
 - **Integration Graph Artifact Viewer**: View artifact content directly from the Integration Graph, with approve and reject actions for pending items.
@@ -23,7 +22,7 @@ rss: true
 
 - **Autopilot Findings in Error Analysis**: Autopilot findings are now surfaced with priority in the error analysis panel.
 - **AI-Generated Field Mapping Summaries**: Field mapping now includes AI-generated summaries with improved context awareness.
-- **Skill Management UI**: Simplified by removing toggle controls.
+- **MCP Skill Management UI**: Simplified by removing toggle controls.
 - **Data Slot Filtering**: Safer handling of data slots when pages are renamed or deleted.
 - **Draft Mode Change Detection**: Refined unsaved-changes detection when editing in draft mode.
 - **Humanized Error Display**: Error messages now include humanized classifications and helpful hints.
@@ -43,7 +42,6 @@ rss: true
 
 - New: `PUT /api/v2/public/workflow/:workflowId` — update a private workflow's name, description, `workflow_alias`, `settings.timeout`, and `settings.dedup_key` from a linked account.
 - `GET /api/v2/public/env/definitions` — now accepts linked account tokens in addition to org API keys, and returns only `LINKED_ACCOUNT`-scoped variables when a `linked_account_id` is sent. Also supports a new `names` filter for resolving variable definitions by name in a single call.
-- `GET /api/v2/public/token/:linked_account_id/:integration_type` — auth-token fetches for custom integrations now succeed reliably.
 
 **Integration Updates**
 
@@ -53,7 +51,7 @@ rss: true
 
 </Update>
 
-<Update label="June 17, 2026" description="v3.7.00 · Universal Connector, MongoDB connector, trigger idempotency & rate limiting">
+<Update label="June 17, 2026" description="v3.7.00 · MongoDB connector & trigger idempotency">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
 
