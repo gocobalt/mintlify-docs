@@ -6,15 +6,13 @@ rss: true
 
 <Update label="July 3, 2026" description="v3.8.03 · Project workflow imports, webhook auth UI & recovery queue refinements">
 
-<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge>
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge>
 
-**Workflow imports into integration projects, a webhook trigger authentication configuration UI, a restructured Developer and Settings navigation with a By Refold library filter, and reliability improvements across subflows, loops, and the Recovery Queue.**
-
-<Note>The webhook trigger request authentication UI ships ahead of its backend endpoint. The "Generate" action for signing secrets will surface an error until the backend lands in an upcoming release.</Note>
+**Workflow imports into integration projects, a restructured Developer and Settings navigation with a By Refold library filter, and reliability improvements across subflows, loops, and the Recovery Queue.**
 
 **New Features**
 
-- **Import Workflows Into Projects**: The "New Workflow → Import" dialog now works inside integration projects, importing the workflow directly into the current project rather than requiring an app slug.
+- **Import Workflows Into Projects**: The "New Workflow → Import" dialog now works inside integration projects, importing the workflow directly into the current project.
 - **Webhook Trigger Authentication UI**: A new Request Authentication section on the webhook trigger sidebar supports HMAC signature (SHA-256, with configurable header, encoding, prefix, and signing secret) and static header token modes, with masked reveal and copy controls.
 - **Settings Flyout & Navigation Restructure**: Developer and Settings are consolidated into a single Settings item that opens a flyout. Developer navigation is regrouped into Basic, My Connector, and Configuration sections (with API Proxies renamed to Actions), and environment variables, email/SMTP, Connect Portal, and Tags now live under Developer.
 - **Yours / By Refold Library Filter**: The Integration Graph app library now offers a source filter to view your organization's content, Refold-curated content, or a combined view (the default), with per-row source markers and a source-aware header.
@@ -25,7 +23,6 @@ rss: true
 - **Structured Loop and Batch Aggregation**: Loop and batch aggregation nodes now accept structured objects and arrays in `output_data` in addition to templated strings, resolving templates anywhere inside the structure. Deterministic configuration errors now fail fast instead of stalling sibling loops.
 - **Recovery Queue Across Workflow Versions**: Recovery Queue listings now include related workflow versions and drafts when filtering by workflow, so DLQ items are visible across a workflow's full version family.
 - **Recovery Queue Container Node Support**: DLQ nodes inside loops, try-catch blocks, subflows, and pagination containers now correctly track their owning workflow and root instance, preventing false duplicate detection and enabling reliable resolution.
-- **Recovery Queue Table Scrolling**: The Recovery Queue catalog table now scrolls horizontally with the checkbox column pinned to the left edge.
 - **DLQ Pickers Scoped to Project**: The resolution-workflow picker and the send-to-DLQ queue picker are now scoped to the current workflow's project, and the send-to-DLQ picker shows the saved queue on first open.
 - **Custom Action Field Descriptions**: Descriptions on custom action fields are now persisted correctly.
 - **Publishing Workflows With Webhook Trigger Auth**: Workflows whose webhook trigger has authentication configured can now be published without validation errors.
@@ -38,16 +35,7 @@ rss: true
 
 **Bug Fixes**
 
-- **By-Refold Library Detail Views**: Opening a By-Refold card in the app library now resolves correctly from the shared Refold library instead of returning a not-found error, across skills, patterns, episodes, use-cases, and library mappings.
 - **Split Library Source Counts**: Library count badges across the Integration Graph tabs, sidebar, and headers now display correctly for both Yours and By Refold sources.
-
-**API Changes**
-
-- New: `POST /admin/refold-knowledge/upload` — upload binary corpus documents (xlsx) up to 25 MB.
-- The workflow import endpoint now accepts `project_id` as an alternative to `slug` (mutually exclusive) to import a workflow directly into an integration project.
-- Library detail endpoints for skills, patterns, episodes, use-cases, and library mappings now accept an optional `is_refold=true` query parameter to resolve items from the shared Refold library.
-- `/library` and `/library/counts` responses now return counts split by source as `{ yours, refold }` with a per-source total (response shape change).
-- Datetime fields across API responses now serialize as UTC with a trailing `Z` (response shape change).
 
 </Update>
 
