@@ -4,6 +4,33 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 10, 2026" description="v3.8.09 · Recovery Queue confidence, Ramp & Dubber connectors">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Autopilot now analyzes sub-workflow Recovery Queues with an AI confidence score, new Ramp and Dubber connectors ship, and HubSpot HTTP requests handle content types reliably.**
+
+**New Features**
+
+- **Sub-Workflow Recovery Queue Analysis**: Autopilot now descends into sub-workflow instance trees to discover and annotate Recovery Queue records from child failures, including children nested inside loop batches. Notifications are deferred until all sub-workflow children complete so a single, consolidated finding is delivered per parent run.
+- **AI Analysis Confidence Score**: Recovery Queue AI analyses now include a 0.0–1.0 confidence score, surfaced in the record drawer alongside error class and updated-at, with color-coded thresholds (green ≥ 0.80, amber ≥ 0.50, red below). A single analysis can now cover multiple records that share the same failure.
+
+**Improvements**
+
+- **Logs Export**: The logs export button now triggers reliably.
+
+**API Changes**
+
+- Recovery Queue message responses now include an `ai_analysis.confidence` field (0.0–1.0) on each analysis item.
+
+**Integration Updates**
+
+- **Ramp**: New Ramp connector with OAuth2 (authorization code and client credentials) authentication, dynamic webhook registration, the `transaction.ready_to_sync` inbound trigger, and actions covering transactions, cards, and users.
+- **Dubber**: New Dubber connector with OAuth2 and refresh-token support, regional base URL selection, and actions for listing and retrieving recordings including multipart content.
+- **HubSpot**: Improved reliability of HTTP Request node calls to HubSpot V3 endpoints — `Content-Type: application/json` is now applied on POST, PUT, and PATCH requests with a body, while user-configured content types (such as `multipart/form-data`) and GET requests are left untouched.
+
+</Update>
+
 <Update label="July 6, 2026" description="v3.8.07 · Log node parity, Switch node flexibility & trigger reliability">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
