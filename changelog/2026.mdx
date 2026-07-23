@@ -32,17 +32,13 @@ rss: true
 - **External Node Edits**: Editing a node externally now replaces its `input_data` cleanly rather than merging.
 - **Organization Export/Import Hardening**: Improved reliability for organization export and import migrations.
 - **Test Mode Config Override**: Test-mode runs now support a configuration-id override.
-- **Custom Output Field Picker**: A field picker is now available when configuring custom output.
 - **Interface Localization**: Broad localization coverage across the interface, with server-side facets on list views.
 - **SMTP Display-Name Address**: The MAIL FROM header now correctly formats the display-name address on outbound SMTP.
 
 **API Changes**
 
-- New: `GET /api/v1/public/connector` and `GET /api/v1/public/connector/:slug` — unified connector read across connector kinds.
 - New: `GET|POST|PATCH|DELETE /api/v1/public/connector/:slug/polling-trigger[/:triggerId]` and `PUT /api/v1/public/connector/:slug/polling-trigger/:triggerId/test` — manage and test custom polling triggers.
 - New: `POST|PUT|DELETE /api/v1/public/application/:slug/dataslot[/:dataSlotId]` — manage connector dataslots.
-- New: `GET|PUT /api/v1/public/mapping-policy/:policyId` and `GET /api/v1/public/mapping-policy/object-catalog/:app_type[/:object/fields]` — read and update mapping policies and browse the destination object catalog.
-- New: `POST /api/v1/public/filestorage/presign` — generate a presigned URL for pagination blob-sink uploads.
 
 **Integration Updates**
 
