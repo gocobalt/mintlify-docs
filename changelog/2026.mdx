@@ -4,6 +4,54 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 2, 2026" description="v3.8.0 · Passwordless login, webhook HMAC & Recovery Queue">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Passwordless email login, an MCP Playground for testing server tools, HMAC-signed webhook triggers, credits and usage tracking, and the Dead-Letter Queue evolves into a Recovery Queue with structured columns and AI-assisted resolution.**
+
+**New Features**
+
+- **Passwordless Login**: Sign in with a one-time code sent to your email, no password required.
+- **Credits & Usage**: A new credit settings page shows your organization's balance, usage over time, and spend breakdown, with a low-credit banner when balances run low.
+- **MCP Server Controls**: Enable or disable individual MCP servers and configure interactive authentication directly from the server settings.
+- **Recovery Queue**: The Dead-Letter Queue is now the Recovery Queue, with structured column inputs in the node editor, an editable resolution context, application-scoped resolution workflows, and application-level DLQ nodes. AI analysis surfaces the likely issue and fix, and Autopilot can notify on new entries.
+- **Webhook Trigger Authentication**: Webhook triggers now support HMAC-signed requests and configurable authentication modes, with a new endpoint to generate the shared secret and redacted auth headers in logs. A grace-period flag allows staged rollout for existing subscribers.
+- **Child Workflow Spawning**: A new "Hatch" action in the workflow builder spawns a child workflow from the current context.
+- **Session Sharing & Management**: Share an agent session via link, delete sessions you no longer need, and view session artifacts in the entity sidebar. In-flight streaming sessions now resume cleanly after a browser refresh.
+- **Table Field Encryption**: Individual table fields can now be marked sensitive for field-level encryption of record values.
+- **Node Picker Sections**: The workflow builder's node picker now groups nodes into sections for faster discovery.
+- **Internal Function Language & Parameters**: Internal-function nodes now support language selection and typed, required parameters with validation.
+- **Multiple Instance Reruns**: A workflow instance can now be rerun more than once from the executions page.
+- **Like Comparator in Rules**: Rule conditions support a case-insensitive "like" comparator that matches legacy behavior one-to-one.
+
+**Improvements**
+
+- **Execution Log Version Linking**: Log entries now link directly to the exact workflow version that produced the run.
+- **cURL Trace on Failed Requests**: Failed request/response detail views now include the parsed request curl for easier reproduction.
+- **Variable Picker Scope Validation**: The variable picker now flags references to variables that are out of scope for the current node.
+- **Connect Portal User Config**: The Connect Portal's user configuration page now unifies fields and workflows into a single view, and the sidebar shows the current release version.
+- **Multi-Org Password Reset**: Password reset now prompts for your organization slug when the same email is registered in multiple organizations.
+- **Per-User MFA Enforcement**: Multi-factor authentication now triggers based on each user's enrollment state rather than a single organization-wide toggle.
+- **Templating Parity for JSON-Shaped Strings**: JSON-shaped string values and nested quoted literals are now unwrapped consistently with legacy behavior across templated fields.
+- **API Proxy Body Encoding**: The API Proxy node now correctly encodes multipart and form-urlencoded bodies, coerces non-string field values, and detects content types case-insensitively.
+- **API Proxy Blank Field Handling**: JSON bodies are parsed before substitution, and blank query parameters and fields are omitted from outbound requests.
+- **Encrypted Environment Variables in App Connectors**: Encrypted environment variable sentinels now resolve at request time inside app-based connectors.
+- **HTTP Status on Node Success**: Successful responses from HTTP and custom node executions now include the upstream HTTP status code.
+- **Pagination Sink**: Workflow builder surfaces and persists pagination sink settings for supported nodes, behind a feature flag.
+- **Polling Trigger Reliability**: Polling triggers now run through a dedicated handler with per-connector pagination configuration and a minimum poll-interval floor.
+- **Filter View Scope**: Filter views can now be scoped to any entity type, not just executions.
+- **Alias Availability Check**: The workflow builder can now check whether a workflow alias is available within an application before saving.
+
+**Integration Updates**
+
+- **Workday**: New `Get_Transaction_Tax_Codes` and `Get_Transaction_Tax_Rates` actions under the tax module.
+- **Salesforce**: Improved pagination reliability, including support for full-URL pagination paths and cleaner handling of polling-trigger continuations.
+- **PostgreSQL**: Bulk CSV imports on very wide tables now use dynamically-sized batched inserts inside a single transaction, avoiding parameter-count limits and rolling back cleanly on partial failure. File type is also derived from the content-type header when the URL has no extension.
+- **MongoDB**: Incremental sync now returns the document `_id` as a string rather than a raw ObjectID.
+
+</Update>
+
 <Update label="July 1, 2026" description="v3.7.12 · MongoDB node, DLQ & Workday auth expansion">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
@@ -34,7 +82,6 @@ rss: true
 - **Try-Catch Termination Semantics**: Successful termination inside a try or catch block now stops branch execution while maintaining correct workflow status.
 - **Large Loop Batch Cleanup**: Loop batches that were counted in a group total but never spawned (beyond the concurrency window or skipped on stop) now receive a terminal status on stop or timeout instead of remaining in `WAITING`.
 - **Org Export/Import for Large Orgs**: Import into large organizations now uses a bulk application-reference preflight, avoiding validator pool exhaustion. Missing application references now fail fast with a structured diagnostic instead of a generic 500.
-- **Encrypted Environment Variables in App Connectors**: Encrypted environment variable values referenced inside native app connectors (Salesforce, HubSpot, Slack, and others) now resolve correctly at request time.
 - **Linked Account Environment Variables**: Linked account environment variables are now persisted end-to-end during upsert, and loading is reliable on the hosted portal.
 - **Curl Trace in Test Mode**: Custom node and file handler test runs now include the parsed request curl, making failed API calls easier to reproduce.
 
