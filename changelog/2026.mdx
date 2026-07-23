@@ -4,6 +4,54 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 17, 2026" description="v4.0.0 · Universal Connector, pagination engine, transformation node & email change">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Universal Connector workflows and dataslots, a full pagination engine with OpenAPI spec ingestion, a new Transformation node with v2 action-field templating, email change via magic links, custom RBAC roles, and expanded Recovery Queue tooling.**
+
+**New Features**
+
+- **Universal Connector**: Build connector workflows and dataslots that appear alongside apps in the integrations catalog.
+- **OpenAPI Spec Ingestion**: Upload or link an OpenAPI spec (with 3.1 tolerance) to bootstrap connector actions, with a URL content preview before ingest.
+- **Transformation Node**: A new Transformation node in the workflow builder with a capturable policy configuration for shaping data between steps.
+- **Email Change via Magic Links**: Change your account email through a magic-link confirmation flow, with the change verified on both the old and new addresses.
+- **Log Out Everywhere**: Sign out of every active session across all devices from your account settings.
+- **Custom RBAC Roles**: Define, edit, and delete custom roles alongside the built-in role set, with role assignments migrated automatically.
+- **Recovery Queue Enhancements**: The Recovery Queue now supports pagination, an error-type column, AI error-class filtering, CSV export of queue contents, resolved workflow names on linked records, and one-click jump-to-execution from any record.
+- **Organization SMTP Default for Send Email**: A new toggle lets the Send Email node use the organization's configured SMTP "from" address by default.
+
+**Improvements**
+
+- **v2 Action-Field Templating**: Action field templating now resolves references by name with legacy parity preserved, so existing workflows continue to behave identically while new workflows get clearer name-based resolution.
+- **Public / Private Execution Log Filters**: Execution logs can be filtered to show public or private workflows separately.
+- **Application-Scoped Error Hashes**: Error grouping and deduplication now scope to the owning application, avoiding cross-app collisions.
+- **Autopilot Notification Gating**: Autopilot notifications on new Recovery Queue entries can now be gated per queue.
+- **Settings Redesign**: Settings pages have been restructured to match the project and MCP layout for consistent navigation.
+- **Audit Log in Workspace Settings**: The audit log now lives under workspace settings with a virtualized table for faster scrolling through large histories.
+- **Linked Accounts Catalog Layout**: Linked accounts have been migrated to the catalog layout used elsewhere in the product.
+- **Linked Account Renaming**: Linked accounts can now be renamed after creation.
+- **Field Info Popovers**: Action and connector fields now expose info popovers with copyable example values.
+- **Data Converter Guidance**: The Data Converter now includes descriptive subtext and mockup-parity previews for each conversion type.
+- **Spreadsheet Navigation for AI Builder**: The AI builder now includes a spreadsheet navigation guide with live tools for reading `.xlsx` and `.csv` content during a session.
+- **Atomic Knowledge Updates**: Knowledge base updates are now applied atomically, and knowledge-extraction scan counts are reported back to the session.
+- **Log Export Custom Columns**: Log exports now include custom columns configured on the log view.
+- **Log Popover Numeric Input**: Numeric input handling in the log detail popover now behaves correctly.
+
+**Bug Fixes**
+
+- **PDF Encoding in Data Converter**: PDF output from the Data Converter now uses the correct character encoding.
+
+**Integration Updates**
+
+- **Workday**: New `Run WQL Query` action for executing Workday Query Language queries directly from a workflow.
+- **HubSpot**: Improved `Content-Type` header handling on outbound HubSpot requests.
+- **Salesforce**: Field examples on Salesforce actions are now copyable directly from the field info popover.
+- **SAP**: App facets are now surfaced in the SAP integration UI for easier navigation across SAP modules.
+- **DocuSign**: Improved credential handling to prevent client secret exposure in request traces.
+
+</Update>
+
 <Update label="July 10, 2026" description="v3.8.09 · Recovery Queue confidence, Ramp & Dubber connectors">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
