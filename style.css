@@ -238,16 +238,43 @@ button[aria-label*="copy" i],
   letter-spacing: 0.04em;
 }
 
+/* Welcome page: suppress the "On this page" rail without switching the page to
+   `mode: wide`. Wide mode removes the TOC column entirely, which re-centres the
+   content in a wider main area and shifts it right — misaligned with every other
+   page. Keeping default mode preserves the shared layout; visibility:hidden hides
+   the rail while its column keeps reserving space, so content stays aligned.
+   Scoped via the #hide-on-this-page marker element in welcome.mdx. Target the
+   whole #table-of-contents panel (fixed width w-[16.5rem]) so the "On this page"
+   label, active bullet, and list are all hidden while the column keeps its width. */
+body:has(#hide-on-this-page) #table-of-contents {
+  visibility: hidden !important;
+}
+
 /* TOC (right rail) */
+/* Inactive entries must render muted gray. Mintlify's hosted renderer colors
+   changelog <Update> label anchors with the primary color by default (so every
+   date in "On this page" shows blue on the live site); the local CLI does not.
+   Force the muted color explicitly so inactive entries match across versions,
+   in both light and dark modes. The active rule below has higher specificity
+   and keeps the current entry blue. */
 [class*="on-this-page"] a,
 [class*="toc"] a {
   font-family: var(--rf-font-sans);
+  color: var(--rf-base-400) !important;
   border-radius: 0 !important;
+}
+.dark [class*="on-this-page"] a,
+.dark [class*="toc"] a {
+  color: var(--rf-base-300) !important;
 }
 [class*="on-this-page"] a[class*="active"],
 [class*="toc"] a[class*="active"] {
   color: var(--rf-electric-blue) !important;
   font-weight: 600;
+}
+.dark [class*="on-this-page"] a[class*="active"],
+.dark [class*="toc"] a[class*="active"] {
+  color: var(--rf-electric-blue-light) !important;
 }
 
 /* NOTE: the topbar primary CTA (Dashboard) is styled by the robust
