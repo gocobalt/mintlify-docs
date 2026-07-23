@@ -4,6 +4,41 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 3, 2026" description="v3.8.03 · Project workflow imports, webhook auth UI & recovery queue refinements">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge>
+
+**Workflow imports into integration projects, a restructured Developer and Settings navigation with a By Refold library filter, and reliability improvements across subflows, loops, and the Recovery Queue.**
+
+**New Features**
+
+- **Import Workflows Into Projects**: The "New Workflow → Import" dialog now works inside integration projects, importing the workflow directly into the current project.
+- **Webhook Trigger Authentication UI**: A new Request Authentication section on the webhook trigger sidebar supports HMAC signature (SHA-256, with configurable header, encoding, prefix, and signing secret) and static header token modes, with masked reveal and copy controls.
+- **Settings Flyout & Navigation Restructure**: Developer and Settings are consolidated into a single Settings item that opens a flyout. Developer navigation is regrouped into Basic, My Connector, and Configuration sections (with API Proxies renamed to Actions), and environment variables, email/SMTP, Connect Portal, and Tags now live under Developer.
+- **Yours / By Refold Library Filter**: The Integration Graph app library now offers a source filter to view your organization's content, Refold-curated content, or a combined view (the default), with per-row source markers and a source-aware header.
+
+**Improvements**
+
+- **Version Timestamps in Workflow Views**: Version timestamps throughout workflow views now show when each version was created rather than when it was last modified.
+- **Structured Loop and Batch Aggregation**: Loop and batch aggregation nodes now accept structured objects and arrays in `output_data` in addition to templated strings, resolving templates anywhere inside the structure. Deterministic configuration errors now fail fast instead of stalling sibling loops.
+- **Recovery Queue Across Workflow Versions**: Recovery Queue listings now include related workflow versions and drafts when filtering by workflow, so DLQ items are visible across a workflow's full version family.
+- **Recovery Queue Container Node Support**: DLQ nodes inside loops, try-catch blocks, subflows, and pagination containers now correctly track their owning workflow and root instance, preventing false duplicate detection and enabling reliable resolution.
+- **DLQ Pickers Scoped to Project**: The resolution-workflow picker and the send-to-DLQ queue picker are now scoped to the current workflow's project, and the send-to-DLQ picker shows the saved queue on first open.
+- **Custom Action Field Descriptions**: Descriptions on custom action fields are now persisted correctly.
+- **Publishing Workflows With Webhook Trigger Auth**: Workflows whose webhook trigger has authentication configured can now be published without validation errors.
+- **Subflow Config Inheritance in Group and Batch Nodes**: Subflows spawned inside a group or batch node now correctly inherit the parent instance's configuration.
+- **UTC Timestamps in API Responses**: Datetime fields in API responses now serialize consistently as UTC with a trailing `Z`, so frontends parse them in UTC rather than local time.
+- **Out-of-Scope Variable Warning Accuracy**: The out-of-scope variable warning no longer fires when a group or batch node references its own child nodes, when child nodes reference grandparents, or across try-catch boundaries. The save-time toast has also been removed.
+- **AI Builder Reliability**: The `GetWorkflow` tool in the code-writer subgraph now binds to the caller's workflow at build time and is gated to skip fresh sessions with no persisted code. Child workflow spawns now link to the in-flight draft rather than an empty published shell, and playbook table-of-contents guidance is delivered atomically alongside node documentation.
+- **CFIHOS Corpus Guidance**: AI builder sessions mentioning CFIHOS now receive orientation for the RDL workbook and navigation guide, along with schema-matching and mapping finalization prompts to keep sessions on-graph.
+- **JSON to X12 EDI Input Validation**: The `json_to_x12_edi` transform now validates input shape before generation and returns a clear, actionable error for malformed input.
+
+**Bug Fixes**
+
+- **Split Library Source Counts**: Library count badges across the Integration Graph tabs, sidebar, and headers now display correctly for both Yours and By Refold sources.
+
+</Update>
+
 <Update label="July 2, 2026" description="v3.8.0 · Passwordless login, webhook HMAC & Recovery Queue">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
