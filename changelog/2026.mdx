@@ -8,7 +8,7 @@ rss: true
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
-**A redesigned connector catalog and detail experience, custom polling triggers, a pagination blob sink for large extracts, an embeddable AI Mapping portal, and new Ramp, Creditsafe, and Amazon S3 capabilities.**
+**A redesigned connector catalog and detail experience, custom polling triggers, a pagination blob sink for large extracts, an embeddable AI Mapping portal, rule node enhancements and new Ramp, Creditsafe, and Amazon S3 capabilities.**
 
 **New Features**
 
@@ -34,6 +34,10 @@ rss: true
 - **Test Mode Config Override**: Test-mode runs now support a configuration-id override.
 - **Interface Localization**: Broad localization coverage across the interface, with server-side facets on list views.
 - **SMTP Display-Name Address**: The MAIL FROM header now correctly formats the display-name address on outbound SMTP.
+- **Rule Node Scalar Comparisons**: Scalar `eq` and `neq` and numeric ordering now compare within a single type domain (boolean, numeric, or string) rather than through loose coercion. Decimal strings compare by value (`"5.50" eq "5.5"` is true), large-integer strings compare exactly, leading-zero strings remain distinct identifiers (`"007" eq "7"` is false), and all-digit strings now work with `starts_with` and `ends_with`.
+- **Rule Node Unconfigured Left-Hand Side**: A Rule node with an unconfigured left-hand side (formula tab opened without a data slot selected) now resolves to undefined and is skipped when using `exist`, instead of executing and returning a 404. `not_exist` and `not_null` evaluate to true, and `is_null` evaluates to false. Explicit `null` values set through the variable UI are unaffected.
+
+<Note>Workflows that previously relied on loose type coercion in Rule nodes (for example, `"1" eq "true"` returning true, or an `exist` check executing on a blank left-hand side) will now behave differently. Review Rule-heavy workflows after upgrade.</Note>
 
 **API Changes**
 
