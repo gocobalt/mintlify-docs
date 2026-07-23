@@ -4,7 +4,7 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
-<Update label="July 2, 2026" description="v3.8.0 · Passwordless login, MCP Playground, webhook HMAC & Recovery Queue">
+<Update label="July 2, 2026" description="v3.8.0 · Passwordless login, webhook HMAC & Recovery Queue">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
 
@@ -14,7 +14,6 @@ rss: true
 
 - **Passwordless Login**: Sign in with a one-time code sent to your email, no password required.
 - **Credits & Usage**: A new credit settings page shows your organization's balance, usage over time, and spend breakdown, with a low-credit banner when balances run low.
-- **MCP Playground**: Test an MCP server's tools interactively from a new playground surface, with configurable models and chat-based invocation.
 - **MCP Server Controls**: Enable or disable individual MCP servers and configure interactive authentication directly from the server settings.
 - **Recovery Queue**: The Dead-Letter Queue is now the Recovery Queue, with structured column inputs in the node editor, an editable resolution context, application-scoped resolution workflows, and application-level DLQ nodes. AI analysis surfaces the likely issue and fix, and Autopilot can notify on new entries.
 - **Webhook Trigger Authentication**: Webhook triggers now support HMAC-signed requests and configurable authentication modes, with a new endpoint to generate the shared secret and redacted auth headers in logs. A grace-period flag allows staged rollout for existing subscribers.
@@ -44,16 +43,11 @@ rss: true
 - **Filter View Scope**: Filter views can now be scoped to any entity type, not just executions.
 - **Alias Availability Check**: The workflow builder can now check whether a workflow alias is available within an application before saving.
 
-**API Changes**
-
-- New: `POST /api/v2/public/mapping-agent` — invoke the v2 mapping agent for AI-assisted field mapping.
-
 **Integration Updates**
 
-- **Workday**: New `Get_Transaction_Tax_Codes` and `Get_Transaction_Tax_Rates` actions under the tax module. Workday connections also now accept a Host URL for non-standard tenant hostnames.
+- **Workday**: New `Get_Transaction_Tax_Codes` and `Get_Transaction_Tax_Rates` actions under the tax module.
 - **Salesforce**: Improved pagination reliability, including support for full-URL pagination paths and cleaner handling of polling-trigger continuations.
 - **PostgreSQL**: Bulk CSV imports on very wide tables now use dynamically-sized batched inserts inside a single transaction, avoiding parameter-count limits and rolling back cleanly on partial failure. File type is also derived from the content-type header when the URL has no extension.
-- **Universal Connector**: A dashboard connections view and a Connect Portal flow for browsing, connecting, refreshing, and revoking universal connector integrations. Universal connector requests now execute end-to-end with automatic token refresh on expiry and a single retry.
 - **MongoDB**: Incremental sync now returns the document `_id` as a string rather than a raw ObjectID.
 
 </Update>
@@ -88,7 +82,6 @@ rss: true
 - **Try-Catch Termination Semantics**: Successful termination inside a try or catch block now stops branch execution while maintaining correct workflow status.
 - **Large Loop Batch Cleanup**: Loop batches that were counted in a group total but never spawned (beyond the concurrency window or skipped on stop) now receive a terminal status on stop or timeout instead of remaining in `WAITING`.
 - **Org Export/Import for Large Orgs**: Import into large organizations now uses a bulk application-reference preflight, avoiding validator pool exhaustion. Missing application references now fail fast with a structured diagnostic instead of a generic 500.
-- **Encrypted Environment Variables in App Connectors**: Encrypted environment variable values referenced inside native app connectors (Salesforce, HubSpot, Slack, and others) now resolve correctly at request time.
 - **Linked Account Environment Variables**: Linked account environment variables are now persisted end-to-end during upsert, and loading is reliable on the hosted portal.
 - **Curl Trace in Test Mode**: Custom node and file handler test runs now include the parsed request curl, making failed API calls easier to reproduce.
 
