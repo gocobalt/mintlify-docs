@@ -4,6 +4,55 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 23, 2026" description="v4.1.0 · Connector experience redesign, Transformation node & polling triggers">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**A redesigned connector catalog and detail experience, custom polling triggers, a pagination blob sink for large extracts, an embeddable AI Mapping portal, rule node enhancements and new Ramp, Creditsafe, and Amazon S3 capabilities.**
+
+**New Features**
+
+- **Connector Experience Redesign**: A unified connectors catalog with a rebuilt detail page covering Overview, Actions, Auth, and Triggers tabs across every connector kind. Actions are editable for both native and custom connectors, can be tested directly against a linked account, and support `{{ }}` autocomplete, automatic path-parameter detection, and request-body format selection. Connectors can be enabled or disabled from the header, with deletion gated for native and default apps.
+- **Custom Polling Triggers**: Define polling triggers on custom connectors with schema-driven pagination and a minimum poll-frequency floor, executed by a dedicated worker.
+- **Pagination Blob Sink**: Paginated extracts can now write results to a file-storage blob sink (GCS or S3) and return a `filestorage://` reference instead of inlining large payloads.
+- **Embeddable AI Mapping Portal**: The AI Mapping experience opens as a full page from the Hosted Portal (rather than a modal), with CSV source support and a restyled field card showing file statistics.
+- **Project User Config Pages**: User configuration pages in projects now support drag-and-drop reordering and share a common Add/Edit field dialog across surfaces.
+- **App Studio URL Harvesting**: App Studio can now build connectors from a spec URL, with an optional Firecrawl-backed harvest for JavaScript-rendered portals and mid-run URL ingestion during a build.
+- **App Studio Build Experience**: URL-driven builds, fileless rebuild, a richer build stream, category tags, a run-status banner, and implementation plans rendered as markdown with mermaid diagrams.
+- **Master Login Toggle**: Organizations can now enable or disable master login on a per-organization basis.
+
+**Improvements**
+
+- **Terminate Node Revamp**: Standalone terminate-with-success and terminate-with-error actions, with the error message surfaced directly in execution logs and a drill-down cap for terminated loops.
+- **Transformation Node**: The Transformation node now supports CSV, XML, and EDI formats with per-row child workflow execution, and its transformation object is the single source of truth for configuration.
+- **Try API Redesign**: The Try API surface has moved to the shared catalog layout, with a restored collapsible JSON tree and reliable cURL copy.
+- **Node Test Semantics**: Node tests now run a single attempt, and group and try-catch batch children run as workflow tests rather than node tests for accurate execution modeling.
+- **Response Node Status Code**: The Response node now honors its configured HTTP status code.
+- **Draft Sync for Workflow Metadata**: Workflow name, description, and settings now sync into drafts consistently.
+- **External Node Edits**: Editing a node externally now replaces its `input_data` cleanly rather than merging.
+- **Organization Export/Import Hardening**: Improved reliability for organization export and import migrations.
+- **Test Mode Config Override**: Test-mode runs now support a configuration-id override.
+- **Interface Localization**: Broad localization coverage across the interface, with server-side facets on list views.
+- **SMTP Display-Name Address**: The MAIL FROM header now correctly formats the display-name address on outbound SMTP.
+- **Rule Node Scalar Comparisons**: Scalar `eq` and `neq` and numeric ordering now compare within a single type domain (boolean, numeric, or string) rather than through loose coercion. Decimal strings compare by value (`"5.50" eq "5.5"` is true), large-integer strings compare exactly, leading-zero strings remain distinct identifiers (`"007" eq "7"` is false), and all-digit strings now work with `starts_with` and `ends_with`.
+- **Rule Node Unconfigured Left-Hand Side**: A Rule node with an unconfigured left-hand side (formula tab opened without a data slot selected) now resolves to undefined and is skipped when using `exist`, instead of executing and returning a 404. `not_exist` and `not_null` evaluate to true, and `is_null` evaluates to false. Explicit `null` values set through the variable UI are unaffected.
+
+<Note>Workflows that previously relied on loose type coercion in Rule nodes (for example, `"1" eq "true"` returning true, or an `exist` check executing on a blank left-hand side) will now behave differently. Review Rule-heavy workflows after upgrade.</Note>
+
+**API Changes**
+
+- New: `GET|POST|PATCH|DELETE /api/v1/public/connector/:slug/polling-trigger[/:triggerId]` and `PUT /api/v1/public/connector/:slug/polling-trigger/:triggerId/test` — manage and test custom polling triggers.
+- New: `POST|PUT|DELETE /api/v1/public/application/:slug/dataslot[/:dataSlotId]` — manage connector dataslots.
+
+**Integration Updates**
+
+- **Ramp**: New Matrix Tables actions.
+- **Creditsafe**: New company search and credit report actions with improved pagination handling.
+- **Amazon S3**: `Get Object By Key` now handles binary payloads safely via Transfer-Encoding, and `Create Object` now returns the resulting key and success indicator.
+- **Salesforce**: Contact action field labels and help text have been aligned across the interface.
+
+</Update>
+
 <Update label="July 17, 2026" description="v4.0.0 · Universal Connector, pagination engine, transformation node & email change">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
