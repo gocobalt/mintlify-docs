@@ -4,6 +4,55 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 1, 2026" description="v3.7.12 · Universal Connector execution, MongoDB node, DLQ & Workday auth expansion">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
+
+**Universal Connector execution goes live with a dedicated node type, a new Dead-Letter Queue area for capturing and inspecting failed messages, expanded Workday connection options, and a public API for updating private workflows.**
+
+**New Features**
+
+- **Dead-Letter Queue**: A new project-level DLQ area with a queue list, detail view, message drawer, and infinite-loading records. Define custom columns on a DLQ and attach column values when sending messages.
+- **Universal Connector Execution**: Universal Connector actions can now be executed directly from workflows via a dedicated node type, with `{{application.var.*}} `templating, connection auth resolution, and one-shot execution outside the standard instance path.
+- **MongoDB Workflow Node**: A dedicated MongoDB node type is now available in the workflow builder alongside the MongoDB connector.
+- **Node Auto-Fill**: A new auto-fill button on workflow nodes uses AI assistance to populate configuration fields faster.
+- **Integration Graph Artifact Viewer**: View artifact content directly from the Integration Graph, with approve and reject actions for pending items.
+- **Connect Portal Multi-Language**: A new language picker in the Connect Portal supports multi-language rendering.
+
+**Improvements**
+
+- **Autopilot Findings in Error Analysis**: Autopilot findings are now surfaced with priority in the error analysis panel.
+- **AI-Generated Field Mapping Summaries**: Field mapping now includes AI-generated summaries with improved context awareness.
+- **Skill Management UI**: Simplified by removing toggle controls.
+- **Data Slot Filtering**: Safer handling of data slots when pages are renamed or deleted.
+- **Draft Mode Change Detection**: Refined unsaved-changes detection when editing in draft mode.
+- **Humanized Error Display**: Error messages now include humanized classifications and helpful hints.
+- **Custom Output Configuration Stability**: Field selection and encryption controls in the Custom Output UI remain stable while editing.
+- **Improved Templating for Nested JSON Fields**: JSON-shaped string values in nested node-input fields are now parsed before template substitution, matching legacy behavior. Integer strings above JavaScript's safe integer limit are preserved as strings to avoid precision loss.
+- **Multipart Form Data in HTTP and API Proxy Nodes**: Multipart and form-urlencoded request bodies are now built correctly with proper boundaries, and non-string field values (booleans, numbers, objects, arrays) are automatically coerced before encoding.
+- **Reliable Publish for Legacy Workflows**: Publishing workflows without an AI-builder mirror no longer surfaces errors from the mirror snapshot step.
+- **Subflow Rerun Payload**: Original payloads from parent workflows are now correctly passed to subflows via `source_event_payload` on rerun.
+- **Try-Catch Termination Semantics**: Successful termination inside a try or catch block now stops branch execution while maintaining correct workflow status.
+- **Large Loop Batch Cleanup**: Loop batches that were counted in a group total but never spawned (beyond the concurrency window or skipped on stop) now receive a terminal status on stop or timeout instead of remaining in `WAITING`.
+- **Org Export/Import for Large Orgs**: Import into large organizations now uses a bulk application-reference preflight, avoiding validator pool exhaustion. Missing application references now fail fast with a structured diagnostic instead of a generic 500.
+- **Encrypted Environment Variables in App Connectors**: Encrypted environment variable values referenced inside native app connectors (Salesforce, HubSpot, Slack, and others) now resolve correctly at request time.
+- **Linked Account Environment Variables**: Linked account environment variables are now persisted end-to-end during upsert, and loading is reliable on the hosted portal.
+- **Curl Trace in Test Mode**: Custom node and file handler test runs now include the parsed request curl, making failed API calls easier to reproduce.
+
+**API Changes**
+
+- New: `PUT /api/v2/public/workflow/:workflowId` — update a private workflow's name, description, `workflow_alias`, `settings.timeout`, and `settings.dedup_key` from a linked account.
+- `GET /api/v2/public/env/definitions` — now accepts linked account tokens in addition to org API keys, and returns only `LINKED_ACCOUNT`-scoped variables when a `linked_account_id` is sent. Also supports a new `names` filter for resolving variable definitions by name in a single call.
+- `GET /api/v2/public/token/:linked_account_id/:integration_type` — auth-token fetches for custom integrations now succeed reliably.
+
+**Integration Updates**
+
+- **Workday**: Connection setup now accepts an optional Host URL alongside Hostname, Tenant ID, and Refresh Token, enabling sandbox and implementation tenants on `myworkday.com` domains to connect without workarounds. Subdomain and Hostname fields are now optional on both OAuth2 and key-based flows, the OAuth2 connect flow redirects to a confirmation screen that auto-closes on completion, and existing configurations are automatically backfilled with the new field layout. Workday SOAP actions also support Host URL for non-standard tenant hostnames, and the `Get Workers` action now returns `Worker_Reference` as a structured array. Hostname format validation was relaxed to accept valid Workday hostnames containing dots.
+- **Amazon S3**: The Get Buckets action's first input field has been renamed to Bucket Region for consistency with other S3 actions.
+- **PostgreSQL**: Bulk CSV imports now handle wide and large files by dynamically calculating batch size based on column count, with new optional `pg_params_safety` and `batch_size` fields to tune memory versus throughput. Concurrent batch inserts run inside a single transaction, so partial failures roll back cleanly. File type detection now falls back to the content-type header when the CSV URL has no extension.
+
+</Update>
+
 <Update label="June 17, 2026" description="v3.7.00 · Universal Connector, MongoDB connector, trigger idempotency & rate limiting">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
