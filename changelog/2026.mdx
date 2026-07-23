@@ -4,6 +4,33 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 6, 2026" description="v3.8.07 · Log node parity, Switch node flexibility & trigger reliability">
+
+<Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="purple">Integrations</Badge>
+
+**Log node response metadata parity restored, Switch node accepts numeric and mixed-type case values, trigger idempotency and payload delivery improvements, and workflow header breadcrumbs.**
+
+**New Features**
+
+- **Workflow Breadcrumbs**: The workflow header now shows project and workflow breadcrumbs, with an application crumb for app-scoped workflows and back-button navigation that returns to the logical parent view.
+
+**Improvements**
+
+- **Log Node Response Metadata**: The Log node response now includes a `metadata` object with custom fields parsed onto it, so downstream references like `{{node.X.body.metadata.*}}` resolve as expected. Top-level array custom fields are spread onto metadata by index, and `node_type` and `execution_timestamp` are aligned to the standard shape.
+- **Log Node Required Field Handling**: Log nodes with an empty `log_level` now default to `INFO`, and an empty `message_template` logs an empty title rather than failing. An invalid non-empty log level is coerced to `INFO` so the node always emits a valid level.
+- **Switch Node Mixed-Type Case Values**: Switch Case nodes now accept numeric, boolean, null, and mixed-type values for `case_value` and satisfied-node IDs, normalizing them to strings for matching. A no-match evaluation now returns an empty `matched_case` instead of erroring.
+- **Trigger Idempotency for Private Workflows**: Idempotency is now honored on event triggers for private workflows and native-app config-based triggers, preventing duplicate instances when the same event is delivered more than once.
+- **API Call Trigger for Private Workflows**: API Call trigger events now pass their payload through to private workflows so downstream nodes receive the event data.
+- **Event Trigger Payload on Hosted Portal**: Custom and native event-based triggers now show their payload in the Hosted Portal canvas preview.
+- **Legacy Filter Views**: Filter views created before scope was introduced are now included in organization-scoped list results instead of being silently excluded.
+- **Webhook Auth Token Controls**: Reveal and copy controls are now hidden on saved webhook authentication values (HMAC secrets and static header tokens) to prevent inadvertent exposure.
+
+**Integration Updates**
+
+- **Aprimo**: Improved reliability of the project role initiation action.
+
+</Update>
+
 <Update label="July 3, 2026" description="v3.8.03 · Project workflow imports, webhook auth UI & recovery queue refinements">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge>
