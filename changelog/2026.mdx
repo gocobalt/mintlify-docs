@@ -4,6 +4,18 @@ description: "All platform updates, API changes, and integration additions for 2
 rss: true
 ---
 
+<Update label="July 24, 2026" description="v4.1.1 · Custom connector authentication reliability">
+
+<Badge color="purple">Integrations</Badge>
+
+**Improved authentication reliability for custom connector actions across bearer-token and OAuth2 flows.**
+
+**Integration Updates**
+
+- **Custom Connectors**: Improved authentication reliability for custom connector actions. Bearer-token connectors now resolve tokens saved under either token or value fields and avoid double-prefixing the `Bearer` scheme. OAuth2 connectors with a configured token request now use the freshly-fetched token on each call, and `{{application_settings.token_response.*}}` references resolve inside API call injection templates. Custom actions/nodes on the default-app integration also inject token-request cookies when no static headers are configured.
+
+</Update>
+
 <Update label="July 23, 2026" description="v4.1.0 · Connector experience redesign, Transformation node & polling triggers">
 
 <Badge color="blue">Platform</Badge> <Badge color="orange">Agent</Badge> <Badge color="green">APIs</Badge> <Badge color="purple">Integrations</Badge>
